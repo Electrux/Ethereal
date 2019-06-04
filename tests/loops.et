@@ -1,0 +1,8 @@
+num = num( scan( "Enter factorial of: " ) );
+fact = 1;
+
+for x = num; x >= 2; --x {
+	fact *= x;
+}
+
+println( "Factorial of ", num, ": ", fact );

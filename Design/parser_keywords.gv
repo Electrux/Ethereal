@@ -1,0 +1,79 @@
+# notes
+# 1. STR = any const string
+# 2. a BLOCK can contain only EXPR, struct, conditionals, loops, import, ldmod
+
+digraph ParserKeywords {
+	size = "10,10";
+	begin;
+
+	# Keywords
+	begin -> { import, struct, fn, mfn, if, for, ldmod };
+
+	# import
+	IMPORTNAME [ label = "IDEN?/STR" ];
+	IMPORTASNAME [ label = "IDEN" ];
+	import -> IMPORTNAME -> { as, end };
+	as -> IMPORTASNAME -> end;
+
+	# struct
+	STRUCTNAME [ label = "IDEN" ];
+	STRUCTATTR [ label = "IDEN" ];
+	STRUCTLBRACE [ label = "{" ];
+	STRUCTRBRACE [ label = "}" ];
+	STRUCTSEMICOL [ label = ";" ];
+	struct -> STRUCTNAME -> STRUCTLBRACE -> STRUCTATTR -> "="
+	       -> EXPR -> STRUCTSEMICOL -> { STRUCTATTR, STRUCTRBRACE };
+	STRUCTRBRACE -> end;
+
+	# fn
+	FNNAME [ label = "IDEN" ];
+	FNARG [ label = "EXPR (no pop stack)" ];
+	FNLPAREN [ label = "(" ];
+	FNARGCOMMA [ label = "," ];
+	FNRPAREN [ label = ")" ];
+	FNLBRACE [ label = "{" ];
+	FNRBRACE [ label = "}" ];
+	FNBLOCK [ label = "BLOCK" ];
+	fn -> FNNAME -> FNLPAREN -> { FNRPAREN, FNARG };
+	FNARG -> { FNARGCOMMA, FNRPAREN };
+	FNARGCOMMA -> FNARG;
+	FNRPAREN -> FNLBRACE -> FNBLOCK -> FNRBRACE -> end;
+
+	# mfn
+	MEMBEROF [ label = "IDEN/STR" ];
+	MFNLANGLEBRACK [ label = "<" ];
+	MFNRANGLEBRACK [ label = ">" ];
+	mfn -> MFNLANGLEBRACK -> MEMBEROF -> MFNRANGLEBRACK -> FNNAME;
+
+	# if
+	IFCOND [ label = "EXPR" ];
+	IFLBRACE [ label = "{" ];
+	IFBLOCK [ label = "BLOCK" ];
+	IFRBRACE [ label = "}" ];
+	ELSELBRACE [ label = "{" ];
+	ELSEBLOCK [ label = "BLOCK" ];
+	ELSERBRACE [ label = "}" ];
+	if -> IFCOND -> IFLBRACE -> IFBLOCK -> IFRBRACE -> { elif, else, end };
+	elif -> IFCOND;
+	else -> ELSELBRACE -> ELSEBLOCK -> ELSERBRACE -> end;
+
+	# for
+	FORINIT [ label = "INIT EXPR" ];
+	FORINITSEMICOL [ label = ";" ];
+	FORCOND [ label = "COND EXPR" ];
+	FORCONDSEMICOL [ label = ";" ];
+	FORITER [ label = "ITER EXPR" ];
+	FORLBRACE [ label = "{" ];
+	FORBLOCK [ label = "BLOCK" ];
+	FORRBRACE [ label = "}" ];
+	for -> FORINIT -> FORINITSEMICOL -> FORCOND -> FORCONDSEMICOL -> FORITER -> FORLBRACE;
+	for -> FORINITSEMICOL; FORINITSEMICOL -> FORCONDSEMICOL; FORCONDSEMICOL -> FORLBRACE;
+	FORLBRACE -> FORBLOCK -> FORRBRACE -> end;
+
+	# ldmod
+	ldmod -> IMPORTNAME;
+
+	# at the end
+	begin -> EXPR -> end;
+	end;
+}

@@ -1,0 +1,11 @@
+import map;
+
+struct tmp {
+    b = map.create();
+}
+
+a = @tmp();
+
+a->b[ '5' ] = 10;
+
+println( a );

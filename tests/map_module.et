@@ -1,0 +1,14 @@
+import map;
+
+map = map.create();
+
+if map[ 'yo' ] == nil {
+    map[ "sup" ] = "hi there";
+    map[ "sup" ] = 'new shit';
+}
+
+map[ "another" ] = 'i am another str';
+
+println( "Map: ", map );
+println( "map[ 'sup' ] = ", map[ 'sup' ] );
+println( "map[ 'hi' ] exists = ", map[ 'hi' ] != nil );

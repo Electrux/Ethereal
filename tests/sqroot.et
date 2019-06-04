@@ -1,0 +1,18 @@
+fn sqrt( n ) {
+	if typeof( n ) != "FLT" {
+		raise( "expected floating point number, but found ", n );
+	}
+	if n <= 0.0 {
+		raise( "expected number to be positive floating point, but found ", n );
+	}
+	error = 0.0001;
+	s = n;
+	for ; s - n / s > error; {
+		s = ( s + n / s ) / 2.0;
+		println( 'Post iteration, sqrt = ', s );
+	}
+	return s;
+}
+
+num = 12382478134781634981763248612394691234712381231231237861827.0;
+println( "Square root of ", num, " is: ", sqrt( num ) );

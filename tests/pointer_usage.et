@@ -1,0 +1,16 @@
+struct st {
+	one = "";
+	two = 5;
+}
+
+fn alter( ptr ) {
+	println( "Before: ", pn, " = ", deref( ptr ) );
+	ptr->two = 10;
+}
+
+n = @st();
+
+pn = ptr( n );
+alter( pn );
+
+println( "After: ", pn, " = ", n );

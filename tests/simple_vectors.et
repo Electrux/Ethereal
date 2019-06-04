@@ -1,0 +1,13 @@
+v = [ 3, 2, 4, 1 ];
+
+for i = 0; i < 4; ++i {
+	for j = 1; j < 4 - i; ++j {
+		if v[ j - 1 ] > v[ j ] {
+			tmp = v[ j ];
+			v[ j ] = v[ j - 1 ];
+			v[ j - 1 ] = tmp;
+		}
+	}
+}
+
+println( "Vector: ", v );

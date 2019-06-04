@@ -1,0 +1,15 @@
+v = [ [ 3, 2 ], [ 4, 1 ] ];
+
+for p = 0; p < 2; ++p {
+	for i = 0; i < 2; ++i {
+		for j = 1; j < 2 - i; ++j {
+			if v[ p ][ j - 1 ] > v[ p ][ j ] {
+				tmp = v[ p ][ j ];
+				v[ p ][ j ] = v[ p ][ j - 1 ];
+				v[ p ][ j - 1 ] = tmp;
+			}
+		}
+	}
+}
+
+println( "Vector: ", v );

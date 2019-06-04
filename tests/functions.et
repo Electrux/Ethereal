@@ -1,0 +1,13 @@
+fn fact( n ) {
+	if n <= 1 { return 1; }
+	if n == 5 { println( 'current: 5' ); }
+	elif n == 4 { println( 'current: 4' ); }
+	elif n == 3 { println( 'current: 3' ); }
+	elif n == 2 { println( 'current: 2' ); }
+	else { println( 'not in [2-5]' ); }
+	return fact( n - 1 ) * n;
+}
+
+_MAIN_SRC_BEGIN_
+println( fact( num( scan( "Enter number for factorial: " ) ) ) );
+_MAIN_SRC_END_

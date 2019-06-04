@@ -1,7 +1,7 @@
 num = num( scan( "Enter factorial of: " ) );
 fact = 1;
 
-for x = num; x >= 2; --x {
+for x = num; x >= 2; x -= 1 {
 	fact *= x;
 }
 

@@ -1,9 +1,9 @@
 fn sqrt( n ) {
 	if typeof( n ) != "FLT" {
-		raise( "expected floating point number, but found ", n );
+		return -1;
 	}
 	if n <= 0.0 {
-		raise( "expected number to be positive floating point, but found ", n );
+		return -2;
 	}
 	error = 0.0001;
 	s = n;

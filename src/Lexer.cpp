@@ -25,6 +25,7 @@ const char * TokStrs[ _TOK_LAST ] = {
 	//Keywords
 	"true",
 	"false",
+	"enum",
 	"import",
 	"as",
 	"nil",
@@ -257,6 +258,7 @@ static int classify_str( const std::string & str )
 {
 	if( str == TokStrs[ TOK_TRUE ] ) return TOK_TRUE;
 	else if( str == TokStrs[ TOK_FALSE ] ) return TOK_FALSE;
+	else if( str == TokStrs[ TOK_ENUM ] ) return TOK_ENUM;
 	else if( str == TokStrs[ TOK_IMPORT ] ) return TOK_IMPORT;
 	else if( str == TokStrs[ TOK_AS ] ) return TOK_AS;
 	else if( str == TokStrs[ TOK_NIL ] ) return TOK_NIL;

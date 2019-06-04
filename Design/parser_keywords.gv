@@ -1,16 +1,28 @@
 # notes
 # 1. STR = any const string
 # 2. a BLOCK can contain only EXPR, struct, conditionals, loops, import, ldmod
+# 3. maybe import identifier can be used as a variable too
 
 digraph ParserKeywords {
 	size = "10,10";
 	begin;
 
 	# Keywords
-	begin -> { import, struct, fn, mfn, if, for, ldmod };
+	begin -> { enum, import, struct, fn, mfn, if, for, ldmod };
+
+	# enum
+	ENUMNAME [ label = "IDEN" ];
+	ENUMLBRACE [ label = "{" ];
+	ENUMRBRACE [ label = "}" ];
+	ENUMKEY [ label = "IDEN" ];
+	ENUMSEPAR [ label = "," ];
+	enum -> ENUMNAME -> ENUMLBRACE -> ENUMKEY -> { ENUMRBRACE, ENUMSEPAR };
+	ENUMSEPAR -> ENUMKEY;
+	ENUMRBRACE -> end;
+
 
 	# import
-	IMPORTNAME [ label = "IDEN?/STR" ];
+	IMPORTNAME [ label = "IDEN/STR" ];
 	IMPORTASNAME [ label = "IDEN" ];
 	import -> IMPORTNAME -> { as, end };
 	as -> IMPORTASNAME -> end;

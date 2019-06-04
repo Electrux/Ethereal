@@ -26,6 +26,7 @@ enum TokType
 	//Keywords
 	TOK_TRUE,
 	TOK_FALSE,
+	TOK_ENUM,
 	TOK_IMPORT,
 	TOK_AS,
 	TOK_NIL,

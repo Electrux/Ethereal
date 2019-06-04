@@ -4,8 +4,8 @@ b = 5;
 
 a += [ b ];
 
-a::push_back( 6 );
+a.push_back( 6 );
 
 a += [ 7, 8, 9, 10 ];
 
-println( 'a: ', a, '\nlen(a): ', a::len() );
+println( 'a: ', a, '\na.len(): ', a.len() );

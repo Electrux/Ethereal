@@ -8,6 +8,6 @@ fn fact( n ) {
 	return fact( n - 1 ) * n;
 }
 
-_MAIN_SRC_BEGIN_
+_MAIN_BEG_
 println( fact( num( scan( "Enter number for factorial: " ) ) ) );
-_MAIN_SRC_END_
+_MAIN_END_

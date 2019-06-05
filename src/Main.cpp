@@ -28,7 +28,7 @@ int main( int argc, char ** argv )
 	size_t flags = cmd_get_args( argc, ( const char ** )argv, args );
 	if( args.size() < 1 ) {
 		fprintf( stdout, "usage: %s [flags] <source file>\n", argv[ 0 ] );
-		return FAIL;
+		return E_FAIL;
 	}
 
 	auto last_slash_loc = args[ 0 ].find_last_of( '/' ) + 1;
@@ -36,7 +36,7 @@ int main( int argc, char ** argv )
 	std::string curr_dir = GetCWD();
 	SetCWD( args[ 0 ].substr( 0, last_slash_loc ) );
 
-	int err = OK;
+	int err = E_OK;
 	const std::string main_src = args[ 0 ].substr( last_slash_loc );
 
 	eth_t eth;
@@ -45,7 +45,7 @@ int main( int argc, char ** argv )
 	eth.srcs[ main_src ].name = main_src;
 	eth.src_stack.push_back( main_src );
 	err = tokenize( eth );
-	if( err != OK ) return err;
+	if( err != E_OK ) return err;
 
 	if( flags & OPT_T ) {
 		fprintf( stdout, "Tokens:\n" );

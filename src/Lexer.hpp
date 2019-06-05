@@ -169,4 +169,8 @@ inline bool token_is_one_of_assign( const tok_t & tok )
 	return token_type_is_one_of_assign( tok.type );
 }
 
+void lex_fail( const std::string & line_str, const int line, const int col, const char * msg, ... );
+
+#define LEX_FAIL( ... ) lex_fail( line, line_num, i + 1, __VA_ARGS__ )
+
 #endif // LEXER_HPP

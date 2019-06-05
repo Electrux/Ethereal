@@ -123,14 +123,14 @@ static int get_operator( const std::string & input, const int input_len, const i
 
 static inline bool is_valid_num_char( const char c );
 
-// TODO: The src stack and map shall be updated prior and post this function
+// TODO: The src stack and map shall be updated prior this function
 int tokenize( eth_t & eth )
 {
 	int res = read_file( eth );
-	if( res == FILE_IO_ERR ) {
+	if( res == E_FILE_IO_ERR ) {
 		return res;
 	}
-	if( res == FILE_EMPTY ) {
+	if( res == E_FILE_EMPTY ) {
 		fprintf( stderr, "error: invalid source: %s\n", eth.src_stack.back().c_str() );
 		return res;
 	}
@@ -144,17 +144,17 @@ int tokenize( eth_t & eth )
 		const int line_len = line.size();
 		if( line_len < 1 || line[ 0 ] == '\n' ) continue;
 		int res = tokenize_line( line, line_len, i + 1, toks, eth.srcs[ eth.src_stack.back() ].is_main_src );
-		if( res != OK ) return res;
+		if( res != E_OK ) return res;
 	}
 
-	return OK;
+	return E_OK;
 }
 
 static int tokenize_line( const std::string & line, const int line_len, const int line_num,
 			  toks_t & toks, const bool is_main_src )
 {
 	int i = 0;
-	int err = OK;
+	int err = E_OK;
 
 	static bool comment_block = false;
 	static bool main_src_block = false;
@@ -164,11 +164,9 @@ static int tokenize_line( const std::string & line, const int line_len, const in
 
 		if( CURR( line ) == '*' && NEXT( line ) == '/' ) {
 			if( !comment_block ) {
-				fprintf( stdout,
-					 "lex error on line %d(%d): encountered multi line comment terminator '*/' "
-					 "in non commented block\n",
-					 line_num, i + 1 );
-				err = LEX_FAIL;
+				LEX_FAIL( "encountered multi line comment terminator '*/' "
+					  "in non commented block", line_num, i + 1 );
+				err = E_LEX_FAIL;
 				break;
 			}
 			i += 2;
@@ -212,7 +210,7 @@ static int tokenize_line( const std::string & line, const int line_len, const in
 			int num_type = TOK_INT;
 			std::string num = get_num( line, line_len, line_num, i, num_type );
 			if( num.empty() ) {
-				err = PARSE_FAIL;
+				err = E_PARSE_FAIL;
 				break;
 			}
 			toks.emplace_back( line_num, tmp_i, num_type, num );
@@ -223,7 +221,7 @@ static int tokenize_line( const std::string & line, const int line_len, const in
 		if( CURR( line ) == '\"' || CURR( line ) == '\'' ) {
 			std::string str;
 			int res = get_const_str( line, line_len, line_num, i, str );
-			if( res != OK ) {
+			if( res != E_OK ) {
 				err = res;
 				break;
 			}
@@ -234,7 +232,7 @@ static int tokenize_line( const std::string & line, const int line_len, const in
 		// operators
 		int op_type = get_operator( line, line_len, line_num, i );
 		if( op_type < 0 ) {
-			err = LEX_FAIL;
+			err = E_LEX_FAIL;
 			break;
 		}
 		toks.emplace_back( line_num, tmp_i, op_type, "" );
@@ -243,13 +241,13 @@ static int tokenize_line( const std::string & line, const int line_len, const in
 	return err;
 }
 
-static std::string get_name( const std::string & input, const int input_len, int & i )
+static std::string get_name( const std::string & line, const int line_len, int & i )
 {
 	std::string buf;
-	buf.push_back( input[ i++ ] );
-	while( i < input_len ) {
-		if( !isalnum( CURR( input ) ) && CURR( input ) != '_' ) break;
-		buf.push_back( input[ i++ ] );
+	buf.push_back( line[ i++ ] );
+	while( i < line_len ) {
+		if( !isalnum( CURR( line ) ) && CURR( line ) != '_' ) break;
+		buf.push_back( line[ i++ ] );
 	}
 	return buf;
 }
@@ -278,7 +276,7 @@ static int classify_str( const std::string & str )
 	return TOK_IDEN;
 }
 
-static std::string get_num( const std::string & input, const int input_len, const int line_num, int & i, int & num_type )
+static std::string get_num( const std::string & line, const int line_len, const int line_num, int & i, int & num_type )
 {
 	std::string buf;
 	int first_digit_at = i;
@@ -286,9 +284,9 @@ static std::string get_num( const std::string & input, const int input_len, cons
 	bool success = true;
 	int dot_encountered = -1;
 
-	while( i < input_len && is_valid_num_char( CURR( input ) ) ) {
-		const char c = CURR( input );
-		const char next = NEXT( input );
+	while( i < line_len && is_valid_num_char( CURR( line ) ) ) {
+		const char c = CURR( line );
+		const char next = NEXT( line );
 		switch( c ) {
 		case '0':
 		case '1':
@@ -310,19 +308,18 @@ static std::string get_num( const std::string & input, const int input_len, cons
 					return buf;
 				}
 			} else {
-				fprintf( stdout,
-					 "lex error on line %d(%d): encountered dot(.) character "
-					 "when the number being retrieved (from column %d) already had one at column %d\n",
-					 line_num, ( i ) + 1, first_digit_at + 1, dot_encountered + 1 );
+				LEX_FAIL( "encountered dot (.) character "
+					  "when the number being retrieved (from column %d) "
+					  "already had one at column %d",
+					  first_digit_at + 1, dot_encountered + 1 );
 				success = false;
 			}
 			break;
 		default:
-			if( isalnum( CURR( input ) ) ) {
-				fprintf( stdout,
-					 "lex error on line %d(%d): encountered invalid character '%c' "
-					 "while retrieving a number (from column %d)\n",
-					 line_num, ( i ) + 1, c, first_digit_at + 1 );
+			if( isalnum( CURR( line ) ) ) {
+				LEX_FAIL( "encountered invalid character '%c' "
+					  "while retrieving a number (from column %d)",
+					  c, first_digit_at + 1 );
 				success = false;
 			} else {
 				return buf;
@@ -337,36 +334,36 @@ static std::string get_num( const std::string & input, const int input_len, cons
 	return buf;
 }
 
-static int get_const_str( const std::string & input, const int input_len, const int line_num, int & i, std::string & buf )
+static int get_const_str( const std::string & line, const int line_len, const int line_num, int & i, std::string & buf )
 {
 	buf.clear();
-	const char quote_type = CURR( input );
+	const char quote_type = CURR( line );
 	int starting_at = i;
 	// omit beginning quote
 	++i;
-	while( i < input_len ) {
-		if( CURR( input ) == quote_type && PREV( input ) != '\\' ) break;
+	while( i < line_len ) {
+		if( CURR( line ) == quote_type && PREV( line ) != '\\' ) break;
 
-		buf.push_back( input[ i++ ] );
+		buf.push_back( line[ i++ ] );
 	}
-	if( CURR( input ) != quote_type ) {
-		fprintf( stdout,
-			 "lex error on line %d(%d): no matching quote for '%c' (column %d) found\n",
-			 line_num, ( i ) + 1, quote_type, starting_at + 1 );
-		return LEX_FAIL;
+	if( CURR( line ) != quote_type ) {
+		i = starting_at;
+		LEX_FAIL( "no matching quote for '%c' found",
+			  quote_type );
+		return E_LEX_FAIL;
 	}
 	// omit ending quote
 	++i;
-	return OK;
+	return E_OK;
 }
 
-static int get_operator( const std::string & input, const int input_len, const int line_num, int & i )
+static int get_operator( const std::string & line, const int line_len, const int line_num, int & i )
 {
 	int op_type = -1;
-	switch( CURR( input ) ) {
+	switch( CURR( line ) ) {
 	case '+':
-		if( i < input_len - 1 ) {
-			if( NEXT( input ) == '=' ) {
+		if( i < line_len - 1 ) {
+			if( NEXT( line ) == '=' ) {
 				++i;
 				op_type = TOK_ADD_ASSN;
 				break;
@@ -374,8 +371,8 @@ static int get_operator( const std::string & input, const int input_len, const i
 		}
 		SET_OP_TYPE_BRK( TOK_ADD );
 	case '-':
-		if( i < input_len - 1 ) {
-			if( NEXT( input ) == '=' ) {
+		if( i < line_len - 1 ) {
+			if( NEXT( line ) == '=' ) {
 				++i;
 				op_type = TOK_SUB_ASSN;
 				break;
@@ -383,75 +380,75 @@ static int get_operator( const std::string & input, const int input_len, const i
 		}
 		SET_OP_TYPE_BRK( TOK_SUB );
 	case '*':
-		if( i < input_len - 1 ) {
-			if( NEXT( input ) == '*' || NEXT( input ) == '=' ) {
+		if( i < line_len - 1 ) {
+			if( NEXT( line ) == '*' || NEXT( line ) == '=' ) {
 				++i;
-				if( CURR( input ) == '*' ) op_type = TOK_POW;
-				else if( CURR( input ) == '=' ) op_type = TOK_MUL_ASSN;
+				if( CURR( line ) == '*' ) op_type = TOK_POW;
+				else if( CURR( line ) == '=' ) op_type = TOK_MUL_ASSN;
 				break;
 			}
 		}
 		SET_OP_TYPE_BRK( TOK_MUL );
 	case '/':
-		if( i < input_len - 1 ) {
-			if( NEXT( input ) == '=' ) {
+		if( i < line_len - 1 ) {
+			if( NEXT( line ) == '=' ) {
 				++i;
 				SET_OP_TYPE_BRK( TOK_DIV_ASSN );
 			}
 		}
 		SET_OP_TYPE_BRK( TOK_DIV );
 	case '%':
-		if( i < input_len - 1 ) {
-			if( NEXT( input ) == '=' ) {
+		if( i < line_len - 1 ) {
+			if( NEXT( line ) == '=' ) {
 				++i;
 				SET_OP_TYPE_BRK( TOK_MOD_ASSN );
 			}
 		}
 		SET_OP_TYPE_BRK( TOK_MOD );
 	case '&':
-		if( i < input_len - 1 ) {
-			if( NEXT( input ) == '&' || NEXT( input ) == '=' ) {
+		if( i < line_len - 1 ) {
+			if( NEXT( line ) == '&' || NEXT( line ) == '=' ) {
 				++i;
-				if( CURR( input ) == '&' ) op_type = TOK_AND;
-				else if( CURR( input ) == '=' ) op_type = TOK_BAND_ASSN;
+				if( CURR( line ) == '&' ) op_type = TOK_AND;
+				else if( CURR( line ) == '=' ) op_type = TOK_BAND_ASSN;
 				break;
 			}
 		}
 		SET_OP_TYPE_BRK( TOK_BAND );
 	case '|':
-		if( i < input_len - 1 ) {
-			if( NEXT( input ) == '|' || NEXT( input ) == '=' ) {
+		if( i < line_len - 1 ) {
+			if( NEXT( line ) == '|' || NEXT( line ) == '=' ) {
 				++i;
-				if( CURR( input ) == '|' ) op_type = TOK_OR;
-				else if( CURR( input ) == '=' ) op_type = TOK_BOR_ASSN;
+				if( CURR( line ) == '|' ) op_type = TOK_OR;
+				else if( CURR( line ) == '=' ) op_type = TOK_BOR_ASSN;
 				break;
 			}
 		}
 		SET_OP_TYPE_BRK( TOK_BOR );
 	case '~':
-		if( i < input_len - 1 ) {
-			if( NEXT( input ) == '=' ) {
+		if( i < line_len - 1 ) {
+			if( NEXT( line ) == '=' ) {
 				++i;
 				SET_OP_TYPE_BRK( TOK_BNOT_ASSN );
 			}
 		}
 		SET_OP_TYPE_BRK( TOK_BNOT );
 	case '=':
-		if( i < input_len - 1 ) {
-			if( NEXT( input ) == '=' ) {
+		if( i < line_len - 1 ) {
+			if( NEXT( line ) == '=' ) {
 				++i;
 				SET_OP_TYPE_BRK( TOK_EQ );
 			}
 		}
 		SET_OP_TYPE_BRK( TOK_ASSN );
 	case '<':
-		if( i < input_len - 1 ) {
-			if( NEXT( input ) == '=' || NEXT( input ) == '<' ) {
+		if( i < line_len - 1 ) {
+			if( NEXT( line ) == '=' || NEXT( line ) == '<' ) {
 				++i;
-				if( CURR( input ) == '=' ) op_type = TOK_LE;
-				else if( CURR( input ) == '<' ) {
-					if( i < input_len - 1 ) {
-						if( NEXT( input ) == '=' ) {
+				if( CURR( line ) == '=' ) op_type = TOK_LE;
+				else if( CURR( line ) == '<' ) {
+					if( i < line_len - 1 ) {
+						if( NEXT( line ) == '=' ) {
 							++i;
 							SET_OP_TYPE_BRK( TOK_LSHIFT_ASSN );
 						}
@@ -463,13 +460,13 @@ static int get_operator( const std::string & input, const int input_len, const i
 		}
 		SET_OP_TYPE_BRK( TOK_LT );
 	case '>':
-		if( i < input_len - 1 ) {
-			if( NEXT( input ) == '=' || NEXT( input ) == '>' ) {
+		if( i < line_len - 1 ) {
+			if( NEXT( line ) == '=' || NEXT( line ) == '>' ) {
 				++i;
-				if( CURR( input ) == '=' ) op_type = TOK_GE;
-				else if( CURR( input ) == '>' ) {
-					if( i < input_len - 1 ) {
-						if( NEXT( input ) == '=' ) {
+				if( CURR( line ) == '=' ) op_type = TOK_GE;
+				else if( CURR( line ) == '>' ) {
+					if( i < line_len - 1 ) {
+						if( NEXT( line ) == '=' ) {
 							++i;
 							SET_OP_TYPE_BRK( TOK_RSHIFT_ASSN );
 						}
@@ -481,16 +478,16 @@ static int get_operator( const std::string & input, const int input_len, const i
 		}
 		SET_OP_TYPE_BRK( TOK_GT );
 	case '!':
-		if( i < input_len - 1 ) {
-			if( NEXT( input ) == '=' ) {
+		if( i < line_len - 1 ) {
+			if( NEXT( line ) == '=' ) {
 				++i;
 				SET_OP_TYPE_BRK( TOK_NE );
 			}
 		}
 		SET_OP_TYPE_BRK( TOK_NOT );
 	case '^':
-		if( i < input_len - 1 ) {
-			if( NEXT( input ) == '=' ) {
+		if( i < line_len - 1 ) {
+			if( NEXT( line ) == '=' ) {
 				++i;
 				SET_OP_TYPE_BRK( TOK_BXOR_ASSN );
 			}
@@ -527,9 +524,8 @@ static int get_operator( const std::string & input, const int input_len, const i
 	case '}':
 		SET_OP_TYPE_BRK( TOK_RBRACE );
 	default:
-		fprintf( stdout,
-			 "lex error on line %d(%d): unknown operator '%c' found\n",
-			 line_num, ( i ) + 1, CURR( input ) );
+		LEX_FAIL( "unknown operator '%c' found",
+			  CURR( line ) );
 		op_type = -1;
 	}
 
@@ -541,4 +537,21 @@ static inline bool is_valid_num_char( const char c )
 {
 	return ( c >= '0' && c <= '9' ) || ( c >= 'a' && c <= 'f' ) || ( c >= 'A' && c <= 'F' )
 		|| c == '.' || c == '-' || c == '+' || c == 'o' || c == 'O' || c == 'x' || c == 'X';
+}
+
+void lex_fail( const std::string & line_str, const int line, const int col, const char * msg, ... )
+{
+	fprintf( stderr,
+		 "lex error on line %d[%d]:\n%s",
+		 line, col, line_str.c_str() );
+	std::string spcs;
+	for( int i = 0; i < col - 1; ++i ) {
+		spcs += " ";
+	}
+	fprintf( stderr, "%s^\n", spcs.c_str() );
+	va_list vargs;
+	va_start( vargs, msg );
+	vfprintf( stderr, msg, vargs );
+	fprintf( stderr, "\n" );
+	va_end( vargs );
 }

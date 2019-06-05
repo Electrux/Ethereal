@@ -11,16 +11,16 @@
 #define ERR_HPP
 
 enum Errors {
-	OK,
-	FAIL,
+	E_OK,
+	E_FAIL,
 
-	FILE_IO_ERR,
-	FILE_EMPTY,
+	E_FILE_IO_ERR,
+	E_FILE_EMPTY,
 
-	ALLOC_FAIL,
-	LEX_FAIL,
-	PARSE_FAIL,
-	BYTECODE_FAIL,
+	E_ALLOC_FAIL,
+	E_LEX_FAIL,
+	E_PARSE_FAIL,
+	E_BYTECODE_FAIL,
 };
 
 const char * ErrStr( Errors code );

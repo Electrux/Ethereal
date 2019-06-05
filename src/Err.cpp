@@ -12,17 +12,17 @@
 const char * ErrStr( Errors code )
 {
 	switch( code ) {
-	case ALLOC_FAIL:
+	case E_ALLOC_FAIL:
 		return "memory allocation failed";
-	case LEX_FAIL:
+	case E_LEX_FAIL:
 		return "lexical analyzer failed";
-	case PARSE_FAIL:
+	case E_PARSE_FAIL:
 		return "parser failed";
-	case BYTECODE_FAIL:
+	case E_BYTECODE_FAIL:
 		return "bytecode failed";
-	case FILE_EMPTY:
+	case E_FILE_EMPTY:
 		return "empty file";
-	case FAIL: // fall through
+	case E_FAIL: // fall through
 	default:
 		return "unknown error";
 	}

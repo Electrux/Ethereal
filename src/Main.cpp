@@ -37,10 +37,12 @@ int main( int argc, char ** argv )
 	SetCWD( args[ 0 ].substr( 0, last_slash_loc ) );
 
 	int err = OK;
-	eth_t eth;
 	const std::string main_src = args[ 0 ].substr( last_slash_loc );
+
+	eth_t eth;
 	eth.srcs.insert( { main_src, {} } );
 	eth.srcs[ main_src ].is_main_src = true;
+	eth.srcs[ main_src ].name = main_src;
 	eth.src_stack.push_back( main_src );
 	err = tokenize( eth );
 	if( err != OK ) return err;

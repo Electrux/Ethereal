@@ -26,16 +26,10 @@ std::vector< stmt_base_t * > * parse( src_t & src, const GrammarTypes parent )
 		stmt_base_t * res = nullptr;
 		if( ph.peak()->type == TOK_ENUM ) {
 			res = parse_enum( src, ph );
-			if( res == nullptr ) goto fail;
-			ptree->push_back( res );
 		} else if( ph.peak()->type == TOK_LDMOD ) {
 			res = parse_ldmod( src, ph );
-			if( res == nullptr ) goto fail;
-			ptree->push_back( res );
 		} else if( ph.peak()->type == TOK_IMPORT ) {
 			res = parse_import( src, ph );
-			if( res == nullptr ) goto fail;
-			ptree->push_back( res );
 		} else if( ph.peak()->type == TOK_STRUCT ) {
 			// parse_struct( ph );
 		} else if( ph.peak()->type == TOK_FN ) {
@@ -48,7 +42,11 @@ std::vector< stmt_base_t * > * parse( src_t & src, const GrammarTypes parent )
 			// parse_for( ph );
 		} else {
 			ph.next();
+			continue;
 		}
+
+		if( res == nullptr ) goto fail;
+		ptree->push_back( res );
 	}
 
 	return ptree;

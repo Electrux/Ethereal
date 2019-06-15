@@ -1,5 +1,5 @@
 /*
-	Copyright (c) 2018, Electrux
+	Copyright (c) 2019, Electrux
 	All rights reserved.
 	Using the BSD 3-Clause license for the project,
 	main LICENSE file resides in project's root directory.
@@ -15,7 +15,7 @@
 
 #include "Ethereal.hpp"
 
-int read_file( eth_t & eth );
+int read_file( src_t & src );
 
 int get_internal_file_path( std::string & file, const std::string & type );
 

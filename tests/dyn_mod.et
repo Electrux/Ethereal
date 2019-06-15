@@ -1,5 +1,0 @@
-ldmod os;
-
-println( 'sleeping for 1 second' );
-os.sleep( 1000 );
-println( 'wakey wakey!' );

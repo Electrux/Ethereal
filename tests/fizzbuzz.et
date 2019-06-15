@@ -1,9 +1,0 @@
-start = num( scan( "Enter starting number: " ) );
-end = num( scan( "Enter ending number: " ) );
-
-for x = start; x <= end; x += 1 {
-	res = "";
-	if x % 3 == 0 { res += "Fizz"; }
-	if x % 5 == 0 { res += "Buzz"; }
-	println( res.len() > 0 ? res : x );
-}

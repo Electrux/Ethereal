@@ -1,5 +1,5 @@
 /*
-	Copyright (c) 2018, Electrux
+	Copyright (c) 2019, Electrux
 	All rights reserved.
 	Using the BSD 3-Clause license for the project,
 	main LICENSE file resides in project's root directory.
@@ -19,17 +19,17 @@
 #define _STRINGIZE(x) #x
 #define STRINGIFY(x) _STRINGIZE(x)
 
-int read_file( eth_t & eth )
+int read_file( src_t & src )
 {
 	FILE * fp;
 	char * line = NULL;
 	size_t len = 0;
 	ssize_t read;
 
-	fp = fopen( eth.src_stack.back().c_str(), "r" );
+	fp = fopen( src.name.c_str(), "r" );
 	if( fp == NULL ) {
-		fprintf( stdout, "failed to open source file: %s\n", eth.src_stack.back().c_str() );
-		return FILE_IO_ERR;
+		fprintf( stdout, "failed to open source file: %s\n", src.name.c_str() );
+		return E_FILE_IO_ERR;
 	}
 
 	std::vector< std::string > lines;
@@ -41,10 +41,10 @@ int read_file( eth_t & eth )
 	fclose( fp );
 	if( line ) free( line );
 
-	if( lines.empty() ) return FILE_EMPTY;
+	if( lines.empty() ) return E_FILE_EMPTY;
 
-	eth.srcs[ eth.src_stack.back() ].src = lines;
-	return OK;
+	src.code = lines;
+	return E_OK;
 }
 
 int get_internal_file_path( std::string & file, const std::string & type )

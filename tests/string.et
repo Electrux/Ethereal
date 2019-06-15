@@ -1,9 +1,0 @@
-str = "";
-
-str += "hi there";
-
-len = len( str );
-
-str[ 5 ] = '1';
-
-println( str );

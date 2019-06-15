@@ -1,5 +1,5 @@
 /*
-	Copyright (c) 2018, Electrux
+	Copyright (c) 2019, Electrux
 	All rights reserved.
 	Using the BSD 3-Clause license for the project,
 	main LICENSE file resides in project's root directory.
@@ -23,22 +23,10 @@ struct src_t
 {
 	std::string name;
 	toks_t toks;
-	std::vector< std::string > src;
+	std::vector< std::string > code;
 	bool is_main_src;
 
 	src_t( const bool _is_main_src = false );
-};
-
-typedef std::unordered_map< std::string, src_t > srcs_t;
-
-// the ethereal main struct
-struct eth_t
-{
-	srcs_t srcs;
-
-	std::vector< std::string > src_stack;
-
-	eth_t();
 };
 
 #endif // ETHEREAL_HPP

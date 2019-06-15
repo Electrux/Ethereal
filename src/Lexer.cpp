@@ -1,5 +1,5 @@
 /*
-	Copyright (c) 2018, Electrux
+	Copyright (c) 2019, Electrux
 	All rights reserved.
 	Using the BSD 3-Clause license for the project,
 	main LICENSE file resides in project's root directory.
@@ -11,6 +11,7 @@
 #include <cstdlib>
 #include <string>
 #include <cctype>
+#include <stdarg.h>
 
 #include "FS.hpp"
 #include "Lexer.hpp"
@@ -105,12 +106,16 @@ const char * TokStrs[ _TOK_LAST ] = {
 	"}",
 	"[",
 	"]",
+
+	"<EOF>",
 };
 
 #define CURR( line ) ( line[ i ] )
 #define NEXT( line ) ( i + 1 < ( int )line.size() ? line[ i + 1 ] : 0 )
 #define PREV( line ) ( line.size() > 0 && i - 1 >= 0 ? line[ i - 1 ] : 0 )
 #define SET_OP_TYPE_BRK( type ) op_type = type; break
+
+#define SRC_FAIL( ... ) src_fail( line, line_num, i + 1, __VA_ARGS__ )
 
 static int tokenize_line( const std::string & line, const int line_len, const int line_num,
 			  toks_t & toks, const bool is_main_src );
@@ -124,26 +129,26 @@ static int get_operator( const std::string & input, const int input_len, const i
 static inline bool is_valid_num_char( const char c );
 
 // TODO: The src stack and map shall be updated prior this function
-int tokenize( eth_t & eth )
+int tokenize( src_t & src )
 {
-	int res = read_file( eth );
+	int res = read_file( src );
 	if( res == E_FILE_IO_ERR ) {
 		return res;
 	}
 	if( res == E_FILE_EMPTY ) {
-		fprintf( stderr, "error: invalid source: %s\n", eth.src_stack.back().c_str() );
+		fprintf( stderr, "error: invalid source (empty file): %s\n", src.name.c_str() );
 		return res;
 	}
-	const auto & lines = eth.srcs[ eth.src_stack.back() ].src;
+	const auto & lines = src.code;
 	const int line_count = lines.size();
-	auto & toks = eth.srcs[ eth.src_stack.back() ].toks;
+	auto & toks = src.toks;
 
 	// tokenize the input
 	for( int i = 0; i < line_count; ++i ) {
 		auto & line = lines[ i ];
 		const int line_len = line.size();
 		if( line_len < 1 || line[ 0 ] == '\n' ) continue;
-		int res = tokenize_line( line, line_len, i + 1, toks, eth.srcs[ eth.src_stack.back() ].is_main_src );
+		int res = tokenize_line( line, line_len, i + 1, toks, src.is_main_src );
 		if( res != E_OK ) return res;
 	}
 
@@ -164,7 +169,7 @@ static int tokenize_line( const std::string & line, const int line_len, const in
 
 		if( CURR( line ) == '*' && NEXT( line ) == '/' ) {
 			if( !comment_block ) {
-				LEX_FAIL( "encountered multi line comment terminator '*/' "
+				SRC_FAIL( "encountered multi line comment terminator '*/' "
 					  "in non commented block", line_num, i + 1 );
 				err = E_LEX_FAIL;
 				break;
@@ -308,7 +313,7 @@ static std::string get_num( const std::string & line, const int line_len, const 
 					return buf;
 				}
 			} else {
-				LEX_FAIL( "encountered dot (.) character "
+				SRC_FAIL( "encountered dot (.) character "
 					  "when the number being retrieved (from column %d) "
 					  "already had one at column %d",
 					  first_digit_at + 1, dot_encountered + 1 );
@@ -317,7 +322,7 @@ static std::string get_num( const std::string & line, const int line_len, const 
 			break;
 		default:
 			if( isalnum( CURR( line ) ) ) {
-				LEX_FAIL( "encountered invalid character '%c' "
+				SRC_FAIL( "encountered invalid character '%c' "
 					  "while retrieving a number (from column %d)",
 					  c, first_digit_at + 1 );
 				success = false;
@@ -348,7 +353,7 @@ static int get_const_str( const std::string & line, const int line_len, const in
 	}
 	if( CURR( line ) != quote_type ) {
 		i = starting_at;
-		LEX_FAIL( "no matching quote for '%c' found",
+		SRC_FAIL( "no matching quote for '%c' found",
 			  quote_type );
 		return E_LEX_FAIL;
 	}
@@ -524,7 +529,7 @@ static int get_operator( const std::string & line, const int line_len, const int
 	case '}':
 		SET_OP_TYPE_BRK( TOK_RBRACE );
 	default:
-		LEX_FAIL( "unknown operator '%c' found",
+		SRC_FAIL( "unknown operator '%c' found",
 			  CURR( line ) );
 		op_type = -1;
 	}
@@ -539,7 +544,7 @@ static inline bool is_valid_num_char( const char c )
 		|| c == '.' || c == '-' || c == '+' || c == 'o' || c == 'O' || c == 'x' || c == 'X';
 }
 
-void lex_fail( const std::string & line_str, const int line, const int col, const char * msg, ... )
+void src_fail( const std::string & line_str, const int line, const int col, const char * msg, ... )
 {
 	fprintf( stderr,
 		 "lex error on line %d[%d]:\n%s",

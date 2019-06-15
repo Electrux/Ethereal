@@ -7,22 +7,16 @@
 	before using or altering the project.
 */
 
-#ifndef ERR_HPP
-#define ERR_HPP
+#ifndef PARSER_IO_HPP
+#define PARSER_IO_HPP
 
-enum Errors {
-	E_OK,
-	E_FAIL,
+#include <cstdio>
 
-	E_FILE_IO_ERR,
-	E_FILE_EMPTY,
+namespace IO
+{
+	void tab_add( const bool show );
+	void tab_rem( const size_t num = 1 );
+	void print( const bool has_next, const char * fmt, ... );
+}
 
-	E_ALLOC_FAIL,
-	E_LEX_FAIL,
-	E_PARSE_FAIL,
-	E_BYTECODE_FAIL,
-};
-
-const char * ErrStr( Errors code );
-
-#endif // ERR_HPP
+#endif // PARSER_IO_HPP

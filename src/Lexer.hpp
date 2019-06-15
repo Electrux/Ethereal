@@ -1,5 +1,5 @@
 /*
-	Copyright (c) 2018, Electrux
+	Copyright (c) 2019, Electrux
 	All rights reserved.
 	Using the BSD 3-Clause license for the project,
 	main LICENSE file resides in project's root directory.
@@ -107,6 +107,8 @@ enum TokType
 	TOK_LBRACK,
 	TOK_RBRACK,
 
+	TOK_INVALID,
+
 	_TOK_LAST,
 };
 
@@ -123,9 +125,9 @@ struct tok_t
 		line( _line ), col( _col ), type( ( TokType)_type ), data( _data ) {}
 };
 
-struct eth_t;
+struct src_t;
 
-int tokenize( eth_t & eth );
+int tokenize( src_t & src );
 
 inline bool token_type_is_data( const int type )
 {
@@ -169,8 +171,6 @@ inline bool token_is_one_of_assign( const tok_t & tok )
 	return token_type_is_one_of_assign( tok.type );
 }
 
-void lex_fail( const std::string & line_str, const int line, const int col, const char * msg, ... );
-
-#define LEX_FAIL( ... ) lex_fail( line, line_num, i + 1, __VA_ARGS__ )
+void src_fail( const std::string & line_str, const int line, const int col, const char * msg, ... );
 
 #endif // LEXER_HPP

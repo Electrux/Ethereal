@@ -1,5 +1,5 @@
 /*
-	Copyright (c) 2018, Electrux
+	Copyright (c) 2019, Electrux
 	All rights reserved.
 	Using the BSD 3-Clause license for the project,
 	main LICENSE file resides in project's root directory.
@@ -17,7 +17,7 @@
 #include "Env.hpp"
 #include "FS.hpp"
 #include "Ethereal.hpp"
-//#include "Parser.hpp"
+#include "Parser.hpp"
 
 //#include "../VM/Core.hpp"
 //#include "../VM/VM.hpp"
@@ -37,34 +37,29 @@ int main( int argc, char ** argv )
 	SetCWD( args[ 0 ].substr( 0, last_slash_loc ) );
 
 	int err = E_OK;
-	const std::string main_src = args[ 0 ].substr( last_slash_loc );
+	const std::string main_src_str = args[ 0 ].substr( last_slash_loc );
 
-	eth_t eth;
-	eth.srcs.insert( { main_src, {} } );
-	eth.srcs[ main_src ].is_main_src = true;
-	eth.srcs[ main_src ].name = main_src;
-	eth.src_stack.push_back( main_src );
-	err = tokenize( eth );
+	src_t main_src;
+	main_src.is_main_src = true;
+	main_src.name = main_src_str;
+	err = tokenize( main_src );
 	if( err != E_OK ) return err;
 
 	if( flags & OPT_T ) {
 		fprintf( stdout, "Tokens:\n" );
-		auto & toks = eth.srcs[ main_src ].toks;
+		auto & toks = main_src.toks;
 		for( size_t i = 0; i < toks.size(); ++i ) {
 			auto & tok = toks[ i ];
 			fprintf( stdout, "ID: %zu\tType: %s\tLine: %d[%d]\tSymbol: %s\n",
 				 i, TokStrs[ tok.type ], tok.line, tok.col, tok.data.c_str() );
 		}
 	}
-	/*
 
-	int err = OK;
-	result_t< std::vector< stmt_base_t * > > parse_res = parse( * toks );
-	std::vector< stmt_base_t * > * ptree = nullptr;
-	std::vector< Instruction > bcode;
+	err = E_OK;
+	std::vector< stmt_base_t * > * ptree = parse( main_src );
+	//std::vector< Instruction > bcode;
 
-	if( parse_res.code != OK ) { err = parse_res.code; goto cleanup; }
-	ptree = parse_res.data;
+	if( ptree == nullptr ) { err = E_PARSE_FAIL; goto cleanup; }
 
 	if( flags & OPT_P ) {
 		fprintf( stdout, "Parse Tree:\n" );
@@ -72,23 +67,22 @@ int main( int argc, char ** argv )
 			( * it )->disp( it != ptree->end() - 1 );
 		}
 	}
+	/*
 
 	err = OK;
 	for( auto & it : * ptree ) {
 		err = it->byte_code( bcode );
 		if( err != OK ) goto cleanup;
 	}
-
+*/
 cleanup:
 	if( ptree != nullptr ) {
 		for( auto & stmt : * ptree ) delete stmt;
 		delete ptree;
 	}
-	if( toks != nullptr ) {
-		delete toks;
-	}
-	if( err != OK ) return err;
 
+	if( err != E_OK ) return err;
+/*
 	if( flags & OPT_B ) {
 		fprintf( stdout, "Byte Code:\n" );
 		for( size_t i = 0; i < bcode.size(); ++i ) {
@@ -120,7 +114,6 @@ cleanup:
 		err = VM::Run( bcode, ex_dat );
 	}
 */
-	eth.src_stack.pop_back();
 	// reset working dir
 	SetCWD( curr_dir );
 	return err;

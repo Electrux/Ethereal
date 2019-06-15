@@ -1,3 +1,0 @@
-import "./functions" as fns;
-
-println( 1 + fns.fact( 2 + 8 ) );

@@ -7,5 +7,4 @@ enum SomeEnum
 	E5,
 }
 
-enum SomeEnum2
-{ E6, E7, E8, E9 }
+enum SomeEnum2 { E6, E7, E8, E9 }

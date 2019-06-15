@@ -11,7 +11,7 @@
 #define PARSER_HPP
 
 #include "Lexer.hpp"
-#include "Parser/Common.hpp"
+#include "Parser/Stmts.hpp"
 
 std::vector< stmt_base_t * > * parse( src_t & src, const GrammarTypes parent = GRAM_INVALID );
 

@@ -11,12 +11,14 @@
 #define PARSER_COMMON_HPP
 
 #include "IO.hpp"
-#include "../Ethereal.hpp"
+#include "ParseHelper.hpp"
 
 enum GrammarTypes
 {
 	GRAM_INVALID = -1,
 	GRAM_ENUM,
+	GRAM_LDMOD,
+	GRAM_IMPORT,
 
 	_GRAM_LAST,
 };
@@ -45,26 +47,29 @@ public:
 	void disp( const bool has_next ) const;
 };
 
-
-
-class parse_helper_t
+class stmt_ldmod_t : public stmt_base_t
 {
-	toks_t & m_toks;
-	int m_token_ctr;
-	tok_t m_invalid;
+	const tok_t * m_what;
+	const tok_t * m_as;
 public:
-	parse_helper_t( toks_t & toks );
+	stmt_ldmod_t( const tok_t * what, const tok_t * as,
+		      const int line, const int col );
+	~stmt_ldmod_t();
+	void disp( const bool has_next ) const;
+};
 
-	tok_t * peak( const int num = 0 );
-	tok_t * next();
-	tok_t * prev();
-
-	bool has_next() const;
-
-	int tok_ctr() const;
+class stmt_import_t : public stmt_base_t
+{
+	const std::vector< tok_t * > m_what;
+	const tok_t * m_as;
+public:
+	stmt_import_t( const std::vector< tok_t * > & what, const tok_t * as,
+		      const int line, const int col );
+	~stmt_import_t();
+	void disp( const bool has_next ) const;
 };
 
 #define PARSE_FAIL( ... ) src_fail( src.code[ ph.peak()->line - 1 ], \
-				  ph.peak()->line, ph.peak()->col + 1, __VA_ARGS__ )
+				    ph.peak()->line, ph.peak()->col, __VA_ARGS__ )
 
 #endif // PARSER_COMMON_HPP

@@ -35,7 +35,7 @@ val_begin:
 		}
 		NEXT_VALID( TOK_RBRACE );
 	} else if( ph.peak( 1 )->type != TOK_RBRACE ) {
-		PARSE_FAIL( "expected token '%s' or '%s', but found '%s'", TokStrs[ TOK_COMMA ], TokStrs[ TOK_RBRACE ], TokStrs[ TOK_INVALID ] );
+		PARSE_FAIL( "expected token '%s' or '%s', but found '%s'", TokStrs[ TOK_COMMA ], TokStrs[ TOK_RBRACE ], TokStrs[ ph.peak( 1 )->type ] );
 		return nullptr;
 	}
 

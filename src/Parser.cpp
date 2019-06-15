@@ -29,9 +29,13 @@ std::vector< stmt_base_t * > * parse( src_t & src, const GrammarTypes parent )
 			if( res == nullptr ) goto fail;
 			ptree->push_back( res );
 		} else if( ph.peak()->type == TOK_LDMOD ) {
-			// parse_ldmod( ph );
+			res = parse_ldmod( src, ph );
+			if( res == nullptr ) goto fail;
+			ptree->push_back( res );
 		} else if( ph.peak()->type == TOK_IMPORT ) {
-			// parse_import( ph );
+			res = parse_import( src, ph );
+			if( res == nullptr ) goto fail;
+			ptree->push_back( res );
 		} else if( ph.peak()->type == TOK_STRUCT ) {
 			// parse_struct( ph );
 		} else if( ph.peak()->type == TOK_FN ) {

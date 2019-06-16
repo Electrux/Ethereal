@@ -151,6 +151,14 @@ stmt_expr_t * parse_expr( const src_t & src, parse_helper_t & ph, const int end,
 		ph.next();
 	}
 
+	for( auto & s : stack ) {
+		if( s->m_val->type == TOK_LPAREN ) {
+			ph.set_tok_ctr( s->m_tok_ctr );
+			PARSE_FAIL( "could not find ending parentheses" );
+			goto fail;
+		}
+	}
+
 	while( !stack.empty() ) {
 		data.push_back( stack.back() );
 		stack.pop_back();

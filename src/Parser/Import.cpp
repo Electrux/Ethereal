@@ -11,8 +11,7 @@
 
 stmt_import_t * parse_import( const src_t & src, parse_helper_t & ph )
 {
-	int line = ph.peak()->line;
-	int col = ph.peak()->col;
+	int tok_ctr = ph.tok_ctr();
 
 	std::vector< tok_t * > what;
 	tok_t * as = nullptr;
@@ -30,5 +29,5 @@ beg_what:
 	}
 
 	NEXT_VALID( TOK_COLS );
-	return new stmt_import_t( what, as, line, col );
+	return new stmt_import_t( what, as, tok_ctr );
 }

@@ -7,8 +7,8 @@
 	before using or altering the project.
 */
 
-#ifndef PARSER_FUNCTIONS_HPP
-#define PARSER_FUNCTIONS_HPP
+#ifndef PARSER_INTERNAL_HPP
+#define PARSER_INTERNAL_HPP
 
 #include "Stmts.hpp"
 
@@ -45,5 +45,23 @@ do {												\
 stmt_enum_t * parse_enum( const src_t & src, parse_helper_t & ph );
 stmt_ldmod_t * parse_ldmod( const src_t & src, parse_helper_t & ph );
 stmt_import_t * parse_import( const src_t & src, parse_helper_t & ph );
+stmt_expr_t * parse_expr( const src_t & src, parse_helper_t & ph, const int end = -1, const ExprType type = EXPR_BASIC );
 
-#endif // PARSER_FUNCTIONS_HPP
+// precedence of a operator (lex type) in ascending order
+int oper_prec( const tok_t * tok );
+
+enum OperAssoc
+{
+	LTR,
+	RTL,
+};
+
+// LTR => left->right assoc
+// RTL => right->left assoc
+OperAssoc oper_assoc( const tok_t * tok );
+
+int oper_arg_count( const tok_t * tok );
+
+int find_next_of( parse_helper_t & ph, int & loc, const TokType type, const TokType eq = TOK_INVALID );
+
+#endif // PARSER_INTERNAL_HPP

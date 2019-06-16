@@ -156,19 +156,19 @@ inline bool token_type_is_one_of_assign( const int type )
 		);
 }
 
-inline bool token_is_data( const tok_t & tok )
+inline bool token_is_data( const tok_t * tok )
 {
-	return token_type_is_data( tok.type );
+	return token_type_is_data( tok->type );
 }
 
-inline bool token_is_oper( const tok_t & tok )
+inline bool token_is_oper( const tok_t * tok )
 {
-	return token_type_is_oper( tok.type );
+	return token_type_is_oper( tok->type );
 }
 
-inline bool token_is_one_of_assign( const tok_t & tok )
+inline bool token_is_one_of_assign( const tok_t * tok )
 {
-	return token_type_is_one_of_assign( tok.type );
+	return token_type_is_one_of_assign( tok->type );
 }
 
 void src_fail( const std::string & line_str, const int line, const int col, const char * msg, ... );

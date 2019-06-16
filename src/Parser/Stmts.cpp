@@ -10,21 +10,48 @@
 #include "Stmts.hpp"
 
 const char * GrammarTypeStrs[ _GRAM_LAST ] = {
+	"Simple",
+	"Expression",
 	"Enum",
 	"Ldmod",
+	"Import",
 };
 
-stmt_base_t::stmt_base_t( const GrammarTypes type, const int line, const int col )
-	: m_type( type ), m_line( line ), m_col( col ) {}
+stmt_base_t::stmt_base_t( const GrammarTypes type, const int tok_ctr )
+	: m_type( type ), m_tok_ctr( tok_ctr ) {}
 stmt_base_t::~stmt_base_t() {}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////// Simple /////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////
+
+const char * SimpleTypeStrs[ _SIMPLE_LAST ] = {
+	"Token",
+	"Operator",
+};
+
+stmt_simple_t::stmt_simple_t( const SimpleType stype, const tok_t * val,
+		       	      const int tok_ctr )
+	: stmt_base_t( GRAM_SIMPLE, tok_ctr ), m_stype( stype ), m_val( val ) {}
+stmt_simple_t::~stmt_simple_t() {}
+void stmt_simple_t::disp( const bool has_next ) const
+{
+	IO::tab_add( has_next );
+	IO::print( has_next, "Simple at %x\n", this );
+	IO::tab_add( false );
+	IO::print( false, "Name: %s (type: %s)\n",
+		   m_stype == SIMPLE_TOKEN ? m_val->data.c_str() : TokStrs[ m_val->type ],
+		   SimpleTypeStrs[ m_stype ] );
+	IO::tab_rem( 2 );
+}
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////// Enum //////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 
 stmt_enum_t::stmt_enum_t( const tok_t * name, const std::vector< tok_t * > & vals,
-			  const int line, const int col )
-	: stmt_base_t( GRAM_ENUM, line, col ), m_name( name ), m_vals( vals ) {}
+			  const int tok_ctr )
+	: stmt_base_t( GRAM_ENUM, tok_ctr ), m_name( name ), m_vals( vals ) {}
 stmt_enum_t::~stmt_enum_t() {}
 
 void stmt_enum_t::disp( const bool has_next ) const
@@ -47,8 +74,8 @@ void stmt_enum_t::disp( const bool has_next ) const
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 
 stmt_ldmod_t::stmt_ldmod_t( const tok_t * what, const tok_t * as,
-			  const int line, const int col )
-	: stmt_base_t( GRAM_LDMOD, line, col ), m_what( what ), m_as( as ) {}
+			    const int tok_ctr )
+	: stmt_base_t( GRAM_LDMOD, tok_ctr ), m_what( what ), m_as( as ) {}
 stmt_ldmod_t::~stmt_ldmod_t() {}
 
 void stmt_ldmod_t::disp( const bool has_next ) const
@@ -67,8 +94,8 @@ void stmt_ldmod_t::disp( const bool has_next ) const
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 
 stmt_import_t::stmt_import_t( const std::vector< tok_t * > & what, const tok_t * as,
-			  const int line, const int col )
-	: stmt_base_t( GRAM_IMPORT, line, col ), m_what( what ), m_as( as ) {}
+			      const int tok_ctr )
+	: stmt_base_t( GRAM_IMPORT, tok_ctr ), m_what( what ), m_as( as ) {}
 stmt_import_t::~stmt_import_t() {}
 
 void stmt_import_t::disp( const bool has_next ) const
@@ -83,5 +110,58 @@ void stmt_import_t::disp( const bool has_next ) const
 	}
 	fprintf( stdout, "\b \b\n" );
 	IO::print( false, "As: %s\n", m_as == nullptr ? "(none)" : m_as->data.c_str() );
+	IO::tab_rem( 2 );
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////// Expr //////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////
+
+const char * ExprTypeStrs[ _EXPR_LAST ] = {
+	"Basic",
+	"Array",
+	"Map",
+	"Struct",
+};
+
+stmt_expr_t::stmt_expr_t( const ExprType etype, const stmt_base_t * lhs, const stmt_simple_t * oper,
+			  const stmt_base_t * rhs, const int tok_ctr )
+	: stmt_base_t( GRAM_EXPR, tok_ctr ), m_lhs( lhs ),
+	  m_rhs( rhs ), m_oper( oper ), m_etype( etype ), m_is_top_expr( false ),
+	  m_struct_decl( nullptr ) {}
+stmt_expr_t::~stmt_expr_t()
+{
+	if( m_lhs ) delete m_lhs;
+	if( m_rhs ) delete m_rhs;
+	if( m_oper ) delete m_oper;
+	if( m_struct_decl ) delete m_struct_decl;
+}
+
+void stmt_expr_t::disp( const bool has_next ) const
+{
+	IO::tab_add( has_next );
+	if( m_struct_decl ) {
+		IO::print( has_next, " Expression (top: %s) (type: %s) (name: %s) at: %x\n",
+			   m_is_top_expr ? "yes" : "no", ExprTypeStrs[ m_etype ],
+			   m_struct_decl->m_val->data.c_str(), this );
+	} else {
+		IO::print( has_next, " Expression (top: %s) (type: %s) at: %x\n",
+			   m_is_top_expr ? "yes" : "no", ExprTypeStrs[ m_etype ], this );
+	}
+
+	IO::tab_add( m_lhs != nullptr || m_rhs != nullptr );
+	IO::print( m_lhs != nullptr || m_rhs != nullptr,
+		   "Operator: %s\n", m_oper != nullptr ? TokStrs[ m_oper->m_val->type ] : "(null)" );
+	if( m_lhs != nullptr ) {
+		IO::print( m_rhs != nullptr, "LHS:\n" );
+		m_lhs->disp( false );
+	}
+	IO::tab_rem();
+	IO::tab_add( false );
+	if( m_rhs != nullptr ) {
+		IO::print( false, "RHS:\n" );
+		m_rhs->disp( false );
+	}
+
 	IO::tab_rem( 2 );
 }

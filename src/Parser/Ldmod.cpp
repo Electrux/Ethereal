@@ -11,8 +11,7 @@
 
 stmt_ldmod_t * parse_ldmod( const src_t & src, parse_helper_t & ph )
 {
-	int line = ph.peak()->line;
-	int col = ph.peak()->col;
+	int tok_ctr = ph.tok_ctr();
 
 	tok_t * what = nullptr;
 	tok_t * as = nullptr;
@@ -27,5 +26,5 @@ stmt_ldmod_t * parse_ldmod( const src_t & src, parse_helper_t & ph )
 	}
 
 	NEXT_VALID( TOK_COLS );
-	return new stmt_ldmod_t( what, as, line, col );
+	return new stmt_ldmod_t( what, as, tok_ctr );
 }

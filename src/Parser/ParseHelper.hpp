@@ -27,6 +27,7 @@ public:
 	bool has_next() const;
 
 	int tok_ctr() const;
+	void set_tok_ctr( const int tok_ctr );
 };
 
 #endif // PARSER_PARSE_HELPER_HPP

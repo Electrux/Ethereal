@@ -11,8 +11,7 @@
 
 stmt_enum_t * parse_enum( const src_t & src, parse_helper_t & ph )
 {
-	int line = ph.peak()->line;
-	int col = ph.peak()->col;
+	int tok_ctr = ph.tok_ctr();
 
 	tok_t * name = nullptr;
 
@@ -37,5 +36,5 @@ val_begin:
 
 	NEXT_VALID( TOK_RBRACE );
 	// now at RBRACE
-	return new stmt_enum_t( name, vals, line, col );
+	return new stmt_enum_t( name, vals, tok_ctr );
 }

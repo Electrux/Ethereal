@@ -36,3 +36,5 @@ tok_t * parse_helper_t::prev()
 bool parse_helper_t::has_next() const { return m_token_ctr + 1 < ( int )m_toks.size(); }
 
 int parse_helper_t::tok_ctr() const { return m_token_ctr; }
+
+void parse_helper_t::set_tok_ctr( const int tok_ctr ) { m_token_ctr = tok_ctr; }

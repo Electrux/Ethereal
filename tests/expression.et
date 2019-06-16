@@ -1,0 +1,13 @@
+# NOTE: Comma is not a part of expression and will be handled by parser explicitly wherever required
+a, b = b + c, d - e;
+a -= b * c;
+a += 1;
+a /= 1;
+1 - -1;
+a >>= 2;
+a = b = c;
+a = ( b ** ( c = d ) );
+a = [ x, y, z ];
+a = { 1: "2", 3: "4" };
+a = struct_name{ 10, 12, 13 };
+a = [ 1, 2, 3 ] + [ 1 + 3, 2 + 3, 3 + 3 ];

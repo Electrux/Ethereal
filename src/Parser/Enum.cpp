@@ -7,7 +7,7 @@
 	before using or altering the project.
 */
 
-#include "Functions.hpp"
+#include "Internal.hpp"
 
 stmt_enum_t * parse_enum( const src_t & src, parse_helper_t & ph )
 {

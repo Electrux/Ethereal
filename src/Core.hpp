@@ -30,4 +30,6 @@ template< typename T > struct res_ptr_t {
 	T * data;
 };
 
+void src_fail( const std::string & line_str, const int line, const int col, const char * msg, ... );
+
 #endif // CORE_HPP

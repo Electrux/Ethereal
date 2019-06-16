@@ -543,25 +543,3 @@ static inline bool is_valid_num_char( const char c )
 	return ( c >= '0' && c <= '9' ) || ( c >= 'a' && c <= 'f' ) || ( c >= 'A' && c <= 'F' )
 		|| c == '.' || c == '-' || c == '+' || c == 'o' || c == 'O' || c == 'x' || c == 'X';
 }
-
-void src_fail( const std::string & line_str, const int line, const int col, const char * msg, ... )
-{
-	fprintf( stderr,
-		 "error on line %d[%d]:\n%s\n",
-		 line, col, line_str.c_str() );
-	std::string spcs;
-	int tab_count = 0;
-	for( auto & ch : line_str ) {
-		if( ch == '\t' ) ++tab_count;
-	}
-	for( int i = 0; i < tab_count; ++i ) spcs += '\t';
-	for( int i = 0; i < col - 1 - tab_count; ++i ) {
-		spcs += " ";
-	}
-	fprintf( stderr, "%s^\n", spcs.c_str() );
-	va_list vargs;
-	va_start( vargs, msg );
-	vfprintf( stderr, msg, vargs );
-	fprintf( stderr, "\n" );
-	va_end( vargs );
-}

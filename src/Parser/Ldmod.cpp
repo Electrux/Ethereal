@@ -27,7 +27,5 @@ stmt_ldmod_t * parse_ldmod( const src_t & src, parse_helper_t & ph )
 	}
 
 	NEXT_VALID( TOK_COLS );
-
-	ph.next();
 	return new stmt_ldmod_t( what, as, line, col );
 }

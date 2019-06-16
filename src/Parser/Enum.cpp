@@ -33,13 +33,9 @@ val_begin:
 			ph.next();
 			goto val_begin;
 		}
-		NEXT_VALID( TOK_RBRACE );
-	} else if( ph.peak( 1 )->type != TOK_RBRACE ) {
-		PARSE_FAIL( "expected token '%s' or '%s', but found '%s'", TokStrs[ TOK_COMMA ], TokStrs[ TOK_RBRACE ], TokStrs[ ph.peak( 1 )->type ] );
-		return nullptr;
 	}
 
-	// go to the next token from the last token of enum (RBRACE)
-	ph.next();
+	NEXT_VALID( TOK_RBRACE );
+	// now at RBRACE
 	return new stmt_enum_t( name, vals, line, col );
 }

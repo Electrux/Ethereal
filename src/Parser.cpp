@@ -11,6 +11,7 @@
 
 bool check_type_correct_parent( const int tok_type, const GrammarTypes parent );
 
+// NOTE: all the parse_* functions return at the point of their respective ending tokens
 std::vector< stmt_base_t * > * parse( src_t & src, const GrammarTypes parent )
 {
 	std::vector< stmt_base_t * > * ptree = new std::vector< stmt_base_t * >();
@@ -40,13 +41,11 @@ std::vector< stmt_base_t * > * parse( src_t & src, const GrammarTypes parent )
 			// parse_if( ph );
 		} else if( ph.peak()->type == TOK_FOR ) {
 			// parse_for( ph );
-		} else {
-			ph.next();
-			continue;
 		}
 
 		if( res == nullptr ) goto fail;
 		ptree->push_back( res );
+		ph.next();
 	}
 
 	return ptree;

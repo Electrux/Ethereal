@@ -64,7 +64,7 @@ class stmt_import_t : public stmt_base_t
 	const tok_t * m_as;
 public:
 	stmt_import_t( const std::vector< tok_t * > & what, const tok_t * as,
-		      const int line, const int col );
+		       const int line, const int col );
 	~stmt_import_t();
 	void disp( const bool has_next ) const;
 };

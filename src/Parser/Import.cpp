@@ -30,7 +30,5 @@ beg_what:
 	}
 
 	NEXT_VALID( TOK_COLS );
-
-	ph.next();
 	return new stmt_import_t( what, as, line, col );
 }

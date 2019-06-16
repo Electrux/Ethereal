@@ -40,10 +40,28 @@ stmt_expr_t * parse_expr( const src_t & src, parse_helper_t & ph, const int end,
 			// - 1 because of the ph.next() above
 			stmt_expr_t * struc = parse_expr( src, ph, ph.tok_ctr() + rbrace_loc - 1, EXPR_STRUCT );
 			if( struc == nullptr ) goto fail;
-			struc->m_struct_decl = new stmt_simple_t( SIMPLE_TOKEN, name, tok_val );
+			struc->m_annotation = new stmt_simple_t( SIMPLE_TOKEN, name, tok_val );
 			data.push_back( struc );
 		} else if( ph.peak()->type == TOK_IDEN && ph.peak( 1 )->type == TOK_LPAREN ) {
-			// make a func call
+			tok_t * name = ph.peak();
+			int tok_val = ph.tok_ctr();
+			ph.next();
+			int rparen_loc;
+			int err = find_next_of( ph, rparen_loc, TOK_RPAREN, TOK_LPAREN );
+			if( err < 0 ) {
+				if( err == -1 ) {
+					PARSE_FAIL( "could not find the equivalent ending parentheses for parsing the function call '%s'", name->data.c_str() );
+				} else if( err == -2 ) {
+					PARSE_FAIL( "found end of statement (semicolon) before the equivalent ending parentheses for function call" );
+				}
+				goto fail;
+			}
+			ph.next();
+			// - 1 because of the ph.next() above
+			stmt_expr_t * fn = parse_expr( src, ph, ph.tok_ctr() + rparen_loc - 1, EXPR_FUNC );
+			if( fn == nullptr ) goto fail;
+			fn->m_annotation = new stmt_simple_t( SIMPLE_TOKEN, name, tok_val );
+			data.push_back( fn );
 		} else if( ph.peak()->type == TOK_LBRACE ) {
 			int rbrace_loc;
 			int err = find_next_of( ph, rbrace_loc, TOK_RBRACE, TOK_LBRACE );

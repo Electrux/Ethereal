@@ -21,6 +21,7 @@ enum GrammarTypes
 	GRAM_ENUM,
 	GRAM_LDMOD,
 	GRAM_IMPORT,
+	GRAM_STRUCT,
 
 	_GRAM_LAST,
 };
@@ -115,6 +116,22 @@ public:
 	stmt_expr_t( const ExprType etype, const stmt_base_t * lhs, const stmt_simple_t * oper,
 		     const stmt_base_t * rhs, const int tok_ctr );
 	~stmt_expr_t();
+	void disp( const bool has_next ) const;
+};
+
+struct struct_field_t
+{
+	const stmt_simple_t * name;
+	stmt_expr_t * def_val;
+};
+
+class stmt_struct_t : public stmt_base_t
+{
+	const stmt_simple_t * m_name;
+	const std::vector< struct_field_t > m_fields;
+public:
+	stmt_struct_t( const stmt_simple_t * name, const std::vector< struct_field_t > & fields, const int tok_ctr );
+	~stmt_struct_t();
 	void disp( const bool has_next ) const;
 };
 

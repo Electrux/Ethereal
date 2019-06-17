@@ -1,0 +1,5 @@
+struct tmp
+{
+	one = "hi";
+	two = 1 + 7;
+}

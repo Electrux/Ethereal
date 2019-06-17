@@ -142,11 +142,11 @@ void stmt_expr_t::disp( const bool has_next ) const
 {
 	IO::tab_add( has_next );
 	if( m_annotation ) {
-		IO::print( has_next, " Expression (top: %s) (type: %s) (name: %s) at: %x\n",
+		IO::print( has_next, "Expression (top: %s) (type: %s) (name: %s) at: %x\n",
 			   m_is_top_expr ? "yes" : "no", ExprTypeStrs[ m_etype ],
 			   m_annotation->m_val->data.c_str(), this );
 	} else {
-		IO::print( has_next, " Expression (top: %s) (type: %s) at: %x\n",
+		IO::print( has_next, "Expression (top: %s) (type: %s) at: %x\n",
 			   m_is_top_expr ? "yes" : "no", ExprTypeStrs[ m_etype ], this );
 	}
 
@@ -165,4 +165,34 @@ void stmt_expr_t::disp( const bool has_next ) const
 	}
 
 	IO::tab_rem( 2 );
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////// Struct /////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////
+
+stmt_struct_t::stmt_struct_t( const stmt_simple_t * name, const std::vector< struct_field_t > & fields, const int tok_ctr )
+	: stmt_base_t( GRAM_STRUCT, tok_ctr ), m_name( name ), m_fields( fields ) {}
+stmt_struct_t::~stmt_struct_t()
+{
+	delete m_name;
+	for( auto & f : m_fields ) {
+		if( f.name ) delete f.name;
+		if( f.def_val ) delete f.def_val;
+	}
+}
+
+void stmt_struct_t::disp( const bool has_next ) const
+{
+	IO::tab_add( has_next );
+	IO::print( has_next, "Struct %s at: %x\n", m_name->m_val->data.c_str(), this );
+
+	for( size_t i = 0; i < m_fields.size(); ++i ) {
+		IO::tab_add( i != m_fields.size() - 1 );
+		IO::print( i != m_fields.size() - 1, "Field %d:\n", i + 1 );
+		m_fields[ i ].name->disp( true );
+		m_fields[ i ].def_val->disp( false );
+		IO::tab_rem();
+	}
+	IO::tab_rem();
 }

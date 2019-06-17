@@ -32,7 +32,7 @@ std::vector< stmt_base_t * > * parse( src_t & src, const GrammarTypes parent )
 		} else if( ph.peak()->type == TOK_IMPORT ) {
 			res = parse_import( src, ph );
 		} else if( ph.peak()->type == TOK_STRUCT ) {
-			// parse_struct_def( ph );
+			res = parse_struct( src, ph );
 		} else if( ph.peak()->type == TOK_FN ) {
 			// parse_fn_def( ph );
 		} else if( ph.peak()->type == TOK_MFN ) {
@@ -41,10 +41,10 @@ std::vector< stmt_base_t * > * parse( src_t & src, const GrammarTypes parent )
 			// parse_if( ph );
 		} else if( ph.peak()->type == TOK_FOR ) {
 			// parse_for( ph );
+		} else {
+			// just expressions remain
+			res = parse_expr( src, ph );
 		}
-
-		// just expressions remain
-		res = parse_expr( src, ph );
 
 		if( res == nullptr ) goto fail;
 		ptree->push_back( res );

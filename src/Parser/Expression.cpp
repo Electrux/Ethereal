@@ -32,13 +32,12 @@ stmt_expr_t * parse_expr( const src_t & src, parse_helper_t & ph, const int end,
 				if( err == -1 ) {
 					PARSE_FAIL( "could not find the equivalent ending brace for parsing the struct '%s'", name->data.c_str() );
 				} else if( err == -2 ) {
-					PARSE_FAIL( "found end of statement (semicolon) before the equivalent ending brace for struct" );
+					PARSE_FAIL( "found end of statement (semicolon) before the equivalent ending brace for struct object" );
 				}
 				goto fail;
 			}
 			ph.next();
-			// - 1 because of the ph.next() above
-			stmt_expr_t * struc = parse_expr( src, ph, ph.tok_ctr() + rbrace_loc - 1, EXPR_STRUCT );
+			stmt_expr_t * struc = parse_expr( src, ph, rbrace_loc, EXPR_STRUCT );
 			if( struc == nullptr ) goto fail;
 			struc->m_annotation = new stmt_simple_t( SIMPLE_TOKEN, name, tok_val );
 			data.push_back( struc );
@@ -57,8 +56,7 @@ stmt_expr_t * parse_expr( const src_t & src, parse_helper_t & ph, const int end,
 				goto fail;
 			}
 			ph.next();
-			// - 1 because of the ph.next() above
-			stmt_expr_t * fn = parse_expr( src, ph, ph.tok_ctr() + rparen_loc - 1, EXPR_FUNC );
+			stmt_expr_t * fn = parse_expr( src, ph, rparen_loc, EXPR_FUNC );
 			if( fn == nullptr ) goto fail;
 			fn->m_annotation = new stmt_simple_t( SIMPLE_TOKEN, name, tok_val );
 			data.push_back( fn );
@@ -74,8 +72,7 @@ stmt_expr_t * parse_expr( const src_t & src, parse_helper_t & ph, const int end,
 				goto fail;
 			}
 			ph.next();
-			// - 1 because of the ph.next() above
-			stmt_expr_t * map = parse_expr( src, ph, ph.tok_ctr() + rbrace_loc - 1, EXPR_MAP );
+			stmt_expr_t * map = parse_expr( src, ph, rbrace_loc, EXPR_MAP );
 			if( map == nullptr ) goto fail;
 			data.push_back( map );
 		} else if( ph.peak()->type == TOK_LBRACK ) {
@@ -90,8 +87,7 @@ stmt_expr_t * parse_expr( const src_t & src, parse_helper_t & ph, const int end,
 				goto fail;
 			}
 			ph.next();
-			// - 1 because of the ph.next() above
-			stmt_expr_t * vec = parse_expr( src, ph, ph.tok_ctr() + rbrack_loc - 1, EXPR_ARRAY );
+			stmt_expr_t * vec = parse_expr( src, ph, rbrack_loc, EXPR_ARRAY );
 			if( vec == nullptr ) goto fail;
 			data.push_back( vec );
 		} else {
@@ -183,8 +179,8 @@ stmt_expr_t * parse_expr( const src_t & src, parse_helper_t & ph, const int end,
 	}
 
 	if( data.empty() ) {
-		PARSE_FAIL( "invalid expression: no data!" );
-		return nullptr;
+		PARSE_FAIL( "invalid expression: no data" );
+		goto fail;
 	}
 
 	res = gen_tree( src, ph, data );
@@ -196,6 +192,7 @@ fail:
 	for( auto & d : data ) {
 		delete d;
 	}
+	if( end != -1 ) ph.set_tok_ctr( end );
 	return nullptr;
 }
 

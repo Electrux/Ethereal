@@ -76,13 +76,13 @@ int find_next_of( parse_helper_t & ph, int & loc, const TokType type, const TokT
 	int ctr = 1;
 	int equi = 1;
 	while( ph.peak( ctr )->type != TOK_INVALID ) {
-		if( ph.peak( ctr )->type == TOK_COLS ) { loc = ctr; return -2; }
+		if( ph.peak( ctr )->type == TOK_COLS && type != TOK_COLS ) { loc = ctr; return -2; }
 		if( ph.peak( ctr )->type == type ) {
 			if( eq != TOK_INVALID ) {
 				--equi;
-				if( equi == 0 ) { loc = ctr; return 0; };
+				if( equi == 0 ) { loc = ph.tok_ctr() + ctr; return 0; };
 			} else {
-				loc = ctr;
+				loc = ph.tok_ctr() + ctr;
 				return 0;
 			}
 		}

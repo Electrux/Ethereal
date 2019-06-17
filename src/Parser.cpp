@@ -34,13 +34,13 @@ std::vector< stmt_base_t * > * parse( src_t & src, const GrammarTypes parent )
 		} else if( ph.peak()->type == TOK_STRUCT ) {
 			res = parse_struct( src, ph );
 		} else if( ph.peak()->type == TOK_FN ) {
-			// parse_fn_def( ph );
+			// res = parse_fn_def( src, ph );
 		} else if( ph.peak()->type == TOK_MFN ) {
-			// parse_mfn_def( ph );
+			// res = parse_mfn_def( src, ph );
 		} else if( ph.peak()->type == TOK_IF ) {
-			// parse_if( ph );
+			// res = parse_if( src, ph );
 		} else if( ph.peak()->type == TOK_FOR ) {
-			// parse_for( ph );
+			// res = parse_for( src, ph );
 		} else {
 			// just expressions remain
 			res = parse_expr( src, ph );

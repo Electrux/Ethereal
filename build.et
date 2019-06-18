@@ -1,0 +1,50 @@
+import os;
+import cxxproj as cxx;
+
+# structs will be instantiated using struct{} or struct() format...?
+proj = cxx.new_proj{ 'Ethereal', '0.1', '11', 'bsd3' };
+# or maybe, structs could have a construction helper function like below
+proj = cxx.new_proj( 'Ethereal', '0.1', '11', 'bsd3' );
+proj.set_author( 'Electrux', 'ElectruxRedsworth@gmail.com' );
+
+self_prefix = false;
+if os.get_env( 'PREFIX' ).empty() {
+	os.set_env( 'PREFIX', os.exec_out( 'pwd' ) );
+	self_prefix = true;
+}
+
+proj.add_flags( '-fPIC', '-pedantic', '-Wall', '-Wextra', '-Wno-unused-parameter',
+		'-DBUILD_PREFIX_DIR=' + os.get_env( 'PREFIX' ), '-Wl,-rpath,./buildfiles/' );
+
+if os.get_env( 'CC' ) != 'g++' {
+	proj.add_flags( '-Wno-c99-extensions', '-Wno-unused-command-line-argument' );
+}
+
+proj.add_lib_dirs( '-L./buildfiles/' );
+
+proj.use_libs( 'dl', 'gmpxx' );
+
+# handle remove buildfiles if DEBUG_MODE is changed
+if argc > 0 && argv[ 0 ] == 'debug' || argv[ 0 ] == 'memlog' {
+	if os.exec( 'stat buildfiles 2>/dev/null' ) == 0 && os.exec( 'stat buildfiles/.debug_mode 2>/dev/null' ) != 0 {
+		os.exec( 'rm -rf buildfiles; mkdir buildfiles; touch buildfiles/.debug_mode' );
+	}
+	if argv[ 0 ] == 'debug' { proj.add_flags( '-DDEBUG_MODE', '-DMEM_LOGS' ); }
+	if argv[ 0 ] == 'memlog' { proj.add_flags( '-DMEM_LOGS' ); }
+} else {
+	if os.exec( 'stat buildfiles 2>/dev/null' ) == 0 && os.exec( 'stat buildfiles/.debug_mode 2>/dev/null}' ) == 0 {
+		os.exec( 'rm -rf buildfiles' );
+	}
+	proj.add_flags( '-march=native', '-O2', '-flto' );
+}
+
+proj.add_build( 'et', 'bin' );
+proj.build( 'et' ).add_srcs( 'src/(.*)\.cpp' ).main_src( 'src/Main.cpp' );
+
+if argc > 0 && argv[ 0 ] == 'install' || self_prefix == true {
+	if os.get_env( 'EUID' ) == 0 || os.base_name == 'osx' {
+		os.install( 'buildfiles/et', os.get_env( 'PREFIX' ) + '/bin/' );
+	} else {
+		cprintln( '{r}Run as root to install the built files{0}' );
+	}
+}

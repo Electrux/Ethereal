@@ -94,15 +94,16 @@ stmt_expr_t * parse_expr( const src_t & src, parse_helper_t * ph, const int end,
 			if( token_is_data( ph->peak() ) ) {
 				data.push_back(
 					new stmt_simple_t(
-						SIMPLE_TOKEN, ph->peak(),
-						ph->tok_ctr()
+						ph->peak()->type != TOK_IDEN
+							? SIMPLE_KEYWORD : SIMPLE_TOKEN,
+						ph->peak(), ph->tok_ctr()
 					)
 				);
 				ph->next();
 				continue;
 			}
 			if( !token_is_oper( ph->peak() ) ) {
-				PARSE_FAIL( "invalid token '%s' while parsing expression", ph->peak() );
+				PARSE_FAIL( "invalid token '%s' while parsing expression", ph->peak()->data.c_str() );
 				goto fail;
 			}
 			// handle parentheses

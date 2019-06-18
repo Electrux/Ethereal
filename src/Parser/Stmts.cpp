@@ -28,6 +28,7 @@ stmt_base_t::~stmt_base_t() {}
 const char * SimpleTypeStrs[ _SIMPLE_LAST ] = {
 	"Token",
 	"Operator",
+	"Keyword",
 };
 
 stmt_simple_t::stmt_simple_t( const SimpleType stype, const tok_t * val,

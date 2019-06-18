@@ -44,6 +44,7 @@ enum SimpleType
 {
 	SIMPLE_TOKEN,
 	SIMPLE_OPER,
+	SIMPLE_KEYWORD,
 
 	_SIMPLE_LAST,
 };

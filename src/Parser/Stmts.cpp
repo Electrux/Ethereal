@@ -196,3 +196,22 @@ void stmt_struct_t::disp( const bool has_next ) const
 	}
 	IO::tab_rem();
 }
+
+stmt_block_t::stmt_block_t( std::vector< stmt_base_t * > * stmts, const int tok_ctr )
+	: stmt_base_t( GRAM_BLOCK, tok_ctr ), m_stmts( stmts ) {}
+
+stmt_block_t::~stmt_block_t()
+{
+	for( auto & stmt : * m_stmts ) delete stmt;
+	delete m_stmts;
+}
+
+void stmt_block_t::disp( const bool has_next ) const
+{
+	IO::tab_add( has_next );
+	IO::print( has_next, "Block at: %x\n", this );
+
+	for( size_t i = 0; i < m_stmts->size(); ++i ) {
+		( * m_stmts )[ i ]->disp( i != m_stmts->size() - 1 );
+	}
+}

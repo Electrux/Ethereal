@@ -71,22 +71,23 @@ int oper_arg_count( const tok_t * tok )
 	return -1;
 }
 
-int find_next_of( parse_helper_t & ph, int & loc, const TokType type, const TokType eq )
+int find_next_of( parse_helper_t * ph, int & loc, const TokType type,
+		  const TokType eq, const bool bypass_semicol )
 {
 	int ctr = 1;
 	int equi = 1;
-	while( ph.peak( ctr )->type != TOK_INVALID ) {
-		if( ph.peak( ctr )->type == TOK_COLS && type != TOK_COLS ) { loc = ctr; return -2; }
-		if( ph.peak( ctr )->type == type ) {
+	while( ph->peak( ctr )->type != TOK_INVALID ) {
+		if( ph->peak( ctr )->type == TOK_COLS && type != TOK_COLS && !bypass_semicol ) { loc = ctr; return -2; }
+		if( ph->peak( ctr )->type == type ) {
 			if( eq != TOK_INVALID ) {
 				--equi;
-				if( equi == 0 ) { loc = ph.tok_ctr() + ctr; return 0; };
+				if( equi == 0 ) { loc = ph->tok_ctr() + ctr; return 0; };
 			} else {
-				loc = ph.tok_ctr() + ctr;
+				loc = ph->tok_ctr() + ctr;
 				return 0;
 			}
 		}
-		if( ph.peak( ctr )->type == eq ) ++equi;
+		if( ph->peak( ctr )->type == eq ) ++equi;
 		++ctr;
 	}
 	loc = -1;

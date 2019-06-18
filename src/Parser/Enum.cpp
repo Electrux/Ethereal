@@ -9,27 +9,26 @@
 
 #include "Internal.hpp"
 
-stmt_enum_t * parse_enum( const src_t & src, parse_helper_t & ph )
+stmt_enum_t * parse_enum( const src_t & src, parse_helper_t * ph )
 {
-	int tok_ctr = ph.tok_ctr();
+	int tok_ctr = ph->tok_ctr();
 
-	tok_t * name = nullptr;
+	const tok_t * name = nullptr;
 
 	NEXT_VALID( TOK_IDEN );
-	name = ph.peak();
+	name = ph->peak();
 
 	std::vector< tok_t * > vals;
 
 	NEXT_VALID( TOK_LBRACE );
-
 	NEXT_VALID( TOK_IDEN );
 val_begin:
-	vals.push_back( ph.peak() );
+	vals.push_back( ph->peak() );
 
-	if( ph.peak( 1 )->type == TOK_COMMA ) {
-		ph.next();
-		if( ph.peak( 1 )->type == TOK_IDEN ) {
-			ph.next();
+	if( ph->peak( 1 )->type == TOK_COMMA ) {
+		ph->next();
+		if( ph->peak( 1 )->type == TOK_IDEN ) {
+			ph->next();
 			goto val_begin;
 		}
 	}

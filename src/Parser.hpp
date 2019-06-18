@@ -13,6 +13,7 @@
 #include "Lexer.hpp"
 #include "Parser/Stmts.hpp"
 
-std::vector< stmt_base_t * > * parse( src_t & src, const GrammarTypes parent = GRAM_INVALID );
+std::vector< stmt_base_t * > * parse( src_t & src, parse_helper_t * pre_ph = nullptr, const GrammarTypes parent = GRAM_INVALID,
+				      const int end = -1 );
 
 #endif // PARSER_HPP

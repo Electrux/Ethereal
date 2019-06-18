@@ -9,23 +9,23 @@
 
 #include "Internal.hpp"
 
-stmt_expr_t * gen_tree( const src_t & src, parse_helper_t & ph, std::vector< stmt_base_t * > & data );
+stmt_expr_t * gen_tree( const src_t & src, parse_helper_t * ph, std::vector< stmt_base_t * > & data );
 
-stmt_expr_t * parse_expr( const src_t & src, parse_helper_t & ph, const int end, const ExprType type )
+stmt_expr_t * parse_expr( const src_t & src, parse_helper_t * ph, const int end, const ExprType type )
 {
 	std::vector< stmt_base_t * > data;
 	std::vector< stmt_simple_t * > stack;
 	stmt_expr_t * res = nullptr;
 
-	int start = ph.tok_ctr();
+	int start = ph->tok_ctr();
 
-	while( end == -1 || ( ph.peak()->type != TOK_INVALID && ph.tok_ctr() < end ) ) {
-		if( ph.peak()->type == TOK_COLS ) break;
+	while( end == -1 || ( ph->peak()->type != TOK_INVALID && ph->tok_ctr() < end ) ) {
+		if( ph->peak()->type == TOK_COLS ) break;
 
-		if( ph.peak()->type == TOK_IDEN && ph.peak( 1 )->type == TOK_LBRACE ) {
-			tok_t * name = ph.peak();
-			int tok_val = ph.tok_ctr();
-			ph.next();
+		if( ph->peak()->type == TOK_IDEN && ph->peak( 1 )->type == TOK_LBRACE ) {
+			tok_t * name = ph->peak();
+			int tok_val = ph->tok_ctr();
+			ph->next();
 			int rbrace_loc;
 			int err = find_next_of( ph, rbrace_loc, TOK_RBRACE, TOK_LBRACE );
 			if( err < 0 ) {
@@ -36,15 +36,15 @@ stmt_expr_t * parse_expr( const src_t & src, parse_helper_t & ph, const int end,
 				}
 				goto fail;
 			}
-			ph.next();
+			ph->next();
 			stmt_expr_t * struc = parse_expr( src, ph, rbrace_loc, EXPR_STRUCT );
 			if( struc == nullptr ) goto fail;
 			struc->m_annotation = new stmt_simple_t( SIMPLE_TOKEN, name, tok_val );
 			data.push_back( struc );
-		} else if( ph.peak()->type == TOK_IDEN && ph.peak( 1 )->type == TOK_LPAREN ) {
-			tok_t * name = ph.peak();
-			int tok_val = ph.tok_ctr();
-			ph.next();
+		} else if( ph->peak()->type == TOK_IDEN && ph->peak( 1 )->type == TOK_LPAREN ) {
+			tok_t * name = ph->peak();
+			int tok_val = ph->tok_ctr();
+			ph->next();
 			int rparen_loc;
 			int err = find_next_of( ph, rparen_loc, TOK_RPAREN, TOK_LPAREN );
 			if( err < 0 ) {
@@ -55,12 +55,12 @@ stmt_expr_t * parse_expr( const src_t & src, parse_helper_t & ph, const int end,
 				}
 				goto fail;
 			}
-			ph.next();
+			ph->next();
 			stmt_expr_t * fn = parse_expr( src, ph, rparen_loc, EXPR_FUNC );
 			if( fn == nullptr ) goto fail;
 			fn->m_annotation = new stmt_simple_t( SIMPLE_TOKEN, name, tok_val );
 			data.push_back( fn );
-		} else if( ph.peak()->type == TOK_LBRACE ) {
+		} else if( ph->peak()->type == TOK_LBRACE ) {
 			int rbrace_loc;
 			int err = find_next_of( ph, rbrace_loc, TOK_RBRACE, TOK_LBRACE );
 			if( err < 0 ) {
@@ -71,11 +71,11 @@ stmt_expr_t * parse_expr( const src_t & src, parse_helper_t & ph, const int end,
 				}
 				goto fail;
 			}
-			ph.next();
+			ph->next();
 			stmt_expr_t * map = parse_expr( src, ph, rbrace_loc, EXPR_MAP );
 			if( map == nullptr ) goto fail;
 			data.push_back( map );
-		} else if( ph.peak()->type == TOK_LBRACK ) {
+		} else if( ph->peak()->type == TOK_LBRACK ) {
 			int rbrack_loc;
 			int err = find_next_of( ph, rbrack_loc, TOK_RBRACK, TOK_LBRACK );
 			if( err < 0 ) {
@@ -86,27 +86,27 @@ stmt_expr_t * parse_expr( const src_t & src, parse_helper_t & ph, const int end,
 				}
 				goto fail;
 			}
-			ph.next();
+			ph->next();
 			stmt_expr_t * vec = parse_expr( src, ph, rbrack_loc, EXPR_ARRAY );
 			if( vec == nullptr ) goto fail;
 			data.push_back( vec );
 		} else {
-			if( token_is_data( ph.peak() ) ) {
+			if( token_is_data( ph->peak() ) ) {
 				data.push_back(
 					new stmt_simple_t(
-						SIMPLE_TOKEN, ph.peak(),
-						ph.tok_ctr()
+						SIMPLE_TOKEN, ph->peak(),
+						ph->tok_ctr()
 					)
 				);
-				ph.next();
+				ph->next();
 				continue;
 			}
-			if( !token_is_oper( ph.peak() ) ) {
-				PARSE_FAIL( "invalid token '%s' while parsing expression", ph.peak() );
+			if( !token_is_oper( ph->peak() ) ) {
+				PARSE_FAIL( "invalid token '%s' while parsing expression", ph->peak() );
 				goto fail;
 			}
 			// handle parentheses
-			if( ph.peak()->type == TOK_RPAREN ) {
+			if( ph->peak()->type == TOK_RPAREN ) {
 				bool found = false;
 				while( stack.size() > 0 ) {
 					if( stack.back()->m_val->type == TOK_LPAREN ) {
@@ -122,22 +122,22 @@ stmt_expr_t * parse_expr( const src_t & src, parse_helper_t & ph, const int end,
 					PARSE_FAIL( "could not find equivalent beginning parentheses" );
 					goto fail;
 				}
-				ph.next();
+				ph->next();
 				continue;
 			}
 			// handle unary +/-
-			if( ( ph.peak()->type == TOK_ADD || ph.peak()->type == TOK_SUB ) &&
-			    ( ph.tok_ctr() == 0 || ( ph.tok_ctr() > start && token_is_oper( ph.peak( -1 ) ) &&
-			      ph.peak( -1 )->type != TOK_RPAREN && ph.peak( -1 )->type != TOK_RBRACE && ph.peak( -1 )->type != TOK_RBRACK ) ) ) {
-				if( ph.peak()->type == TOK_SUB ) {
-					ph.peak()->type = TOK_USUB;
+			if( ( ph->peak()->type == TOK_ADD || ph->peak()->type == TOK_SUB ) &&
+			    ( ph->tok_ctr() == 0 || ( ph->tok_ctr() > start && token_is_oper( ph->peak( -1 ) ) &&
+			      ph->peak( -1 )->type != TOK_RPAREN && ph->peak( -1 )->type != TOK_RBRACE && ph->peak( -1 )->type != TOK_RBRACK ) ) ) {
+				if( ph->peak()->type == TOK_SUB ) {
+					ph->peak()->type = TOK_USUB;
 				}
-				if( ph.peak()->type == TOK_ADD ) {
-					ph.peak()->type = TOK_UADD;
+				if( ph->peak()->type == TOK_ADD ) {
+					ph->peak()->type = TOK_UADD;
 				}
 			}
 			// do the actual work
-			int prec = oper_prec( ph.peak() );
+			int prec = oper_prec( ph->peak() );
 			if( stack.size() > 0 ) {
 				// sop = stack operator
 				stmt_simple_t * sop = stack.size() > 0 ? stack.back() : nullptr;
@@ -160,14 +160,14 @@ stmt_expr_t * parse_expr( const src_t & src, parse_helper_t & ph, const int end,
 					}
 				}
 			}
-			stack.push_back( new stmt_simple_t( SIMPLE_OPER, ph.peak(), ph.tok_ctr() ) );
+			stack.push_back( new stmt_simple_t( SIMPLE_OPER, ph->peak(), ph->tok_ctr() ) );
 		}
-		ph.next();
+		ph->next();
 	}
 
 	for( auto & s : stack ) {
 		if( s->m_val->type == TOK_LPAREN ) {
-			ph.set_tok_ctr( s->m_tok_ctr );
+			ph->set_tok_ctr( s->m_tok_ctr );
 			PARSE_FAIL( "could not find ending parentheses" );
 			goto fail;
 		}
@@ -192,11 +192,11 @@ fail:
 	for( auto & d : data ) {
 		delete d;
 	}
-	if( end != -1 ) ph.set_tok_ctr( end );
+	if( end != -1 ) ph->set_tok_ctr( end );
 	return nullptr;
 }
 
-stmt_expr_t * gen_tree( const src_t & src, parse_helper_t & ph, std::vector< stmt_base_t * > & data )
+stmt_expr_t * gen_tree( const src_t & src, parse_helper_t * ph, std::vector< stmt_base_t * > & data )
 {
 	std::vector< stmt_base_t * > var_stack;
 	const int start_tok_ctr = data.front()->m_tok_ctr;
@@ -210,14 +210,14 @@ stmt_expr_t * gen_tree( const src_t & src, parse_helper_t & ph, std::vector< stm
 
 		const tok_t * op = ( ( stmt_simple_t * )( * it ) )->m_val;
 		if( var_stack.empty() ) {
-			ph.set_tok_ctr( ( * it )->m_tok_ctr );
+			ph->set_tok_ctr( ( * it )->m_tok_ctr );
 			PARSE_FAIL( "no operands for operator '%s'", TokStrs[ op->type ] );
 			goto fail;
 		}
 
 		int arg_count = oper_arg_count( op );
 		if( arg_count < 0 ) {
-			ph.set_tok_ctr( ( * it )->m_tok_ctr );
+			ph->set_tok_ctr( ( * it )->m_tok_ctr );
 			PARSE_FAIL( "the operator '%s' should not be here", TokStrs[ op->type ] );
 			goto fail;
 		}
@@ -228,7 +228,7 @@ stmt_expr_t * gen_tree( const src_t & src, parse_helper_t & ph, std::vector< stm
 				if( ( ( stmt_simple_t * )( * it ) )->m_stype == SIMPLE_OPER ) break;
 				++available;
 			}
-			ph.set_tok_ctr( ( * it )->m_tok_ctr );
+			ph->set_tok_ctr( ( * it )->m_tok_ctr );
 			PARSE_FAIL( "not enough arguments for operator '%s' (expected: %d, available: %d)", TokStrs[ op->type ], arg_count, available );
 			goto fail;
 		}
@@ -252,7 +252,7 @@ stmt_expr_t * gen_tree( const src_t & src, parse_helper_t & ph, std::vector< stm
 		if( token_is_one_of_assign( op ) &&
 		    ( ( top1 == nullptr || ( ( top1->m_type == GRAM_SIMPLE && ( ( stmt_simple_t * )top1 )->m_val->type != TOK_IDEN ) &&
 		    top1->m_type != GRAM_EXPR ) ) ) ) {
-			ph.set_tok_ctr( ( * it )->m_tok_ctr );
+			ph->set_tok_ctr( ( * it )->m_tok_ctr );
 			PARSE_FAIL( "expected an lvalue on the left of the assignment operator" );
 			if( arg_count >= 1 ) delete top2;
 			if( arg_count >= 2 ) delete top1;
@@ -265,7 +265,7 @@ stmt_expr_t * gen_tree( const src_t & src, parse_helper_t & ph, std::vector< stm
 	}
 
 	if( var_stack.empty() || var_stack.size() > 1 ) {
-		ph.set_tok_ctr( start_tok_ctr );
+		ph->set_tok_ctr( start_tok_ctr );
 		PARSE_FAIL( "invalid expression, should generate single value, but is generating %zu", var_stack.size() );
 		goto fail;
 	}

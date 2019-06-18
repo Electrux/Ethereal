@@ -9,12 +9,12 @@
 
 #include "Internal.hpp"
 
-stmt_struct_t * parse_struct( const src_t & src, parse_helper_t & ph )
+stmt_struct_t * parse_struct( const src_t & src, parse_helper_t * ph )
 {
-	int tok_ctr = ph.tok_ctr();
+	int tok_ctr = ph->tok_ctr();
 	tok_t * name = nullptr;
 	NEXT_VALID( TOK_IDEN );
-	name = ph.peak();
+	name = ph->peak();
 
 	NEXT_VALID( TOK_LBRACE );
 
@@ -26,10 +26,10 @@ stmt_struct_t * parse_struct( const src_t & src, parse_helper_t & ph )
 	int err = 0;
 field_begin:
 	NEXT_VALID_FAIL( TOK_IDEN );
-	fname = ph.peak();
-	fname_tok_ctr = ph.tok_ctr();
+	fname = ph->peak();
+	fname_tok_ctr = ph->tok_ctr();
 	NEXT_VALID_FAIL( TOK_ASSN );
-	ph.next();
+	ph->next();
 	err = find_next_of( ph, semicol_loc, TOK_COLS );
 	if( err < 0 ) {
 		if( err == -1 ) {
@@ -44,16 +44,16 @@ field_begin:
 	fields.push_back( { new stmt_simple_t( SIMPLE_TOKEN, fname, fname_tok_ctr ), fdef_val } );
 	fname = nullptr;
 	fdef_val = nullptr;
-	ph.set_tok_ctr( semicol_loc );
-	if( ph.peak( 1 )->type != TOK_RBRACE ) {
-		if( ph.peak( 1 )->type != TOK_IDEN ) {
-			ph.next();
-			PARSE_FAIL( "expected end of struct '}' or another struct field 'IDEN', found '%s'", ph.peak()->data.c_str() );
+	ph->set_tok_ctr( semicol_loc );
+	if( ph->peak( 1 )->type != TOK_RBRACE ) {
+		if( ph->peak( 1 )->type != TOK_IDEN ) {
+			ph->next();
+			PARSE_FAIL( "expected end of struct '}' or another struct field 'IDEN', found '%s'", ph->peak()->data.c_str() );
 			goto fail;
 		}
 		goto field_begin;
 	}
-	ph.next();
+	ph->next();
 	// now at RBRACE
 	return new stmt_struct_t( new stmt_simple_t( SIMPLE_TOKEN, name, tok_ctr + 1 ), fields, tok_ctr );
 fail:

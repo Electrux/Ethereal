@@ -9,22 +9,22 @@
 
 #include "Internal.hpp"
 
-stmt_import_t * parse_import( const src_t & src, parse_helper_t & ph )
+stmt_import_t * parse_import( const src_t & src, parse_helper_t * ph )
 {
-	int tok_ctr = ph.tok_ctr();
+	int tok_ctr = ph->tok_ctr();
 
 	std::vector< tok_t * > what;
 	tok_t * as = nullptr;
 
 beg_what:
 	NEXT_VALID2( TOK_IDEN, TOK_STR );
-	what.push_back( ph.peak() );
+	what.push_back( ph->peak() );
 
-	if( ph.peak( 1 )->type == TOK_AS ) {
-		ph.next();
-		as = ph.next();
-	} else if( ph.peak( 1 )->type == TOK_DOT ) {
-		ph.next();
+	if( ph->peak( 1 )->type == TOK_AS ) {
+		ph->next();
+		as = ph->next();
+	} else if( ph->peak( 1 )->type == TOK_DOT ) {
+		ph->next();
 		goto beg_what;
 	}
 

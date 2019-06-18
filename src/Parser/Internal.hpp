@@ -14,70 +14,71 @@
 
 #define NEXT_VALID( tok )							\
 do {										\
-	if( ph.peak( 1 )->type == TOK_INVALID ) {				\
+	if( ph->peak( 1 )->type == TOK_INVALID ) {				\
 		PARSE_FAIL( "expected token '%s', but found <EOF>",		\
 			    TokStrs[ tok ] );					\
 		return nullptr;							\
 	}									\
-	ph.next();								\
-	if( ph.peak()->type != tok ) {						\
+	ph->next();								\
+	if( ph->peak()->type != tok ) {						\
 		PARSE_FAIL( "expected token '%s', but found '%s'",		\
-			    TokStrs[ tok ], TokStrs[ ph.peak()->type ] );	\
+			    TokStrs[ tok ], TokStrs[ ph->peak()->type ] );	\
 		return nullptr;							\
 	}									\
 } while( 0 )
 
 #define NEXT_VALID2( tok1, tok2 )								\
 do {												\
-	if( ph.peak( 1 )->type == TOK_INVALID ) {						\
+	if( ph->peak( 1 )->type == TOK_INVALID ) {						\
 		PARSE_FAIL( "expected token '%s' or '%s', but found <EOF>",			\
 			    TokStrs[ tok1 ], TokStrs[ tok2 ] );					\
 		return nullptr;									\
 	}											\
-	ph.next();										\
-	if( ph.peak()->type != tok1 && ph.peak()->type != tok2 ) {				\
+	ph->next();										\
+	if( ph->peak()->type != tok1 && ph->peak()->type != tok2 ) {				\
 		PARSE_FAIL( "expected token '%s' or '%s', but found '%s'",			\
-			    TokStrs[ tok1 ], TokStrs[ tok2 ], TokStrs[ ph.peak()->type ] );	\
+			    TokStrs[ tok1 ], TokStrs[ tok2 ], TokStrs[ ph->peak()->type ] );	\
 		return nullptr;									\
 	}											\
 } while( 0 )
 
 #define NEXT_VALID_FAIL( tok )							\
 do {										\
-	if( ph.peak( 1 )->type == TOK_INVALID ) {				\
+	if( ph->peak( 1 )->type == TOK_INVALID ) {				\
 		PARSE_FAIL( "expected token '%s', but found <EOF>",		\
 			    TokStrs[ tok ] );					\
 		goto fail;							\
 	}									\
-	ph.next();								\
-	if( ph.peak()->type != tok ) {						\
+	ph->next();								\
+	if( ph->peak()->type != tok ) {						\
 		PARSE_FAIL( "expected token '%s', but found '%s'",		\
-			    TokStrs[ tok ], TokStrs[ ph.peak()->type ] );	\
+			    TokStrs[ tok ], TokStrs[ ph->peak()->type ] );	\
 		goto fail;							\
 	}									\
 } while( 0 )
 
 #define NEXT_VALID2_FAIL( tok1, tok2 )								\
 do {												\
-	if( ph.peak( 1 )->type == TOK_INVALID ) {						\
+	if( ph->peak( 1 )->type == TOK_INVALID ) {						\
 		PARSE_FAIL( "expected token '%s' or '%s', but found <EOF>",			\
 			    TokStrs[ tok1 ], TokStrs[ tok2 ] );					\
 		goto fail;									\
 	}											\
-	ph.next();										\
-	if( ph.peak()->type != tok1 && ph.peak()->type != tok2 ) {				\
+	ph->next();										\
+	if( ph->peak()->type != tok1 && ph->peak()->type != tok2 ) {				\
 		PARSE_FAIL( "expected token '%s' or '%s', but found '%s'",			\
-			    TokStrs[ tok1 ], TokStrs[ tok2 ], TokStrs[ ph.peak()->type ] );	\
+			    TokStrs[ tok1 ], TokStrs[ tok2 ], TokStrs[ ph->peak()->type ] );	\
 		goto fail;									\
 	}											\
 } while( 0 )
 
-stmt_enum_t * parse_enum( const src_t & src, parse_helper_t & ph );
-stmt_ldmod_t * parse_ldmod( const src_t & src, parse_helper_t & ph );
-stmt_import_t * parse_import( const src_t & src, parse_helper_t & ph );
-stmt_expr_t * parse_expr( const src_t & src, parse_helper_t & ph,
+stmt_enum_t * parse_enum( const src_t & src, parse_helper_t * ph );
+stmt_ldmod_t * parse_ldmod( const src_t & src, parse_helper_t * ph );
+stmt_import_t * parse_import( const src_t & src, parse_helper_t * ph );
+stmt_expr_t * parse_expr( const src_t & src, parse_helper_t * ph,
 			  const int end = -1, const ExprType type = EXPR_BASIC );
-stmt_struct_t * parse_struct( const src_t & src, parse_helper_t & ph );
+stmt_struct_t * parse_struct( const src_t & src, parse_helper_t * ph );
+stmt_block_t * parse_block( src_t & src, parse_helper_t * ph, GrammarTypes parent );
 
 // precedence of a operator (lex type) in ascending order
 int oper_prec( const tok_t * tok );
@@ -94,6 +95,7 @@ OperAssoc oper_assoc( const tok_t * tok );
 
 int oper_arg_count( const tok_t * tok );
 
-int find_next_of( parse_helper_t & ph, int & loc, const TokType type, const TokType eq = TOK_INVALID );
+int find_next_of( parse_helper_t * ph, int & loc, const TokType type,
+		  const TokType eq = TOK_INVALID, const bool bypass_semicol = false );
 
 #endif // PARSER_INTERNAL_HPP

@@ -22,6 +22,7 @@ enum GrammarTypes
 	GRAM_LDMOD,
 	GRAM_IMPORT,
 	GRAM_STRUCT,
+	GRAM_BLOCK,
 
 	_GRAM_LAST,
 };
@@ -135,7 +136,16 @@ public:
 	void disp( const bool has_next ) const;
 };
 
-#define PARSE_FAIL( ... ) src_fail( src.code[ ph.peak()->line - 1 ], \
-				    ph.peak()->line, ph.peak()->col, __VA_ARGS__ )
+class stmt_block_t : public stmt_base_t
+{
+	std::vector< stmt_base_t * > * m_stmts;
+public:
+	stmt_block_t( std::vector< stmt_base_t * > * stmts, const int tok_ctr );
+	~stmt_block_t();
+	void disp( const bool has_next ) const;
+};
+
+#define PARSE_FAIL( ... ) src_fail( src.code[ ph->peak()->line - 1 ], \
+				    ph->peak()->line, ph->peak()->col, __VA_ARGS__ )
 
 #endif // PARSER_COMMON_HPP

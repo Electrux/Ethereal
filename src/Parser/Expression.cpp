@@ -27,7 +27,7 @@ stmt_expr_t * parse_expr( const src_t & src, parse_helper_t * ph, const int end,
 			int tok_val = ph->tok_ctr();
 			ph->next();
 			int rbrace_loc;
-			int err = find_next_of( ph, rbrace_loc, TOK_RBRACE, TOK_LBRACE );
+			int err = find_next_of( ph, rbrace_loc, { TOK_RBRACE }, TOK_LBRACE );
 			if( err < 0 ) {
 				if( err == -1 ) {
 					PARSE_FAIL( "could not find the equivalent ending brace for parsing the struct '%s'", name->data.c_str() );
@@ -46,7 +46,7 @@ stmt_expr_t * parse_expr( const src_t & src, parse_helper_t * ph, const int end,
 			int tok_val = ph->tok_ctr();
 			ph->next();
 			int rparen_loc;
-			int err = find_next_of( ph, rparen_loc, TOK_RPAREN, TOK_LPAREN );
+			int err = find_next_of( ph, rparen_loc, { TOK_RPAREN }, TOK_LPAREN );
 			if( err < 0 ) {
 				if( err == -1 ) {
 					PARSE_FAIL( "could not find the equivalent ending parentheses for parsing the function call '%s'", name->data.c_str() );
@@ -62,7 +62,7 @@ stmt_expr_t * parse_expr( const src_t & src, parse_helper_t * ph, const int end,
 			data.push_back( fn );
 		} else if( ph->peak()->type == TOK_LBRACE ) {
 			int rbrace_loc;
-			int err = find_next_of( ph, rbrace_loc, TOK_RBRACE, TOK_LBRACE );
+			int err = find_next_of( ph, rbrace_loc, { TOK_RBRACE }, TOK_LBRACE );
 			if( err < 0 ) {
 				if( err == -1 ) {
 					PARSE_FAIL( "could not find the equivalent ending brace for parsing the map" );
@@ -77,7 +77,7 @@ stmt_expr_t * parse_expr( const src_t & src, parse_helper_t * ph, const int end,
 			data.push_back( map );
 		} else if( ph->peak()->type == TOK_LBRACK ) {
 			int rbrack_loc;
-			int err = find_next_of( ph, rbrack_loc, TOK_RBRACK, TOK_LBRACK );
+			int err = find_next_of( ph, rbrack_loc, { TOK_RBRACK }, TOK_LBRACK );
 			if( err < 0 ) {
 				if( err == -1 ) {
 					PARSE_FAIL( "could not find the equivalent ending bracket for parsing the vector" );

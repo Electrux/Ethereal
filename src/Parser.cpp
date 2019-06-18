@@ -34,7 +34,7 @@ std::vector< stmt_base_t * > * parse( src_t & src, parse_helper_t * pre_ph, cons
 		} else if( ph->peak()->type == TOK_STRUCT ) {
 			res = parse_struct( src, ph );
 		} else if( ph->peak()->type == TOK_FN ) {
-			// res = parse_fn_def( src, ph );
+			res = parse_func( src, ph );
 		} else if( ph->peak()->type == TOK_MFN ) {
 			// res = parse_mfn_def( src, ph );
 		} else if( ph->peak()->type == TOK_IF ) {

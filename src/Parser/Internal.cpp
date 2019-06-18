@@ -7,6 +7,8 @@
 	before using or altering the project.
 */
 
+#include <algorithm>
+
 #include "Internal.hpp"
 
 int oper_prec( const tok_t * tok )
@@ -71,14 +73,16 @@ int oper_arg_count( const tok_t * tok )
 	return -1;
 }
 
-int find_next_of( parse_helper_t * ph, int & loc, const TokType type,
-		  const TokType eq, const bool bypass_semicol )
+int find_next_of( parse_helper_t * ph, int & loc, const std::vector< TokType > & types,
+		  const TokType eq, const bool bypass_breaker, const TokType breaker )
 {
 	int ctr = 1;
 	int equi = 1;
 	while( ph->peak( ctr )->type != TOK_INVALID ) {
-		if( ph->peak( ctr )->type == TOK_COLS && type != TOK_COLS && !bypass_semicol ) { loc = ctr; return -2; }
-		if( ph->peak( ctr )->type == type ) {
+		if( ph->peak( ctr )->type == breaker &&
+		    std::find( types.begin(), types.end(), breaker ) == types.end() &&
+		    !bypass_breaker ) { loc = ctr; return -2; }
+		if( std::find( types.begin(), types.end(), ph->peak( ctr )->type ) != types.end() ) {
 			if( eq != TOK_INVALID ) {
 				--equi;
 				if( equi == 0 ) { loc = ph->tok_ctr() + ctr; return 0; };

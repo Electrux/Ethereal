@@ -197,6 +197,10 @@ void stmt_struct_t::disp( const bool has_next ) const
 	IO::tab_rem();
 }
 
+///////////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////// Block /////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////
+
 stmt_block_t::stmt_block_t( std::vector< stmt_base_t * > * stmts, const int tok_ctr )
 	: stmt_base_t( GRAM_BLOCK, tok_ctr ), m_stmts( stmts ) {}
 
@@ -214,4 +218,37 @@ void stmt_block_t::disp( const bool has_next ) const
 	for( size_t i = 0; i < m_stmts->size(); ++i ) {
 		( * m_stmts )[ i ]->disp( i != m_stmts->size() - 1 );
 	}
+	IO::tab_rem();
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////// Function ////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////
+
+stmt_func_t::stmt_func_t( const stmt_simple_t * name, const stmt_expr_t * args,
+		     const stmt_block_t * block, const int tok_ctr )
+	: stmt_base_t( GRAM_FUNC, tok_ctr ), m_name( name ), m_args( args ), m_block( block ) {}
+
+stmt_func_t::~stmt_func_t()
+{
+	delete m_name;
+	if( m_args ) delete m_args;
+	delete m_block;
+}
+
+void stmt_func_t::disp( const bool has_next ) const
+{
+	IO::tab_add( has_next );
+	IO::print( has_next, "Function %s at: %x\n", m_name->m_val->data.c_str(), this );
+
+	if( m_args ) {
+		IO::tab_add( true );
+		IO::print( true, "Arguments:\n" );
+		m_args->disp( false );
+		IO::tab_rem();
+	}
+
+	m_block->disp( false );
+
+	IO::tab_rem();
 }

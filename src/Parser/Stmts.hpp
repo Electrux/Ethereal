@@ -23,6 +23,7 @@ enum GrammarTypes
 	GRAM_IMPORT,
 	GRAM_STRUCT,
 	GRAM_BLOCK,
+	GRAM_FUNC,
 
 	_GRAM_LAST,
 };
@@ -131,7 +132,8 @@ class stmt_struct_t : public stmt_base_t
 	const stmt_simple_t * m_name;
 	const std::vector< struct_field_t > m_fields;
 public:
-	stmt_struct_t( const stmt_simple_t * name, const std::vector< struct_field_t > & fields, const int tok_ctr );
+	stmt_struct_t( const stmt_simple_t * name, const std::vector< struct_field_t > & fields,
+		       const int tok_ctr );
 	~stmt_struct_t();
 	void disp( const bool has_next ) const;
 };
@@ -142,6 +144,18 @@ class stmt_block_t : public stmt_base_t
 public:
 	stmt_block_t( std::vector< stmt_base_t * > * stmts, const int tok_ctr );
 	~stmt_block_t();
+	void disp( const bool has_next ) const;
+};
+
+class stmt_func_t : public stmt_base_t
+{
+	const stmt_simple_t * m_name;
+	const stmt_expr_t * m_args;
+	const stmt_block_t * m_block;
+public:
+	stmt_func_t( const stmt_simple_t * name, const stmt_expr_t * args,
+		     const stmt_block_t * block, const int tok_ctr );
+	~stmt_func_t();
 	void disp( const bool has_next ) const;
 };
 

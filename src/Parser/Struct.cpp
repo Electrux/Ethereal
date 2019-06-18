@@ -30,7 +30,7 @@ field_begin:
 	fname_tok_ctr = ph->tok_ctr();
 	NEXT_VALID_FAIL( TOK_ASSN );
 	ph->next();
-	err = find_next_of( ph, semicol_loc, TOK_COLS );
+	err = find_next_of( ph, semicol_loc, { TOK_COLS } );
 	if( err < 0 ) {
 		if( err == -1 ) {
 			PARSE_FAIL( "could not find the semicolon for field value expression" );

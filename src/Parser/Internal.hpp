@@ -108,7 +108,7 @@ stmt_enum_t * parse_enum( const src_t & src, parse_helper_t * ph );
 stmt_ldmod_t * parse_ldmod( const src_t & src, parse_helper_t * ph );
 stmt_import_t * parse_import( const src_t & src, parse_helper_t * ph );
 stmt_expr_t * parse_expr( const src_t & src, parse_helper_t * ph,
-			  const int end = -1, const ExprType type = EXPR_BASIC );
+			  const int end = -1, const ExprType type = EXPR_BASIC, const bool is_top = true );
 stmt_struct_t * parse_struct( const src_t & src, parse_helper_t * ph );
 stmt_block_t * parse_block( src_t & src, parse_helper_t * ph, GrammarTypes parent );
 stmt_func_t * parse_func( src_t & src, parse_helper_t * ph );

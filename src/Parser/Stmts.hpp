@@ -24,6 +24,7 @@ enum GrammarTypes
 	GRAM_STRUCT,
 	GRAM_BLOCK,
 	GRAM_FUNC,
+	GRAM_FN_STRUCT_CALL,
 
 	_GRAM_LAST,
 };
@@ -100,8 +101,6 @@ enum ExprType
 	EXPR_BASIC,
 	EXPR_ARRAY,
 	EXPR_MAP,
-	EXPR_STRUCT,
-	EXPR_FUNC,
 
 	_EXPR_LAST,
 };
@@ -157,6 +156,18 @@ public:
 	stmt_func_t( const stmt_simple_t * name, const stmt_expr_t * args,
 		     const stmt_block_t * block, const int tok_ctr );
 	~stmt_func_t();
+	void disp( const bool has_next ) const;
+};
+
+class stmt_func_struct_call_t : public stmt_base_t
+{
+	const stmt_simple_t * m_name;
+	const stmt_expr_t * m_args;
+public:
+	bool m_is_struct;
+	stmt_func_struct_call_t( const stmt_simple_t * name, const stmt_expr_t * args,
+				 const int tok_ctr );
+	~stmt_func_struct_call_t();
 	void disp( const bool has_next ) const;
 };
 

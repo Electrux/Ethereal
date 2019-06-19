@@ -15,6 +15,10 @@ const char * GrammarTypeStrs[ _GRAM_LAST ] = {
 	"Enum",
 	"Ldmod",
 	"Import",
+	"Struct",
+	"Block",
+	"Function Def",
+	"Func/Struct Call"
 };
 
 stmt_base_t::stmt_base_t( const GrammarTypes type, const int tok_ctr )
@@ -122,8 +126,6 @@ const char * ExprTypeStrs[ _EXPR_LAST ] = {
 	"Basic",
 	"Array",
 	"Map",
-	"Struct",
-	"Function",
 };
 
 stmt_expr_t::stmt_expr_t( const ExprType etype, const stmt_base_t * lhs, const stmt_simple_t * oper,
@@ -251,5 +253,37 @@ void stmt_func_t::disp( const bool has_next ) const
 
 	m_block->disp( false );
 
+	IO::tab_rem();
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////// Function/Struct Call //////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////
+
+stmt_func_struct_call_t::stmt_func_struct_call_t( const stmt_simple_t * name,
+						  const stmt_expr_t * args,
+						  const int tok_ctr )
+	: stmt_base_t( GRAM_FN_STRUCT_CALL, tok_ctr ),
+	  m_name( name ), m_args( args ), m_is_struct( false ) {}
+
+stmt_func_struct_call_t::~stmt_func_struct_call_t()
+{
+	delete m_name;
+	if( m_args ) delete m_args;
+}
+void stmt_func_struct_call_t::disp( const bool has_next ) const
+{
+	IO::tab_add( has_next );
+	if( m_is_struct ) {
+		IO::print( has_next, "Struct '%s' instantiation at: %x\n", m_name->m_val->data.c_str(), this );
+	} else {
+		IO::print( has_next, "Function '%s' call at: %x\n", m_name->m_val->data.c_str(), this );
+	}
+	if( m_args ) {
+		IO::tab_add( false );
+		IO::print( false, "Arguments:\n" );
+		m_args->disp( false );
+		IO::tab_rem();
+	}
 	IO::tab_rem();
 }

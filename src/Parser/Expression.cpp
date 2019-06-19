@@ -264,7 +264,8 @@ stmt_expr_t * gen_tree( const src_t & src, parse_helper_t * ph, std::vector< stm
 		      top1 top2
 		*/
 		if( token_is_one_of_assign( op ) &&
-		    ( ( top1 == nullptr || ( ( top1->m_type == GRAM_SIMPLE && ( ( stmt_simple_t * )top1 )->m_val->type != TOK_IDEN ) &&
+		    ( ( top1 == nullptr || ( ( top1->m_type == GRAM_SIMPLE &&
+		    ( ( stmt_simple_t * )top1 )->m_val->type != TOK_IDEN ) && ( ( stmt_simple_t * )top1 )->m_val->type != TOK_SELF &&
 		    top1->m_type != GRAM_EXPR ) ) ) ) {
 			ph->set_tok_ctr( ( * it )->m_tok_ctr );
 			PARSE_FAIL( "expected an lvalue on the left of the assignment operator" );

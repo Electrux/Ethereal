@@ -152,9 +152,11 @@ class stmt_func_t : public stmt_base_t
 	const stmt_simple_t * m_name;
 	const stmt_expr_t * m_args;
 	const stmt_block_t * m_block;
+	const stmt_expr_t * m_mem_type;
 public:
 	stmt_func_t( const stmt_simple_t * name, const stmt_expr_t * args,
-		     const stmt_block_t * block, const int tok_ctr );
+		     const stmt_block_t * block, const stmt_expr_t * mem_type,
+		     const int tok_ctr );
 	~stmt_func_t();
 	void disp( const bool has_next ) const;
 };

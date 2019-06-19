@@ -45,7 +45,7 @@ void stmt_simple_t::disp( const bool has_next ) const
 	IO::print( has_next, "Simple at %x\n", this );
 	IO::tab_add( false );
 	IO::print( false, "Name: %s (type: %s)\n",
-		   m_stype == SIMPLE_TOKEN ? m_val->data.c_str() : TokStrs[ m_val->type ],
+		   m_stype == SIMPLE_TOKEN && !m_val->data.empty() ? m_val->data.c_str() : TokStrs[ m_val->type ],
 		   SimpleTypeStrs[ m_stype ] );
 	IO::tab_rem( 2 );
 }
@@ -229,20 +229,30 @@ void stmt_block_t::disp( const bool has_next ) const
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 
 stmt_func_t::stmt_func_t( const stmt_simple_t * name, const stmt_expr_t * args,
-		     const stmt_block_t * block, const int tok_ctr )
-	: stmt_base_t( GRAM_FUNC, tok_ctr ), m_name( name ), m_args( args ), m_block( block ) {}
+			  const stmt_block_t * block, const stmt_expr_t * mem_type,
+			  const int tok_ctr )
+	: stmt_base_t( GRAM_FUNC, tok_ctr ), m_name( name ), m_args( args ), m_block( block ),
+	  m_mem_type( mem_type ) {}
 
 stmt_func_t::~stmt_func_t()
 {
 	delete m_name;
 	if( m_args ) delete m_args;
 	delete m_block;
+	if( m_mem_type ) delete m_mem_type;
 }
 
 void stmt_func_t::disp( const bool has_next ) const
 {
 	IO::tab_add( has_next );
 	IO::print( has_next, "Function %s at: %x\n", m_name->m_val->data.c_str(), this );
+
+	if( m_mem_type ) {
+		IO::tab_add( true );
+		IO::print( true, "Member type:\n" );
+		m_mem_type->disp( false );
+		IO::tab_rem();
+	}
 
 	if( m_args ) {
 		IO::tab_add( true );

@@ -61,6 +61,7 @@ stmt_func_t * parse_func( src_t & src, parse_helper_t * ph )
 		goto fail;
 	}
 	arg_expr = parse_expr( src, ph, arg_expr_end );
+	if( arg_expr == nullptr ) goto fail;
 	ph->set_tok_ctr( arg_expr_end );
 end_args:
 	NEXT_VALID_FAIL( TOK_LBRACE );

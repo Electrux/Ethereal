@@ -39,7 +39,7 @@ if argc > 0 && argv[ 0 ] == 'debug' || argv[ 0 ] == 'memlog' {
 }
 
 proj.add_build( 'et', 'bin' );
-proj.build( 'et' ).add_srcs( 'src/(.*)\.cpp' ).main_src( 'src/Main.cpp' );
+proj.build( 'et' ).add_srcs( 'src/(.*)\.cpp' ).main_src( 'src/Main.cpp' ).perform();
 
 if argc > 0 && argv[ 0 ] == 'install' || self_prefix == true {
 	if os.get_env( 'EUID' ) == 0 || os.base_name == 'osx' {

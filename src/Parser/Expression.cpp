@@ -22,30 +22,7 @@ stmt_expr_t * parse_expr( const src_t & src, parse_helper_t * ph, const int end,
 	while( end == -1 || ( ph->peak()->type != TOK_INVALID && ph->tok_ctr() < end ) ) {
 		if( ph->peak()->type == TOK_COLS ) break;
 
-		if( ph->peak()->type == TOK_IDEN && ph->peak( 1 )->type == TOK_LBRACE ) {
-			tok_t * name = ph->peak();
-			int tok_val = ph->tok_ctr();
-			ph->next();
-			int rbrace_loc;
-			int err = find_next_of( ph, rbrace_loc, { TOK_RBRACE }, TOK_LBRACE );
-			if( err < 0 ) {
-				if( err == -1 ) {
-					PARSE_FAIL( "could not find the equivalent ending brace for parsing the struct '%s'", name->data.c_str() );
-				} else if( err == -2 ) {
-					PARSE_FAIL( "found end of statement (semicolon) before the equivalent ending brace for struct object" );
-				}
-				goto fail;
-			}
-			ph->next();
-			stmt_expr_t * struct_args = parse_expr( src, ph, rbrace_loc, EXPR_BASIC, false );
-			if( struct_args == nullptr ) goto fail;
-			stmt_func_struct_call_t * struct_call = new stmt_func_struct_call_t(
-				new stmt_simple_t( SIMPLE_TOKEN, name, tok_val ),
-				struct_args, tok_val
-			);
-			struct_call->m_is_struct = true;
-			data.push_back( struct_call );
-		} else if( ph->peak()->type == TOK_IDEN && ph->peak( 1 )->type == TOK_LPAREN ) {
+		if( ph->peak()->type == TOK_IDEN && ph->peak( 1 )->type == TOK_LPAREN ) {
 			tok_t * name = ph->peak();
 			int tok_val = ph->tok_ctr();
 			ph->next();

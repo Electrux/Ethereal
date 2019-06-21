@@ -18,7 +18,9 @@ const char * GrammarTypeStrs[ _GRAM_LAST ] = {
 	"Struct",
 	"Block",
 	"Function Def",
-	"Func/Struct Call"
+	"Func/Struct Call",
+	"If Conditional",
+	"For Loop",
 };
 
 stmt_base_t::stmt_base_t( const GrammarTypes type, const int tok_ctr )
@@ -274,7 +276,7 @@ stmt_func_struct_call_t::stmt_func_struct_call_t( const stmt_simple_t * name,
 						  const stmt_expr_t * args,
 						  const int tok_ctr )
 	: stmt_base_t( GRAM_FN_STRUCT_CALL, tok_ctr ),
-	  m_name( name ), m_args( args ), m_is_struct( false ) {}
+	  m_name( name ), m_args( args ) {}
 
 stmt_func_struct_call_t::~stmt_func_struct_call_t()
 {
@@ -284,16 +286,43 @@ stmt_func_struct_call_t::~stmt_func_struct_call_t()
 void stmt_func_struct_call_t::disp( const bool has_next ) const
 {
 	IO::tab_add( has_next );
-	if( m_is_struct ) {
-		IO::print( has_next, "Struct '%s' instantiation at: %x\n", m_name->m_val->data.c_str(), this );
-	} else {
-		IO::print( has_next, "Function '%s' call at: %x\n", m_name->m_val->data.c_str(), this );
-	}
+	IO::print( has_next, "Function/Struct '%s' call at: %x\n", m_name->m_val->data.c_str(), this );
 	if( m_args ) {
 		IO::tab_add( false );
 		IO::print( false, "Arguments:\n" );
 		m_args->disp( false );
 		IO::tab_rem();
 	}
+	IO::tab_rem();
+}
+
+stmt_if_t::stmt_if_t( const std::vector< condition_t > & conds, const int tok_ctr )
+	: stmt_base_t( GRAM_IF, tok_ctr ), m_conds( conds ) {}
+
+stmt_if_t::~stmt_if_t()
+{
+	for( auto & c : m_conds ) {
+		if( c.cond ) delete c.cond;
+		delete c.block;
+	}
+}
+
+void stmt_if_t::disp( const bool has_next ) const
+{
+	IO::tab_add( has_next );
+	IO::print( has_next, "Conditional at: %x\n", this );
+
+	for( size_t i = 0; i < m_conds.size(); ++i ) {
+		IO::tab_add( i != m_conds.size() - 1 );
+		IO::print( i != m_conds.size() - 1, "Case: %d\n", i + 1 );
+		if( m_conds[ i ].cond != nullptr ) {
+			IO::tab_add( true );
+			m_conds[ i ].cond->disp( false );
+			IO::tab_rem();
+		}
+		m_conds[ i ].block->disp( false );
+		IO::tab_rem( 1 );
+	}
+
 	IO::tab_rem();
 }

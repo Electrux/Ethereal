@@ -1,0 +1,7 @@
+if a == a {
+	print( 'hi' );
+} elif b == b {
+	print( 'ok' );
+} else {
+	print( 'fuck' );
+}

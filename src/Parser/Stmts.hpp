@@ -25,6 +25,8 @@ enum GrammarTypes
 	GRAM_BLOCK,
 	GRAM_FUNC,
 	GRAM_FN_STRUCT_CALL,
+	GRAM_IF,
+	GRAM_FOR,
 
 	_GRAM_LAST,
 };
@@ -166,10 +168,24 @@ class stmt_func_struct_call_t : public stmt_base_t
 	const stmt_simple_t * m_name;
 	const stmt_expr_t * m_args;
 public:
-	bool m_is_struct;
 	stmt_func_struct_call_t( const stmt_simple_t * name, const stmt_expr_t * args,
 				 const int tok_ctr );
 	~stmt_func_struct_call_t();
+	void disp( const bool has_next ) const;
+};
+
+struct condition_t
+{
+	const stmt_expr_t * cond;
+	const stmt_block_t * block;
+};
+
+class stmt_if_t : public stmt_base_t
+{
+	std::vector< condition_t > m_conds;
+public:
+	stmt_if_t( const std::vector< condition_t > & conds, const int tok_ctr );
+	~stmt_if_t();
 	void disp( const bool has_next ) const;
 };
 

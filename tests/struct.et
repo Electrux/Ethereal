@@ -4,4 +4,4 @@ struct tmp
 	two = 1 + 7;
 }
 
-t = some.tmp( "hi", 10 );
+t = some.tmp{ "hi", 10 };

@@ -168,6 +168,7 @@ class stmt_func_struct_call_t : public stmt_base_t
 	const stmt_simple_t * m_name;
 	const stmt_expr_t * m_args;
 public:
+	bool m_is_struct;
 	stmt_func_struct_call_t( const stmt_simple_t * name, const stmt_expr_t * args,
 				 const int tok_ctr );
 	~stmt_func_struct_call_t();

@@ -276,7 +276,7 @@ stmt_func_struct_call_t::stmt_func_struct_call_t( const stmt_simple_t * name,
 						  const stmt_expr_t * args,
 						  const int tok_ctr )
 	: stmt_base_t( GRAM_FN_STRUCT_CALL, tok_ctr ),
-	  m_name( name ), m_args( args ) {}
+	  m_name( name ), m_args( args ), m_is_struct( false ) {}
 
 stmt_func_struct_call_t::~stmt_func_struct_call_t()
 {
@@ -286,7 +286,11 @@ stmt_func_struct_call_t::~stmt_func_struct_call_t()
 void stmt_func_struct_call_t::disp( const bool has_next ) const
 {
 	IO::tab_add( has_next );
-	IO::print( has_next, "Function/Struct '%s' call at: %x\n", m_name->m_val->data.c_str(), this );
+	if( m_is_struct ) {
+		IO::print( has_next, "Struct '%s' instantiation at: %x\n", m_name->m_val->data.c_str(), this );
+	} else {
+		IO::print( has_next, "Function '%s' call at: %x\n", m_name->m_val->data.c_str(), this );
+	}
 	if( m_args ) {
 		IO::tab_add( false );
 		IO::print( false, "Arguments:\n" );
@@ -316,9 +320,7 @@ void stmt_if_t::disp( const bool has_next ) const
 		IO::tab_add( i != m_conds.size() - 1 );
 		IO::print( i != m_conds.size() - 1, "Case: %d\n", i + 1 );
 		if( m_conds[ i ].cond != nullptr ) {
-			IO::tab_add( true );
-			m_conds[ i ].cond->disp( false );
-			IO::tab_rem();
+			m_conds[ i ].cond->disp( true );
 		}
 		m_conds[ i ].block->disp( false );
 		IO::tab_rem( 1 );

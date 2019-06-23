@@ -7,6 +7,8 @@
 	before using or altering the project.
 */
 
+#include "Vars/Base.hpp"
+#include "Instruction.hpp"
 #include "Consts.hpp"
 
 consts_t::consts_t() {}
@@ -35,3 +37,5 @@ var_base_t * consts_t::get( const instr_t & ins )
 	m_consts[ ins.oper.val ] = tmp;
 	return m_consts[ ins.oper.val ];
 }
+
+size_t consts_t::size() const { return m_consts.size(); }

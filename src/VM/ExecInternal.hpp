@@ -7,19 +7,9 @@
 	before using or altering the project.
 */
 
-#ifndef VM_MODULE_HPP
-#define VM_MODULE_HPP
+#ifndef VM_EXEC_INTERNAL_HPP
+#define VM_EXEC_INTERNAL_HPP
 
-#include "Consts.hpp"
-#include "Vars.hpp"
-#include "Functions.hpp"
 
-struct module_t
-{
-	consts_t consts;
-	vars_t vars;
-	funcs_t funcs;
-	modules_t mods;
-};
 
-#endif // VM_MODULE_HPP
+#endif // VM_EXEC_INTERNAL_HPP

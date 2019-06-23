@@ -12,9 +12,8 @@
 
 #include "DynLib.hpp"
 #include "ExecStack.hpp"
-#include "Module.hpp"
 
-struct vm_data_t
+struct vm_state_t
 {
 	dyn_lib_t dlib;
 	exec_stack_t stack;

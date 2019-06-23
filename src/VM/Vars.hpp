@@ -14,7 +14,7 @@
 #include <string>
 #include <unordered_map>
 
-#include "Vars/Base.hpp"
+class var_base_t;
 
 class vars_t
 {

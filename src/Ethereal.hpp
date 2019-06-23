@@ -29,4 +29,6 @@ struct src_t
 	src_t( const bool _is_main_src );
 };
 
+typedef std::unordered_map< std::string, src_t > srcs_t;
+
 #endif // ETHEREAL_HPP

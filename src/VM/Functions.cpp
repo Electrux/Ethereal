@@ -9,7 +9,7 @@
 
 #include <algorithm>
 
-#include "Vars.hpp"
+#include "Vars/Base.hpp"
 #include "Functions.hpp"
 
 static bool compare_arg_types( const std::vector< std::string > & ats1, const std::vector< std::string > & ats2 );

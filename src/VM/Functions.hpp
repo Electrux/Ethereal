@@ -14,10 +14,6 @@
 #include <string>
 #include <unordered_map>
 
-struct module_t;
-
-typedef std::unordered_map< std::string, module_t > modules_t;
-
 class var_base_t;
 class var_func_t;
 
@@ -48,11 +44,6 @@ struct func_t
 	// all the functions with this value as true require the return value to be freed by the system's memory manager
 	bool _requires_manual_return_free;
 };
-
-#define REGISTER_MODULE( name )				\
-	extern "C" void init_##name( modules_t & mods )
-
-typedef void ( * init_fn )( modules_t & mods );
 
 bool operator ==( const func_t & func1, const func_t & func2 );
 

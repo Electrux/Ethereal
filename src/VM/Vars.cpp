@@ -7,6 +7,7 @@
 	before using or altering the project.
 */
 
+#include "Vars/Base.hpp"
 #include "Vars.hpp"
 
 vars_t::vars_t() : m_layer( 0 ) {}

@@ -18,6 +18,7 @@ const char * TypeStrs[ Types::_TYPE_LAST ] = {
 	"MAP",
 	"BLOCK",
 	"FUNC",
+	"MOD",
 };
 
 ////////////////////////////////////////////////////////////

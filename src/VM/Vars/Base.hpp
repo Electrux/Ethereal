@@ -15,6 +15,8 @@
 #include <string>
 #include <gmpxx.h>
 
+#include "../Consts.hpp"
+#include "../Vars.hpp"
 #include "../Functions.hpp"
 
 enum Types
@@ -28,6 +30,7 @@ enum Types
 	TYPE_STRUCT,
 	TYPE_BLOCK,
 	TYPE_FUNC,
+	TYPE_MOD,
 
 	_TYPE_LAST,
 };
@@ -235,6 +238,36 @@ public:
 	bool to_bool() const;
 	var_base_t * copy() const;
 };
+
+struct src_t;
+class var_mod_t;
+typedef std::unordered_map< std::string, var_mod_t * > modules_t;
+
+class var_mod_t : public var_base_t
+{
+	std::string m_name;
+	src_t & m_src;
+	consts_t m_consts;
+	vars_t m_vars;
+	modules_t m_mods;
+public:
+	var_mod_t( const std::string & name, src_t & src );
+	~var_mod_t();
+	src_t & src();
+	consts_t & consts();
+	vars_t & vars();
+	modules_t & mods();
+	std::string type_str() const;
+	std::string to_str() const;
+	mpz_class to_int() const;
+	bool to_bool() const;
+	var_base_t * copy() const;
+};
+
+#define REGISTER_MODULE( name )				\
+	extern "C" void init_##name( modules_t & mods )
+
+typedef void ( * init_fn )( modules_t & mods );
 
 inline bool is_valid_num_char( const char c )
 {

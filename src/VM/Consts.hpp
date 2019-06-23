@@ -13,7 +13,8 @@
 #include <string>
 #include <unordered_map>
 
-#include "Instruction.hpp"
+class var_base_t;
+struct instr_t;
 
 class consts_t
 {
@@ -22,6 +23,7 @@ public:
 	consts_t();
 	~consts_t();
 	var_base_t * get( const instr_t & ins );
+	size_t size() const;
 };
 
 #endif // VM_CONSTS_HPP

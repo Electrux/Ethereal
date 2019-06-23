@@ -10,7 +10,6 @@
 #ifndef PARSER_HPP
 #define PARSER_HPP
 
-#include "Lexer.hpp"
 #include "Parser/Stmts.hpp"
 
 typedef std::vector< stmt_base_t * > parse_tree_t;

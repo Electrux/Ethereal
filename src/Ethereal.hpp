@@ -14,8 +14,6 @@
 #include <vector>
 #include <unordered_map>
 
-#include "Core.hpp"
-#include "Lexer.hpp"
 #include "Parser.hpp"
 #include "VM/Instruction.hpp"
 

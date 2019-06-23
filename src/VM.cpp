@@ -11,6 +11,7 @@
 
 int exec_byte_code( src_t & main_src )
 {
+	vm_data_t vmstate;
 	
 	return 0;
 }

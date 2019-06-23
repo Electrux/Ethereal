@@ -7,18 +7,19 @@
 	before using or altering the project.
 */
 
-#ifndef VM_CORE_HPP
-#define VM_CORE_HPP
+#ifndef VM_MODULE_HPP
+#define VM_MODULE_HPP
 
-#include "DynLib.hpp"
-#include "ExecStack.hpp"
-#include "Module.hpp"
+#include "Consts.hpp"
+#include "Vars.hpp"
+#include "Functions.hpp"
 
-struct vm_data_t
+struct module_t
 {
-	dyn_lib_t dlib;
-	exec_stack_t stack;
+	consts_t consts;
+	vars_t vars;
+	funcs_t funcs;
 	modules_t mods;
 };
 
-#endif // VM_CORE_HPP
+#endif // VM_MODULE_HPP

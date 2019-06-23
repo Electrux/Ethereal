@@ -7,12 +7,13 @@
 	before using or altering the project.
 */
 
-#ifndef VM_HPP
-#define VM_HPP
+#include "ExecStack.hpp"
 
-#include "Ethereal.hpp"
-#include "VM/Core.hpp"
+exec_stack_t::exec_stack_t() {}
 
-int exec_byte_code( src_t & main_src );
-
-#endif // VM_HPP
+exec_stack_t::~exec_stack_t()
+{
+	for( auto & val : m_vec ) {
+		VAR_DREF( val );
+	}
+}

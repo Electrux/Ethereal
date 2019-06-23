@@ -8,6 +8,7 @@
 */
 
 #include "Internal.hpp"
+#include "../Ethereal.hpp"
 
 stmt_expr_t * gen_tree( const src_t & src, parse_helper_t * ph, std::vector< stmt_base_t * > & data );
 

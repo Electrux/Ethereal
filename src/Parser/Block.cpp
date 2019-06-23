@@ -9,6 +9,7 @@
 
 #include "Internal.hpp"
 #include "../Parser.hpp"
+#include "../Ethereal.hpp"
 
 stmt_block_t * parse_block( src_t & src, parse_helper_t * ph, GrammarTypes parent )
 {

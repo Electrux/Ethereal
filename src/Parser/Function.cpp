@@ -8,6 +8,7 @@
 */
 
 #include "Internal.hpp"
+#include "../Ethereal.hpp"
 
 stmt_func_t * parse_func( src_t & src, parse_helper_t * ph )
 {

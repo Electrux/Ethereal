@@ -7,12 +7,4 @@
 	before using or altering the project.
 */
 
-#ifndef VM_HPP
-#define VM_HPP
-
-#include "Ethereal.hpp"
-#include "VM/Core.hpp"
-
-int exec_byte_code( src_t & main_src );
-
-#endif // VM_HPP
+#include "Core.hpp"

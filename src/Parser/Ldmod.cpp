@@ -8,6 +8,7 @@
 */
 
 #include "Internal.hpp"
+#include "../Ethereal.hpp"
 
 stmt_ldmod_t * parse_ldmod( const src_t & src, parse_helper_t * ph )
 {

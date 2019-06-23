@@ -39,8 +39,7 @@ int main( int argc, char ** argv )
 	int err = E_OK;
 	const std::string main_src_str = args[ 0 ].substr( last_slash_loc );
 
-	src_t main_src;
-	main_src.is_main_src = true;
+	src_t main_src( true );
 	main_src.name = main_src_str;
 	err = tokenize( main_src );
 	if( err != E_OK ) return err;
@@ -56,10 +55,11 @@ int main( int argc, char ** argv )
 	}
 
 	err = E_OK;
-	std::vector< stmt_base_t * > * ptree = parse( main_src );
+	parse_tree_t * ptree = parse( main_src );
 	//std::vector< Instruction > bcode;
 
 	if( ptree == nullptr ) { err = E_PARSE_FAIL; goto cleanup; }
+	main_src.ptree = ptree;
 
 	if( flags & OPT_P ) {
 		fprintf( stdout, "Parse Tree:\n" );

@@ -8,13 +8,15 @@
 */
 
 #include "Parser/Internal.hpp"
+#include "Parser.hpp"
+#include "Ethereal.hpp"
 
 bool check_type_correct_parent( const int tok_type, const GrammarTypes parent );
 
 // NOTE: all the parse_* functions return at the point of their respective ending tokens
-std::vector< stmt_base_t * > * parse( src_t & src, parse_helper_t * pre_ph, const GrammarTypes parent, const int end )
+parse_tree_t * parse( src_t & src, parse_helper_t * pre_ph, const GrammarTypes parent, const int end )
 {
-	std::vector< stmt_base_t * > * ptree = new std::vector< stmt_base_t * >();
+	parse_tree_t * ptree = new parse_tree_t();
 	parse_helper_t * ph = pre_ph != nullptr ? pre_ph : new parse_helper_t( src.toks );
 
 	while( ph->peak()->type != TOK_INVALID && ( end == -1 || ph->tok_ctr() < end ) ) {

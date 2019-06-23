@@ -125,6 +125,8 @@ struct tok_t
 		line( _line ), col( _col ), type( ( TokType)_type ), data( _data ) {}
 };
 
+typedef std::vector< tok_t > toks_t;
+
 struct src_t;
 
 int tokenize( src_t & src );

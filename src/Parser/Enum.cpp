@@ -8,6 +8,7 @@
 */
 
 #include "Internal.hpp"
+#include "../Ethereal.hpp"
 
 stmt_enum_t * parse_enum( const src_t & src, parse_helper_t * ph )
 {

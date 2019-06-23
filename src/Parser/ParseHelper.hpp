@@ -10,7 +10,7 @@
 #ifndef PARSER_PARSE_HELPER_HPP
 #define PARSER_PARSE_HELPER_HPP
 
-#include "../Ethereal.hpp"
+#include "../Lexer.hpp"
 
 class parse_helper_t
 {

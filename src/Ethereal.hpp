@@ -16,17 +16,19 @@
 
 #include "Core.hpp"
 #include "Lexer.hpp"
-
-typedef std::vector< tok_t > toks_t;
+#include "Parser.hpp"
+#include "VM/Instruction.hpp"
 
 struct src_t
 {
 	std::string name;
-	toks_t toks;
 	std::vector< std::string > code;
+	toks_t toks;
+	parse_tree_t * ptree;
+	bytecode_t bcode;
 	bool is_main_src;
 
-	src_t( const bool _is_main_src = false );
+	src_t( const bool _is_main_src );
 };
 
 #endif // ETHEREAL_HPP

@@ -19,9 +19,6 @@
 #include "Ethereal.hpp"
 #include "Parser.hpp"
 
-//#include "../VM/Core.hpp"
-//#include "../VM/VM.hpp"
-
 int main( int argc, char ** argv )
 {
 	std::vector< std::string > args;

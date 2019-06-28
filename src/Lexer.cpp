@@ -125,8 +125,9 @@ static int classify_str( const std::string & str );
 static std::string get_num( const std::string & input, const int input_len, const int line_num, int & i, int & num_type );
 static int get_const_str( const std::string & input, const int input_len, const int line_num, int & i, std::string & buf );
 static int get_operator( const std::string & input, const int input_len, const int line_num, int & i );
+static inline bool is_valid_num_char( const char c );
 
-// TODO: The src stack and map shall be updated prior this function
+// TODO: The src stack and map shall be updated prior to this function
 int tokenize( src_t & src )
 {
 	int res = read_file( src );
@@ -534,4 +535,10 @@ static int get_operator( const std::string & line, const int line_len, const int
 
 	++i;
 	return op_type;
+}
+
+static inline bool is_valid_num_char( const char c )
+{
+	return ( c >= '0' && c <= '9' ) || ( c >= 'a' && c <= 'f' ) || ( c >= 'A' && c <= 'F' )
+		|| c == '.' || c == '-' || c == '+' || c == 'o' || c == 'O' || c == 'x' || c == 'X';
 }

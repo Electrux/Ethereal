@@ -10,14 +10,26 @@
 #ifndef VM_CORE_HPP
 #define VM_CORE_HPP
 
+#include <vector>
+
 #include "DynLib.hpp"
 #include "ExecStack.hpp"
+
+struct vm_src_t
+{
+	std::string name;
+	src_t & src;
+	int begin;
+	int end;
+	vm_src_t( const std::string & _name, src_t & _src, const int _begin = -1, const int _end = -1 );
+};
 
 struct vm_state_t
 {
 	dyn_lib_t dlib;
 	exec_stack_t stack;
 	modules_t mods;
+	std::vector< vm_src_t > srcs;
 };
 
 #endif // VM_CORE_HPP

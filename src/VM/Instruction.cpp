@@ -7,11 +7,10 @@
 	before using or altering the project.
 */
 
-#ifndef VM_EXEC_INTERNAL_HPP
-#define VM_EXEC_INTERNAL_HPP
+#include "Instruction.hpp"
 
-#include "Core.hpp"
-
-var_base_t * exec_internal( vm_state_t & vmstate );
-
-#endif // VM_EXEC_INTERNAL_HPP
+const char * InstrCodeStrs[ _IC_LAST ] = {
+	"IC_POP_STACK",
+	"IC_LOAD_CONST",
+	"IC_SAVE_VAR",
+};

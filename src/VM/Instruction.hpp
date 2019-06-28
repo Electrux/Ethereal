@@ -19,7 +19,11 @@ enum InstrCode
 	IC_POP_STACK,
 	IC_LD_CONST,
 	IC_SAVE_VAR,
+
+	_IC_LAST,
 };
+
+extern const char * InstrCodeStrs[ _IC_LAST ];
 
 struct oper_t
 {

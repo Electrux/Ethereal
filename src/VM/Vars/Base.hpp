@@ -17,6 +17,7 @@
 
 #include "../Consts.hpp"
 #include "../Vars.hpp"
+#include "../Aliases.hpp"
 #include "../Functions.hpp"
 
 enum Types
@@ -249,6 +250,7 @@ class var_mod_t : public var_base_t
 	src_t & m_src;
 	consts_t m_consts;
 	vars_t m_vars;
+	aliases_t m_aliases;
 	modules_t m_mods;
 public:
 	var_mod_t( const std::string & name, src_t & src );
@@ -256,6 +258,7 @@ public:
 	src_t & src();
 	consts_t & consts();
 	vars_t & vars();
+	aliases_t & aliases();
 	modules_t & mods();
 	std::string type_str() const;
 	std::string to_str() const;

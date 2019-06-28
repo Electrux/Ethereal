@@ -8,3 +8,7 @@
 */
 
 #include "Core.hpp"
+#include "../Ethereal.hpp"
+
+vm_src_t::vm_src_t( const std::string & _name, src_t & _src, const int _begin, const int _end )
+	: name( _name ), src( _src ), begin( _begin ), end( _end == -1 ? _src.bcode.size() : _end ) {}

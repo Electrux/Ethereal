@@ -1,3 +1,9 @@
-for x = 1; x < 10; x += 1 {
-	println( x );
+for i = 1; i < 10; i += 1 {
+	if i == 2 { println( 'continuing on i = 2' ); continue; }
+	if i == 5 { println( 'breaking on i = 5' ); break; }
+	for j = 1; j < 10; j += 1 {
+		if j == 2 { println( 'continuing on j = 2' ); continue; }
+		if j == 5 { println( 'breaking on j = 5' ); break; }
+		println( 'i: ', i, ' j: ', j );
+	}
 }

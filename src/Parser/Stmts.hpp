@@ -27,6 +27,9 @@ enum GrammarTypes
 	GRAM_FN_STRUCT_CALL,
 	GRAM_IF,
 	GRAM_FOR,
+	GRAM_RETURN,
+	GRAM_CONTINUE,
+	GRAM_BREAK,
 
 	_GRAM_LAST,
 };
@@ -198,6 +201,28 @@ public:
 	stmt_for_t( stmt_expr_t * init, stmt_expr_t * cond, stmt_expr_t * step,
 		     const stmt_block_t * block, const int tok_ctr );
 	~stmt_for_t();
+	void disp( const bool has_next ) const;
+};
+
+struct stmt_return_t : public stmt_base_t
+{
+	stmt_expr_t * m_ret_val;
+	stmt_return_t( stmt_expr_t * ret_val, const int tok_ctr );
+	~stmt_return_t();
+	void disp( const bool has_next ) const;
+};
+
+struct stmt_continue_t : public stmt_base_t
+{
+	stmt_continue_t( const int tok_ctr );
+	~stmt_continue_t();
+	void disp( const bool has_next ) const;
+};
+
+struct stmt_break_t : public stmt_base_t
+{
+	stmt_break_t( const int tok_ctr );
+	~stmt_break_t();
 	void disp( const bool has_next ) const;
 };
 

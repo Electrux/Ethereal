@@ -4,6 +4,7 @@ fn no_args() {
 
 fn one_arg( a ) {
 	b = a * 2;
+	return b;
 }
 
 fn two_arg( a, b ) {

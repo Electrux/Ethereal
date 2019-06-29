@@ -7,6 +7,8 @@
 	before using or altering the project.
 */
 
+#include <algorithm>
+
 #include "Parser/Internal.hpp"
 #include "Parser.hpp"
 #include "Ethereal.hpp"
@@ -14,16 +16,16 @@
 bool check_type_correct_parent( const int tok_type, const GrammarTypes parent );
 
 // NOTE: all the parse_* functions return at the point of their respective ending tokens
-parse_tree_t * parse( src_t & src, parse_helper_t * pre_ph, const GrammarTypes parent, const int end )
+parse_tree_t * parse( src_t & src, parse_helper_t * pre_ph, std::vector< GrammarTypes > parent_stack, const int end )
 {
 	parse_tree_t * ptree = new parse_tree_t();
 	parse_helper_t * ph = pre_ph != nullptr ? pre_ph : new parse_helper_t( src.toks );
 
 	while( ph->peak()->type != TOK_INVALID && ( end == -1 || ph->tok_ctr() < end ) ) {
-		if( !check_type_correct_parent( ph->peak()->type, parent ) ) {
+		if( !parent_stack.empty() && !check_type_correct_parent( ph->peak()->type, parent_stack.back() ) ) {
 			PARSE_FAIL( "cannot have %s in %s's block",
 				    TokStrs[ ph->peak()->type ],
-				    GrammarTypeStrs[ parent ] );
+				    GrammarTypeStrs[ parent_stack.back() ] );
 			goto fail;
 		}
 		stmt_base_t * res = nullptr;
@@ -38,15 +40,45 @@ parse_tree_t * parse( src_t & src, parse_helper_t * pre_ph, const GrammarTypes p
 		} else if( ph->peak()->type == TOK_FN || ph->peak()->type == TOK_MFN ) {
 			res = parse_func( src, ph );
 		} else if( ph->peak()->type == TOK_IF ) {
-			res = parse_if( src, ph );
+			res = parse_if( src, ph, parent_stack );
 		} else if( ph->peak()->type == TOK_FOR ) {
-			res = parse_for( src, ph );
+			res = parse_for( src, ph, parent_stack );
+		} else if( ph->peak()->type == TOK_RETURN ) {
+			if( std::find( parent_stack.begin(), parent_stack.end(), GRAM_FUNC ) == parent_stack.end() ) {
+				PARSE_FAIL( "keyword 'return' can only be used inside a function" );
+				goto fail;
+			}
+			res = parse_return( src, ph );
+		} else if( ph->peak()->type == TOK_CONTINUE ) {
+			if( std::find( parent_stack.begin(), parent_stack.end(), GRAM_FOR ) == parent_stack.end() ) {
+				PARSE_FAIL( "keyword 'continue' can only be used inside a loop" );
+				goto fail;
+			}
+			fprintf( stdout, "At continue\n" );
+			res = new stmt_continue_t( ph->tok_ctr() );
+			ph->next();
+		} else if( ph->peak()->type == TOK_BREAK ) {
+			if( std::find( parent_stack.begin(), parent_stack.end(), GRAM_FOR ) == parent_stack.end() ) {
+				PARSE_FAIL( "keyword 'break' can only be used inside a loop" );
+				goto fail;
+			}
+			res = new stmt_break_t( ph->tok_ctr() );
+			ph->next();
 		} else if( ph->peak()->type == TOK_LBRACE ) {
 			// simple block
-			res = parse_block( src, ph, parent );
+			res = parse_block( src, ph, parent_stack );
 		} else {
 			// just expressions remain
-			res = parse_expr( src, ph ).expr;
+			expr_res_t expr = parse_expr( src, ph );
+			if( expr.res != 0 ) {
+				PARSE_FAIL( "failed parsing expression" );
+				goto fail;
+			}
+			res = expr.expr;
+			if( res == nullptr ) {
+				PARSE_FAIL( "encountered invalid token" );
+				goto fail;
+			}
 		}
 
 		if( res == nullptr ) goto fail;

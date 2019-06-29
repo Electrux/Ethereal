@@ -11,7 +11,7 @@
 #include "../Parser.hpp"
 #include "../Ethereal.hpp"
 
-stmt_block_t * parse_block( src_t & src, parse_helper_t * ph, GrammarTypes parent )
+stmt_block_t * parse_block( src_t & src, parse_helper_t * ph, std::vector< GrammarTypes > & parents )
 {
 	int tok_ctr = ph->tok_ctr();
 	int end_brace;
@@ -24,7 +24,7 @@ stmt_block_t * parse_block( src_t & src, parse_helper_t * ph, GrammarTypes paren
 	// without moving to next point, the parse() and parse_block() will
 	// go on forever, thereby causing seg fault (stack overflow)
 	ph->next();
-	block = parse( src, ph, parent, end_brace );
+	block = parse( src, ph, parents, end_brace );
 	if( block == nullptr ) return nullptr;
 	return new stmt_block_t( block, tok_ctr );
 }

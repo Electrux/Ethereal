@@ -21,6 +21,9 @@ const char * GrammarTypeStrs[ _GRAM_LAST ] = {
 	"Func/Struct Call",
 	"If Conditional",
 	"For Loop",
+	"Return",
+	"Continue",
+	"Break",
 };
 
 stmt_base_t::stmt_base_t( const GrammarTypes type, const int tok_ctr )
@@ -368,4 +371,53 @@ void stmt_for_t::disp( const bool has_next ) const
 	if( m_block != nullptr ) m_block->disp( false );
 
 	IO::tab_rem( 2 );
+}
+
+
+////////////////////////////////////////////
+/////////////// stmt_return_t //////////////
+////////////////////////////////////////////
+
+stmt_return_t::stmt_return_t( stmt_expr_t * ret_val, const int tok_ctr )
+	: stmt_base_t( GRAM_RETURN, tok_ctr ), m_ret_val( ret_val ) {}
+stmt_return_t::~stmt_return_t() { if( m_ret_val != nullptr ) delete m_ret_val; }
+
+void stmt_return_t::disp( const bool has_next ) const
+{
+	IO::tab_add( has_next );
+	IO::print( has_next, "Return at: %x\n", this );
+
+	m_ret_val->disp( false );
+
+	IO::tab_rem( 1 );
+}
+
+////////////////////////////////////////////
+/////////////// stmt_continue_t //////////////
+////////////////////////////////////////////
+
+stmt_continue_t::stmt_continue_t( const int tok_ctr )
+	: stmt_base_t( GRAM_CONTINUE, tok_ctr ) {}
+stmt_continue_t::~stmt_continue_t() {}
+
+void stmt_continue_t::disp( const bool has_next ) const
+{
+	IO::tab_add( has_next );
+	IO::print( has_next, " Continue statement at: %x\n", this );
+	IO::tab_rem();
+}
+
+////////////////////////////////////////////
+/////////////// stmt_break_t //////////////
+////////////////////////////////////////////
+
+stmt_break_t::stmt_break_t( const int tok_ctr )
+	: stmt_base_t( GRAM_BREAK, tok_ctr ) {}
+stmt_break_t::~stmt_break_t() {}
+
+void stmt_break_t::disp( const bool has_next ) const
+{
+	IO::tab_add( has_next );
+	IO::print( has_next, " Break statement at: %x\n", this );
+	IO::tab_rem();
 }

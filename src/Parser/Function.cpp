@@ -17,6 +17,8 @@ stmt_func_t * parse_func( src_t & src, parse_helper_t * ph )
 	bool is_member_func = false;
 	if( ph->peak()->type == TOK_MFN ) is_member_func = true;
 
+	std::vector< GrammarTypes > parents;
+
 	expr_res_t mem_type = { 0, nullptr };
 	if( is_member_func ) {
 		NEXT_VALID( TOK_LT );
@@ -66,7 +68,9 @@ stmt_func_t * parse_func( src_t & src, parse_helper_t * ph )
 	ph->set_tok_ctr( arg_expr_end );
 end_args:
 	NEXT_VALID_FAIL( TOK_LBRACE );
-	block = parse_block( src, ph, GRAM_FUNC );
+	parents.push_back( GRAM_FUNC );
+	block = parse_block( src, ph, parents );
+	parents.pop_back();
 	if( block == nullptr ) goto fail;
 	return new stmt_func_t( new stmt_simple_t( SIMPLE_TOKEN, name, tok_ctr + 1 ),
 				arg_expr.expr, block, mem_type.expr, tok_ctr );

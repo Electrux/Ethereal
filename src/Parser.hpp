@@ -14,7 +14,8 @@
 
 typedef std::vector< stmt_base_t * > parse_tree_t;
 
-parse_tree_t * parse( src_t & src, parse_helper_t * pre_ph = nullptr, const GrammarTypes parent = GRAM_INVALID,
-				      const int end = -1 );
+parse_tree_t * parse( src_t & src, parse_helper_t * pre_ph = nullptr,
+		      std::vector< GrammarTypes > parent_stack = { GRAM_INVALID },
+		      const int end = -1 );
 
 #endif // PARSER_HPP

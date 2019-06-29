@@ -10,7 +10,7 @@
 #include "Internal.hpp"
 #include "../Ethereal.hpp"
 
-stmt_if_t * parse_if( src_t & src, parse_helper_t * ph )
+stmt_if_t * parse_if( src_t & src, parse_helper_t * ph, std::vector< GrammarTypes > & parents )
 {
 	int tok_ctr = ph->tok_ctr();
 
@@ -36,7 +36,9 @@ begin_cond:
 	ph->set_tok_ctr( start_brace );
 
 begin_block:
-	block = parse_block( src, ph, GRAM_IF );
+	parents.push_back( GRAM_IF );
+	block = parse_block( src, ph, parents );
+	parents.pop_back();
 	if( block == nullptr ) goto fail;
 	conds.push_back( { expr.expr, block } );
 	expr = { 0, nullptr };

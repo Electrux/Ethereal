@@ -10,7 +10,7 @@
 #include "Internal.hpp"
 #include "../Ethereal.hpp"
 
-stmt_for_t * parse_for( src_t & src, parse_helper_t * ph )
+stmt_for_t * parse_for( src_t & src, parse_helper_t * ph, std::vector< GrammarTypes > & parents )
 {
 	int tok_ctr = ph->tok_ctr();
 
@@ -61,7 +61,9 @@ stmt_for_t * parse_for( src_t & src, parse_helper_t * ph )
 	ph->set_tok_ctr( step_brace );
 
 	// block
-	block = parse_block( src, ph, GRAM_IF );
+	parents.push_back( GRAM_FOR );
+	block = parse_block( src, ph, parents );
+	parents.pop_back();
 	if( block == nullptr ) goto fail;
 
 	return new stmt_for_t( init.expr, cond.expr, step.expr, block, tok_ctr );

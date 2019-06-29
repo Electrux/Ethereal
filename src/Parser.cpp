@@ -68,8 +68,9 @@ fail:
 bool check_type_correct_parent( const int tok_type, const GrammarTypes parent )
 {
 	//if( parent == GRAM_INVALID ) return true;
-
-	if( parent == GRAM_ENUM ) {
-	}
+	if( ( tok_type == TOK_ENUM ||
+	      tok_type == TOK_STRUCT ||
+	      tok_type == TOK_FN ) &&
+	     parent != GRAM_INVALID ) return false;
 	return true;
 }

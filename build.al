@@ -36,8 +36,8 @@ if( "${ARGC}" > 0 && "${ARG_0}" == debug || "${ARG_0}" == memlog ) {
 }
 
 builds( bin ) {
-	sources( "src/(.*)\.cpp" )
-	build( et, "src/Main.cpp" )
+	sources( "src/FE/(.*)\.cpp" )
+	build( et, "src/FE/Main.cpp" )
 }
 
 if( "${ARGC}" > 0 && "${ARG_0}" == "install" || "${USE_SELF_PREFIX}" == "true" ) {

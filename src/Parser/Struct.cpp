@@ -21,7 +21,7 @@ stmt_struct_t * parse_struct( const src_t & src, parse_helper_t * ph )
 
 	tok_t * fname = nullptr;
 	int fname_tok_ctr;
-	stmt_expr_t * fdef_val = nullptr;
+	expr_res_t fdef_val = { 0, nullptr };
 	std::vector< struct_field_t > fields;
 	int semicol_loc = -1;
 	int err = 0;
@@ -41,10 +41,10 @@ field_begin:
 		goto fail;
 	}
 	fdef_val = parse_expr( src, ph, semicol_loc );
-	if( fdef_val == nullptr ) goto fail;
-	fields.push_back( { new stmt_simple_t( SIMPLE_TOKEN, fname, fname_tok_ctr ), fdef_val } );
+	if( fdef_val.res != 0 ) goto fail;
+	fields.push_back( { new stmt_simple_t( SIMPLE_TOKEN, fname, fname_tok_ctr ), fdef_val.expr } );
 	fname = nullptr;
-	fdef_val = nullptr;
+	fdef_val = { 0, nullptr };
 	ph->set_tok_ctr( semicol_loc );
 	if( ph->peak( 1 )->type != TOK_RBRACE ) {
 		if( ph->peak( 1 )->type != TOK_IDEN ) {

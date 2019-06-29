@@ -17,7 +17,7 @@ stmt_func_t * parse_func( src_t & src, parse_helper_t * ph )
 	bool is_member_func = false;
 	if( ph->peak()->type == TOK_MFN ) is_member_func = true;
 
-	stmt_expr_t * mem_type = nullptr;
+	expr_res_t mem_type = { 0, nullptr };
 	if( is_member_func ) {
 		NEXT_VALID( TOK_LT );
 		int mem_type_end;
@@ -32,7 +32,7 @@ stmt_func_t * parse_func( src_t & src, parse_helper_t * ph )
 		}
 		ph->next();
 		mem_type = parse_expr( src, ph, mem_type_end );
-		if( mem_type == nullptr ) return nullptr;
+		if( mem_type.res != 0 ) return nullptr;
 		ph->set_tok_ctr( mem_type_end );
 	}
 
@@ -42,7 +42,7 @@ stmt_func_t * parse_func( src_t & src, parse_helper_t * ph )
 
 	NEXT_VALID( TOK_LPAREN );
 
-	stmt_expr_t * arg_expr = nullptr;
+	expr_res_t arg_expr = { 0, nullptr };
 	int arg_expr_end;
 	int err;
 	stmt_block_t * block = nullptr;
@@ -62,17 +62,17 @@ stmt_func_t * parse_func( src_t & src, parse_helper_t * ph )
 		goto fail;
 	}
 	arg_expr = parse_expr( src, ph, arg_expr_end );
-	if( arg_expr == nullptr ) goto fail;
+	if( arg_expr.res != 0 ) goto fail;
 	ph->set_tok_ctr( arg_expr_end );
 end_args:
 	NEXT_VALID_FAIL( TOK_LBRACE );
 	block = parse_block( src, ph, GRAM_FUNC );
 	if( block == nullptr ) goto fail;
 	return new stmt_func_t( new stmt_simple_t( SIMPLE_TOKEN, name, tok_ctr + 1 ),
-				arg_expr, block, mem_type, tok_ctr );
+				arg_expr.expr, block, mem_type.expr, tok_ctr );
 fail:
-	if( arg_expr ) delete arg_expr;
+	if( arg_expr.expr ) delete arg_expr.expr;
 	if( block ) delete block;
-	if( mem_type ) delete mem_type;
+	if( mem_type.expr ) delete mem_type.expr;
 	return nullptr;
 }

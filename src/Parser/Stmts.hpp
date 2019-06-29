@@ -190,6 +190,17 @@ public:
 	void disp( const bool has_next ) const;
 };
 
+class stmt_for_t : public stmt_base_t
+{
+	stmt_expr_t * m_init, * m_cond, * m_step;
+	const stmt_block_t * m_block;
+public:
+	stmt_for_t( stmt_expr_t * init, stmt_expr_t * cond, stmt_expr_t * step,
+		     const stmt_block_t * block, const int tok_ctr );
+	~stmt_for_t();
+	void disp( const bool has_next ) const;
+};
+
 #define PARSE_FAIL( ... ) src_fail( src.code[ ph->peak()->line - 1 ], \
 				    ph->peak()->line, ph->peak()->col, __VA_ARGS__ )
 

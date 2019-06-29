@@ -40,13 +40,13 @@ parse_tree_t * parse( src_t & src, parse_helper_t * pre_ph, const GrammarTypes p
 		} else if( ph->peak()->type == TOK_IF ) {
 			res = parse_if( src, ph );
 		} else if( ph->peak()->type == TOK_FOR ) {
-			// res = parse_for( src, ph );
+			res = parse_for( src, ph );
 		} else if( ph->peak()->type == TOK_LBRACE ) {
 			// simple block
 			res = parse_block( src, ph, parent );
 		} else {
 			// just expressions remain
-			res = parse_expr( src, ph );
+			res = parse_expr( src, ph ).expr;
 		}
 
 		if( res == nullptr ) goto fail;

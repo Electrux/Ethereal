@@ -12,7 +12,7 @@
 
 stmt_expr_t * gen_tree( const src_t & src, parse_helper_t * ph, std::vector< stmt_base_t * > & data );
 
-stmt_expr_t * parse_expr( const src_t & src, parse_helper_t * ph, const int end, const ExprType type, const bool is_top )
+expr_res_t parse_expr( const src_t & src, parse_helper_t * ph, const int end, const ExprType type, const bool is_top )
 {
 	std::vector< stmt_base_t * > data;
 	std::vector< stmt_simple_t * > stack;
@@ -38,11 +38,11 @@ stmt_expr_t * parse_expr( const src_t & src, parse_helper_t * ph, const int end,
 				goto fail;
 			}
 			ph->next();
-			stmt_expr_t * struct_args = parse_expr( src, ph, rbrace_loc, EXPR_BASIC, false );
-			if( struct_args == nullptr ) goto fail;
+			expr_res_t struct_args = parse_expr( src, ph, rbrace_loc, EXPR_BASIC, false );
+			if( struct_args.res != 0 ) goto fail;
 			stmt_func_struct_call_t * struct_call = new stmt_func_struct_call_t(
 				new stmt_simple_t( SIMPLE_TOKEN, name, tok_val ),
-				struct_args, tok_val
+				struct_args.expr, tok_val
 			);
 			struct_call->m_is_struct = true;
 			data.push_back( struct_call );
@@ -61,11 +61,11 @@ stmt_expr_t * parse_expr( const src_t & src, parse_helper_t * ph, const int end,
 				goto fail;
 			}
 			ph->next();
-			stmt_expr_t * fn_args = parse_expr( src, ph, rparen_loc, EXPR_BASIC, false );
-			if( fn_args == nullptr ) goto fail;
+			expr_res_t fn_args = parse_expr( src, ph, rparen_loc, EXPR_BASIC, false );
+			if( fn_args.res != 0 ) goto fail;
 			stmt_func_struct_call_t * fn_call = new stmt_func_struct_call_t(
 				new stmt_simple_t( SIMPLE_TOKEN, name, tok_val ),
-				fn_args, tok_val
+				fn_args.expr, tok_val
 			);
 			data.push_back( fn_call );
 		} else if( ph->peak()->type == TOK_LBRACE ) {
@@ -80,9 +80,9 @@ stmt_expr_t * parse_expr( const src_t & src, parse_helper_t * ph, const int end,
 				goto fail;
 			}
 			ph->next();
-			stmt_expr_t * map = parse_expr( src, ph, rbrace_loc, EXPR_MAP, false );
-			if( map == nullptr ) goto fail;
-			data.push_back( map );
+			expr_res_t map = parse_expr( src, ph, rbrace_loc, EXPR_MAP, false );
+			if( map.res != 0 ) goto fail;
+			data.push_back( map.expr );
 		} else if( ph->peak()->type == TOK_LBRACK ) {
 			int rbrack_loc;
 			int err = find_next_of( ph, rbrack_loc, { TOK_RBRACK }, TOK_LBRACK );
@@ -95,9 +95,9 @@ stmt_expr_t * parse_expr( const src_t & src, parse_helper_t * ph, const int end,
 				goto fail;
 			}
 			ph->next();
-			stmt_expr_t * vec = parse_expr( src, ph, rbrack_loc, EXPR_ARRAY, false );
-			if( vec == nullptr ) goto fail;
-			data.push_back( vec );
+			expr_res_t vec = parse_expr( src, ph, rbrack_loc, EXPR_ARRAY, false );
+			if( vec.res != 0 ) goto fail;
+			data.push_back( vec.expr );
 		} else {
 			if( token_is_data( ph->peak() ) ) {
 				data.push_back(
@@ -190,7 +190,7 @@ stmt_expr_t * parse_expr( const src_t & src, parse_helper_t * ph, const int end,
 	}
 
 	if( data.empty() ) {
-		return new stmt_expr_t( type, nullptr, nullptr, nullptr, start );
+		return { 0, nullptr };
 	}
 
 	res = gen_tree( src, ph, data );
@@ -202,13 +202,13 @@ stmt_expr_t * parse_expr( const src_t & src, parse_helper_t * ph, const int end,
 		res->m_is_top_expr = true;
 	}
 
-	return res;
+	return { 0, res };
 fail:
 	for( auto & d : data ) {
 		delete d;
 	}
 	if( end != -1 ) ph->set_tok_ctr( end );
-	return nullptr;
+	return { E_PARSE_FAIL, nullptr };
 }
 
 stmt_expr_t * gen_tree( const src_t & src, parse_helper_t * ph, std::vector< stmt_base_t * > & data )

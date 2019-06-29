@@ -14,7 +14,7 @@ stmt_if_t * parse_if( src_t & src, parse_helper_t * ph )
 {
 	int tok_ctr = ph->tok_ctr();
 
-	stmt_expr_t * expr = nullptr;
+	expr_res_t expr = { 0, nullptr };
 	stmt_block_t * block = nullptr;
 	std::vector< condition_t > conds;
 
@@ -32,14 +32,14 @@ begin_cond:
 	}
 
 	expr = parse_expr( src, ph, start_brace );
-	if( expr == nullptr ) goto fail;
+	if( expr.res != 0 ) goto fail;
 	ph->set_tok_ctr( start_brace );
 
 begin_block:
 	block = parse_block( src, ph, GRAM_IF );
 	if( block == nullptr ) goto fail;
-	conds.push_back( { expr, block } );
-	expr = nullptr;
+	conds.push_back( { expr.expr, block } );
+	expr = { 0, nullptr };
 	block = nullptr;
 	if( ph->peak( 1 )->type == TOK_ELIF ) {
 		ph->next();
@@ -57,7 +57,7 @@ fail:
 		if( cond.cond ) delete cond.cond;
 		delete cond.block;
 	}
-	if( expr ) delete expr;
+	if( expr.expr ) delete expr.expr;
 	if( block ) delete block;
 	return nullptr;
 }

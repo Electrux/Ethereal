@@ -300,6 +300,10 @@ void stmt_func_struct_call_t::disp( const bool has_next ) const
 	IO::tab_rem();
 }
 
+///////////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////// Conditional //////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////
+
 stmt_if_t::stmt_if_t( const std::vector< condition_t > & conds, const int tok_ctr )
 	: stmt_base_t( GRAM_IF, tok_ctr ), m_conds( conds ) {}
 
@@ -327,4 +331,41 @@ void stmt_if_t::disp( const bool has_next ) const
 	}
 
 	IO::tab_rem();
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////// Loop //////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////
+
+stmt_for_t::stmt_for_t( stmt_expr_t * init, stmt_expr_t * cond, stmt_expr_t * step,
+		     const stmt_block_t * block, const int tok_ctr )
+	: stmt_base_t( GRAM_FOR, tok_ctr ), m_init( init ), m_cond( cond ), m_step( step ),
+	  m_block( block ) {}
+
+stmt_for_t::~stmt_for_t()
+{
+	if( m_init != nullptr ) delete m_init;
+	if( m_cond != nullptr ) delete m_cond;
+	if( m_step != nullptr ) delete m_step;
+	if( m_block != nullptr ) delete m_block;
+}
+
+void stmt_for_t::disp( const bool has_next ) const
+{
+	IO::tab_add( has_next );
+	IO::print( has_next, "Loop at: %x\n", this );
+
+	IO::tab_add( true );
+	IO::print( true, "Expression (init):\n" );
+	if( m_init != nullptr ) m_init->disp( false );
+	IO::print( true, "Expression (cond):\n" );
+	if( m_cond != nullptr ) m_cond->disp( false );
+	IO::print( true, "Expression (step):\n" );
+	if( m_step != nullptr ) m_step->disp( false );
+	IO::tab_rem();
+	IO::tab_add( false );
+	IO::print( false, "Block:\n" );
+	if( m_block != nullptr ) m_block->disp( false );
+
+	IO::tab_rem( 2 );
 }

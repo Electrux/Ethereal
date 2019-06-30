@@ -33,3 +33,8 @@ fail:
 	if( expr.expr ) delete expr.expr;
 	return nullptr;
 }
+
+bool stmt_return_t::bytecode( bytecode_t & bcode )
+{
+	return true;
+}

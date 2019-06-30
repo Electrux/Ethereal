@@ -38,3 +38,13 @@ val_begin:
 	// now at RBRACE
 	return new stmt_enum_t( name, vals, tok_ctr );
 }
+
+bool stmt_enum_t::bytecode( bytecode_t & bcode )
+{
+	for( auto v = m_vals.rbegin(); v != m_vals.rend(); ++v ) {
+		bcode.push_back( { m_tok_ctr, IC_PUSH, { OP_STR, ( * v )->data } } );
+	}
+	bcode.push_back( { m_tok_ctr, IC_PUSH, { OP_STR, m_name->data } } );
+	bcode.push_back( { m_tok_ctr, IC_BUILD_ENUM, { OP_INT, std::to_string( m_vals.size() ) } } );
+	return true;
+}

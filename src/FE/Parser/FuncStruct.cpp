@@ -7,23 +7,10 @@
 	before using or altering the project.
 */
 
-#ifndef ERR_HPP
-#define ERR_HPP
+#include "Internal.hpp"
+#include "../Ethereal.hpp"
 
-enum Errors
+bool stmt_func_struct_call_t::bytecode( bytecode_t & bcode )
 {
-	E_OK,
-	E_FAIL,
-
-	E_FILE_IO_ERR,
-	E_FILE_EMPTY,
-
-	E_ALLOC_FAIL,
-	E_LEX_FAIL,
-	E_PARSE_FAIL,
-	E_BYTECODE_FAIL,
-};
-
-const char * ErrStr( Errors code );
-
-#endif // ERR_HPP
+	return true;
+}

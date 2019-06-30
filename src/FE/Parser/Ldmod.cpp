@@ -29,3 +29,8 @@ stmt_ldmod_t * parse_ldmod( const src_t & src, parse_helper_t * ph )
 	NEXT_VALID( TOK_COLS );
 	return new stmt_ldmod_t( what, as, tok_ctr );
 }
+
+bool stmt_ldmod_t::bytecode( bytecode_t & bcode )
+{
+	return true;
+}

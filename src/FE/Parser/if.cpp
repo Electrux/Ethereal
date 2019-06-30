@@ -63,3 +63,8 @@ fail:
 	if( block ) delete block;
 	return nullptr;
 }
+
+bool stmt_if_t::bytecode( bytecode_t & bcode )
+{
+	return true;
+}

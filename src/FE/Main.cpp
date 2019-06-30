@@ -53,7 +53,7 @@ int main( int argc, char ** argv )
 
 	err = E_OK;
 	parse_tree_t * ptree = parse( main_src );
-	//std::vector< Instruction > bcode;
+	bytecode_t bcode;
 
 	if( ptree == nullptr ) { err = E_PARSE_FAIL; goto cleanup; }
 	main_src.ptree = ptree;
@@ -64,14 +64,20 @@ int main( int argc, char ** argv )
 			( * it )->disp( it != ptree->end() - 1 );
 		}
 	}
-	/*
 
-	err = OK;
+	err = E_OK;
 	for( auto & it : * ptree ) {
-		err = it->byte_code( bcode );
-		if( err != OK ) goto cleanup;
+		if( !it->bytecode( bcode ) ) { err = E_BYTECODE_FAIL; goto cleanup; }
 	}
-*/
+
+	if( flags & OPT_B ) {
+		fprintf( stdout, "Byte Code:\n" );
+		for( size_t i = 0; i < bcode.size(); ++i ) {
+			auto & ins = bcode[ i ];
+			fprintf( stdout, "%-*zu %-*s%d[%s]\n",
+				 4, i, 12, InstrCodeStrs[ ins.opcode ], ins.oper.type, ins.oper.val.c_str() );
+		}
+	}
 cleanup:
 	if( ptree != nullptr ) {
 		for( auto & stmt : * ptree ) delete stmt;
@@ -80,14 +86,6 @@ cleanup:
 
 	if( err != E_OK ) return err;
 /*
-	if( flags & OPT_B ) {
-		fprintf( stdout, "Byte Code:\n" );
-		for( size_t i = 0; i < bcode.size(); ++i ) {
-			auto & ins = bcode[ i ];
-			fprintf( stdout, "%zu\t%d[%d]\t%s\t%d[%s]\n",
-				 i, ins.line, ins.col, InstructionCodeStrs[ ins.opcode ], ins.operand.type, ins.operand.val.c_str() );
-		}
-	}
 
 	if( !( flags & OPT_C ) && !( flags & OPT_D ) ) {
 		fprintf( stdout, "Executing Byte Code:\n" );

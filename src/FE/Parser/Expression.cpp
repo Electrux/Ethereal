@@ -299,3 +299,8 @@ fail:
 	for( auto & vs : var_stack ) delete vs;
 	return nullptr;
 }
+
+bool stmt_expr_t::bytecode( bytecode_t & bcode )
+{
+	return true;
+}

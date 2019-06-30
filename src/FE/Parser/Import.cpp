@@ -32,3 +32,8 @@ beg_what:
 	NEXT_VALID( TOK_COLS );
 	return new stmt_import_t( what, as, tok_ctr );
 }
+
+bool stmt_import_t::bytecode( bytecode_t & bcode )
+{
+	return true;
+}

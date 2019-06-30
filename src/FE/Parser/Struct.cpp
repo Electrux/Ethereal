@@ -64,3 +64,8 @@ fail:
 	}
 	return nullptr;
 }
+
+bool stmt_struct_t::bytecode( bytecode_t & bcode )
+{
+	return true;
+}

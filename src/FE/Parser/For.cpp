@@ -75,3 +75,8 @@ fail:
 	if( block ) delete block;
 	return nullptr;
 }
+
+bool stmt_for_t::bytecode( bytecode_t & bcode )
+{
+	return true;
+}

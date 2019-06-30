@@ -28,3 +28,8 @@ stmt_block_t * parse_block( src_t & src, parse_helper_t * ph, std::vector< Gramm
 	if( block == nullptr ) return nullptr;
 	return new stmt_block_t( block, tok_ctr );
 }
+
+bool stmt_block_t::bytecode( bytecode_t & bcode )
+{
+	return true;
+}

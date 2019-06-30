@@ -36,7 +36,7 @@ if( "${ARGC}" > 0 && "${ARG_0}" == debug || "${ARG_0}" == memlog ) {
 }
 
 builds( bin ) {
-	sources( "src/FE/(.*)\.cpp" )
+	sources( "src/(.*)\.cpp" )
 	build( et, "src/FE/Main.cpp" )
 }
 

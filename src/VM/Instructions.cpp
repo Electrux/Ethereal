@@ -7,23 +7,11 @@
 	before using or altering the project.
 */
 
-#ifndef ERR_HPP
-#define ERR_HPP
+#include "Instructions.hpp"
 
-enum Errors
-{
-	E_OK,
-	E_FAIL,
+const char * InstrCodeStrs[ _IC_LAST ] = {
+	"push",
+	"pop",
 
-	E_FILE_IO_ERR,
-	E_FILE_EMPTY,
-
-	E_ALLOC_FAIL,
-	E_LEX_FAIL,
-	E_PARSE_FAIL,
-	E_BYTECODE_FAIL,
+	"build_enum",
 };
-
-const char * ErrStr( Errors code );
-
-#endif // ERR_HPP

@@ -80,3 +80,8 @@ fail:
 	if( mem_type.expr ) delete mem_type.expr;
 	return nullptr;
 }
+
+bool stmt_func_t::bytecode( bytecode_t & bcode )
+{
+	return true;
+}

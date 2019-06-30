@@ -1,0 +1,1 @@
+# The list sequence in byte code should be reversed so that the elements can be taken directly by VM stack instead of having to reverse them.

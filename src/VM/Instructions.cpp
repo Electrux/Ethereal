@@ -14,4 +14,6 @@ const char * InstrCodeStrs[ _IC_LAST ] = {
 	"pop",
 
 	"build_enum",
+
+	"load_mod"
 };

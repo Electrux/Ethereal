@@ -32,5 +32,10 @@ stmt_ldmod_t * parse_ldmod( const src_t & src, parse_helper_t * ph )
 
 bool stmt_ldmod_t::bytecode( bytecode_t & bcode )
 {
+	if( m_as != nullptr ) {
+		bcode.push_back( { m_tok_ctr, m_as->line, m_as->col, IC_PUSH, { OP_CONST, m_as->data } } );
+	}
+	bcode.push_back( { m_tok_ctr, m_what->line, m_what->col, IC_PUSH, { OP_CONST, m_what->data } } );
+	bcode.push_back( { m_tok_ctr, m_what->line, m_what->col, IC_LDMOD, { OP_INT, std::to_string( m_as == nullptr ? 1 : 2 ) } } );
 	return true;
 }

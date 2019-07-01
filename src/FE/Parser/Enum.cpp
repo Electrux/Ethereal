@@ -42,9 +42,9 @@ val_begin:
 bool stmt_enum_t::bytecode( bytecode_t & bcode )
 {
 	for( auto v = m_vals.rbegin(); v != m_vals.rend(); ++v ) {
-		bcode.push_back( { m_tok_ctr, IC_PUSH, { OP_STR, ( * v )->data } } );
+		bcode.push_back( { m_tok_ctr, ( * v )->line, ( * v )->col, IC_PUSH, { OP_CONST, ( * v )->data } } );
 	}
-	bcode.push_back( { m_tok_ctr, IC_PUSH, { OP_STR, m_name->data } } );
-	bcode.push_back( { m_tok_ctr, IC_BUILD_ENUM, { OP_INT, std::to_string( m_vals.size() ) } } );
+	bcode.push_back( { m_tok_ctr, m_name->line, m_name->col, IC_PUSH, { OP_CONST, m_name->data } } );
+	bcode.push_back( { m_tok_ctr, m_name->line, m_name->col, IC_BUILD_ENUM, { OP_INT, std::to_string( m_vals.size() ) } } );
 	return true;
 }

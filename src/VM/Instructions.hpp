@@ -19,6 +19,7 @@ enum InstrCode
 	IC_POP,			// Pop from the VM stack
 
 	IC_BUILD_ENUM,		// args: count of elements to take from stack (it will take enum's name by default)
+	IC_LDMOD,		// args: count: 1 = what, 2 = what + as
 
 	_IC_LAST,
 };
@@ -42,7 +43,8 @@ struct oper_t
 
 struct instr_t
 {
-	int tok_ctr;
+	int parse_ctr;
+	int line, col;
 	InstrCode opcode;
 	oper_t oper;
 };

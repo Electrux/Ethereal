@@ -15,5 +15,7 @@ const char * InstrCodeStrs[ _IC_LAST ] = {
 
 	"build_enum",
 
-	"load_mod"
+	"load_mod",
+
+	"call_func"
 };

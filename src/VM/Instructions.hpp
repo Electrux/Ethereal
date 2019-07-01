@@ -21,6 +21,8 @@ enum InstrCode
 	IC_BUILD_ENUM,		// args: count of elements to take from stack (it will take enum's name by default)
 	IC_LDMOD,		// args: count: 1 = what, 2 = what + as
 
+	IC_FN_CALL,		// args: count of args (will take name by default)
+
 	_IC_LAST,
 };
 

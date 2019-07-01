@@ -18,3 +18,5 @@ xy == nil;
 p == true;
 
 th == self;
+
+a = b ? c : d;

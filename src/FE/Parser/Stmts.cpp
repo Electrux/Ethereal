@@ -136,27 +136,19 @@ const char * ExprTypeStrs[ _EXPR_LAST ] = {
 stmt_expr_t::stmt_expr_t( const ExprType etype, const stmt_base_t * lhs, const stmt_simple_t * oper,
 			  const stmt_base_t * rhs, const int tok_ctr )
 	: stmt_base_t( GRAM_EXPR, tok_ctr ), m_lhs( lhs ),
-	  m_rhs( rhs ), m_oper( oper ), m_etype( etype ), m_is_top_expr( false ),
-	  m_annotation( nullptr ) {}
+	  m_rhs( rhs ), m_oper( oper ), m_etype( etype ), m_is_top_expr( false ) {}
 stmt_expr_t::~stmt_expr_t()
 {
 	if( m_lhs ) delete m_lhs;
 	if( m_rhs ) delete m_rhs;
 	if( m_oper ) delete m_oper;
-	if( m_annotation ) delete m_annotation;
 }
 
 void stmt_expr_t::disp( const bool has_next ) const
 {
 	IO::tab_add( has_next );
-	if( m_annotation ) {
-		IO::print( has_next, "Expression (top: %s) (type: %s) (name: %s) at: %x\n",
-			   m_is_top_expr ? "yes" : "no", ExprTypeStrs[ m_etype ],
-			   m_annotation->m_val->data.c_str(), this );
-	} else {
-		IO::print( has_next, "Expression (top: %s) (type: %s) at: %x\n",
-			   m_is_top_expr ? "yes" : "no", ExprTypeStrs[ m_etype ], this );
-	}
+	IO::print( has_next, "Expression (top: %s) (type: %s) at: %x\n",
+		   m_is_top_expr ? "yes" : "no", ExprTypeStrs[ m_etype ], this );
 
 	IO::tab_add( m_lhs != nullptr || m_rhs != nullptr );
 	IO::print( m_lhs != nullptr || m_rhs != nullptr,

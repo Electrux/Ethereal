@@ -126,7 +126,6 @@ class stmt_expr_t : public stmt_base_t
 public:
 	ExprType m_etype;
 	bool m_is_top_expr;
-	const stmt_simple_t * m_annotation;
 	stmt_expr_t( const ExprType etype, const stmt_base_t * lhs, const stmt_simple_t * oper,
 		     const stmt_base_t * rhs, const int tok_ctr );
 	~stmt_expr_t();

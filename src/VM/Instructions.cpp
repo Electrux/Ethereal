@@ -12,10 +12,19 @@
 const char * InstrCodeStrs[ _IC_LAST ] = {
 	"push",
 	"pop",
+	"store",
+	"store_load",
 
 	"build_enum",
 
 	"load_mod",
 
-	"call_func"
+	"call_func",
+	"call_mem_func",
+	"struct_decl",
+	"struct_mem_decl",
+
+	"struct_field",
+
+	"build_struct",
 };

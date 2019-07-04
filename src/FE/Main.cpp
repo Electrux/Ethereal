@@ -75,7 +75,7 @@ int main( int argc, char ** argv )
 		for( size_t i = 0; i < bcode.size(); ++i ) {
 			auto & ins = bcode[ i ];
 			fprintf( stdout, "%-*zu %-*s%d[%s]\n",
-				 4, i, 12, InstrCodeStrs[ ins.opcode ], ins.oper.type, ins.oper.val.c_str() );
+				 5, i, 20, InstrCodeStrs[ ins.opcode ], ins.oper.type, ins.oper.val.c_str() );
 		}
 	}
 cleanup:

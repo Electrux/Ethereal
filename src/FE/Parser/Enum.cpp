@@ -39,7 +39,7 @@ val_begin:
 	return new stmt_enum_t( name, vals, tok_ctr );
 }
 
-bool stmt_enum_t::bytecode( bytecode_t & bcode )
+bool stmt_enum_t::bytecode( bytecode_t & bcode ) const
 {
 	for( auto v = m_vals.rbegin(); v != m_vals.rend(); ++v ) {
 		bcode.push_back( { m_tok_ctr, ( * v )->line, ( * v )->col, IC_PUSH, { OP_CONST, ( * v )->data } } );

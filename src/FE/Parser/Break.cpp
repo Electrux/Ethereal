@@ -10,7 +10,7 @@
 #include "Internal.hpp"
 #include "../Ethereal.hpp"
 
-bool stmt_break_t::bytecode( bytecode_t & bcode )
+bool stmt_break_t::bytecode( bytecode_t & bcode ) const
 {
 	return true;
 }

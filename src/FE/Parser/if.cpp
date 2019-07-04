@@ -64,7 +64,7 @@ fail:
 	return nullptr;
 }
 
-bool stmt_if_t::bytecode( bytecode_t & bcode )
+bool stmt_if_t::bytecode( bytecode_t & bcode ) const
 {
 	return true;
 }

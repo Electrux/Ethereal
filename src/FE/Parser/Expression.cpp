@@ -45,6 +45,7 @@ expr_res_t parse_expr( const src_t & src, parse_helper_t * ph, const int end, co
 				struct_args.expr, tok_val
 			);
 			struct_call->m_is_struct = true;
+			if( !stack.empty() && stack.back()->m_val->type == TOK_DOT ) struct_call->m_post_dot = true;
 			data.push_back( struct_call );
 		} else if( ph->peak()->type == TOK_IDEN && ( end == -1 || ph->tok_ctr() + 1 < end ) && ph->peak( 1 )->type == TOK_LPAREN ) {
 			tok_t * name = ph->peak();
@@ -67,6 +68,7 @@ expr_res_t parse_expr( const src_t & src, parse_helper_t * ph, const int end, co
 				new stmt_simple_t( SIMPLE_TOKEN, name, tok_val ),
 				fn_args.expr, tok_val
 			);
+			if( !stack.empty() && stack.back()->m_val->type == TOK_DOT ) fn_call->m_post_dot = true;
 			data.push_back( fn_call );
 		} else if( ph->peak()->type == TOK_LBRACE ) {
 			int rbrace_loc;
@@ -300,7 +302,46 @@ fail:
 	return nullptr;
 }
 
-bool stmt_expr_t::bytecode( bytecode_t & bcode )
+bool stmt_expr_t::bytecode( bytecode_t & bcode ) const
 {
+	if( m_rhs ) m_rhs->bytecode( bcode );
+	if( m_lhs ) m_lhs->bytecode( bcode );
+
+	if( !m_oper ) return true;
+
+	if( m_oper->m_val->type == TOK_ASSN ) {
+		int child_cc = 0;
+		child_comma_count( this, child_cc );
+		if( child_cc == 0 ) bcode.push_back( { m_oper->m_tok_ctr, m_oper->m_val->line, m_oper->m_val->col,
+						       m_is_top_expr ? IC_STORE : IC_STORE_LOAD, { OP_NONE, "" } } );
+		else bcode.push_back( { m_oper->m_tok_ctr, m_oper->m_val->line, m_oper->m_val->col,
+					m_is_top_expr ? IC_STORE : IC_STORE_LOAD, { OP_INT, std::to_string( child_cc / 2 + 1 ) } } );
+		return true;
+	}
+
+	if( m_oper->m_val->type == TOK_COMMA ) return true;
+
+	m_oper->bytecode( bcode );
+	bcode.push_back( { m_oper->m_tok_ctr, m_oper->m_val->line,
+			m_oper->m_val->col, IC_FN_CALL,
+			{ OP_INT, std::to_string( oper_arg_count( m_oper->m_val ) ) } } );
+	if( m_is_top_expr ) {
+		bcode.push_back( { m_oper->m_tok_ctr, m_oper->m_val->line,
+				m_oper->m_val->col, IC_POP, { OP_NONE, "" } } );
+	}
+
 	return true;
+}
+
+void child_comma_count( const stmt_expr_t * expr, int & cc )
+{
+	if( expr->m_lhs && expr->m_lhs->m_type == GRAM_EXPR ) {
+		const stmt_expr_t * e = ( const stmt_expr_t * )expr->m_lhs;
+		if( e->m_etype == EXPR_BASIC && e->m_oper != nullptr && e->m_oper->m_val->type == TOK_COMMA ) child_comma_count( e, cc );
+	}
+	if( expr->m_rhs && expr->m_rhs->m_type == GRAM_EXPR ) {
+		const stmt_expr_t * e = ( const stmt_expr_t * )expr->m_rhs;
+		if( e->m_etype == EXPR_BASIC && e->m_oper != nullptr && e->m_oper->m_val->type == TOK_COMMA ) child_comma_count( e, cc );
+	}
+	if( expr->m_oper->m_val->type == TOK_COMMA ) ++cc;
 }

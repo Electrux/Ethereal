@@ -76,7 +76,7 @@ fail:
 	return nullptr;
 }
 
-bool stmt_for_t::bytecode( bytecode_t & bcode )
+bool stmt_for_t::bytecode( bytecode_t & bcode ) const
 {
 	return true;
 }

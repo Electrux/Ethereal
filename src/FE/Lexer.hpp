@@ -92,13 +92,13 @@ enum TokType
 	TOK_COL,  // :
 
 	// Separators
+	TOK_DOT,
+	TOK_COMMA,
+	TOK_AT,
 	TOK_SPC,
 	TOK_TAB,
 	TOK_NEWL,
-	TOK_DOT,
-	TOK_COMMA,
 	TOK_COLS, // Semi colon
-	TOK_AT,
 	// Parenthesis, Braces, Brackets
 	TOK_LPAREN,
 	TOK_RPAREN,

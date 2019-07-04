@@ -92,13 +92,13 @@ const char * TokStrs[ _TOK_LAST ] = {
 	":",
 
 	// Separators
+	".",
+	",",
+	"@",
 	"SPC",
 	"TAB",
 	"NEWL",
-	"DOT",
-	",",
 	";",
-	"@",
 	// Parenthesis, Braces, Brackets
 	"(",
 	")",

@@ -40,7 +40,8 @@ int oper_prec( const tok_t * tok )
 OperAssoc oper_assoc( const tok_t * tok )
 {
 	const TokType type = tok->type;
-	if( type < TOK_ASSN || type > TOK_RSHIFT_ASSN ) return LTR;
+	if( type < TOK_ASSN || type > TOK_RBRACK ) return LTR;
+	if( type == TOK_COMMA ) return RTL;
 	if( token_is_one_of_assign( tok ) ) return RTL;
 	if( type == TOK_QUEST || type == TOK_COL ) return RTL;
 	if( type == TOK_NOT || type == TOK_BNOT ) return RTL;

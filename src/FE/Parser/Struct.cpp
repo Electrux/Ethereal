@@ -65,7 +65,13 @@ fail:
 	return nullptr;
 }
 
-bool stmt_struct_t::bytecode( bytecode_t & bcode )
+bool stmt_struct_t::bytecode( bytecode_t & bcode ) const
 {
+	for( auto & f : m_fields ) {
+		f.def_val->bytecode( bcode );
+		bcode.push_back( { m_tok_ctr, f.name->m_val->line, f.name->m_val->col, IC_STRUCT_FIELD, { OP_CONST, f.name->m_val->data } } );
+	}
+	bcode.push_back( { m_tok_ctr, m_name->m_val->line, m_name->m_val->col, IC_PUSH, { OP_CONST, m_name->m_val->data } } );
+	bcode.push_back( { m_tok_ctr, m_name->m_val->line, m_name->m_val->col, IC_STRUCT_BUILD, { OP_INT, std::to_string( m_fields.size() ) } } );
 	return true;
 }

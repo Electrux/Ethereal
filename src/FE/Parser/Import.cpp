@@ -33,7 +33,7 @@ beg_what:
 	return new stmt_import_t( what, as, tok_ctr );
 }
 
-bool stmt_import_t::bytecode( bytecode_t & bcode )
+bool stmt_import_t::bytecode( bytecode_t & bcode ) const
 {
 	if( m_as != nullptr ) {
 		bcode.push_back( { m_tok_ctr, m_as->line, m_as->col, IC_PUSH, { OP_CONST, m_as->data } } );

@@ -81,7 +81,7 @@ fail:
 	return nullptr;
 }
 
-bool stmt_func_t::bytecode( bytecode_t & bcode )
+bool stmt_func_t::bytecode( bytecode_t & bcode ) const
 {
 	return true;
 }

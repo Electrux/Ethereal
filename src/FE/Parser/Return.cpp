@@ -34,7 +34,7 @@ fail:
 	return nullptr;
 }
 
-bool stmt_return_t::bytecode( bytecode_t & bcode )
+bool stmt_return_t::bytecode( bytecode_t & bcode ) const
 {
 	return true;
 }

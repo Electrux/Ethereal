@@ -110,6 +110,8 @@ struct expr_res_t
 	stmt_expr_t * expr;
 };
 
+void child_comma_count( const stmt_expr_t * expr, int & cc );
+
 stmt_enum_t * parse_enum( const src_t & src, parse_helper_t * ph );
 stmt_ldmod_t * parse_ldmod( const src_t & src, parse_helper_t * ph );
 stmt_import_t * parse_import( const src_t & src, parse_helper_t * ph );

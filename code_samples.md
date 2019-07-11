@@ -16,7 +16,7 @@ println( var );
 3. Arrays/Lists
 
 ```
-var = [ 1, 2, 3, 4 ];
+var = L( 1, 2, 3, 4 );
 println( var[ 1 ] );
 ```
 

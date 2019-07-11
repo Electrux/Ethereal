@@ -12,7 +12,7 @@
 
 stmt_expr_t * gen_tree( const src_t & src, parse_helper_t * ph, std::vector< stmt_base_t * > & data );
 
-expr_res_t parse_expr( const src_t & src, parse_helper_t * ph, const int end, const ExprType type, const bool is_top )
+expr_res_t parse_expr( const src_t & src, parse_helper_t * ph, const int end, const bool is_top )
 {
 	std::vector< stmt_base_t * > data;
 	std::vector< stmt_simple_t * > stack;
@@ -38,15 +38,41 @@ expr_res_t parse_expr( const src_t & src, parse_helper_t * ph, const int end, co
 				goto fail;
 			}
 			ph->next();
-			expr_res_t struct_args = parse_expr( src, ph, rbrace_loc, EXPR_BASIC, false );
+			expr_res_t struct_args = parse_expr( src, ph, rbrace_loc, false );
 			if( struct_args.res != 0 ) goto fail;
-			stmt_func_struct_call_t * struct_call = new stmt_func_struct_call_t(
+			stmt_func_struct_subscr_call_t * struct_call = new stmt_func_struct_subscr_call_t(
 				new stmt_simple_t( SIMPLE_TOKEN, name, tok_val ),
 				struct_args.expr, tok_val
 			);
-			struct_call->m_is_struct = true;
+			struct_call->m_ctype = CT_STRUCT;
 			if( !stack.empty() && stack.back()->m_val->type == TOK_DOT ) struct_call->m_post_dot = true;
 			data.push_back( struct_call );
+		} else if( ( ph->peak()->type == TOK_IDEN || ph->peak()->type == TOK_STR ) &&
+		           ( end == -1 || ph->tok_ctr() + 1 < end ) &&
+			   ph->peak( 1 )->type == TOK_LBRACK ) {
+			tok_t * name = ph->peak();
+			int tok_val = ph->tok_ctr();
+			ph->next();
+			int rbrack_loc;
+			int err = find_next_of( ph, rbrack_loc, { TOK_RBRACK }, TOK_LBRACK );
+			if( err < 0 ) {
+				if( err == -1 ) {
+					PARSE_FAIL( "could not find the equivalent ending bracket for parsing the subscript of '%s'", name->data.c_str() );
+				} else if( err == -2 ) {
+					PARSE_FAIL( "found end of statement (semicolon) before the equivalent ending bracket for subscript declaration" );
+				}
+				goto fail;
+			}
+			ph->next();
+			expr_res_t subscr = parse_expr( src, ph, rbrack_loc, false );
+			if( subscr.res != 0 ) goto fail;
+			stmt_func_struct_subscr_call_t * subscr_call = new stmt_func_struct_subscr_call_t(
+				new stmt_simple_t( SIMPLE_TOKEN, name, tok_val ),
+				subscr.expr, tok_val
+			);
+			subscr_call->m_ctype = CT_SUBSCR;
+			if( !stack.empty() && stack.back()->m_val->type == TOK_DOT ) subscr_call->m_post_dot = true;
+			data.push_back( subscr_call );
 		} else if( ph->peak()->type == TOK_IDEN && ( end == -1 || ph->tok_ctr() + 1 < end ) && ph->peak( 1 )->type == TOK_LPAREN ) {
 			tok_t * name = ph->peak();
 			int tok_val = ph->tok_ctr();
@@ -62,44 +88,14 @@ expr_res_t parse_expr( const src_t & src, parse_helper_t * ph, const int end, co
 				goto fail;
 			}
 			ph->next();
-			expr_res_t fn_args = parse_expr( src, ph, rparen_loc, EXPR_BASIC, false );
+			expr_res_t fn_args = parse_expr( src, ph, rparen_loc, false );
 			if( fn_args.res != 0 ) goto fail;
-			stmt_func_struct_call_t * fn_call = new stmt_func_struct_call_t(
+			stmt_func_struct_subscr_call_t * fn_call = new stmt_func_struct_subscr_call_t(
 				new stmt_simple_t( SIMPLE_TOKEN, name, tok_val ),
 				fn_args.expr, tok_val
 			);
 			if( !stack.empty() && stack.back()->m_val->type == TOK_DOT ) fn_call->m_post_dot = true;
 			data.push_back( fn_call );
-		} else if( ph->peak()->type == TOK_LBRACE ) {
-			int rbrace_loc;
-			int err = find_next_of( ph, rbrace_loc, { TOK_RBRACE }, TOK_LBRACE );
-			if( err < 0 ) {
-				if( err == -1 ) {
-					PARSE_FAIL( "could not find the equivalent ending brace for parsing the map" );
-				} else if( err == -2 ) {
-					PARSE_FAIL( "found end of statement (semicolon) before the equivalent ending brace for map" );
-				}
-				goto fail;
-			}
-			ph->next();
-			expr_res_t map = parse_expr( src, ph, rbrace_loc, EXPR_MAP, false );
-			if( map.res != 0 ) goto fail;
-			data.push_back( map.expr );
-		} else if( ph->peak()->type == TOK_LBRACK ) {
-			int rbrack_loc;
-			int err = find_next_of( ph, rbrack_loc, { TOK_RBRACK }, TOK_LBRACK );
-			if( err < 0 ) {
-				if( err == -1 ) {
-					PARSE_FAIL( "could not find the equivalent ending bracket for parsing the vector" );
-				} else if( err == -2 ) {
-					PARSE_FAIL( "found end of statement (semicolon) before the equivalent ending bracket for vector" );
-				}
-				goto fail;
-			}
-			ph->next();
-			expr_res_t vec = parse_expr( src, ph, rbrack_loc, EXPR_ARRAY, false );
-			if( vec.res != 0 ) goto fail;
-			data.push_back( vec.expr );
 		} else {
 			if( token_is_data( ph->peak() ) ) {
 				data.push_back(
@@ -119,10 +115,14 @@ expr_res_t parse_expr( const src_t & src, parse_helper_t * ph, const int end, co
 				goto fail;
 			}
 			// handle parentheses
-			if( ph->peak()->type == TOK_RPAREN ) {
+			if( ph->peak()->type == TOK_RPAREN || ph->peak()->type == TOK_RBRACE || ph->peak()->type == TOK_RBRACK ) {
 				bool found = false;
+				TokType eq;
+				if( ph->peak()->type == TOK_RPAREN ) eq = TOK_LPAREN;
+				else if( ph->peak()->type == TOK_RBRACE ) eq = TOK_LBRACE;
+				else eq = TOK_LBRACK;
 				while( stack.size() > 0 ) {
-					if( stack.back()->m_val->type == TOK_LPAREN ) {
+					if( stack.back()->m_val->type == eq ) {
 						delete stack.back();
 						stack.pop_back();
 						found = true;
@@ -197,9 +197,7 @@ expr_res_t parse_expr( const src_t & src, parse_helper_t * ph, const int end, co
 
 	res = gen_tree( src, ph, data );
 	if( res == nullptr ) goto fail;
-	if( type != EXPR_BASIC ) {
-		res->m_etype = type;
-	}
+
 	if( is_top ) {
 		res->m_is_top_expr = true;
 	}
@@ -277,7 +275,7 @@ stmt_expr_t * gen_tree( const src_t & src, parse_helper_t * ph, std::vector< stm
 			goto fail;
 		}
 
-		stmt_expr_t * expr = new stmt_expr_t( EXPR_BASIC, top1, ( stmt_simple_t * ) * it, top2, ( * it )->m_tok_ctr );
+		stmt_expr_t * expr = new stmt_expr_t( top1, ( stmt_simple_t * ) * it, top2, ( * it )->m_tok_ctr );
 		it = data.erase( it );
 		var_stack.push_back( expr );
 	}
@@ -291,7 +289,7 @@ stmt_expr_t * gen_tree( const src_t & src, parse_helper_t * ph, std::vector< stm
 	if( var_stack.back()->m_type != GRAM_EXPR ) {
 		stmt_base_t * data = var_stack.back();
 		var_stack.pop_back();
-		stmt_expr_t * expr = new stmt_expr_t( EXPR_BASIC, nullptr, nullptr, data, data->m_tok_ctr );
+		stmt_expr_t * expr = new stmt_expr_t( nullptr, nullptr, data, data->m_tok_ctr );
 		var_stack.push_back( expr );
 	}
 
@@ -302,32 +300,73 @@ fail:
 	return nullptr;
 }
 
-bool stmt_expr_t::bytecode( bytecode_t & bcode ) const
+bool stmt_expr_t::bytecode( const toks_t & toks, bytecode_t & bcode ) const
 {
-	if( m_rhs ) m_rhs->bytecode( bcode );
-	if( m_lhs ) m_lhs->bytecode( bcode );
+	if( !m_oper ) {
+		if( m_rhs ) m_rhs->bytecode( toks, bcode );
+		if( m_lhs ) m_lhs->bytecode( toks, bcode );
+	} else {
+		const tok_t * oper = m_oper->m_val;
+
+		if( oper_assoc( oper ) == LTR ) {
+			int ques_col_loc = -1;
+
+			if( m_lhs ) m_lhs->bytecode( toks, bcode );
+
+			if( oper->type == TOK_QUEST ) {
+				bcode.push_back( { m_oper->m_tok_ctr, oper->line, oper->col, IC_JUMP_FALSE, { OP_INT, "<placeholder>" } } );
+				ques_col_loc = bcode.size() - 1;
+			}
+			if( oper->type == TOK_COL ) {
+				bcode.push_back( { m_oper->m_tok_ctr, oper->line, oper->col, IC_JUMP, { OP_INT, "<placeholder>" } } );
+				ques_col_loc = bcode.size() - 1;
+			}
+
+			int curr_bcode_size = bcode.size();
+			if( m_rhs ) m_rhs->bytecode( toks, bcode );
+
+			if( oper->type == TOK_QUEST || oper->type == TOK_COL ) {
+				int rhs_bcode_size = bcode.size() - curr_bcode_size + ( oper->type == TOK_QUEST );
+				bcode[ ques_col_loc ].oper.val = std::to_string( ques_col_loc + rhs_bcode_size + 1 );
+			}
+		} else {
+			if( m_rhs ) m_rhs->bytecode( toks, bcode );
+			if( m_lhs ) m_lhs->bytecode( toks, bcode );
+		}
+	}
 
 	if( !m_oper ) return true;
 
-	if( m_oper->m_val->type == TOK_ASSN ) {
+	const TokType ttype = m_oper ? m_oper->m_val->type : TOK_INVALID;
+
+	int line = m_oper ? m_oper->m_val->line : toks[ m_tok_ctr ].line;
+	int col = m_oper ? m_oper->m_val->col : toks[ m_tok_ctr ].col;
+
+	if( ttype == TOK_COMMA || ttype == TOK_QUEST || ttype == TOK_COL ) return true;
+
+	if( ttype == TOK_DOT ) {
+		if( bcode.size() > 0 && ( bcode.back().opcode == IC_FN_MEM_CALL || bcode.back().opcode == IC_FN_MEM_CALL || bcode.back().opcode == IC_STRUCT_MEM_DECL ) ) {
+			goto end;
+		}
+	}
+
+	if( ttype == TOK_ASSN ) {
 		int child_cc = 0;
 		child_comma_count( this, child_cc );
-		if( child_cc == 0 ) bcode.push_back( { m_oper->m_tok_ctr, m_oper->m_val->line, m_oper->m_val->col,
+		if( child_cc == 0 ) bcode.push_back( { m_oper->m_tok_ctr, line, col,
 						       m_is_top_expr ? IC_STORE : IC_STORE_LOAD, { OP_NONE, "" } } );
-		else bcode.push_back( { m_oper->m_tok_ctr, m_oper->m_val->line, m_oper->m_val->col,
+		else bcode.push_back( { m_oper->m_tok_ctr, line, col,
 					m_is_top_expr ? IC_STORE : IC_STORE_LOAD, { OP_INT, std::to_string( child_cc / 2 + 1 ) } } );
 		return true;
 	}
 
-	if( m_oper->m_val->type == TOK_COMMA ) return true;
+	m_oper->bytecode( toks, bcode );
+	bcode.push_back( { m_oper->m_tok_ctr, line, col, IC_FN_CALL,
+			   { OP_INT, std::to_string( oper_arg_count( m_oper->m_val ) ) } } );
 
-	m_oper->bytecode( bcode );
-	bcode.push_back( { m_oper->m_tok_ctr, m_oper->m_val->line,
-			m_oper->m_val->col, IC_FN_CALL,
-			{ OP_INT, std::to_string( oper_arg_count( m_oper->m_val ) ) } } );
+end:
 	if( m_is_top_expr ) {
-		bcode.push_back( { m_oper->m_tok_ctr, m_oper->m_val->line,
-				m_oper->m_val->col, IC_POP, { OP_NONE, "" } } );
+		bcode.push_back( { m_tok_ctr, line, col, IC_POP, { OP_NONE, "" } } );
 	}
 
 	return true;
@@ -337,11 +376,11 @@ void child_comma_count( const stmt_expr_t * expr, int & cc )
 {
 	if( expr->m_lhs && expr->m_lhs->m_type == GRAM_EXPR ) {
 		const stmt_expr_t * e = ( const stmt_expr_t * )expr->m_lhs;
-		if( e->m_etype == EXPR_BASIC && e->m_oper != nullptr && e->m_oper->m_val->type == TOK_COMMA ) child_comma_count( e, cc );
+		if( e->m_oper != nullptr && e->m_oper->m_val->type == TOK_COMMA ) child_comma_count( e, cc );
 	}
 	if( expr->m_rhs && expr->m_rhs->m_type == GRAM_EXPR ) {
 		const stmt_expr_t * e = ( const stmt_expr_t * )expr->m_rhs;
-		if( e->m_etype == EXPR_BASIC && e->m_oper != nullptr && e->m_oper->m_val->type == TOK_COMMA ) child_comma_count( e, cc );
+		if( e->m_oper != nullptr && e->m_oper->m_val->type == TOK_COMMA ) child_comma_count( e, cc );
 	}
-	if( expr->m_oper->m_val->type == TOK_COMMA ) ++cc;
+	if( expr->m_oper && expr->m_oper->m_val->type == TOK_COMMA ) ++cc;
 }

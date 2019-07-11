@@ -15,6 +15,10 @@ const char * InstrCodeStrs[ _IC_LAST ] = {
 	"store",
 	"store_load",
 
+	"jump",
+	"jump_true",
+	"jump_false",
+
 	"build_enum",
 
 	"load_mod",
@@ -23,6 +27,8 @@ const char * InstrCodeStrs[ _IC_LAST ] = {
 	"call_mem_func",
 	"struct_decl",
 	"struct_mem_decl",
+
+	"subscript",
 
 	"struct_field",
 

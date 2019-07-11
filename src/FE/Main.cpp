@@ -67,7 +67,7 @@ int main( int argc, char ** argv )
 
 	err = E_OK;
 	for( auto & it : * ptree ) {
-		if( !it->bytecode( bcode ) ) { err = E_BYTECODE_FAIL; goto cleanup; }
+		if( !it->bytecode( main_src.toks, bcode ) ) { err = E_BYTECODE_FAIL; goto cleanup; }
 	}
 
 	if( flags & OPT_B ) {

@@ -30,7 +30,7 @@ stmt_ldmod_t * parse_ldmod( const src_t & src, parse_helper_t * ph )
 	return new stmt_ldmod_t( what, as, tok_ctr );
 }
 
-bool stmt_ldmod_t::bytecode( bytecode_t & bcode ) const
+bool stmt_ldmod_t::bytecode( const toks_t & toks, bytecode_t & bcode ) const
 {
 	if( m_as != nullptr ) {
 		bcode.push_back( { m_tok_ctr, m_as->line, m_as->col, IC_PUSH, { OP_CONST, m_as->data } } );

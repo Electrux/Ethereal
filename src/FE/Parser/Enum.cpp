@@ -39,12 +39,12 @@ val_begin:
 	return new stmt_enum_t( name, vals, tok_ctr );
 }
 
-bool stmt_enum_t::bytecode( bytecode_t & bcode ) const
+bool stmt_enum_t::bytecode( const toks_t & toks, bytecode_t & bcode ) const
 {
 	for( auto v = m_vals.rbegin(); v != m_vals.rend(); ++v ) {
 		bcode.push_back( { m_tok_ctr, ( * v )->line, ( * v )->col, IC_PUSH, { OP_CONST, ( * v )->data } } );
 	}
-	bcode.push_back( { m_tok_ctr, m_name->line, m_name->col, IC_PUSH, { OP_CONST, m_name->data } } );
 	bcode.push_back( { m_tok_ctr, m_name->line, m_name->col, IC_BUILD_ENUM, { OP_INT, std::to_string( m_vals.size() ) } } );
+	bcode.push_back( { m_tok_ctr, m_name->line, m_name->col, IC_STORE, { OP_CONST, m_name->data } } );
 	return true;
 }

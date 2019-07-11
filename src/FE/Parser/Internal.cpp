@@ -31,8 +31,8 @@ int oper_prec( const tok_t * tok )
 	if( type == TOK_MUL || type == TOK_DIV || type == TOK_MOD || type == TOK_POW ) return 12;
 	if( type == TOK_UADD || type == TOK_USUB ) return 13;
 	if( type == TOK_NOT || type == TOK_BNOT ) return 14;
+	if( type == TOK_LPAREN || type == TOK_RPAREN || type == TOK_LBRACK || type == TOK_RBRACK || type == TOK_LBRACE || type == TOK_RBRACE ) return 15;
 	if( type == TOK_DOT ) return 16;
-	if( type == TOK_LPAREN || type == TOK_RPAREN || type == TOK_LBRACK || type == TOK_RBRACK || type == TOK_LBRACE || type == TOK_RBRACE ) return 16;
 
 	return -1;
 }
@@ -43,7 +43,6 @@ OperAssoc oper_assoc( const tok_t * tok )
 	if( type < TOK_ASSN || type > TOK_RBRACK ) return LTR;
 	if( type == TOK_COMMA ) return RTL;
 	if( token_is_one_of_assign( tok ) ) return RTL;
-	if( type == TOK_QUEST || type == TOK_COL ) return RTL;
 	if( type == TOK_NOT || type == TOK_BNOT ) return RTL;
 	if( type == TOK_DOT ) return LTR;
 
@@ -66,10 +65,9 @@ int oper_arg_count( const tok_t * tok )
 	if( type == TOK_MUL || type == TOK_DIV || type == TOK_MOD || type == TOK_POW ) return 2;
 	if( type == TOK_UADD || type == TOK_USUB ) return 1;
 	if( type == TOK_NOT || type == TOK_BNOT ) return 1;
-	if( type == TOK_DOT ) return 2;
-	//
 	if( type == TOK_LBRACK ) return 2;
 	if( type == TOK_LPAREN || type == TOK_RPAREN || type == TOK_LBRACK || type == TOK_RBRACK || type == TOK_LBRACE || type == TOK_RBRACE ) return 0;
+	if( type == TOK_DOT ) return 2;
 
 	return -1;
 }

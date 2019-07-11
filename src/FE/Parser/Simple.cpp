@@ -10,7 +10,7 @@
 #include "Internal.hpp"
 #include "../Ethereal.hpp"
 
-bool stmt_simple_t::bytecode( bytecode_t & bcode ) const
+bool stmt_simple_t::bytecode( const toks_t & toks, bytecode_t & bcode ) const
 {
 	if( m_stype == SIMPLE_KEYWORD || m_stype == SIMPLE_OPER ) {
 		bcode.push_back( { m_tok_ctr, m_val->line, m_val->col, IC_PUSH, { OP_CONST, TokStrs[ m_val->type ] } } );

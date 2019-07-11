@@ -40,7 +40,7 @@ field_begin:
 		}
 		goto fail;
 	}
-	fdef_val = parse_expr( src, ph, semicol_loc, EXPR_BASIC, false );
+	fdef_val = parse_expr( src, ph, semicol_loc, false );
 	if( fdef_val.res != 0 ) goto fail;
 	fields.push_back( { new stmt_simple_t( SIMPLE_TOKEN, fname, fname_tok_ctr ), fdef_val.expr } );
 	fname = nullptr;
@@ -65,10 +65,10 @@ fail:
 	return nullptr;
 }
 
-bool stmt_struct_t::bytecode( bytecode_t & bcode ) const
+bool stmt_struct_t::bytecode( const toks_t & toks, bytecode_t & bcode ) const
 {
 	for( auto & f : m_fields ) {
-		f.def_val->bytecode( bcode );
+		f.def_val->bytecode( toks, bcode );
 		bcode.push_back( { m_tok_ctr, f.name->m_val->line, f.name->m_val->col, IC_STRUCT_FIELD, { OP_CONST, f.name->m_val->data } } );
 	}
 	bcode.push_back( { m_tok_ctr, m_name->m_val->line, m_name->m_val->col, IC_PUSH, { OP_CONST, m_name->m_val->data } } );

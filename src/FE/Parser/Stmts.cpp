@@ -127,16 +127,10 @@ void stmt_import_t::disp( const bool has_next ) const
 /////////////////////////////////////////// Expr //////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 
-const char * ExprTypeStrs[ _EXPR_LAST ] = {
-	"Basic",
-	"Array",
-	"Map",
-};
-
-stmt_expr_t::stmt_expr_t( const ExprType etype, const stmt_base_t * lhs, const stmt_simple_t * oper,
+stmt_expr_t::stmt_expr_t( const stmt_base_t * lhs, const stmt_simple_t * oper,
 			  const stmt_base_t * rhs, const int tok_ctr )
 	: stmt_base_t( GRAM_EXPR, tok_ctr ), m_lhs( lhs ),
-	  m_rhs( rhs ), m_oper( oper ), m_etype( etype ), m_is_top_expr( false ) {}
+	  m_rhs( rhs ), m_oper( oper ), m_is_top_expr( false ) {}
 stmt_expr_t::~stmt_expr_t()
 {
 	if( m_lhs ) delete m_lhs;
@@ -147,8 +141,8 @@ stmt_expr_t::~stmt_expr_t()
 void stmt_expr_t::disp( const bool has_next ) const
 {
 	IO::tab_add( has_next );
-	IO::print( has_next, "Expression (top: %s) (type: %s) at: %x\n",
-		   m_is_top_expr ? "yes" : "no", ExprTypeStrs[ m_etype ], this );
+	IO::print( has_next, "Expression (top: %s) at: %x\n",
+		   m_is_top_expr ? "yes" : "no", this );
 
 	IO::tab_add( m_lhs != nullptr || m_rhs != nullptr );
 	IO::print( m_lhs != nullptr || m_rhs != nullptr,
@@ -267,31 +261,40 @@ void stmt_func_t::disp( const bool has_next ) const
 /////////////////////////////////// Function/Struct Call //////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 
-stmt_func_struct_call_t::stmt_func_struct_call_t( const stmt_simple_t * name,
+const char * CallTypeStrs[ _CT_LAST ] = {
+	"Function",
+	"Struct",
+	"Subscript",
+};
+
+stmt_func_struct_subscr_call_t::stmt_func_struct_subscr_call_t( const stmt_simple_t * name,
 						  const stmt_expr_t * args,
 						  const int tok_ctr )
 	: stmt_base_t( GRAM_FN_STRUCT_CALL, tok_ctr ),
-	  m_name( name ), m_args( args ), m_is_struct( false ),
+	  m_name( name ), m_args( args ), m_ctype( CT_FUNC ),
 	  m_post_dot( false ) {}
 
-stmt_func_struct_call_t::~stmt_func_struct_call_t()
+stmt_func_struct_subscr_call_t::~stmt_func_struct_subscr_call_t()
 {
 	delete m_name;
 	if( m_args ) delete m_args;
 }
-void stmt_func_struct_call_t::disp( const bool has_next ) const
+void stmt_func_struct_subscr_call_t::disp( const bool has_next ) const
 {
 	IO::tab_add( has_next );
-	if( m_is_struct ) {
+	if( m_ctype == CT_FUNC ) {
+		IO::print( has_next, "Function '%s' call at: %x (inside scope: %s)\n",
+			   m_name->m_val->data.c_str(), this, m_post_dot ? "yes" : "no" );
+	} else if( m_ctype == CT_STRUCT ) {
 		IO::print( has_next, "Struct '%s' instantiation at: %x (inside scope: %s)\n",
 			   m_name->m_val->data.c_str(), this, m_post_dot ? "yes" : "no" );
-	} else {
-		IO::print( has_next, "Function '%s' call at: %x (inside scope: %s)\n",
+	} else if( m_ctype == CT_SUBSCR ) {
+		IO::print( has_next, "Subscript of '%s' at: %x (inside scope: %s)\n",
 			   m_name->m_val->data.c_str(), this, m_post_dot ? "yes" : "no" );
 	}
 	if( m_args ) {
 		IO::tab_add( false );
-		IO::print( false, "Arguments:\n" );
+		IO::print( false, "Argument(s):\n" );
 		m_args->disp( false );
 		IO::tab_rem();
 	}

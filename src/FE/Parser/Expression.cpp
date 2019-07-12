@@ -165,7 +165,9 @@ expr_res_t parse_expr( const src_t & src, parse_helper_t * ph, const int end, co
 					stack.pop_back();
 				}
 				if( !found ) {
-					PARSE_FAIL( "could not find equivalent beginning parentheses" );
+					if( eq == TOK_LPAREN ) PARSE_FAIL( "could not find equivalent beginning parentheses" );
+					else if( eq == TOK_LBRACE ) PARSE_FAIL( "could not find equivalent beginning brace" );
+					else if( eq == TOK_LBRACK ) PARSE_FAIL( "could not find equivalent beginning bracket" );
 					goto fail;
 				}
 				ph->next();

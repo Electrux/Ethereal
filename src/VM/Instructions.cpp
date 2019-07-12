@@ -26,14 +26,14 @@ const char * InstrCodeStrs[ _IC_LAST ] = {
 	"add_scope",
 	"rem_scope",
 
-	"return",
-
 	"load_mod",
 
 	"call_func",
 	"call_mem_func",
 	"struct_decl",
 	"struct_mem_decl",
+
+	"return",
 
 	"subscript",
 

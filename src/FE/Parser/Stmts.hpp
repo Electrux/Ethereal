@@ -47,7 +47,7 @@ public:
 	stmt_base_t( const GrammarTypes type, const int tok_ctr );
 	virtual ~stmt_base_t();
 	virtual void disp( const bool has_next ) const = 0;
-	virtual bool bytecode( const toks_t & toks, bytecode_t & bcode ) const = 0;
+	virtual bool bytecode( src_t & src ) const = 0;
 };
 
 enum SimpleType
@@ -70,7 +70,7 @@ public:
 		       const int tok_ctr );
 	~stmt_simple_t();
 	void disp( const bool has_next ) const;
-	bool bytecode( const toks_t & toks, bytecode_t & bcode ) const;
+	bool bytecode( src_t & src ) const;
 };
 
 class stmt_enum_t : public stmt_base_t
@@ -82,7 +82,7 @@ public:
 		     const int tok_ctr );
 	~stmt_enum_t();
 	void disp( const bool has_next ) const;
-	bool bytecode( const toks_t & toks, bytecode_t & bcode ) const;
+	bool bytecode( src_t & src ) const;
 };
 
 class stmt_ldmod_t : public stmt_base_t
@@ -94,7 +94,7 @@ public:
 		      const int tok_ctr );
 	~stmt_ldmod_t();
 	void disp( const bool has_next ) const;
-	bool bytecode( const toks_t & toks, bytecode_t & bcode ) const;
+	bool bytecode( src_t & src ) const;
 };
 
 class stmt_import_t : public stmt_base_t
@@ -106,7 +106,7 @@ public:
 		       const int tok_ctr );
 	~stmt_import_t();
 	void disp( const bool has_next ) const;
-	bool bytecode( const toks_t & toks, bytecode_t & bcode ) const;
+	bool bytecode( src_t & src ) const;
 };
 
 class stmt_expr_t : public stmt_base_t
@@ -120,7 +120,7 @@ public:
 	~stmt_expr_t();
 	friend void child_comma_count( const stmt_expr_t * expr, int & cc );
 	void disp( const bool has_next ) const;
-	bool bytecode( const toks_t & toks, bytecode_t & bcode ) const;
+	bool bytecode( src_t & src ) const;
 };
 
 struct struct_field_t
@@ -138,7 +138,7 @@ public:
 		       const int tok_ctr );
 	~stmt_struct_t();
 	void disp( const bool has_next ) const;
-	bool bytecode( const toks_t & toks, bytecode_t & bcode ) const;
+	bool bytecode( src_t & src ) const;
 };
 
 class stmt_block_t : public stmt_base_t
@@ -148,7 +148,7 @@ public:
 	stmt_block_t( std::vector< stmt_base_t * > * stmts, const int tok_ctr );
 	~stmt_block_t();
 	void disp( const bool has_next ) const;
-	bool bytecode( const toks_t & toks, bytecode_t & bcode ) const;
+	bool bytecode( src_t & src ) const;
 };
 
 class stmt_func_t : public stmt_base_t
@@ -163,7 +163,7 @@ public:
 		     const int tok_ctr );
 	~stmt_func_t();
 	void disp( const bool has_next ) const;
-	bool bytecode( const toks_t & toks, bytecode_t & bcode ) const;
+	bool bytecode( src_t & src ) const;
 };
 
 enum CallType
@@ -188,7 +188,7 @@ public:
 					const int tok_ctr );
 	~stmt_func_struct_subscr_call_t();
 	void disp( const bool has_next ) const;
-	bool bytecode( const toks_t & toks, bytecode_t & bcode ) const;
+	bool bytecode( src_t & src ) const;
 };
 
 class stmt_collection_t : public stmt_base_t
@@ -202,7 +202,7 @@ public:
 			   const int line, const int col );
 	~stmt_collection_t();
 	void disp( const bool has_next ) const;
-	bool bytecode( const toks_t & toks, bytecode_t & bcode ) const;
+	bool bytecode( src_t & src ) const;
 };
 
 struct condition_t
@@ -218,7 +218,7 @@ public:
 	stmt_if_t( const std::vector< condition_t > & conds, const int tok_ctr );
 	~stmt_if_t();
 	void disp( const bool has_next ) const;
-	bool bytecode( const toks_t & toks, bytecode_t & bcode ) const;
+	bool bytecode( src_t & src ) const;
 };
 
 class stmt_for_t : public stmt_base_t
@@ -230,7 +230,7 @@ public:
 		     const stmt_block_t * block, const int tok_ctr );
 	~stmt_for_t();
 	void disp( const bool has_next ) const;
-	bool bytecode( const toks_t & toks, bytecode_t & bcode ) const;
+	bool bytecode( src_t & src ) const;
 };
 
 struct stmt_return_t : public stmt_base_t
@@ -239,7 +239,7 @@ struct stmt_return_t : public stmt_base_t
 	stmt_return_t( stmt_expr_t * ret_val, const int tok_ctr );
 	~stmt_return_t();
 	void disp( const bool has_next ) const;
-	bool bytecode( const toks_t & toks, bytecode_t & bcode ) const;
+	bool bytecode( src_t & src ) const;
 };
 
 struct stmt_continue_t : public stmt_base_t
@@ -247,7 +247,7 @@ struct stmt_continue_t : public stmt_base_t
 	stmt_continue_t( const int tok_ctr );
 	~stmt_continue_t();
 	void disp( const bool has_next ) const;
-	bool bytecode( const toks_t & toks, bytecode_t & bcode ) const;
+	bool bytecode( src_t & src ) const;
 };
 
 struct stmt_break_t : public stmt_base_t
@@ -255,7 +255,7 @@ struct stmt_break_t : public stmt_base_t
 	stmt_break_t( const int tok_ctr );
 	~stmt_break_t();
 	void disp( const bool has_next ) const;
-	bool bytecode( const toks_t & toks, bytecode_t & bcode ) const;
+	bool bytecode( src_t & src ) const;
 };
 
 #define PARSE_FAIL( ... ) src_fail( src.code[ ph->peak()->line - 1 ], \

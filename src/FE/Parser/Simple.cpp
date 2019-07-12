@@ -10,20 +10,20 @@
 #include "Internal.hpp"
 #include "../Ethereal.hpp"
 
-bool stmt_simple_t::bytecode( const toks_t & toks, bytecode_t & bcode ) const
+bool stmt_simple_t::bytecode( src_t & src ) const
 {
 	if( m_stype == SIMPLE_KEYWORD || m_stype == SIMPLE_OPER ) {
-		bcode.push_back( { m_tok_ctr, m_val->line, m_val->col, IC_PUSH, { OP_CONST, TokStrs[ m_val->type ] } } );
+		src.bcode.push_back( { m_tok_ctr, m_val->line, m_val->col, IC_PUSH, { OP_CONST, TokStrs[ m_val->type ] } } );
 	} else if( m_val->type == TOK_INT ) {
-		bcode.push_back( { m_tok_ctr, m_val->line, m_val->col, IC_PUSH, { OP_INT, m_val->data } } );
+		src.bcode.push_back( { m_tok_ctr, m_val->line, m_val->col, IC_PUSH, { OP_INT, m_val->data } } );
 	} else if( m_val->type == TOK_FLT ) {
-		bcode.push_back( { m_tok_ctr, m_val->line, m_val->col, IC_PUSH, { OP_FLT, m_val->data } } );
+		src.bcode.push_back( { m_tok_ctr, m_val->line, m_val->col, IC_PUSH, { OP_FLT, m_val->data } } );
 	} else if( m_val->type == TOK_TRUE || m_val->type == TOK_FALSE ) {
-		bcode.push_back( { m_tok_ctr, m_val->line, m_val->col, IC_PUSH, { OP_BOOL, m_val->data } } );
+		src.bcode.push_back( { m_tok_ctr, m_val->line, m_val->col, IC_PUSH, { OP_BOOL, m_val->data } } );
 	} else if( m_val->type == TOK_STR ) {
-		bcode.push_back( { m_tok_ctr, m_val->line, m_val->col, IC_PUSH, { OP_CONST, m_val->data } } );
+		src.bcode.push_back( { m_tok_ctr, m_val->line, m_val->col, IC_PUSH, { OP_CONST, m_val->data } } );
 	} else {
-		bcode.push_back( { m_tok_ctr, m_val->line, m_val->col, IC_PUSH, { OP_STR, m_val->data } } );
+		src.bcode.push_back( { m_tok_ctr, m_val->line, m_val->col, IC_PUSH, { OP_STR, m_val->data } } );
 	}
 	return true;
 }

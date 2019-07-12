@@ -64,7 +64,7 @@ fail:
 	return nullptr;
 }
 
-bool stmt_if_t::bytecode( const toks_t & toks, bytecode_t & bcode ) const
+bool stmt_if_t::bytecode( src_t & src ) const
 {
 	return true;
 }

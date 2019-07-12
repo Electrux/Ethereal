@@ -53,7 +53,6 @@ int main( int argc, char ** argv )
 
 	err = E_OK;
 	parse_tree_t * ptree = parse( main_src );
-	bytecode_t bcode;
 
 	if( ptree == nullptr ) { err = E_PARSE_FAIL; goto cleanup; }
 	main_src.ptree = ptree;
@@ -67,13 +66,13 @@ int main( int argc, char ** argv )
 
 	err = E_OK;
 	for( auto & it : * ptree ) {
-		if( !it->bytecode( main_src.toks, bcode ) ) { err = E_BYTECODE_FAIL; goto cleanup; }
+		if( !it->bytecode( main_src ) ) { err = E_BYTECODE_FAIL; goto cleanup; }
 	}
 
 	if( flags & OPT_B ) {
 		fprintf( stdout, "Byte Code:\n" );
-		for( size_t i = 0; i < bcode.size(); ++i ) {
-			auto & ins = bcode[ i ];
+		for( size_t i = 0; i < main_src.bcode.size(); ++i ) {
+			auto & ins = main_src.bcode[ i ];
 			fprintf( stdout, "%-*zu %-*s%d[%s]\n",
 				 5, i, 20, InstrCodeStrs[ ins.opcode ], ins.oper.type, ins.oper.val.c_str() );
 		}

@@ -335,38 +335,38 @@ fail:
 	return nullptr;
 }
 
-bool stmt_expr_t::bytecode( const toks_t & toks, bytecode_t & bcode ) const
+bool stmt_expr_t::bytecode( src_t & src ) const
 {
 	if( !m_oper ) {
-		if( m_rhs ) m_rhs->bytecode( toks, bcode );
-		if( m_lhs ) m_lhs->bytecode( toks, bcode );
+		if( m_rhs ) m_rhs->bytecode( src );
+		if( m_lhs ) m_lhs->bytecode( src );
 	} else {
 		const tok_t * oper = m_oper->m_val;
 
 		if( oper_assoc( oper ) == LTR ) {
 			int ques_col_loc = -1;
 
-			if( m_lhs ) m_lhs->bytecode( toks, bcode );
+			if( m_lhs ) m_lhs->bytecode( src );
 
 			if( oper->type == TOK_QUEST ) {
-				bcode.push_back( { m_oper->m_tok_ctr, oper->line, oper->col, IC_JUMP_FALSE, { OP_INT, "<placeholder>" } } );
-				ques_col_loc = bcode.size() - 1;
+				src.bcode.push_back( { m_oper->m_tok_ctr, oper->line, oper->col, IC_JUMP_FALSE, { OP_INT, "<placeholder>" } } );
+				ques_col_loc = src.bcode.size() - 1;
 			}
 			if( oper->type == TOK_COL ) {
-				bcode.push_back( { m_oper->m_tok_ctr, oper->line, oper->col, IC_JUMP, { OP_INT, "<placeholder>" } } );
-				ques_col_loc = bcode.size() - 1;
+				src.bcode.push_back( { m_oper->m_tok_ctr, oper->line, oper->col, IC_JUMP, { OP_INT, "<placeholder>" } } );
+				ques_col_loc = src.bcode.size() - 1;
 			}
 
-			int curr_bcode_size = bcode.size();
-			if( m_rhs ) m_rhs->bytecode( toks, bcode );
+			int curr_bcode_size = src.bcode.size();
+			if( m_rhs ) m_rhs->bytecode( src );
 
 			if( oper->type == TOK_QUEST || oper->type == TOK_COL ) {
-				int rhs_bcode_size = bcode.size() - curr_bcode_size + ( oper->type == TOK_QUEST );
-				bcode[ ques_col_loc ].oper.val = std::to_string( ques_col_loc + rhs_bcode_size + 1 );
+				int rhs_bcode_size = src.bcode.size() - curr_bcode_size + ( oper->type == TOK_QUEST );
+				src.bcode[ ques_col_loc ].oper.val = std::to_string( ques_col_loc + rhs_bcode_size + 1 );
 			}
 		} else {
-			if( m_rhs ) m_rhs->bytecode( toks, bcode );
-			if( m_lhs ) m_lhs->bytecode( toks, bcode );
+			if( m_rhs ) m_rhs->bytecode( src );
+			if( m_lhs ) m_lhs->bytecode( src );
 		}
 	}
 
@@ -374,13 +374,13 @@ bool stmt_expr_t::bytecode( const toks_t & toks, bytecode_t & bcode ) const
 
 	const TokType ttype = m_oper ? m_oper->m_val->type : TOK_INVALID;
 
-	int line = m_oper ? m_oper->m_val->line : toks[ m_tok_ctr ].line;
-	int col = m_oper ? m_oper->m_val->col : toks[ m_tok_ctr ].col;
+	int line = m_oper ? m_oper->m_val->line : src.toks[ m_tok_ctr ].line;
+	int col = m_oper ? m_oper->m_val->col : src.toks[ m_tok_ctr ].col;
 
 	if( ttype == TOK_COMMA || ttype == TOK_QUEST || ttype == TOK_COL ) return true;
 
 	if( ttype == TOK_DOT ) {
-		if( bcode.size() > 0 && ( bcode.back().opcode == IC_FN_MEM_CALL || bcode.back().opcode == IC_FN_MEM_CALL || bcode.back().opcode == IC_STRUCT_MEM_DECL ) ) {
+		if( src.bcode.size() > 0 && ( src.bcode.back().opcode == IC_FN_MEM_CALL || src.bcode.back().opcode == IC_FN_MEM_CALL || src.bcode.back().opcode == IC_STRUCT_MEM_DECL ) ) {
 			goto end;
 		}
 	}
@@ -388,20 +388,20 @@ bool stmt_expr_t::bytecode( const toks_t & toks, bytecode_t & bcode ) const
 	if( ttype == TOK_ASSN ) {
 		int child_cc = 0;
 		child_comma_count( this, child_cc );
-		if( child_cc == 0 ) bcode.push_back( { m_oper->m_tok_ctr, line, col,
+		if( child_cc == 0 ) src.bcode.push_back( { m_oper->m_tok_ctr, line, col,
 						       m_is_top_expr ? IC_STORE : IC_STORE_LOAD, { OP_NONE, "" } } );
-		else bcode.push_back( { m_oper->m_tok_ctr, line, col,
+		else src.bcode.push_back( { m_oper->m_tok_ctr, line, col,
 					m_is_top_expr ? IC_STORE : IC_STORE_LOAD, { OP_INT, std::to_string( child_cc / 2 + 1 ) } } );
 		return true;
 	}
 
-	m_oper->bytecode( toks, bcode );
-	bcode.push_back( { m_oper->m_tok_ctr, line, col, IC_FN_CALL,
+	m_oper->bytecode( src );
+	src.bcode.push_back( { m_oper->m_tok_ctr, line, col, IC_FN_CALL,
 			   { OP_INT, std::to_string( oper_arg_count( m_oper->m_val ) ) } } );
 
 end:
 	if( m_is_top_expr ) {
-		bcode.push_back( { m_tok_ctr, line, col, IC_POP, { OP_NONE, "" } } );
+		src.bcode.push_back( { m_tok_ctr, line, col, IC_POP, { OP_NONE, "" } } );
 	}
 
 	return true;

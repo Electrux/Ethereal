@@ -29,7 +29,7 @@ stmt_block_t * parse_block( src_t & src, parse_helper_t * ph, std::vector< Gramm
 	return new stmt_block_t( block, tok_ctr );
 }
 
-bool stmt_block_t::bytecode( const toks_t & toks, bytecode_t & bcode ) const
+bool stmt_block_t::bytecode( src_t & src ) const
 {
 	return true;
 }

@@ -10,7 +10,7 @@
 #include "Internal.hpp"
 #include "../Ethereal.hpp"
 
-bool stmt_continue_t::bytecode( const toks_t & toks, bytecode_t & bcode ) const
+bool stmt_continue_t::bytecode( src_t & src ) const
 {
 	return true;
 }

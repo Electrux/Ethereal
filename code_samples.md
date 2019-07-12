@@ -16,15 +16,14 @@ println( var );
 3. Arrays/Lists
 
 ```
-var = L( 1, 2, 3, 4 );
+var = [ 1, 2, 3, 4 ];
 println( var[ 1 ] );
 ```
 
 4. Maps/Dictionaries
 
 ```
-import "../src/VM/Modules/map" as map;
-var = map.create();
+var = {};
 var[ "str" ] = "test";
 println( var[ "str" ] );
 ```

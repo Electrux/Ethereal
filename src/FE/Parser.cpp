@@ -54,7 +54,6 @@ parse_tree_t * parse( src_t & src, parse_helper_t * pre_ph, std::vector< Grammar
 				PARSE_FAIL( "keyword 'continue' can only be used inside a loop" );
 				goto fail;
 			}
-			fprintf( stdout, "At continue\n" );
 			res = new stmt_continue_t( ph->tok_ctr() );
 			ph->next();
 		} else if( ph->peak()->type == TOK_BREAK ) {

@@ -49,7 +49,8 @@ field_begin:
 	if( ph->peak( 1 )->type != TOK_RBRACE ) {
 		if( ph->peak( 1 )->type != TOK_IDEN ) {
 			ph->next();
-			PARSE_FAIL( "expected end of struct '}' or another struct field 'IDEN', found '%s'", ph->peak()->data.c_str() );
+			PARSE_FAIL( "expected end of struct '}' or another struct field 'IDEN', found '%s'",
+				    ph->peak()->data.c_str() );
 			goto fail;
 		}
 		goto field_begin;
@@ -69,9 +70,12 @@ bool stmt_struct_t::bytecode( src_t & src ) const
 {
 	for( auto & f : m_fields ) {
 		f.def_val->bytecode( src );
-		src.bcode.push_back( { m_tok_ctr, f.name->m_val->line, f.name->m_val->col, IC_STRUCT_FIELD, { OP_CONST, f.name->m_val->data } } );
+		src.bcode.push_back( { m_tok_ctr, f.name->m_val->line, f.name->m_val->col,
+				       IC_STRUCT_FIELD, { OP_CONST, f.name->m_val->data } } );
 	}
-	src.bcode.push_back( { m_tok_ctr, m_name->m_val->line, m_name->m_val->col, IC_PUSH, { OP_CONST, m_name->m_val->data } } );
-	src.bcode.push_back( { m_tok_ctr, m_name->m_val->line, m_name->m_val->col, IC_STRUCT_BUILD, { OP_INT, std::to_string( m_fields.size() ) } } );
+	src.bcode.push_back( { m_tok_ctr, m_name->m_val->line, m_name->m_val->col,
+			       IC_PUSH, { OP_CONST, m_name->m_val->data } } );
+	src.bcode.push_back( { m_tok_ctr, m_name->m_val->line, m_name->m_val->col,
+			       IC_STRUCT_BUILD, { OP_INT, std::to_string( m_fields.size() ) } } );
 	return true;
 }

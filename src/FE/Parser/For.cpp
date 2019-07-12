@@ -10,6 +10,9 @@
 #include "Internal.hpp"
 #include "../Ethereal.hpp"
 
+static void set_continue_break_lines( bytecode_t & bcode, const int from,
+				      const int to, const int cont, const int brk );
+
 stmt_for_t * parse_for( src_t & src, parse_helper_t * ph, std::vector< GrammarTypes > & parents )
 {
 	int tok_ctr = ph->tok_ctr();
@@ -78,5 +81,79 @@ fail:
 
 bool stmt_for_t::bytecode( src_t & src ) const
 {
+	int line = src.toks[ m_tok_ctr ].line;
+	int col = src.toks[ m_tok_ctr ].col;
+
+	src.bcode.push_back( { m_tok_ctr, line, col, IC_ADD_SCOPE, { OP_NONE, "" } } );
+
+	if( m_init != nullptr ) {
+		if( !m_init->bytecode( src ) ) return false;
+	}
+	int cond_end_loc = -1;
+	if( m_cond != nullptr ) {
+		if( !m_cond->bytecode( src ) ) return false;
+		src.bcode.push_back( { src.bcode.back().parse_ctr, src.bcode.back().line,
+				       src.bcode.back().col, IC_JUMP_FALSE, { OP_INT, "<placeholder>" } } );
+		cond_end_loc = src.bcode.size() - 1;
+	}
+
+	int block_start_loc = src.bcode.size();
+
+	src.bcode.push_back( { m_tok_ctr, line, col, IC_ADD_SCOPE, { OP_NONE, "" } } );
+
+	int cont_brk_from = -1, cont_brk_to = -1;
+	if( m_block != nullptr ) {
+		cont_brk_from = src.bcode.size();
+		if( !m_block->bytecode( src ) ) return false;
+		cont_brk_to = src.bcode.size();
+	}
+
+	int continue_loc = -1;
+	if( m_step != nullptr ) {
+		continue_loc = src.bcode.size();
+		if( !m_step->bytecode( src ) ) return false;
+	}
+
+	if( m_cond != nullptr ) {
+		if( continue_loc == -1 ) continue_loc = src.bcode.size();
+		if( !m_cond->bytecode( src ) ) return false;
+	}
+
+	// remove second layer
+	src.bcode.push_back( { m_tok_ctr, line, col, IC_REM_SCOPE, { OP_NONE, "" } } );
+	if( continue_loc == -1 ) continue_loc = src.bcode.size() - 1;
+
+	if( m_cond == nullptr ) {
+		src.bcode.push_back( { m_tok_ctr, src.bcode.back().line, src.bcode.back().col,
+				       IC_JUMP, { OP_INT, std::to_string( block_start_loc ) } } );
+	} else {
+		src.bcode.push_back( { m_tok_ctr, src.bcode.back().line, src.bcode.back().col,
+				       IC_JUMP_TRUE, { OP_INT, std::to_string( block_start_loc ) } } );
+	}
+	if( cond_end_loc >= 0 ) {
+		src.bcode[ cond_end_loc ].oper.val = std::to_string( src.bcode.size() );
+	}
+
+	// remove first layer
+	src.bcode.push_back( { m_tok_ctr, line, col, IC_REM_SCOPE, { OP_NONE, "" } } );
+
+	// set continue and break locations
+	if( m_block != nullptr ) {
+		// continue to the beginning of step, or condition, or removal of second layer
+		// break to removal of first layer
+		set_continue_break_lines( src.bcode, cont_brk_from, cont_brk_to, continue_loc, src.bcode.size() - 1 );
+	}
 	return true;
+}
+
+static void set_continue_break_lines( bytecode_t & bcode, const int from,
+				      const int to, const int cont, const int brk )
+{
+	for( int i = from; i < to; ++i ) {
+		if( bcode[ i ].oper.val == "<continue-placeholder>" ) {
+			bcode[ i ].oper.val = std::to_string( cont );
+		} else if( bcode[ i ].oper.val == "<break-placeholder>" ) {
+			bcode[ i ].oper.val = std::to_string( brk );
+		}
+	}
 }

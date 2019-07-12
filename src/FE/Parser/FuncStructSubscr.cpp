@@ -22,20 +22,20 @@ bool stmt_func_struct_subscr_call_t::bytecode( src_t & src ) const
 	}
 	if( m_ctype == CT_SUBSCR ) {
 		src.bcode.push_back( { m_tok_ctr, m_name->m_val->line, m_name->m_val->col,
-				   IC_SUBSCR, { OP_INT, m_name->m_val->data } } );
+				       IC_SUBSCR, { OP_INT, m_name->m_val->data } } );
 		return true;
 	}
 
 	src.bcode.push_back( { m_tok_ctr, m_name->m_val->line, m_name->m_val->col,
-			   IC_PUSH, { OP_CONST, m_name->m_val->data } } );
+			       IC_PUSH, { OP_CONST, m_name->m_val->data } } );
 	if( m_ctype == CT_FUNC ) {
 		src.bcode.push_back( { m_tok_ctr, m_name->m_val->line, m_name->m_val->col,
-				   m_post_dot ? IC_FN_MEM_CALL : IC_FN_CALL,
-				   { OP_INT, std::to_string( args ) } } );
+				       m_post_dot ? IC_FN_MEM_CALL : IC_FN_CALL,
+				       { OP_INT, std::to_string( args ) } } );
 	} else if( m_ctype == CT_STRUCT ) {
 		src.bcode.push_back( { m_tok_ctr, m_name->m_val->line, m_name->m_val->col,
-				   m_post_dot ? IC_STRUCT_MEM_DECL : IC_STRUCT_DECL,
-				   { OP_INT, std::to_string( args ) } } );
+				       m_post_dot ? IC_STRUCT_MEM_DECL : IC_STRUCT_DECL,
+				       { OP_INT, std::to_string( args ) } } );
 	}
 	return true;
 }

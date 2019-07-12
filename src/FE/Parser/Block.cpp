@@ -31,5 +31,8 @@ stmt_block_t * parse_block( src_t & src, parse_helper_t * ph, std::vector< Gramm
 
 bool stmt_block_t::bytecode( src_t & src ) const
 {
+	for( auto & stmt : * m_stmts ) {
+		if( !stmt->bytecode( src ) ) return false;
+	}
 	return true;
 }

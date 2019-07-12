@@ -28,12 +28,17 @@ enum InstrCode
 	IC_BUILD_VEC,		// args: count of elements to take from stack
 	IC_BUILD_MAP,		// args: count of elements to take from stack
 
+	IC_ADD_SCOPE,		// args: none
+	IC_REM_SCOPE,		// args: none
+
 	IC_LDMOD,		// args: count: 1 = what, 2 = what + as
 
 	IC_FN_CALL,		// args: count of args (will take name by default)
 	IC_FN_MEM_CALL,		// args: same as IC_FN_CALL
 	IC_STRUCT_DECL,		// args: same as IC_FN_CALL
 	IC_STRUCT_MEM_DECL,	// args: same as IC_FN_CALL
+
+	IC_RETURN,		// args: bool - returns something or not (not = returns OP_NONE)
 
 	IC_SUBSCR,		// args: name of variable
 

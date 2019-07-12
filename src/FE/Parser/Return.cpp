@@ -36,5 +36,8 @@ fail:
 
 bool stmt_return_t::bytecode( src_t & src ) const
 {
+	if( !m_ret_val->bytecode( src ) ) return false;
+	src.bcode.push_back( { src.bcode.back().parse_ctr, src.bcode.back().line, src.bcode.back().col,
+			       IC_RETURN, { OP_NONE, "" } } );
 	return true;
 }

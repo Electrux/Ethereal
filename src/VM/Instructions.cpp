@@ -23,6 +23,11 @@ const char * InstrCodeStrs[ _IC_LAST ] = {
 	"build_vec",
 	"build_map",
 
+	"add_scope",
+	"rem_scope",
+
+	"return",
+
 	"load_mod",
 
 	"call_func",

@@ -96,6 +96,39 @@ expr_res_t parse_expr( const src_t & src, parse_helper_t * ph, const int end, co
 			);
 			if( !stack.empty() && stack.back()->m_val->type == TOK_DOT ) fn_call->m_post_dot = true;
 			data.push_back( fn_call );
+		} else if( ph->peak()->type == TOK_LBRACK || ph->peak()->type == TOK_LBRACE ) {
+			int tok_val = ph->tok_ctr();
+			const TokType type = ph->peak()->type;
+			TokType eq = type == TOK_LBRACE ? TOK_RBRACE : TOK_RBRACK;
+			int r_loc;
+			int err = find_next_of( ph, r_loc, { eq }, type );
+			if( err < 0 ) {
+				if( err == -1 ) {
+					PARSE_FAIL( "could not find the equivalent ending bracket for parsing the map/list" );
+				} else if( err == -2 ) {
+					PARSE_FAIL( "found end of statement (semicolon) before the equivalent ending bracket for map/list declaration" );
+				}
+				goto fail;
+			}
+			ph->next();
+			expr_res_t collect = parse_expr( src, ph, r_loc, false );
+			if( collect.res != 0 ) goto fail;
+			int child_cc = 0, args = 0;
+			if( collect.expr ) {
+				child_comma_count( collect.expr, child_cc );
+				args = child_cc + 1;
+			}
+			if( type == TOK_LBRACE && args % 2 != 0 ) {
+				PARSE_FAIL( "map requires arguments in the multiples of 2 for keys and their values" );
+				if( collect.expr ) delete collect.expr;
+				goto fail;
+			}
+			stmt_collection_t * collect_call = new stmt_collection_t(
+				collect.expr, tok_val, ph->at( tok_val )->line, ph->at( tok_val )->col
+			);
+			if( type == TOK_LBRACE ) collect_call->m_is_map = true;
+			collect_call->m_arg_count = args;
+			data.push_back( collect_call );
 		} else {
 			if( token_is_data( ph->peak() ) ) {
 				data.push_back(

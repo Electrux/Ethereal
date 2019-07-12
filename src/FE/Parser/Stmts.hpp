@@ -32,6 +32,7 @@ enum GrammarTypes
 	GRAM_RETURN,
 	GRAM_CONTINUE,
 	GRAM_BREAK,
+	GRAM_COLLECTION,
 
 	_GRAM_LAST,
 };
@@ -186,6 +187,20 @@ public:
 	stmt_func_struct_subscr_call_t( const stmt_simple_t * name, const stmt_expr_t * args,
 					const int tok_ctr );
 	~stmt_func_struct_subscr_call_t();
+	void disp( const bool has_next ) const;
+	bool bytecode( const toks_t & toks, bytecode_t & bcode ) const;
+};
+
+class stmt_collection_t : public stmt_base_t
+{
+	const stmt_expr_t * m_vals;
+	const int m_line, m_col;
+public:
+	bool m_is_map;
+	int m_arg_count;
+	stmt_collection_t( const stmt_expr_t * vals, const int tok_ctr,
+			   const int line, const int col );
+	~stmt_collection_t();
 	void disp( const bool has_next ) const;
 	bool bytecode( const toks_t & toks, bytecode_t & bcode ) const;
 };

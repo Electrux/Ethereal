@@ -25,6 +25,8 @@ enum InstrCode
 	IC_JUMP_FALSE,		// args: bcode index (int) on which to jump to
 
 	IC_BUILD_ENUM,		// args: count of elements to take from stack
+	IC_BUILD_VEC,		// args: count of elements to take from stack
+	IC_BUILD_MAP,		// args: count of elements to take from stack
 
 	IC_LDMOD,		// args: count: 1 = what, 2 = what + as
 

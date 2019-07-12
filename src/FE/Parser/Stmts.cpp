@@ -24,6 +24,7 @@ const char * GrammarTypeStrs[ _GRAM_LAST ] = {
 	"Return",
 	"Continue",
 	"Break",
+	"Collection",
 };
 
 stmt_base_t::stmt_base_t( const GrammarTypes type, const int tok_ctr )
@@ -298,6 +299,25 @@ void stmt_func_struct_subscr_call_t::disp( const bool has_next ) const
 		m_args->disp( false );
 		IO::tab_rem();
 	}
+	IO::tab_rem();
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////// Collection //////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////
+
+stmt_collection_t::stmt_collection_t( const stmt_expr_t * vals, const int tok_ctr,
+				      const int line, const int col )
+	: stmt_base_t( GRAM_COLLECTION, tok_ctr ), m_vals( vals ),
+	  m_line( line ), m_col( col ), m_is_map( false ), m_arg_count( 0 ) {}
+
+stmt_collection_t::~stmt_collection_t() { if( m_vals ) delete m_vals; }
+
+void stmt_collection_t::disp( const bool has_next ) const
+{
+	IO::tab_add( has_next );
+	IO::print( has_next, "%s%s at: %x\n", m_vals ? "" : "Empty ", m_is_map ? "Map" : "Vector", this );
+	if( m_vals ) m_vals->disp( false );
 	IO::tab_rem();
 }
 

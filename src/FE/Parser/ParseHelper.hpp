@@ -24,6 +24,8 @@ public:
 	tok_t * next();
 	tok_t * prev();
 
+	tok_t * at( const int idx );
+
 	bool has_next() const;
 
 	int tok_ctr() const;

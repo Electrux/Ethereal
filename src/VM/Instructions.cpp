@@ -20,6 +20,8 @@ const char * InstrCodeStrs[ _IC_LAST ] = {
 	"jump_false",
 
 	"build_enum",
+	"build_vec",
+	"build_map",
 
 	"load_mod",
 

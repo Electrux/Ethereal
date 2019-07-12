@@ -33,6 +33,11 @@ tok_t * parse_helper_t::prev()
 	return & m_toks[ m_token_ctr ];
 }
 
+tok_t * parse_helper_t::at( const int idx )
+{
+	return & m_toks[ idx ];
+}
+
 bool parse_helper_t::has_next() const { return m_token_ctr + 1 < ( int )m_toks.size(); }
 
 int parse_helper_t::tok_ctr() const { return m_token_ctr; }

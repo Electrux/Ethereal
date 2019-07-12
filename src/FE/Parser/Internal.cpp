@@ -44,7 +44,6 @@ OperAssoc oper_assoc( const tok_t * tok )
 	if( type == TOK_COMMA ) return RTL;
 	if( token_is_one_of_assign( tok ) ) return RTL;
 	if( type == TOK_NOT || type == TOK_BNOT ) return RTL;
-	if( type == TOK_DOT ) return LTR;
 
 	// for everything else, it is LTR
 	return LTR;

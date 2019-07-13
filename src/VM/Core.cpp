@@ -7,25 +7,14 @@
 	before using or altering the project.
 */
 
-#ifndef ERR_HPP
-#define ERR_HPP
+#include "Core.hpp"
 
-enum Errors
+vm_state_t::vm_state_t() : stack( new vm_stack_t() ) {}
+
+vm_state_t::~vm_state_t()
 {
-	E_OK,
-	E_FAIL,
-
-	E_FILE_IO_ERR,
-	E_FILE_EMPTY,
-
-	E_ALLOC_FAIL,
-	E_LEX_FAIL,
-	E_PARSE_FAIL,
-	E_BYTECODE_FAIL,
-
-	E_VM_FAIL,
-};
-
-const char * ErrStr( Errors code );
-
-#endif // ERR_HPP
+	delete stack;
+	for( auto & src : srcmap ) {
+		delete src.second;
+	}
+}

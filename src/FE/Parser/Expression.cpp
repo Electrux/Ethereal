@@ -380,7 +380,9 @@ bool stmt_expr_t::bytecode( src_t & src ) const
 	if( ttype == TOK_COMMA || ttype == TOK_QUEST || ttype == TOK_COL ) return true;
 
 	if( ttype == TOK_DOT ) {
-		if( src.bcode.size() > 0 && ( src.bcode.back().opcode == IC_FN_MEM_CALL || src.bcode.back().opcode == IC_FN_MEM_CALL || src.bcode.back().opcode == IC_STRUCT_MEM_DECL ) ) {
+		if( src.bcode.size() > 0 && ( src.bcode.back().opcode == IC_FN_MEM_CALL ||
+					      src.bcode.back().opcode == IC_FN_MEM_CALL ||
+					      src.bcode.back().opcode == IC_STRUCT_MEM_DECL ) ) {
 			goto end;
 		}
 	}
@@ -389,9 +391,9 @@ bool stmt_expr_t::bytecode( src_t & src ) const
 		int child_cc = 0;
 		child_comma_count( this, child_cc );
 		if( child_cc == 0 ) src.bcode.push_back( { m_oper->m_tok_ctr, line, col,
-						       m_is_top_expr ? IC_STORE : IC_STORE_LOAD, { OP_NONE, "" } } );
+							   m_is_top_expr ? IC_STORE : IC_STORE_LOAD, { OP_NONE, "" } } );
 		else src.bcode.push_back( { m_oper->m_tok_ctr, line, col,
-					m_is_top_expr ? IC_STORE : IC_STORE_LOAD, { OP_INT, std::to_string( child_cc / 2 + 1 ) } } );
+					    m_is_top_expr ? IC_STORE : IC_STORE_LOAD, { OP_INT, std::to_string( child_cc / 2 + 1 ) } } );
 		return true;
 	}
 

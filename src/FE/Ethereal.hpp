@@ -16,6 +16,7 @@
 
 #include "Parser.hpp"
 #include "../VM/Instructions.hpp"
+#include "../VM/Vars.hpp"
 
 struct src_t
 {
@@ -23,12 +24,16 @@ struct src_t
 	std::vector< std::string > code;
 	toks_t toks;
 	parse_tree_t * ptree;
-	bytecode_t bcode;
 	bool is_main_src;
 
+	// for VM
+	bytecode_t bcode;
+	vars_t vars;
+
 	src_t( const bool _is_main_src );
+	~src_t();
 };
 
-typedef std::unordered_map< std::string, src_t > srcs_t;
+typedef std::unordered_map< std::string, src_t * > srcs_t;
 
 #endif // ETHEREAL_HPP

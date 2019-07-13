@@ -7,25 +7,11 @@
 	before using or altering the project.
 */
 
-#ifndef ERR_HPP
-#define ERR_HPP
+#ifndef VM_EXEC_INTERNAL_HPP
+#define VM_EXEC_INTERNAL_HPP
 
-enum Errors
-{
-	E_OK,
-	E_FAIL,
+#include "VM.hpp"
 
-	E_FILE_IO_ERR,
-	E_FILE_EMPTY,
+int exec_internal( vm_state_t & vm, long begin = -1, long end = -1 );
 
-	E_ALLOC_FAIL,
-	E_LEX_FAIL,
-	E_PARSE_FAIL,
-	E_BYTECODE_FAIL,
-
-	E_VM_FAIL,
-};
-
-const char * ErrStr( Errors code );
-
-#endif // ERR_HPP
+#endif // VM_EXEC_INTERNAL_HPP

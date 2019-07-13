@@ -22,6 +22,8 @@ const char * ErrStr( Errors code )
 		return "bytecode failed";
 	case E_FILE_EMPTY:
 		return "empty file";
+	case E_VM_FAIL:
+		return "vm failed";
 	case E_FAIL: // fall through
 	default:
 		return "unknown error";

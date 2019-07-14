@@ -15,16 +15,16 @@
 #define DECL_FUNC_ALLOC__INT( name, oper, ret_type )				\
 	var_base_t * name( std::vector< var_base_t * > & vars )			\
 	{									\
-		auto & lhs = AS_INT( vars[ 0 ] )->get();			\
-		auto & rhs = AS_INT( vars[ 1 ] )->get();			\
+		auto & lhs = AS_INT( vars[ 1 ] )->get();			\
+		auto & rhs = AS_INT( vars[ 0 ] )->get();			\
 		return new ret_type( lhs oper rhs, vars[ 0 ]->parse_ctr() );	\
 	}
 
 #define DECL_FUNC_ASSN__INT( name, oper )				\
 	var_base_t * name( std::vector< var_base_t * > & vars )		\
-	{	/* lhs = 1 because Right to Left associativity */	\
-		auto & lhs = AS_INT( vars[ 1 ] )->get();		\
-		auto & rhs = AS_INT( vars[ 0 ] )->get();		\
+	{	/* lhs = 0 because Right to Left associativity */	\
+		auto & lhs = AS_INT( vars[ 0 ] )->get();		\
+		auto & rhs = AS_INT( vars[ 1 ] )->get();		\
 		lhs oper rhs;						\
 		return vars[ 1 ];					\
 	}
@@ -44,8 +44,8 @@ DECL_FUNC_ASSN__INT( mod_assn, %= )
 
 var_base_t * power( std::vector< var_base_t * > & vars )
 {
-	auto & lhs = AS_INT( vars[ 0 ] )->get();
-	auto & rhs = AS_INT( vars[ 1 ] )->get();
+	auto & lhs = AS_INT( vars[ 1 ] )->get();
+	auto & rhs = AS_INT( vars[ 0 ] )->get();
 	var_int_t * res = new var_int_t( "0", vars[ 0 ]->parse_ctr() );
 	mpz_pow_ui( res->get().get_mpz_t(), lhs.get_mpz_t(), rhs.get_ui() );
 	return res;

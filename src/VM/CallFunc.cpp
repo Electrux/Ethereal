@@ -38,8 +38,8 @@ int CallFunc( vm_state_t & vm, const int ins_ctr )
 	vm.stack->pop_back();
 	// fetch args
 	for( int i = 0; i < args_count; ++i ) {
-		arg_types.insert( arg_types.begin(), vm.stack->back()->type_str() );
-		args.insert( args.begin(), vm.stack->back() );
+		arg_types.push_back( vm.stack->back()->type_str() );
+		args.push_back( vm.stack->back() );
 		vm.stack->pop_back( false );
 	}
 

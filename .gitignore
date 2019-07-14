@@ -22,6 +22,10 @@ CMakeFiles/
 #####################
 *.core
 
+# Intermediate source #
+#######################
+tmp.et
+
 # Compiled source #
 ###################
 *.com

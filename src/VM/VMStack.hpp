@@ -42,4 +42,12 @@ public:
 	inline bool empty() const { return m_vec.empty(); }
 };
 
+#define VERIFY_STACK_MIN( sz )										\
+	do {												\
+		if( vm.stack->size() < sz ) {								\
+			VM_FAIL( "expected vm stack size to be %d, but is %zu", vm.stack->size() );	\
+			goto fail;									\
+		}											\
+	} while( 0 )
+
 #endif // VM_VM_STACK_HPP

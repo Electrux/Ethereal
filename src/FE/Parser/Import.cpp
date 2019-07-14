@@ -36,17 +36,17 @@ beg_what:
 bool stmt_import_t::bytecode( src_t & src ) const
 {
 	if( m_as != nullptr ) {
-		src.bcode.push_back( { m_tok_ctr, m_as->line, m_as->col, IC_PUSH, { OP_CONST, m_as->data } } );
+		src.bcode.push_back( { m_tok_ctr, m_as->line, m_as->col, IC_PUSH, { OP_CONST, m_as->data }, false } );
 	}
 
 	const char * two = "2";
 	for( int i = m_what.size() - 1; i >= 0; --i ) {
-		src.bcode.push_back( { m_tok_ctr, m_what[ i ]->line, m_what[ i ]->col, IC_PUSH, { OP_CONST, m_what[ i ]->data } } );
+		src.bcode.push_back( { m_tok_ctr, m_what[ i ]->line, m_what[ i ]->col, IC_PUSH, { OP_CONST, m_what[ i ]->data }, false } );
 		if( i < ( int )m_what.size() - 1 ) {
-			src.bcode.push_back( { m_tok_ctr, m_what[ i ]->line, m_what[ i ]->col, IC_PUSH, { OP_CONST, "." } } );
-			src.bcode.push_back( { m_tok_ctr, m_what[ i ]->line, m_what[ i ]->col, IC_FN_CALL, { OP_INT, two } } );
+			src.bcode.push_back( { m_tok_ctr, m_what[ i ]->line, m_what[ i ]->col, IC_PUSH, { OP_CONST, "." }, false } );
+			src.bcode.push_back( { m_tok_ctr, m_what[ i ]->line, m_what[ i ]->col, IC_FN_CALL, { OP_INT, two }, false } );
 		}
 	}
-	src.bcode.push_back( { m_tok_ctr, m_what[ 0 ]->line, m_what[ 0 ]->col, IC_LDMOD, { OP_INT, std::to_string( m_as == nullptr ? 1 : 2 ) } } );
+	src.bcode.push_back( { m_tok_ctr, m_what[ 0 ]->line, m_what[ 0 ]->col, IC_LDMOD, { OP_INT, std::to_string( m_as == nullptr ? 1 : 2 ) }, false } );
 	return true;
 }

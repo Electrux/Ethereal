@@ -349,11 +349,11 @@ bool stmt_expr_t::bytecode( src_t & src ) const
 			if( m_lhs ) m_lhs->bytecode( src );
 
 			if( oper->type == TOK_QUEST ) {
-				src.bcode.push_back( { m_oper->m_tok_ctr, oper->line, oper->col, IC_JUMP_FALSE, { OP_INT, "<placeholder>" } } );
+				src.bcode.push_back( { m_oper->m_tok_ctr, oper->line, oper->col, IC_JUMP_FALSE, { OP_INT, "<placeholder>" }, false, } );
 				ques_col_loc = src.bcode.size() - 1;
 			}
 			if( oper->type == TOK_COL ) {
-				src.bcode.push_back( { m_oper->m_tok_ctr, oper->line, oper->col, IC_JUMP, { OP_INT, "<placeholder>" } } );
+				src.bcode.push_back( { m_oper->m_tok_ctr, oper->line, oper->col, IC_JUMP, { OP_INT, "<placeholder>" }, false, } );
 				ques_col_loc = src.bcode.size() - 1;
 			}
 
@@ -366,7 +366,13 @@ bool stmt_expr_t::bytecode( src_t & src ) const
 			}
 		} else {
 			if( m_rhs ) m_rhs->bytecode( src );
-			if( m_lhs ) m_lhs->bytecode( src );
+			if( m_lhs ) {
+				if( token_is_one_of_assign( m_oper->m_val ) ) {
+					src.bcode_as_const = true;
+				}
+				m_lhs->bytecode( src );
+				src.bcode_as_const = false;
+			}
 		}
 	}
 
@@ -380,9 +386,7 @@ bool stmt_expr_t::bytecode( src_t & src ) const
 	if( ttype == TOK_COMMA || ttype == TOK_QUEST || ttype == TOK_COL ) return true;
 
 	if( ttype == TOK_DOT ) {
-		if( src.bcode.size() > 0 && ( src.bcode.back().opcode == IC_FN_MEM_CALL ||
-					      src.bcode.back().opcode == IC_FN_MEM_CALL ||
-					      src.bcode.back().opcode == IC_STRUCT_MEM_DECL ) ) {
+		if( src.bcode.size() > 0 && src.bcode.back().is_mem ) {
 			goto end;
 		}
 	}
@@ -391,19 +395,19 @@ bool stmt_expr_t::bytecode( src_t & src ) const
 		int child_cc = 0;
 		child_comma_count( this, child_cc );
 		if( child_cc == 0 ) src.bcode.push_back( { m_oper->m_tok_ctr, line, col,
-							   m_is_top_expr ? IC_STORE : IC_STORE_LOAD, { OP_NONE, "" } } );
+							   m_is_top_expr ? IC_STORE : IC_STORE_LOAD, { OP_NONE, "" }, false, } );
 		else src.bcode.push_back( { m_oper->m_tok_ctr, line, col,
-					    m_is_top_expr ? IC_STORE : IC_STORE_LOAD, { OP_INT, std::to_string( child_cc / 2 + 1 ) } } );
+					    m_is_top_expr ? IC_STORE : IC_STORE_LOAD, { OP_INT, std::to_string( child_cc / 2 + 1 ) }, false, } );
 		return true;
 	}
 
 	m_oper->bytecode( src );
 	src.bcode.push_back( { m_oper->m_tok_ctr, line, col, IC_FN_CALL,
-			   { OP_INT, std::to_string( oper_arg_count( m_oper->m_val ) ) } } );
+			   { OP_INT, std::to_string( oper_arg_count( m_oper->m_val ) ) }, false, } );
 
 end:
 	if( m_is_top_expr ) {
-		src.bcode.push_back( { m_tok_ctr, line, col, IC_POP, { OP_NONE, "" } } );
+		src.bcode.push_back( { m_tok_ctr, line, col, IC_POP, { OP_NONE, "" }, false, } );
 	}
 
 	return true;

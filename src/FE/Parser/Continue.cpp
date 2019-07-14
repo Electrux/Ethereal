@@ -14,6 +14,6 @@ bool stmt_continue_t::bytecode( src_t & src ) const
 {
 	int line = src.toks[ m_tok_ctr ].line;
 	int col = src.toks[ m_tok_ctr ].col;
-	src.bcode.push_back( { m_tok_ctr, line, col, IC_JUMP, { OP_INT, "<continue-placeholder>" } } );
+	src.bcode.push_back( { m_tok_ctr, line, col, IC_JUMP, { OP_INT, "<continue-placeholder>" }, false } );
 	return true;
 }

@@ -42,9 +42,34 @@ int exec_internal( vm_state_t & vm, long begin, long end )
 			vm.stack->pop_back( false );
 			break;
 		}
+		case IC_STORE: // fallthrough
+		case IC_STORE_LOAD: {
+			VERIFY_STACK_MIN( 1 );
+			const std::string & var = ins.oper.val;
+			var_base_t * newval = vm.stack->back();
+			if( src.vars.exists( var, true ) ) {
+				var_base_t * val = src.vars.get( var );
+				if( val->type() != newval->type() ) {
+					VM_FAIL( "variable '%s' already declared at previous location, but with different data type" );
+					VM_FAIL_TOK_CTR( val->parse_ctr(), "original declared here" );
+					goto fail;
+				}
+				val->swap( newval );
+				vm.stack->pop_back();
+				if( ins.opcode == IC_STORE_LOAD ) {
+					vm.stack->push_back( val );
+				}
+				break;
+			}
+			src.vars.add( var, newval->copy() );
+			vm.stack->pop_back();
+			if( ins.opcode == IC_STORE_LOAD ) {
+				vm.stack->push_back( src.vars.get( var ) );
+			}
+			break;
+		}
 		}
 	}
-	fprintf( stdout, "hi there\n" );
 
 	return E_OK;
 fail:

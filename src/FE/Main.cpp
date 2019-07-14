@@ -73,8 +73,8 @@ int main( int argc, char ** argv )
 		fprintf( stdout, "Byte Code:\n" );
 		for( size_t i = 0; i < main_src->bcode.size(); ++i ) {
 			auto & ins = main_src->bcode[ i ];
-			fprintf( stdout, "%-*zu %-*s%d[%s]\n",
-				 5, i, 20, InstrCodeStrs[ ins.opcode ], ins.oper.type, ins.oper.val.c_str() );
+			fprintf( stdout, "%-*zu %-*s%-*s[%s]\n",
+				 5, i, 20, InstrCodeStrs[ ins.opcode ], 7, OperTypeStrs[ ins.oper.type ], ins.oper.val.c_str() );
 		}
 	}
 

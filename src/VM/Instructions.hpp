@@ -34,9 +34,7 @@ enum InstrCode
 	IC_LDMOD,		// args: count: 1 = what, 2 = what + as
 
 	IC_FN_CALL,		// args: count of args (will take name by default)
-	IC_FN_MEM_CALL,		// args: same as IC_FN_CALL
 	IC_STRUCT_DECL,		// args: same as IC_FN_CALL
-	IC_STRUCT_MEM_DECL,	// args: same as IC_FN_CALL
 
 	IC_RETURN,		// args: bool - returns something or not (not = returns OP_NONE)
 
@@ -60,7 +58,11 @@ enum OperTypes
 	OP_BOOL,
 
 	OP_NONE,
+
+	_OP_LAST,
 };
+
+extern const char * OperTypeStrs[ _OP_LAST ];
 
 struct oper_t
 {
@@ -74,6 +76,7 @@ struct instr_t
 	int line, col;
 	InstrCode opcode;
 	oper_t oper;
+	bool is_mem;
 };
 
 typedef std::vector< instr_t > bytecode_t;

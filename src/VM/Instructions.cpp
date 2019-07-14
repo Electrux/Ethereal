@@ -41,3 +41,13 @@ const char * InstrCodeStrs[ _IC_LAST ] = {
 
 	"build_struct",
 };
+
+const char * OperTypeStrs[ _OP_LAST ] = {
+	"const",
+	"string",
+	"int",
+	"float",
+	"bool",
+
+	"none",
+};

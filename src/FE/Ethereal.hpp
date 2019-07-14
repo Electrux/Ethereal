@@ -25,6 +25,7 @@ struct src_t
 	toks_t toks;
 	parse_tree_t * ptree;
 	bool is_main_src;
+	bool bcode_as_const;
 
 	// for VM
 	bytecode_t bcode;

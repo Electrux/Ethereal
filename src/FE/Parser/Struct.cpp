@@ -71,11 +71,11 @@ bool stmt_struct_t::bytecode( src_t & src ) const
 	for( auto & f : m_fields ) {
 		f.def_val->bytecode( src );
 		src.bcode.push_back( { m_tok_ctr, f.name->m_val->line, f.name->m_val->col,
-				       IC_STRUCT_FIELD, { OP_CONST, f.name->m_val->data } } );
+				       IC_STRUCT_FIELD, { OP_CONST, f.name->m_val->data }, false } );
 	}
 	src.bcode.push_back( { m_tok_ctr, m_name->m_val->line, m_name->m_val->col,
-			       IC_PUSH, { OP_CONST, m_name->m_val->data } } );
+			       IC_PUSH, { OP_CONST, m_name->m_val->data }, false } );
 	src.bcode.push_back( { m_tok_ctr, m_name->m_val->line, m_name->m_val->col,
-			       IC_STRUCT_BUILD, { OP_INT, std::to_string( m_fields.size() ) } } );
+			       IC_STRUCT_BUILD, { OP_INT, std::to_string( m_fields.size() ) }, false } );
 	return true;
 }

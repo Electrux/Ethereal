@@ -8,6 +8,7 @@
 */
 
 #include "ExecInternal.hpp"
+#include "CallFunc.hpp"
 
 int exec_internal( vm_state_t & vm, long begin, long end )
 {
@@ -35,7 +36,7 @@ int exec_internal( vm_state_t & vm, long begin, long end )
 			break;
 		}
 		case IC_POP: {
-			if( vm.stack->size() < 1 ) {
+			if( vm.stack->size() == 0 ) {
 				VM_FAIL( "cannot pop from vm stack since it is already empty" );
 				goto fail;
 			}
@@ -45,7 +46,13 @@ int exec_internal( vm_state_t & vm, long begin, long end )
 		case IC_STORE: // fallthrough
 		case IC_STORE_LOAD: {
 			VERIFY_STACK_MIN( 1 );
-			const std::string & var = ins.oper.val;
+			std::string var;
+			if( ins.oper.type == OP_NONE ) {
+				var = vm.stack->back()->to_str();
+				vm.stack->pop_back();
+			} else {
+				// TODO:
+			}
 			var_base_t * newval = vm.stack->back();
 			if( src.vars.exists( var, true ) ) {
 				var_base_t * val = src.vars.get( var );
@@ -66,6 +73,29 @@ int exec_internal( vm_state_t & vm, long begin, long end )
 			if( ins.opcode == IC_STORE_LOAD ) {
 				vm.stack->push_back( src.vars.get( var ) );
 			}
+			break;
+		}
+		case IC_LDMOD: {
+			std::string module_name = ins.oper.val + ".so";
+			if( ins.oper.val.front() != '~' && ins.oper.val.front() != '/' && ins.oper.val.front() != '.' ) {
+				module_name = STRINGIFY( BUILD_PREFIX_DIR ) "/lib/ethereal/lib" + ins.oper.val + ".so";
+			}
+			if( !fexists( module_name ) ) {
+				VM_FAIL( "failed to locate module file '%s'", module_name.c_str() );
+				goto fail;
+			}
+			if( vm.dlib.load( module_name ) == nullptr ) goto fail;
+			init_fnptr_t init_fn = ( init_fnptr_t ) vm.dlib.get( module_name, "init_" + ins.oper.val );
+			if( init_fn == nullptr ) {
+				VM_FAIL( "failed to find init function in module '%s'\n", module_name.c_str() );
+				goto fail;
+			}
+			init_fn( vm );
+			break;
+		}
+		case IC_FN_CALL: {
+			int res = CallFunc( vm, i );
+			if( res != E_OK ) goto fail;
 			break;
 		}
 		}

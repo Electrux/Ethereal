@@ -26,6 +26,7 @@ var_base_t * consts_t::get( const std::string & name, const OperTypes type )
 	}
 
 	if( type == OP_INT ) return m_consts[ type ][ name ] = new var_int_t( name, -1 );
+	else if( type == OP_STR || type == OP_CONST ) return m_consts[ type ][ name ] = new var_str_t( name, -1 );
 
 	return nullptr;
 }

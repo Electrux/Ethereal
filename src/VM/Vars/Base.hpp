@@ -1,10 +1,10 @@
 /*
-  Copyright (c) 2019, Electrux
-  All rights reserved.
-  Using the BSD 3-Clause license for the project,
-  main LICENSE file resides in project's root directory.
-  Please read that file and understand the license terms
-  before using or altering the project.
+	Copyright (c) 2019, Electrux
+	All rights reserved.
+	Using the BSD 3-Clause license for the project,
+	main LICENSE file resides in project's root directory.
+	Please read that file and understand the license terms
+	before using or altering the project.
 */
 
 #ifndef VM_VARS_BASE_HPP
@@ -51,7 +51,7 @@ public:
 	virtual mpz_class to_int() const = 0;
 	virtual bool to_bool() const = 0;
 	virtual var_base_t * copy() const = 0;
-	virtual void swap( var_base_t * with ) const = 0;
+	virtual void swap( var_base_t * with ) = 0;
 };
 
 #define VAR_IREF( var ) do { ( ( var_base_t * )var )->inc_ref(); } while( 0 )
@@ -68,19 +68,35 @@ public:
 class var_int_t : public var_base_t
 {
 	mpz_class m_val;
-
 public:
 	var_int_t( const int val, const int parse_ctr );
 	var_int_t( const std::string & val, const int parse_ctr );
 	var_int_t( const bool val, const int parse_ctr );
 	var_int_t( const float val, const int parse_ctr );
 	var_int_t( const mpz_class & val, const int parse_ctr );
-	var_int_t( const mpf_class & val, const int parse_ctr );
 
 	std::string to_str() const;
 	mpz_class to_int() const;
 	bool to_bool() const;
+	var_base_t * copy() const;
+	void swap( var_base_t * with );
+	mpz_class & get();
 };
-#define AS_INT( x ) ( * static_cast< var_int_t * >( x )->get() )
+#define AS_INT( x ) static_cast< var_int_t * >( x )
+
+class var_str_t : public var_base_t
+{
+	std::string m_val;
+public:
+	var_str_t( const std::string & val, const int parse_ctr );
+
+	std::string to_str() const;
+	mpz_class to_int() const;
+	bool to_bool() const;
+	var_base_t * copy() const;
+	void swap( var_base_t * with );
+	std::string & get();
+};
+#define AS_STR( x ) static_cast< var_str_t * >( x )
 
 #endif // VM_VARS_BASE_HPP

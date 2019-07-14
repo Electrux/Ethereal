@@ -11,7 +11,7 @@ if( "${PREFIX}" == "" ) {
 	USE_SELF_PREFIX = "true"
 }
 
-builds.add_flags( "-fPIC", "-pedantic", "-Wall", "-Wextra", "-Wno-unused-parameter",
+builds.add_flags( "-fPIC", "-Wall", "-Wextra", "-Wno-unused-parameter",
 		"-DBUILD_PREFIX_DIR=${PREFIX}", "-Wl,-rpath,./buildfiles/" )
 if( "${CC}" != "g++" ) {
 	builds.add_flags( "-Wno-c99-extensions", "-Wno-unused-command-line-argument" )
@@ -35,14 +35,26 @@ if( "${ARGC}" > 0 && "${ARG_0}" == debug || "${ARG_0}" == memlog ) {
 	builds.add_flags( "-march=native", "-O2", "-flto" )
 }
 
+builds( lib, dynamic ) {
+	builds.add_flags( "-DAS_LIB" )
+	sources( "src/(.*)\.cpp", "-src/VM/Main.cpp", "-src/VM/Modules/(.*)\.cpp" )
+	build( et, "src/VM/Main.cpp" )
+}
+
 builds( bin ) {
-	sources( "src/(.*)\.cpp" )
+	sources( "src/(.*)\.cpp", "-src/VM/Modules/(.*)\.cpp" )
 	build( et, "src/FE/Main.cpp" )
+}
+
+builds( lib, dynamic ) {
+	builds.add_lib_flags( "-let" )
+	build( core, "src/VM/Modules/core.cpp" )
 }
 
 if( "${ARGC}" > 0 && "${ARG_0}" == "install" || "${USE_SELF_PREFIX}" == "true" ) {
 	if( "${IS_ROOT}" == "true" || "${OS}" == OS_OSX ) {
 		install( "buildfiles/et", "${PREFIX}/bin/" )
+		install( "buildfiles/lib*.so", "${PREFIX}/lib/ethereal/" )
 	} else {
 		print( "{r}Run as root to install the built files{0}\n" )
 	}

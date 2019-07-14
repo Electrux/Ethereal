@@ -30,6 +30,7 @@ struct src_t
 	// for VM
 	bytecode_t bcode;
 	vars_t vars;
+	function_t funcs;
 
 	src_t( const bool _is_main_src );
 	~src_t();

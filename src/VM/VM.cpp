@@ -17,6 +17,7 @@ int vm_exec( src_t * main_src )
 	vm_state_t vm;
 	vm.srcmap[ main_src->name ] = main_src;
 	vm.srcstack.push_back( main_src );
+	if( !set_init_mods( vm ) ) return E_VM_FAIL;
 	int res = exec_internal( vm );
 	for( auto & src : srcmap ) {
 		delete src.second;

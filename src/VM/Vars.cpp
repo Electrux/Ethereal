@@ -9,7 +9,8 @@
 
 #include "Vars.hpp"
 
-vars_t::vars_t() {}
+vars_t::vars_t()
+	: m_layer( 0 ) {}
 vars_t::~vars_t()
 {
 	for( auto & l : m_vars ) {

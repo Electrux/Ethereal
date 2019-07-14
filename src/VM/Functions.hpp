@@ -1,10 +1,10 @@
 /*
-  Copyright (c) 2019, Electrux
-  All rights reserved.
-  Using the BSD 3-Clause license for the project,
-  main LICENSE file resides in project's root directory.
-  Please read that file and understand the license terms
-  before using or altering the project.
+	Copyright (c) 2019, Electrux
+	All rights reserved.
+	Using the BSD 3-Clause license for the project,
+	main LICENSE file resides in project's root directory.
+	Please read that file and understand the license terms
+	before using or altering the project.
 */
 
 #ifndef VM_FUNCTIONS_HPP
@@ -14,9 +14,9 @@
 #include <string>
 #include <unordered_map>
 
-
 class var_base_t;
 class var_func_t;
+struct vm_state_t;
 
 typedef var_base_t * ( * modfnptr_t )( std::vector< var_base_t * > & args );
 //typedef var_func_t * langfnptr_t;
@@ -36,7 +36,6 @@ union Func
 struct function_t
 {
 	std::string name;
-	std::string module;
 	int arg_count_min;
 	int arg_count_max;
 	std::vector< std::string > arg_types;
@@ -47,7 +46,9 @@ struct function_t
 };
 
 #define REGISTER_MODULE( name )				\
-	extern "C" void init_##name( src_t & src )
+	extern "C" void init_##name( vm_state_t & vm )
+
+typedef void ( * init_fnptr_t )( vm_state_t & vm );
 
 bool operator ==( const function_t & func1, const function_t & func2 );
 
@@ -84,8 +85,8 @@ public:
 	bool del( const function_t & func );
 	bool del_vec( const std::vector< function_t > & funcs );
 
-	const function_t * get( const std::string & module, const std::string & name, const int arg_count,
-				const std::vector< std::string > & arg_types, const bool strict_module );
+	const function_t * get( const std::string & name, const int arg_count,
+				const std::vector< std::string > & arg_types );
 };
 
 #endif // VM_FUNCTIONS_HPP

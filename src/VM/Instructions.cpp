@@ -29,9 +29,7 @@ const char * InstrCodeStrs[ _IC_LAST ] = {
 	"load_mod",
 
 	"call_func",
-	"call_mem_func",
 	"struct_decl",
-	"struct_mem_decl",
 
 	"return",
 

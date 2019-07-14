@@ -367,7 +367,7 @@ bool stmt_expr_t::bytecode( src_t & src ) const
 		} else {
 			if( m_rhs ) m_rhs->bytecode( src );
 			if( m_lhs ) {
-				if( token_is_one_of_assign( m_oper->m_val ) ) {
+				if( m_oper->m_val->type == TOK_ASSN ) {
 					src.bcode_as_const = true;
 				}
 				m_lhs->bytecode( src );

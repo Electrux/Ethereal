@@ -20,7 +20,9 @@ typedef std::vector< src_t * > src_stack_t;
 
 struct vm_state_t
 {
-	srcs_t srcmap;
+	size_t flags;
+
+	src_t * src;
 	src_stack_t srcstack;
 
 	dyn_lib_t dlib;
@@ -37,11 +39,6 @@ struct vm_state_t
 #define VM_FAIL_TOK_CTR( tok_ctr, ... ) src_fail( src.code[ src.toks[ tok_ctr ].line - 1 ],		\
 						  src.toks[ tok_ctr ].line, src.toks[ tok_ctr ].col,	\
 						  __VA_ARGS__ )
-
-inline bool fexists( const std::string & file )
-{
-	return access( file.c_str(), F_OK ) != -1;
-}
 
 bool set_init_mods( vm_state_t & vm );
 

@@ -8,10 +8,5 @@
 */
 
 #include "VM.hpp"
-#include "ExecInternal.hpp"
 
-int vm_exec( vm_state_t & vm )
-{
-	int res = exec_internal( vm );
-	return res;
-}
+int load_src( vm_state_t & vm, const std::string & file, const std::string & alias, const instr_t & ins );

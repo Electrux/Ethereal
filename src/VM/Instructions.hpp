@@ -32,6 +32,7 @@ enum InstrCode
 	IC_REM_SCOPE,		// args: none
 
 	IC_LDMOD,		// args: count: 1 = what, 2 = what + as
+	IC_IMPORT,		// args: count: 1 = what
 
 	IC_FN_CALL,		// args: count of args (will take name by default)
 	IC_STRUCT_DECL,		// args: same as IC_FN_CALL

@@ -10,12 +10,15 @@
 #include "Ethereal.hpp"
 
 src_t::src_t( const bool _is_main_src )
-	: is_main_src( _is_main_src ), bcode_as_const( false ) {}
+	: ptree( nullptr ), is_main_src( _is_main_src ), bcode_as_const( false ) {}
 
 src_t::~src_t()
 {
 	if( ptree != nullptr ) {
 		for( auto & stmt : * ptree ) delete stmt;
 		delete ptree;
+	}
+	for( auto & s : srcs ) {
+		delete s.second;
 	}
 }

@@ -12,6 +12,6 @@
 
 #include "Core.hpp"
 
-int vm_exec( src_t * main_src );
+int vm_exec( vm_state_t & vm );
 
 #endif // VM_VM_HPP

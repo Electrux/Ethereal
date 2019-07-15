@@ -7,8 +7,11 @@
 	before using or altering the project.
 */
 
+#include "../FE/FS.hpp"
+
 #include "ExecInternal.hpp"
 #include "CallFunc.hpp"
+#include "LoadFile.hpp"
 
 int exec_internal( vm_state_t & vm, long begin, long end )
 {
@@ -45,9 +48,9 @@ int exec_internal( vm_state_t & vm, long begin, long end )
 		}
 		case IC_STORE: // fallthrough
 		case IC_STORE_LOAD: {
-			VERIFY_STACK_MIN( 1 );
 			std::string var;
 			if( ins.oper.type == OP_NONE ) {
+				VERIFY_STACK_MIN( 1 );
 				var = vm.stack->back()->to_str();
 				vm.stack->pop_back();
 			} else {
@@ -93,11 +96,33 @@ int exec_internal( vm_state_t & vm, long begin, long end )
 			init_fn( vm );
 			break;
 		}
+		case IC_IMPORT: {
+			const int args = std::stoi( ins.oper.val );
+			VERIFY_STACK_MIN( ( size_t )args );
+			std::string alias = "";
+			if( args > 1 ) {
+				alias = vm.stack->back()->to_str();
+				vm.stack->pop_back();
+			}
+			const std::string file = vm.stack->back()->to_str();
+			vm.stack->pop_back();
+			
+
+			int ret = load_src( vm, file, alias, ins );
+
+			if( ret != E_OK ) {
+				VM_FAIL( "could not import '%s', see the error above; aborting",
+					 file.c_str() );
+				goto fail;
+			}
+			break;
+		}
 		case IC_FN_CALL: {
 			int res = CallFunc( vm, i );
 			if( res != E_OK ) goto fail;
 			break;
 		}
+		case _IC_LAST: {}
 		}
 	}
 

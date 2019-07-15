@@ -27,6 +27,7 @@ const char * InstrCodeStrs[ _IC_LAST ] = {
 	"rem_scope",
 
 	"load_mod",
+	"import",
 
 	"call_func",
 	"struct_decl",

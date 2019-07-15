@@ -36,10 +36,11 @@ int main( int argc, char ** argv )
 	int err = E_OK;
 	const std::string main_src_str = args[ 0 ].substr( last_slash_loc );
 
+	parse_tree_t * ptree = nullptr;
 	src_t * main_src = new src_t( true );
 	main_src->name = main_src_str;
 	err = tokenize( * main_src );
-	if( err != E_OK ) return err;
+	if( err != E_OK ) goto cleanup;
 
 	if( flags & OPT_T ) {
 		fprintf( stdout, "Tokens:\n" );
@@ -52,7 +53,7 @@ int main( int argc, char ** argv )
 	}
 
 	err = E_OK;
-	parse_tree_t * ptree = parse( * main_src );
+	ptree = parse( * main_src );
 
 	if( ptree == nullptr ) { err = E_PARSE_FAIL; goto cleanup; }
 	main_src->ptree = ptree;
@@ -82,11 +83,19 @@ int main( int argc, char ** argv )
 
 	// actual code execution
 	if( !( flags & OPT_C ) && !( flags & OPT_D ) ) {
-		err = vm_exec( main_src );
-	} else {
-		delete main_src;
+		vm_state_t vm;
+		vm.flags = flags;
+		vm.src = main_src;
+		vm.srcstack.push_back( main_src );
+		if( !set_init_mods( vm ) ) { err = E_VM_FAIL; goto cleanup; }
+		err = vm_exec( vm );
+		vm.srcstack.pop_back();
+		// reset working dir
+		SetCWD( curr_dir );
+		return err;
 	}
 cleanup:
+	delete main_src;
 	// reset working dir
 	SetCWD( curr_dir );
 	return err;

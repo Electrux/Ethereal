@@ -7,6 +7,8 @@
 	before using or altering the project.
 */
 
+#include "../FE/FS.hpp"
+
 #include "Core.hpp"
 
 vm_state_t::vm_state_t() : stack( new vm_stack_t() ) {}
@@ -14,9 +16,7 @@ vm_state_t::vm_state_t() : stack( new vm_stack_t() ) {}
 vm_state_t::~vm_state_t()
 {
 	delete stack;
-	for( auto & src : srcmap ) {
-		delete src.second;
-	}
+	delete src;
 }
 
 bool set_init_mods( vm_state_t & vm )

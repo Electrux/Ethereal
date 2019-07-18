@@ -15,27 +15,16 @@ stmt_ldmod_t * parse_ldmod( const src_t & src, parse_helper_t * ph )
 	int tok_ctr = ph->tok_ctr();
 
 	tok_t * what = nullptr;
-	tok_t * as = nullptr;
 
 	NEXT_VALID2( TOK_IDEN, TOK_STR );
 	what = ph->peak();
 
-	if( ph->peak( 1 )->type == TOK_AS ) {
-		ph->next();
-		NEXT_VALID( TOK_IDEN );
-		as = ph->peak();
-	}
-
 	NEXT_VALID( TOK_COLS );
-	return new stmt_ldmod_t( what, as, tok_ctr );
+	return new stmt_ldmod_t( what, tok_ctr );
 }
 
 bool stmt_ldmod_t::bytecode( src_t & src ) const
 {
-	if( m_as != nullptr ) {
-		src.bcode.push_back( { m_tok_ctr, m_as->line, m_as->col, IC_PUSH, { OP_CONST, m_as->data } } );
-	}
-	src.bcode.push_back( { m_tok_ctr, m_what->line, m_what->col, IC_PUSH, { OP_CONST, m_what->data } } );
-	src.bcode.push_back( { m_tok_ctr, m_what->line, m_what->col, IC_LDMOD, { OP_INT, std::to_string( m_as == nullptr ? 1 : 2 ) } } );
+	src.bcode.push_back( { m_tok_ctr, m_what->line, m_what->col, IC_LDMOD, { OP_INT, m_what->data } } );
 	return true;
 }

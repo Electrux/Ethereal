@@ -18,6 +18,8 @@
 
 typedef std::vector< src_t * > src_stack_t;
 
+typedef std::unordered_map< std::string, functions_t > type_funcs_t;
+
 struct vm_state_t
 {
 	size_t flags;
@@ -31,6 +33,9 @@ struct vm_state_t
 	consts_t * consts;
 	functions_t funcs;
 	vm_stack_t * stack;
+
+	type_funcs_t typefuncs;
+
 	vm_state_t();
 	~vm_state_t();
 };

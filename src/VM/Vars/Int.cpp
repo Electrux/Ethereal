@@ -24,7 +24,7 @@ std::string var_int_t::to_str() const { return m_val.get_str(); }
 mpz_class var_int_t::to_int() const { return m_val; }
 bool var_int_t::to_bool() const { return m_val != 0; }
 
-var_base_t * var_int_t::copy() const { return new var_int_t( * this ); }
+var_base_t * var_int_t::copy() const { return new var_int_t( this->m_val, this->parse_ctr() ); }
 void var_int_t::swap( var_base_t * with )
 {
 	mpz_class tmp = this->m_val;

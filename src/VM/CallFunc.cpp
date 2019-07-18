@@ -18,6 +18,7 @@ int CallFunc( vm_state_t & vm, const int ins_ctr )
 	instr_t & ins = src.bcode[ ins_ctr ];
 	int args_count;
 	std::string fn_name;
+	var_base_t * member = nullptr;
 	std::vector< std::string > arg_types;
 	std::vector< var_base_t * > args;
 	const function_t * fn;
@@ -45,11 +46,19 @@ int CallFunc( vm_state_t & vm, const int ins_ctr )
 		vm.stack->pop_back( false );
 	}
 
-	// fetch the function pointer from Functions
-	fn = vm.funcs.get( fn_name, args_count, arg_types );
+	if( ins.opcode == IC_MFN_CALL ) {
+		member = vm.stack->back();
+		vm.stack->pop_back( false );
+		args.insert( args.begin(), member );
+		fn = vm.typefuncs[ member->type_str() ].get( fn_name, args_count, arg_types );
+	} else {
+		// fetch the function pointer from Functions
+		fn = vm.funcs.get( fn_name, args_count, arg_types );
+	}
 	if( fn == nullptr ) {
-		VM_FAIL( "function with name '%s' and arg count %d (%s) does not exist",
-			 fn_name.c_str(), args_count, args_types_to_string( args ).c_str() );
+		VM_FAIL( "%sfunction with name '%s' and arg count %d (%s) does not exist",
+			 ins.opcode == IC_MFN_CALL ? "member " : "", fn_name.c_str(),
+			 args_count, args_types_to_string( args ).c_str() );
 		goto fail;
 	}
 	if( fn->type == FnType::MODULE ) mfnptr = fn->func.modfn;
@@ -65,6 +74,7 @@ int CallFunc( vm_state_t & vm, const int ins_ctr )
 	res.code = E_OK;
 	res.data = mfnptr( args );
 	// for lang function, args are moved to vars' new layer which is popped at the end
+	// member is also added to args and hence erased
 	for( auto & arg : args ) VAR_DREF( arg );
 
 	if( res.data != nullptr ) {

@@ -49,6 +49,7 @@ builds( bin ) {
 builds( lib, dynamic ) {
 	builds.add_lib_flags( "-let" )
 	build( core, "src/VM/Modules/core.cpp" )
+	build( str, "src/VM/Modules/str.cpp" )
 }
 
 if( "${ARGC}" > 0 && "${ARG_0}" == "install" || "${USE_SELF_PREFIX}" == "true" ) {

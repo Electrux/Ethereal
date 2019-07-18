@@ -34,7 +34,6 @@ class var_base_t
 	VarType m_type;
 	int m_ref_ctr;
 	const int m_parse_ctr;
-	functions_t m_memfuncs;
 public:
 	var_base_t( const VarType type, const int parse_ctr );
 	virtual ~var_base_t();

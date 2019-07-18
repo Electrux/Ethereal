@@ -89,10 +89,8 @@ public:
 class stmt_ldmod_t : public stmt_base_t
 {
 	const tok_t * m_what;
-	const tok_t * m_as;
 public:
-	stmt_ldmod_t( const tok_t * what, const tok_t * as,
-		      const int tok_ctr );
+	stmt_ldmod_t( const tok_t * what, const int tok_ctr );
 	~stmt_ldmod_t();
 	void disp( const bool has_next ) const;
 	bool bytecode( src_t & src ) const;

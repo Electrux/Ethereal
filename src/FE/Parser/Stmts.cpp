@@ -43,16 +43,17 @@ const char * SimpleTypeStrs[ _SIMPLE_LAST ] = {
 
 stmt_simple_t::stmt_simple_t( const SimpleType stype, const tok_t * val,
 		       	      const int tok_ctr )
-	: stmt_base_t( GRAM_SIMPLE, tok_ctr ), m_stype( stype ), m_val( val ) {}
+	: stmt_base_t( GRAM_SIMPLE, tok_ctr ), m_stype( stype ), m_val( val ),
+	  m_post_dot( false ) {}
 stmt_simple_t::~stmt_simple_t() {}
 void stmt_simple_t::disp( const bool has_next ) const
 {
 	IO::tab_add( has_next );
 	IO::print( has_next, "Simple at %x\n", this );
 	IO::tab_add( false );
-	IO::print( false, "Name: %s (type: %s)\n",
+	IO::print( false, "Name: %s (type: %s) (post dot: %s)\n",
 		   m_stype == SIMPLE_TOKEN && !m_val->data.empty() ? m_val->data.c_str() : TokStrs[ m_val->type ],
-		   SimpleTypeStrs[ m_stype ] );
+		   SimpleTypeStrs[ m_stype ], m_post_dot ? "yes" : "no" );
 	IO::tab_rem( 2 );
 }
 
@@ -275,6 +276,7 @@ stmt_func_struct_subscr_call_t::~stmt_func_struct_subscr_call_t()
 	delete m_name;
 	if( m_args ) delete m_args;
 }
+
 void stmt_func_struct_subscr_call_t::disp( const bool has_next ) const
 {
 	IO::tab_add( has_next );

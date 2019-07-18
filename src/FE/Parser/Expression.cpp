@@ -131,15 +131,15 @@ expr_res_t parse_expr( const src_t & src, parse_helper_t * ph, const int end, co
 			data.push_back( collect_call );
 		} else {
 			if( token_is_data( ph->peak() ) ) {
-				data.push_back(
-					new stmt_simple_t(
-						ph->peak()->data == TokStrs[ ph->peak()->type ] &&
-						ph->peak()->type != TOK_IDEN &&
-						ph->peak()->type != TOK_STR
-							? SIMPLE_KEYWORD : SIMPLE_TOKEN,
-						ph->peak(), ph->tok_ctr()
-					)
+				stmt_simple_t * sim = new stmt_simple_t(
+					ph->peak()->data == TokStrs[ ph->peak()->type ] &&
+					ph->peak()->type != TOK_IDEN &&
+					ph->peak()->type != TOK_STR
+						? SIMPLE_KEYWORD : SIMPLE_TOKEN,
+					ph->peak(), ph->tok_ctr()
 				);
+				if( !stack.empty() && stack.back()->m_val->type == TOK_DOT ) sim->m_post_dot = true;
+				data.push_back( sim );
 				ph->next();
 				continue;
 			}
@@ -349,11 +349,11 @@ bool stmt_expr_t::bytecode( src_t & src ) const
 			if( m_lhs ) m_lhs->bytecode( src );
 
 			if( oper->type == TOK_QUEST ) {
-				src.bcode.push_back( { m_oper->m_tok_ctr, oper->line, oper->col, IC_JUMP_FALSE, { OP_INT, "<placeholder>" }, false, } );
+				src.bcode.push_back( { m_oper->m_tok_ctr, oper->line, oper->col, IC_JUMP_FALSE, { OP_INT, "<placeholder>" } } );
 				ques_col_loc = src.bcode.size() - 1;
 			}
 			if( oper->type == TOK_COL ) {
-				src.bcode.push_back( { m_oper->m_tok_ctr, oper->line, oper->col, IC_JUMP, { OP_INT, "<placeholder>" }, false, } );
+				src.bcode.push_back( { m_oper->m_tok_ctr, oper->line, oper->col, IC_JUMP, { OP_INT, "<placeholder>" } } );
 				ques_col_loc = src.bcode.size() - 1;
 			}
 
@@ -386,28 +386,34 @@ bool stmt_expr_t::bytecode( src_t & src ) const
 	if( ttype == TOK_COMMA || ttype == TOK_QUEST || ttype == TOK_COL ) return true;
 
 	if( ttype == TOK_DOT ) {
-		if( src.bcode.size() > 0 && src.bcode.back().is_mem ) {
+		if( m_rhs != nullptr ) {
+			if( m_rhs->m_type != GRAM_EXPR && m_rhs->m_type != GRAM_SIMPLE ) {
+				return true;
+			}
+			src.bcode.push_back( { m_oper->m_tok_ctr, line, col, IC_STRUCT_ATTR, { OP_NONE, "" } } );
 			goto end;
 		}
+		return true;
 	}
 
 	if( ttype == TOK_ASSN ) {
 		int child_cc = 0;
 		child_comma_count( this, child_cc );
 		if( child_cc == 0 ) src.bcode.push_back( { m_oper->m_tok_ctr, line, col,
-							   m_is_top_expr ? IC_STORE : IC_STORE_LOAD, { OP_NONE, "" }, false, } );
+							   m_is_top_expr ? IC_STORE : IC_STORE_LOAD, { OP_NONE, "" } } );
 		else src.bcode.push_back( { m_oper->m_tok_ctr, line, col,
-					    m_is_top_expr ? IC_STORE : IC_STORE_LOAD, { OP_INT, std::to_string( child_cc / 2 + 1 ) }, false, } );
+					    m_is_top_expr ? IC_STORE : IC_STORE_LOAD,
+					    { OP_INT, std::to_string( child_cc / 2 + 1 ) } } );
 		return true;
 	}
 
 	m_oper->bytecode( src );
 	src.bcode.push_back( { m_oper->m_tok_ctr, line, col, IC_FN_CALL,
-			   { OP_INT, std::to_string( oper_arg_count( m_oper->m_val ) ) }, false, } );
+			       { OP_INT, std::to_string( oper_arg_count( m_oper->m_val ) ) } } );
 
 end:
 	if( m_is_top_expr ) {
-		src.bcode.push_back( { m_tok_ctr, line, col, IC_POP, { OP_NONE, "" }, false, } );
+		src.bcode.push_back( { m_tok_ctr, line, col, IC_POP, { OP_NONE, "" } } );
 	}
 
 	return true;

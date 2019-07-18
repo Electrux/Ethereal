@@ -45,11 +45,11 @@ bool stmt_import_t::bytecode( src_t & src ) const
 			  "could not find file '%s' for importing", file.c_str() );
 		return false;
 	}
-	src.bcode.push_back( { m_tok_ctr, m_what->line, m_what->col, IC_PUSH, { OP_CONST, file }, false } );
+	src.bcode.push_back( { m_tok_ctr, m_what->line, m_what->col, IC_PUSH, { OP_CONST, file } } );
 	if( m_as != nullptr ) {
-		src.bcode.push_back( { m_tok_ctr, m_as->line, m_as->col, IC_PUSH, { OP_CONST, m_as->data }, false } );
+		src.bcode.push_back( { m_tok_ctr, m_as->line, m_as->col, IC_PUSH, { OP_CONST, m_as->data } } );
 	}
-	src.bcode.push_back( { m_tok_ctr, m_what->line, m_what->col, IC_IMPORT, { OP_INT, m_as == nullptr ? "1" : "2" }, false } );
+	src.bcode.push_back( { m_tok_ctr, m_what->line, m_what->col, IC_IMPORT, { OP_INT, m_as == nullptr ? "1" : "2" } } );
 	return true;
 }
 

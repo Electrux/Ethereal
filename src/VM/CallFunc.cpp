@@ -10,6 +10,8 @@
 #include "ExecInternal.hpp"
 #include "CallFunc.hpp"
 
+std::string args_types_to_string( const std::vector< var_base_t * > & args );
+
 int CallFunc( vm_state_t & vm, const int ins_ctr )
 {
 	src_t & src = * vm.srcstack.back();
@@ -46,8 +48,8 @@ int CallFunc( vm_state_t & vm, const int ins_ctr )
 	// fetch the function pointer from Functions
 	fn = vm.funcs.get( fn_name, args_count, arg_types );
 	if( fn == nullptr ) {
-		VM_FAIL( "function with name '%s' and arg count %d does not exist",
-			 fn_name.c_str(), args_count );
+		VM_FAIL( "function with name '%s' and arg count %d (%s) does not exist",
+			 fn_name.c_str(), args_count, args_types_to_string( args ).c_str() );
 		goto fail;
 	}
 	if( fn->type == FnType::MODULE ) mfnptr = fn->func.modfn;
@@ -57,7 +59,7 @@ int CallFunc( vm_state_t & vm, const int ins_ctr )
 		goto fail;
 	}
 
-	src.vars.add_scope();
+	vm.vars->add_scope();
 
 	// execute the function
 	res.code = E_OK;
@@ -69,7 +71,7 @@ int CallFunc( vm_state_t & vm, const int ins_ctr )
 		vm.stack->push_back( res.data, false );
 	}
 
-	src.vars.pop_scope( & rem_locs );
+	vm.vars->pop_scope( & rem_locs );
 	for( auto & rll : rem_locs ) VAR_DREF( rll );
 	return E_OK;
 fail:
@@ -77,4 +79,15 @@ fail:
 	for( auto & arg : args ) VAR_DREF( arg );
 	for( auto & rll : rem_locs ) VAR_DREF( rll );
 	return E_VM_FAIL;
+}
+
+std::string args_types_to_string( const std::vector< var_base_t * > & args )
+{
+	std::string res = "";
+	int size = args.size();
+	for( int i = size - 1; i >= 0; --i ) {
+		res += args[ i ]->type_str();
+		if( i > 0 ) res += ", ";
+	}
+	return res;
 }

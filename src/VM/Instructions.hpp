@@ -35,11 +35,14 @@ enum InstrCode
 	IC_IMPORT,		// args: count: 1 = what
 
 	IC_FN_CALL,		// args: count of args (will take name by default)
-	IC_STRUCT_DECL,		// args: same as IC_FN_CALL
+	IC_MFN_CALL,		// args: same as IC_FN_CALL
 
-	IC_RETURN,		// args: bool - returns something or not (not = returns OP_NONE)
+	IC_STRUCT_DECL,		// args: same as IC_FN_CALL
+	IC_STRUCT_ATTR,		// args: same as IC_FN_CALL
 
 	IC_SUBSCR,		// args: name of variable
+
+	IC_RETURN,		// args: bool - returns something or not (not = returns OP_NONE)
 
 	IC_STRUCT_FIELD,	// args: name of the field, takes one from stack as default value
 
@@ -77,7 +80,6 @@ struct instr_t
 	int line, col;
 	InstrCode opcode;
 	oper_t oper;
-	bool is_mem;
 };
 
 typedef std::vector< instr_t > bytecode_t;

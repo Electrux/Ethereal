@@ -24,7 +24,7 @@ class consts_t
 public:
 	consts_t();
 	~consts_t();
-	var_base_t * get( const std::string & name, const OperTypes type );
+	var_base_t * get( const std::string & name, const OperTypes type, const int tok_ctr );
 };
 
 #endif // VM_CONSTS_HPP

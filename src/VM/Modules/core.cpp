@@ -11,6 +11,8 @@
 #include "../Core.hpp"
 
 #include "Core/Int.hpp"
+#include "Core/Flt.hpp"
+#include "Core/Bool.hpp"
 
 const int MAX_C_STR_LEN = 1025;
 
@@ -49,7 +51,7 @@ REGISTER_MODULE( core )
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	vm.funcs.add( { "print",   1, -1, { "_whatever_" }, FnType::MODULE, { .modfn = print }, false } );
 	vm.funcs.add( { "println", 0, -1, { "_whatever_" }, FnType::MODULE, { .modfn = println }, false } );
-	vm.funcs.add( { "scan",    0,  1, { "_whatever_" }, FnType::MODULE, { .modfn = scan }, true  } );
+	vm.funcs.add( { "scan",    0,  1, { "_whatever_" }, FnType::MODULE, { .modfn = scan }, true } );
 
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////// INT ////////////////////////////////////////////////////////////////
@@ -61,8 +63,6 @@ REGISTER_MODULE( core )
 	vm.funcs.add( { "/",   2, 2, { "int", "int" }, FnType::MODULE, { .modfn = div }, true } );
 	vm.funcs.add( { "%",   2, 2, { "int", "int" }, FnType::MODULE, { .modfn = mod }, true } );
 
-	// assignment
-	vm.funcs.add( { "=",   2, 2, { "int", "int" }, FnType::MODULE, { .modfn = assn }, false } );
 	// arithmetic assignments
 	vm.funcs.add( { "+=",  2, 2, { "int", "int" }, FnType::MODULE, { .modfn = add_assn }, false } );
 	vm.funcs.add( { "-=",  2, 2, { "int", "int" }, FnType::MODULE, { .modfn = sub_assn }, false } );
@@ -78,4 +78,39 @@ REGISTER_MODULE( core )
 
 	// other types to int
 	vm.funcs.add( { "num", 1, 1, { "_any_" }, FnType::MODULE, { .modfn = num }, true } );
+
+	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////// FLT ////////////////////////////////////////////////////////////////
+	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	// basic arithmetic
+	vm.funcs.add( { "+",   2, 2, { "flt", "flt" }, FnType::MODULE, { .modfn = addf }, true } );
+	vm.funcs.add( { "-",   2, 2, { "flt", "flt" }, FnType::MODULE, { .modfn = subf }, true } );
+	vm.funcs.add( { "*",   2, 2, { "flt", "flt" }, FnType::MODULE, { .modfn = mulf }, true } );
+	vm.funcs.add( { "/",   2, 2, { "flt", "flt" }, FnType::MODULE, { .modfn = divf }, true } );
+
+	// arithmetic assignments
+	vm.funcs.add( { "+=",  2, 2, { "flt", "flt" }, FnType::MODULE, { .modfn = add_assnf }, false } );
+	vm.funcs.add( { "-=",  2, 2, { "flt", "flt" }, FnType::MODULE, { .modfn = sub_assnf }, false } );
+	vm.funcs.add( { "*=",  2, 2, { "flt", "flt" }, FnType::MODULE, { .modfn = mul_assnf }, false } );
+	vm.funcs.add( { "/=",  2, 2, { "flt", "flt" }, FnType::MODULE, { .modfn = div_assnf }, false } );
+
+	// cool arithmetic
+	vm.funcs.add( { "**",  2, 2, { "flt", "int" }, FnType::MODULE, { .modfn = powerf }, true } );
+
+	// unary
+	vm.funcs.add( { "u-",  1, 1, { "flt" }, FnType::MODULE, { .modfn = unary_subf }, true } );
+
+	// other types to flt
+	vm.funcs.add( { "flt", 1, 1, { "_any_" }, FnType::MODULE, { .modfn = flt }, true } );
+
+	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////// FLT ////////////////////////////////////////////////////////////////
+	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	// basic arithmetic
+	vm.funcs.add( { "&&",   2, 2, { "_any_", "_any_" }, FnType::MODULE, { .modfn = log_and }, true } );
+	vm.funcs.add( { "||",   2, 2, { "_any_", "_any_" }, FnType::MODULE, { .modfn = log_or }, true } );
+	vm.funcs.add( { "!=",   2, 2, { "_any_", "_any_" }, FnType::MODULE, { .modfn = log_not }, true } );
+
+	// other types to bool
+	vm.funcs.add( { "bool", 1, 1, { "_any_" }, FnType::MODULE, { .modfn = flt }, true } );
 }

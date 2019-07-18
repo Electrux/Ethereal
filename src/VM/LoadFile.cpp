@@ -18,7 +18,7 @@ int load_src( vm_state_t & vm, const std::string & file, const std::string & ali
 	auto last_slash_loc = file.find_last_of( '/' ) + 1;
 	auto last_dot_loc = file.find_last_of( '.' );
 	std::string mod_name = alias == "" ? file.substr( last_slash_loc, last_dot_loc ) : alias;
-	if( src.srcs.find( mod_name ) != src.srcs.end() ) {
+	if( vm.srcs.find( mod_name ) != vm.srcs.end() ) {
 		VM_FAIL( "warning: import module '%s' already imported and won't be imported again",
 			 mod_name.c_str() );
 		return E_OK;
@@ -79,7 +79,7 @@ int load_src( vm_state_t & vm, const std::string & file, const std::string & ali
 		vm.srcstack.push_back( new_src );
 		err = vm_exec( vm );
 		vm.srcstack.pop_back();
-		if( err == E_OK ) vm.srcstack.back()->srcs[ new_src->name ] = new_src;
+		if( err == E_OK ) vm.srcs[ new_src->name ] = new_src;
 	}
 
 cleanup:

@@ -19,14 +19,16 @@ consts_t::~consts_t()
 	}
 }
 
-var_base_t * consts_t::get( const std::string & name, const OperTypes type )
+var_base_t * consts_t::get( const std::string & name, const OperTypes type, const int tok_ctr )
 {
 	if( m_consts[ type ].find( name ) != m_consts[ type ].end() ) {
 		return m_consts[ type ][ name ];
 	}
 
-	if( type == OP_INT ) return m_consts[ type ][ name ] = new var_int_t( name, -1 );
-	else if( type == OP_STR || type == OP_CONST ) return m_consts[ type ][ name ] = new var_str_t( name, -1 );
+	if( type == OP_INT ) return m_consts[ type ][ name ] = new var_int_t( name, tok_ctr );
+	else if( type == OP_FLT ) return m_consts[ type ][ name ] = new var_flt_t( name, tok_ctr );
+	else if( type == OP_BOOL ) return m_consts[ type ][ name ] = new var_bool_t( name, tok_ctr );
+	else if( type == OP_STR || type == OP_CONST ) return m_consts[ type ][ name ] = new var_str_t( name, tok_ctr );
 
 	return nullptr;
 }

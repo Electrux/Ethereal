@@ -15,7 +15,7 @@ vars_t::~vars_t()
 {
 	for( auto & l : m_vars ) {
 		for( auto & v : l.second ) {
-			delete v.second;
+			VAR_DREF( v.second );
 		}
 	}
 }

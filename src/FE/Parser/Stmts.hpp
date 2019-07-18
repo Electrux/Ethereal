@@ -66,6 +66,7 @@ class stmt_simple_t : public stmt_base_t
 public:
 	const SimpleType m_stype;
 	const tok_t * m_val;
+	bool m_post_dot;
 	stmt_simple_t( const SimpleType stype, const tok_t * val,
 		       const int tok_ctr );
 	~stmt_simple_t();

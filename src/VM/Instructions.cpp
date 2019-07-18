@@ -30,11 +30,13 @@ const char * InstrCodeStrs[ _IC_LAST ] = {
 	"import",
 
 	"call_func",
+	"call_mem_func",
 	"struct_decl",
-
-	"return",
+	"struct_attr",
 
 	"subscript",
+
+	"return",
 
 	"struct_field",
 

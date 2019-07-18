@@ -73,7 +73,7 @@ bool stmt_if_t::bytecode( src_t & src ) const
 		if( cond.cond != nullptr ) {
 			if( !cond.cond->bytecode( src ) ) return false;
 			src.bcode.push_back( { src.bcode.back().parse_ctr, src.bcode.back().line, src.bcode.back().col,
-					       IC_JUMP_FALSE, { OP_INT, "<placeholder>" }, false } );
+					       IC_JUMP_FALSE, { OP_INT, "<placeholder>" } } );
 		}
 		int orig_bcode_size = src.bcode.size();
 		jump_loc = orig_bcode_size - 1;
@@ -81,7 +81,7 @@ bool stmt_if_t::bytecode( src_t & src ) const
 		if( !cond.block->bytecode( src ) ) return false;
 		if( cond.cond != nullptr && i != m_conds.size() - 1 ) {
 			src.bcode.push_back( { src.bcode.back().parse_ctr, src.bcode.back().line, src.bcode.back().col,
-					      IC_JUMP, { OP_INT, "<placeholder>" }, false } );
+					      IC_JUMP, { OP_INT, "<placeholder>" } } );
 			unconditional_jumps.push_back( src.bcode.size() - 1 );
 		}
 		block_size = src.bcode.size() - orig_bcode_size + 1;

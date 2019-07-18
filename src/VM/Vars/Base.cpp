@@ -11,8 +11,8 @@
 
 const char * VarTypeStrs[ _VT_LAST ] = {
 	"int",
-	"string",
-	"float",
+	"str",
+	"flt",
 	"bool",
 };
 

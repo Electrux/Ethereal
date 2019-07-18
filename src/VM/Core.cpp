@@ -11,12 +11,18 @@
 
 #include "Core.hpp"
 
-vm_state_t::vm_state_t() : stack( new vm_stack_t() ) {}
+vm_state_t::vm_state_t() : vars( new vars_t ), dlib( new dyn_lib_t() ),
+	consts( new consts_t() ), stack( new vm_stack_t() ) {}
 
 vm_state_t::~vm_state_t()
 {
 	delete stack;
-	delete src;
+	delete consts;
+	delete vars;
+	delete dlib;
+	for( auto & src : srcs ) {
+		delete src.second;
+	}
 }
 
 bool set_init_mods( vm_state_t & vm )
@@ -32,8 +38,8 @@ bool set_init_mods( vm_state_t & vm )
 			fprintf( stderr, "failed to find the prelude module library: %s\n", module_name.c_str() );
 			return false;
 		}
-		if( vm.dlib.load( module_name ) == nullptr ) return false;
-		init_fnptr_t init_fn = ( init_fnptr_t ) vm.dlib.get( module_name, "init_" + m );
+		if( vm.dlib->load( module_name ) == nullptr ) return false;
+		init_fnptr_t init_fn = ( init_fnptr_t ) vm.dlib->get( module_name, "init_" + m );
 		if( init_fn == nullptr ) {
 			fprintf( stderr, "failed to find init function in module library: %s\n", module_name.c_str() );
 			return false;

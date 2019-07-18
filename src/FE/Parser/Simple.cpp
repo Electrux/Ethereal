@@ -13,19 +13,19 @@
 bool stmt_simple_t::bytecode( src_t & src ) const
 {
 	if( m_stype == SIMPLE_KEYWORD || m_stype == SIMPLE_OPER ) {
-		src.bcode.push_back( { m_tok_ctr, m_val->line, m_val->col, IC_PUSH, { OP_CONST, TokStrs[ m_val->type ] }, false } );
-	} else if( src.bcode_as_const ) {
-		src.bcode.push_back( { m_tok_ctr, m_val->line, m_val->col, IC_PUSH, { OP_CONST, m_val->data }, false } );
+		src.bcode.push_back( { m_tok_ctr, m_val->line, m_val->col, IC_PUSH, { OP_CONST, TokStrs[ m_val->type ] } } );
+	} else if( src.bcode_as_const || m_post_dot ) {
+		src.bcode.push_back( { m_tok_ctr, m_val->line, m_val->col, IC_PUSH, { OP_CONST, m_val->data } } );
 	} else if( m_val->type == TOK_INT ) {
-		src.bcode.push_back( { m_tok_ctr, m_val->line, m_val->col, IC_PUSH, { OP_INT, m_val->data }, false } );
+		src.bcode.push_back( { m_tok_ctr, m_val->line, m_val->col, IC_PUSH, { OP_INT, m_val->data } } );
 	} else if( m_val->type == TOK_FLT ) {
-		src.bcode.push_back( { m_tok_ctr, m_val->line, m_val->col, IC_PUSH, { OP_FLT, m_val->data }, false } );
+		src.bcode.push_back( { m_tok_ctr, m_val->line, m_val->col, IC_PUSH, { OP_FLT, m_val->data } } );
 	} else if( m_val->type == TOK_TRUE || m_val->type == TOK_FALSE ) {
-		src.bcode.push_back( { m_tok_ctr, m_val->line, m_val->col, IC_PUSH, { OP_BOOL, m_val->data }, false } );
+		src.bcode.push_back( { m_tok_ctr, m_val->line, m_val->col, IC_PUSH, { OP_BOOL, m_val->data } } );
 	} else if( m_val->type == TOK_STR ) {
-		src.bcode.push_back( { m_tok_ctr, m_val->line, m_val->col, IC_PUSH, { OP_CONST, m_val->data }, false } );
+		src.bcode.push_back( { m_tok_ctr, m_val->line, m_val->col, IC_PUSH, { OP_CONST, m_val->data } } );
 	} else {
-		src.bcode.push_back( { m_tok_ctr, m_val->line, m_val->col, IC_PUSH, { OP_STR, m_val->data }, false } );
+		src.bcode.push_back( { m_tok_ctr, m_val->line, m_val->col, IC_PUSH, { OP_STR, m_val->data } } );
 	}
 	return true;
 }

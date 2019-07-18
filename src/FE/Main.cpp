@@ -85,8 +85,8 @@ int main( int argc, char ** argv )
 	if( !( flags & OPT_C ) && !( flags & OPT_D ) ) {
 		vm_state_t vm;
 		vm.flags = flags;
-		vm.src = main_src;
 		vm.srcstack.push_back( main_src );
+		vm.srcs[ main_src->name ] = main_src;
 		if( !set_init_mods( vm ) ) { err = E_VM_FAIL; goto cleanup; }
 		err = vm_exec( vm );
 		vm.srcstack.pop_back();

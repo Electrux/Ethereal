@@ -22,11 +22,13 @@ struct vm_state_t
 {
 	size_t flags;
 
-	src_t * src;
 	src_stack_t srcstack;
+	srcs_t srcs;
 
-	dyn_lib_t dlib;
-	consts_t consts;
+	vars_t * vars;
+
+	dyn_lib_t * dlib;
+	consts_t * consts;
 	functions_t funcs;
 	vm_stack_t * stack;
 	vm_state_t();

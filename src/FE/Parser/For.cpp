@@ -84,7 +84,7 @@ bool stmt_for_t::bytecode( src_t & src ) const
 	int line = src.toks[ m_tok_ctr ].line;
 	int col = src.toks[ m_tok_ctr ].col;
 
-	src.bcode.push_back( { m_tok_ctr, line, col, IC_ADD_SCOPE, { OP_NONE, "" }, false } );
+	src.bcode.push_back( { m_tok_ctr, line, col, IC_ADD_SCOPE, { OP_NONE, "" } } );
 
 	if( m_init != nullptr ) {
 		if( !m_init->bytecode( src ) ) return false;
@@ -93,13 +93,13 @@ bool stmt_for_t::bytecode( src_t & src ) const
 	if( m_cond != nullptr ) {
 		if( !m_cond->bytecode( src ) ) return false;
 		src.bcode.push_back( { src.bcode.back().parse_ctr, src.bcode.back().line,
-				       src.bcode.back().col, IC_JUMP_FALSE, { OP_INT, "<placeholder>" }, false } );
+				       src.bcode.back().col, IC_JUMP_FALSE, { OP_INT, "<placeholder>" } } );
 		cond_end_loc = src.bcode.size() - 1;
 	}
 
 	int block_start_loc = src.bcode.size();
 
-	src.bcode.push_back( { m_tok_ctr, line, col, IC_ADD_SCOPE, { OP_NONE, "" }, false } );
+	src.bcode.push_back( { m_tok_ctr, line, col, IC_ADD_SCOPE, { OP_NONE, "" } } );
 
 	int cont_brk_from = -1, cont_brk_to = -1;
 	if( m_block != nullptr ) {
@@ -120,22 +120,22 @@ bool stmt_for_t::bytecode( src_t & src ) const
 	}
 
 	// remove second layer
-	src.bcode.push_back( { m_tok_ctr, line, col, IC_REM_SCOPE, { OP_NONE, "" }, false } );
+	src.bcode.push_back( { m_tok_ctr, line, col, IC_REM_SCOPE, { OP_NONE, "" } } );
 	if( continue_loc == -1 ) continue_loc = src.bcode.size() - 1;
 
 	if( m_cond == nullptr ) {
 		src.bcode.push_back( { m_tok_ctr, src.bcode.back().line, src.bcode.back().col,
-				       IC_JUMP, { OP_INT, std::to_string( block_start_loc ) }, false } );
+				       IC_JUMP, { OP_INT, std::to_string( block_start_loc ) } } );
 	} else {
 		src.bcode.push_back( { m_tok_ctr, src.bcode.back().line, src.bcode.back().col,
-				       IC_JUMP_TRUE, { OP_INT, std::to_string( block_start_loc ) }, false } );
+				       IC_JUMP_TRUE, { OP_INT, std::to_string( block_start_loc ) } } );
 	}
 	if( cond_end_loc >= 0 ) {
 		src.bcode[ cond_end_loc ].oper.val = std::to_string( src.bcode.size() );
 	}
 
 	// remove first layer
-	src.bcode.push_back( { m_tok_ctr, line, col, IC_REM_SCOPE, { OP_NONE, "" }, false } );
+	src.bcode.push_back( { m_tok_ctr, line, col, IC_REM_SCOPE, { OP_NONE, "" } } );
 
 	// set continue and break locations
 	if( m_block != nullptr ) {

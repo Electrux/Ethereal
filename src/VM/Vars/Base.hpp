@@ -99,4 +99,42 @@ public:
 };
 #define AS_STR( x ) static_cast< var_str_t * >( x )
 
+class var_flt_t : public var_base_t
+{
+	mpf_class m_val;
+public:
+	var_flt_t( const float val, const int parse_ctr );
+	var_flt_t( const int val, const int parse_ctr );
+	var_flt_t( const std::string & val, const int parse_ctr );
+	var_flt_t( const bool val, const int parse_ctr );
+	var_flt_t( const mpf_class & val, const int parse_ctr );
+
+	std::string to_str() const;
+	mpz_class to_int() const;
+	bool to_bool() const;
+	var_base_t * copy() const;
+	void swap( var_base_t * with );
+	mpf_class & get();
+};
+#define AS_FLT( x ) static_cast< var_flt_t * >( x )
+
+class var_bool_t : public var_base_t
+{
+	bool m_val;
+public:
+	var_bool_t( const int val, const int parse_ctr );
+	var_bool_t( const float val, const int parse_ctr );
+	var_bool_t( const std::string & val, const int parse_ctr );
+	var_bool_t( const bool val, const int parse_ctr );
+	var_bool_t( const mpf_class & val, const int parse_ctr );
+
+	std::string to_str() const;
+	mpz_class to_int() const;
+	bool to_bool() const;
+	var_base_t * copy() const;
+	void swap( var_base_t * with );
+	bool & get();
+};
+#define AS_BOOL( x ) static_cast< var_bool_t * >( x )
+
 #endif // VM_VARS_BASE_HPP

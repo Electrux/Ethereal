@@ -26,9 +26,9 @@ int exec_internal( vm_state_t & vm, long begin, long end )
 		case IC_PUSH: {
 			var_base_t * val = nullptr;
 			if( ins.oper.type == OP_STR ) {
-				val = src.vars.get( ins.oper.val );
+				val = vm.vars->get( ins.oper.val );
 			} else {
-				val = vm.consts.get( ins.oper.val, ins.oper.type );
+				val = vm.consts->get( ins.oper.val, ins.oper.type, ins.parse_ctr );
 			}
 			if( val == nullptr ) {
 				VM_FAIL( "%s '%s' does not exist", ins.oper.type == OP_STR ? "variable" : "constant",
@@ -57,8 +57,8 @@ int exec_internal( vm_state_t & vm, long begin, long end )
 				// TODO:
 			}
 			var_base_t * newval = vm.stack->back();
-			if( src.vars.exists( var, true ) ) {
-				var_base_t * val = src.vars.get( var );
+			if( vm.vars->exists( var, true ) ) {
+				var_base_t * val = vm.vars->get( var );
 				if( val->type() != newval->type() ) {
 					VM_FAIL( "variable '%s' already declared at previous location, but with different data type" );
 					VM_FAIL_TOK_CTR( val->parse_ctr(), "original declared here" );
@@ -71,10 +71,10 @@ int exec_internal( vm_state_t & vm, long begin, long end )
 				}
 				break;
 			}
-			src.vars.add( var, newval->copy() );
+			vm.vars->add( var, newval->copy() );
 			vm.stack->pop_back();
 			if( ins.opcode == IC_STORE_LOAD ) {
-				vm.stack->push_back( src.vars.get( var ) );
+				vm.stack->push_back( vm.vars->get( var ) );
 			}
 			break;
 		}
@@ -87,8 +87,8 @@ int exec_internal( vm_state_t & vm, long begin, long end )
 				VM_FAIL( "failed to locate module file '%s'", module_name.c_str() );
 				goto fail;
 			}
-			if( vm.dlib.load( module_name ) == nullptr ) goto fail;
-			init_fnptr_t init_fn = ( init_fnptr_t ) vm.dlib.get( module_name, "init_" + ins.oper.val );
+			if( vm.dlib->load( module_name ) == nullptr ) goto fail;
+			init_fnptr_t init_fn = ( init_fnptr_t ) vm.dlib->get( module_name, "init_" + ins.oper.val );
 			if( init_fn == nullptr ) {
 				VM_FAIL( "failed to find init function in module '%s'\n", module_name.c_str() );
 				goto fail;
@@ -106,7 +106,6 @@ int exec_internal( vm_state_t & vm, long begin, long end )
 			}
 			const std::string file = vm.stack->back()->to_str();
 			vm.stack->pop_back();
-			
 
 			int ret = load_src( vm, file, alias, ins );
 
@@ -117,7 +116,8 @@ int exec_internal( vm_state_t & vm, long begin, long end )
 			}
 			break;
 		}
-		case IC_FN_CALL: {
+		case IC_FN_CALL: // fallthrough
+		case IC_MFN_CALL: {
 			int res = CallFunc( vm, i );
 			if( res != E_OK ) goto fail;
 			break;

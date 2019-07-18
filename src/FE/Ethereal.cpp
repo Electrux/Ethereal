@@ -18,7 +18,4 @@ src_t::~src_t()
 		for( auto & stmt : * ptree ) delete stmt;
 		delete ptree;
 	}
-	for( auto & s : srcs ) {
-		delete s.second;
-	}
 }

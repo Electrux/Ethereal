@@ -35,7 +35,6 @@ DECL_FUNC_ALLOC__INT( mul, *, var_int_t )
 DECL_FUNC_ALLOC__INT( div, /, var_int_t )
 DECL_FUNC_ALLOC__INT( mod, %, var_int_t )
 
-DECL_FUNC_ASSN__INT( assn, = )
 DECL_FUNC_ASSN__INT( add_assn, += )
 DECL_FUNC_ASSN__INT( sub_assn, -= )
 DECL_FUNC_ASSN__INT( mul_assn, *= )

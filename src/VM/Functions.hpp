@@ -41,8 +41,6 @@ struct function_t
 	std::vector< std::string > arg_types;
 	FnType type;
 	Func func;
-	// all the functions with this value as true require the return value to be freed by the system's memory manager
-	bool _requires_manual_return_free;
 };
 
 #define REGISTER_MODULE( name )				\

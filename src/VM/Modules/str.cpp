@@ -25,6 +25,6 @@ REGISTER_MODULE( str )
 {
 	functions_t & strfns = vm.typefuncs[ "str" ];
 
-	strfns.add( { "len", 0, 0, {}, FnType::MODULE, { .modfn = len }, true } );
-	strfns.add( { "clear", 0, 0, {}, FnType::MODULE, { .modfn = clear }, false } );
+	strfns.add( { "len", 0, 0, {}, FnType::MODULE, { .modfn = len } } );
+	strfns.add( { "clear", 0, 0, {}, FnType::MODULE, { .modfn = clear } } );
 }

@@ -39,6 +39,13 @@ DECL_FUNC_ASSN__FLT( sub_assnf, -= )
 DECL_FUNC_ASSN__FLT( mul_assnf, *= )
 DECL_FUNC_ASSN__FLT( div_assnf, /= )
 
+DECL_FUNC_ALLOC__FLT( eqf, ==, var_bool_t )
+DECL_FUNC_ALLOC__FLT( nef, !=, var_bool_t )
+DECL_FUNC_ALLOC__FLT( ltf, <, var_bool_t )
+DECL_FUNC_ALLOC__FLT( lef, <=, var_bool_t )
+DECL_FUNC_ALLOC__FLT( gtf, >, var_bool_t )
+DECL_FUNC_ALLOC__FLT( gef, >=, var_bool_t )
+
 var_base_t * powerf( std::vector< var_base_t * > & vars )
 {
 	auto & lhs = AS_FLT( vars[ 1 ] )->get();

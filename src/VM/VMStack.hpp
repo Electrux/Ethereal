@@ -45,7 +45,7 @@ public:
 #define VERIFY_STACK_MIN( sz )										\
 	do {												\
 		if( vm.stack->size() < sz ) {								\
-			VM_FAIL( "expected vm stack size to be %d, but is %zu", vm.stack->size() );	\
+			VM_FAIL( "expected vm stack size to be %zu, but is %zu", sz, vm.stack->size() );\
 			goto fail;									\
 		}											\
 	} while( 0 )

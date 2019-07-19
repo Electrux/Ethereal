@@ -78,6 +78,33 @@ int exec_internal( vm_state_t & vm, long begin, long end )
 			}
 			break;
 		}
+		case IC_ADD_SCOPE: { vm.vars->add_scope(); break; }
+		case IC_REM_SCOPE: {
+			std::vector< void * > locs;
+			vm.vars->pop_scope( & locs );
+			for( auto & loc : locs ) VAR_DREF( loc );
+			break;
+		}
+		case IC_JUMP_FALSE: // fallthrough
+		case IC_JUMP_TRUE: // fallthrough
+		case IC_JUMP: {
+			bool res = true;
+			const int idx = std::stoi( ins.oper.val );
+			if( idx < begin || idx > end ) {
+				VM_FAIL( "bytecode location %d exceeds the beginning and end points: [%d,%d)",
+					 idx, begin, end );
+				goto fail;
+			}
+			if( ins.opcode != IC_JUMP ) {
+				VERIFY_STACK_MIN( 1 );
+				res = vm.stack->back()->to_bool();
+				vm.stack->pop_back();
+				if( ( res && ins.opcode == IC_JUMP_TRUE ) || ( !res && ins.opcode == IC_JUMP_FALSE ) ) res = true;
+				else res = false;
+			}
+			if( res ) i = idx - 1;
+			break;
+		}
 		case IC_LDMOD: {
 			std::string module_name = ins.oper.val + ".so";
 			if( ins.oper.val.front() != '~' && ins.oper.val.front() != '/' && ins.oper.val.front() != '.' ) {

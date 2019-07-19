@@ -31,6 +31,7 @@
 
 DECL_FUNC_ALLOC__BOOL( log_and, &&, var_bool_t )
 DECL_FUNC_ALLOC__BOOL( log_or, ||, var_bool_t )
-DECL_FUNC_ALLOC__BOOL( log_not, !=, var_bool_t )
+DECL_FUNC_ALLOC__BOOL( log_eq, ==, var_bool_t )
+DECL_FUNC_ALLOC__BOOL( log_ne, !=, var_bool_t )
 
 #endif // VM_MODULES_CORE_BOOL_HPP

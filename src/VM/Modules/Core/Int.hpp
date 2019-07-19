@@ -41,6 +41,13 @@ DECL_FUNC_ASSN__INT( mul_assn, *= )
 DECL_FUNC_ASSN__INT( div_assn, /= )
 DECL_FUNC_ASSN__INT( mod_assn, %= )
 
+DECL_FUNC_ALLOC__INT( eqi, ==, var_bool_t )
+DECL_FUNC_ALLOC__INT( nei, !=, var_bool_t )
+DECL_FUNC_ALLOC__INT( lti, <, var_bool_t )
+DECL_FUNC_ALLOC__INT( lei, <=, var_bool_t )
+DECL_FUNC_ALLOC__INT( gti, >, var_bool_t )
+DECL_FUNC_ALLOC__INT( gei, >=, var_bool_t )
+
 var_base_t * power( std::vector< var_base_t * > & vars )
 {
 	auto & lhs = AS_INT( vars[ 1 ] )->get();

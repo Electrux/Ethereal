@@ -70,6 +70,14 @@ REGISTER_MODULE( core )
 	vm.funcs.add( { "/=",  2, 2, { "int", "int" }, FnType::MODULE, { .modfn = div_assn } } );
 	vm.funcs.add( { "%=",  2, 2, { "int", "int" }, FnType::MODULE, { .modfn = mod_assn } } );
 
+	// comparisons
+	vm.funcs.add( { "==", 2, 2, { "int", "int" }, FnType::MODULE, { .modfn = eqi } } );
+	vm.funcs.add( { "!=", 2, 2, { "int", "int" }, FnType::MODULE, { .modfn = nei } } );
+	vm.funcs.add( { "<",  2, 2, { "int", "int" }, FnType::MODULE, { .modfn = lti } } );
+	vm.funcs.add( { "<=", 2, 2, { "int", "int" }, FnType::MODULE, { .modfn = lei } } );
+	vm.funcs.add( { ">",  2, 2, { "int", "int" }, FnType::MODULE, { .modfn = gti } } );
+	vm.funcs.add( { ">=", 2, 2, { "int", "int" }, FnType::MODULE, { .modfn = gei } } );
+
 	// cool arithmetic
 	vm.funcs.add( { "**",  2, 2, { "int", "int" }, FnType::MODULE, { .modfn = power } } );
 
@@ -94,6 +102,14 @@ REGISTER_MODULE( core )
 	vm.funcs.add( { "*=",  2, 2, { "flt", "flt" }, FnType::MODULE, { .modfn = mul_assnf } } );
 	vm.funcs.add( { "/=",  2, 2, { "flt", "flt" }, FnType::MODULE, { .modfn = div_assnf } } );
 
+	// comparisons
+	vm.funcs.add( { "==", 2, 2, { "flt", "flt" }, FnType::MODULE, { .modfn = eqf } } );
+	vm.funcs.add( { "!=", 2, 2, { "flt", "flt" }, FnType::MODULE, { .modfn = nef } } );
+	vm.funcs.add( { "<",  2, 2, { "flt", "flt" }, FnType::MODULE, { .modfn = ltf } } );
+	vm.funcs.add( { "<=", 2, 2, { "flt", "flt" }, FnType::MODULE, { .modfn = lef } } );
+	vm.funcs.add( { ">",  2, 2, { "flt", "flt" }, FnType::MODULE, { .modfn = gtf } } );
+	vm.funcs.add( { ">=", 2, 2, { "flt", "flt" }, FnType::MODULE, { .modfn = gef } } );
+
 	// cool arithmetic
 	vm.funcs.add( { "**",  2, 2, { "flt", "int" }, FnType::MODULE, { .modfn = powerf } } );
 
@@ -107,9 +123,10 @@ REGISTER_MODULE( core )
 	////////////////////////////////////////////////////////////////// FLT ////////////////////////////////////////////////////////////////
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// basic arithmetic
-	vm.funcs.add( { "&&",   2, 2, { "_any_", "_any_" }, FnType::MODULE, { .modfn = log_and } } );
-	vm.funcs.add( { "||",   2, 2, { "_any_", "_any_" }, FnType::MODULE, { .modfn = log_or } } );
-	vm.funcs.add( { "!=",   2, 2, { "_any_", "_any_" }, FnType::MODULE, { .modfn = log_not } } );
+	vm.funcs.add( { "&&",   2, 2, { "bool", "bool" }, FnType::MODULE, { .modfn = log_and } } );
+	vm.funcs.add( { "||",   2, 2, { "bool", "bool" }, FnType::MODULE, { .modfn = log_or } } );
+	vm.funcs.add( { "==",   2, 2, { "bool", "bool" }, FnType::MODULE, { .modfn = log_eq } } );
+	vm.funcs.add( { "!=",   2, 2, { "bool", "bool" }, FnType::MODULE, { .modfn = log_ne } } );
 
 	// other types to bool
 	vm.funcs.add( { "bool", 1, 1, { "_any_" }, FnType::MODULE, { .modfn = flt } } );

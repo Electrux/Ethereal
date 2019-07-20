@@ -99,7 +99,7 @@ int exec_internal( vm_state_t & vm, long begin, long end )
 				}
 				break;
 			}
-			vm.vars->add( var, newval->copy() );
+			vm.vars->add( var, newval->copy( ins.parse_ctr ) );
 			vm.stack->pop_back();
 			if( ins.opcode == IC_STORE_LOAD ) {
 				vm.stack->push_back( vm.vars->get( var ) );
@@ -203,6 +203,58 @@ int exec_internal( vm_state_t & vm, long begin, long end )
 			}
 			break;
 		}
+		case IC_SUBSCR: {
+			VERIFY_STACK_MIN( 2 );
+			var_base_t * var = vm.stack->back();
+			vm.stack->pop_back();
+			if( var == nullptr ) {
+				VM_FAIL( "variable '%s' does not exist", ins.oper.val.c_str() );
+				goto fail;
+			}
+			if( var->type() != VT_STR && var->type() != VT_VEC && var->type() != VT_MAP ) {
+				VM_FAIL( "expected one of 'str', 'vec', or 'map' but found: %s", var->type_str().c_str() );
+				goto fail;
+			}
+			var_base_t * sub = vm.stack->back();
+			vm.stack->pop_back();
+			if( var->type() == VT_STR || var->type() == VT_VEC ) {
+				if( sub->type() != VT_INT ) {
+					VM_FAIL( "subscript expression must be of integer type, but found: '%s'",
+						 sub->type_str().c_str() );
+					goto fail;
+				}
+				int idx = sub->to_int().get_si();
+				if( var->type() == VT_STR ) {
+					std::string & val = AS_STR( var )->get();
+					if( idx < 0 || idx >= ( int )val.size() ) {
+						VM_FAIL( "index can only be between [0, %zu), but is: %d", val.size(), idx );
+						goto fail;
+					}
+					vm.stack->push_back( new var_str_t( std::string( 1, val[ idx ] ), ins.parse_ctr ), false );
+				} else if( var->type() == VT_VEC ) {
+					std::vector< var_base_t * > & val = AS_VEC( var )->get();
+					if( idx < 0 || idx >= ( int )val.size() ) {
+						VM_FAIL( "index can only be between [0, %zu), but is: %d", val.size(), idx );
+						goto fail;
+					}
+					vm.stack->push_back( val[ idx ] );
+				}
+			} else if( var->type() == VT_MAP ) {
+				std::unordered_map< std::string, var_base_t * > & val = AS_MAP( var )->get();
+				if( sub->type() != VT_STR && sub->type() != VT_INT ) {
+					VM_FAIL( "subscript expression must be of string or int type, but found: '%s'",
+						 sub->type_str().c_str() );
+					goto fail;
+				}
+				const std::string key = sub->to_str();
+				if( val.find( key ) == val.end() ) {
+					VM_FAIL( "map does not contain a key '%s'", key.c_str() );
+					goto fail;
+				}
+				vm.stack->push_back( val.at( key ) );
+			}
+			break;
+		}
 		case IC_BUILD_ENUM: {
 			std::string name = vm.stack->back()->to_str();
 			vm.stack->pop_back();
@@ -220,6 +272,30 @@ int exec_internal( vm_state_t & vm, long begin, long end )
 				vm.stack->pop_back();
 			}
 			vm.vars->add( name, new var_enum_t( name, map, ins.parse_ctr ) );
+			break;
+		}
+		case IC_BUILD_VEC: {
+			const int count = std::stoi( ins.oper.val );
+			VERIFY_STACK_MIN( ( size_t )count );
+			std::vector< var_base_t * > vec;
+			for( int i = 0; i < count; ++i ) {
+				vec.push_back( vm.stack->back()->copy( ins.parse_ctr ) );
+				vm.stack->pop_back();
+			}
+			vm.stack->push_back( new var_vec_t( vec, ins.parse_ctr ), false );
+			break;
+		}
+		case IC_BUILD_MAP: {
+			const int count = std::stoi( ins.oper.val );
+			VERIFY_STACK_MIN( ( size_t )count * 2 );
+			std::unordered_map< std::string, var_base_t * > map;
+			for( int i = 0; i < count; ++i ) {
+				std::string key = vm.stack->back()->to_str();
+				vm.stack->pop_back();
+				map[ key ] = vm.stack->back()->copy( ins.parse_ctr );
+				vm.stack->pop_back();
+			}
+			vm.stack->push_back( new var_map_t( map, ins.parse_ctr ), false );
 			break;
 		}
 		case _IC_LAST: {}

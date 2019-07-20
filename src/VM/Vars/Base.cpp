@@ -16,6 +16,8 @@ const char * VarTypeStrs[ _VT_LAST ] = {
 	"bool",
 
 	"enum",
+	"vec",
+	"map",
 
 	"func",
 };

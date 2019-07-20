@@ -21,8 +21,9 @@ bool stmt_func_struct_subscr_call_t::bytecode( src_t & src ) const
 		else args = child_cc + 1;
 	}
 	if( m_ctype == CT_SUBSCR ) {
+		m_name->bytecode( src );
 		src.bcode.push_back( { m_tok_ctr, m_name->m_val->line, m_name->m_val->col,
-				       IC_SUBSCR, { OP_INT, m_name->m_val->data } } );
+				       IC_SUBSCR, { OP_NONE, "" } } );
 		return true;
 	}
 

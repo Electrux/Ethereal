@@ -23,6 +23,8 @@ enum VarType
 	VT_BOOL,
 
 	VT_ENUM,
+	VT_VEC,
+	VT_MAP,
 
 	VT_FUNC,
 
@@ -51,7 +53,7 @@ public:
 	virtual std::string to_str() const = 0;
 	virtual mpz_class to_int() const = 0;
 	virtual bool to_bool() const = 0;
-	virtual var_base_t * copy() const = 0;
+	virtual var_base_t * copy( const int parse_ctr ) const = 0;
 };
 
 #define VAR_IREF( var ) do { ( ( var_base_t * )var )->inc_ref(); } while( 0 )
@@ -78,7 +80,7 @@ public:
 	std::string to_str() const;
 	mpz_class to_int() const;
 	bool to_bool() const;
-	var_base_t * copy() const;
+	var_base_t * copy( const int parse_ctr ) const;
 	mpz_class & get();
 };
 #define AS_INT( x ) static_cast< var_int_t * >( x )
@@ -92,7 +94,7 @@ public:
 	std::string to_str() const;
 	mpz_class to_int() const;
 	bool to_bool() const;
-	var_base_t * copy() const;
+	var_base_t * copy( const int parse_ctr ) const;
 	std::string & get();
 };
 #define AS_STR( x ) static_cast< var_str_t * >( x )
@@ -110,7 +112,7 @@ public:
 	std::string to_str() const;
 	mpz_class to_int() const;
 	bool to_bool() const;
-	var_base_t * copy() const;
+	var_base_t * copy( const int parse_ctr ) const;
 	mpf_class & get();
 };
 #define AS_FLT( x ) static_cast< var_flt_t * >( x )
@@ -128,7 +130,7 @@ public:
 	std::string to_str() const;
 	mpz_class to_int() const;
 	bool to_bool() const;
-	var_base_t * copy() const;
+	var_base_t * copy( const int parse_ctr ) const;
 	bool & get();
 };
 #define AS_BOOL( x ) static_cast< var_bool_t * >( x )
@@ -144,10 +146,38 @@ public:
 	std::string to_str() const;
 	mpz_class to_int() const;
 	bool to_bool() const;
-	var_base_t * copy() const;
+	var_base_t * copy( const int parse_ctr ) const;
 	std::string get_name();
 	std::unordered_map< std::string, var_int_t * > & get_val();
 };
 #define AS_ENUM( x ) static_cast< var_enum_t * >( x )
+
+class var_vec_t : public var_base_t
+{
+	std::vector< var_base_t * > m_val;
+public:
+	var_vec_t( std::vector< var_base_t * > & val, const int parse_ctr );
+	~var_vec_t();
+	std::string to_str() const;
+	mpz_class to_int() const;
+	bool to_bool() const;
+	var_base_t * copy( const int parse_ctr ) const;
+	std::vector< var_base_t * > & get();
+};
+#define AS_VEC( x ) static_cast< var_vec_t * >( x )
+
+class var_map_t : public var_base_t
+{
+	std::unordered_map< std::string, var_base_t * > m_val;
+public:
+	var_map_t( std::unordered_map< std::string, var_base_t * > & val, const int parse_ctr );
+	~var_map_t();
+	std::string to_str() const;
+	mpz_class to_int() const;
+	bool to_bool() const;
+	var_base_t * copy( const int parse_ctr ) const;
+	std::unordered_map< std::string, var_base_t * > & get();
+};
+#define AS_MAP( x ) static_cast< var_map_t * >( x )
 
 #endif // VM_VARS_BASE_HPP

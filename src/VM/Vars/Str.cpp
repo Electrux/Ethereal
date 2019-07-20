@@ -15,5 +15,6 @@ var_str_t::var_str_t( const std::string & val, const int parse_ctr )
 std::string var_str_t::to_str() const { return m_val; }
 mpz_class var_str_t::to_int() const { return mpz_class( m_val ); }
 bool var_str_t::to_bool() const { return !m_val.empty(); }
-var_base_t * var_str_t::copy() const { return new var_str_t( this->m_val, this->parse_ctr() ); }
+var_base_t * var_str_t::copy( const int parse_ctr ) const
+	{ return new var_str_t( this->m_val, parse_ctr ); }
 std::string & var_str_t::get() { return m_val; }

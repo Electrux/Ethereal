@@ -33,5 +33,6 @@ std::string var_flt_t::to_str() const
 mpz_class var_flt_t::to_int() const { return mpz_class( m_val ); }
 bool var_flt_t::to_bool() const { return m_val != 0.0; }
 
-var_base_t * var_flt_t::copy() const { return new var_flt_t( this->m_val, this->parse_ctr() ); }
+var_base_t * var_flt_t::copy( const int parse_ctr ) const
+	{ return new var_flt_t( this->m_val, parse_ctr ); }
 mpf_class & var_flt_t::get() { return m_val; }

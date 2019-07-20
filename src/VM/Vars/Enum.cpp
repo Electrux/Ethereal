@@ -22,13 +22,13 @@ std::string var_enum_t::to_str() const { return "enum:" + m_name + "(" + std::to
 mpz_class var_enum_t::to_int() const { return mpz_class( m_val.size() ); }
 bool var_enum_t::to_bool() const { return m_val.size() > 0; }
 
-var_base_t * var_enum_t::copy() const
+var_base_t * var_enum_t::copy( const int parse_ctr ) const
 {
 	std::unordered_map< std::string, var_int_t * > newmap;
 	for( auto & v : m_val ) {
-		newmap[ v.first ] = AS_INT( v.second->copy() );
+		newmap[ v.first ] = AS_INT( v.second->copy( parse_ctr ) );
 	}
-	return new var_enum_t( this->m_name, newmap, this->parse_ctr() );
+	return new var_enum_t( this->m_name, newmap, parse_ctr );
 }
 std::string var_enum_t::get_name() { return m_name; }
 std::unordered_map< std::string, var_int_t * > & var_enum_t::get_val() { return m_val; }

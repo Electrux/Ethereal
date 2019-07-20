@@ -13,21 +13,36 @@
 #include "CallFunc.hpp"
 #include "LoadFile.hpp"
 
+#ifdef DEBUG_MODE
+#include <chrono>
+#endif
+
 int exec_internal( vm_state_t & vm, long begin, long end )
 {
 	src_t & src = * vm.srcstack.back();
 	begin = begin == -1 ? 0 : begin;
 	end = end == -1 ? src.bcode.size() : end;
 
+#ifdef DEBUG_MODE
+	typedef std::chrono::high_resolution_clock clk_t;
+	std::chrono::time_point< clk_t > start = clk_t::now();
+	std::chrono::time_point< clk_t > stamp;
+#endif
+
 	for( int i = begin; i < end; ++i ) {
 		instr_t & ins = src.bcode[ i ];
-/*
+
+#ifdef DEBUG_MODE
+		stamp = clk_t::now();
+
 		fprintf( stdout, "Current stack (operation [%d]: %s[%s]): ", i, InstrCodeStrs[ ins.opcode ], ins.oper.val.c_str() );
-		for( auto & s : vm.stack->get() ) {
-			fprintf( stdout, "%s[%d] ", s->to_str().c_str(), s->ref() );
-		}
+		fprintf( stdout, "%f", std::chrono::duration_cast< std::chrono::duration< double, std::milli > >( stamp - start ).count() );
+		//for( auto & s : vm.stack->get() ) {
+		//	fprintf( stdout, "%s[%d] ", s->to_str().c_str(), s->ref() );
+		//}
+		start = stamp;
 		fprintf( stdout, "\n" );
-*/
+#endif
 		switch( ins.opcode ) {
 		case IC_PUSH: {
 			var_base_t * val = nullptr;
@@ -93,16 +108,14 @@ int exec_internal( vm_state_t & vm, long begin, long end )
 		}
 		case IC_ADD_SCOPE: {
 			int count = std::stoi( ins.oper.val );
-			while( count-- > 0 ) vm.vars->add_scope();
+			vm.vars->add_scope( count );
 			break;
 		}
 		case IC_REM_SCOPE: {
 			int count = std::stoi( ins.oper.val );
-			while( count-- > 0 ) {
-				std::vector< void * > locs;
-				vm.vars->pop_scope( & locs );
-				for( auto & loc : locs ) VAR_DREF( loc );
-			}
+			std::vector< void * > locs;
+			vm.vars->pop_scope( & locs, count );
+			for( auto & loc : locs ) VAR_DREF( loc );
 			break;
 		}
 		case IC_JUMP_FALSE: // fallthrough

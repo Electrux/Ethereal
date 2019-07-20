@@ -10,37 +10,37 @@
 #include "Instructions.hpp"
 
 const char * InstrCodeStrs[ _IC_LAST ] = {
-	"push",
-	"pop",
-	"store",
-	"store_load",
+	"PUSH",
+	"POP",
+	"STORE",
+	"STORE_LOAD",
 
-	"jump",
-	"jump_true",
-	"jump_false",
+	"JUMP",
+	"JUMP_TRUE",
+	"JUMP_FALSE",
 
-	"build_enum",
-	"build_vec",
-	"build_map",
+	"BUILD_ENUM",
+	"BUILD_VEC",
+	"BUILD_MAP",
 
-	"add_scope",
-	"rem_scope",
+	"ADD_SCOPE",
+	"REM_SCOPE",
 
-	"load_mod",
-	"import",
+	"LOAD_MOD",
+	"IMPORT",
 
-	"call_func",
-	"call_mem_func",
-	"struct_decl",
-	"struct_attr",
+	"CALL_FUNC",
+	"CALL_MEM_FUNC",
+	"STRUCT_DECL",
+	"STRUCT_ATTR",
 
-	"subscript",
+	"SUBSCRIPT",
 
-	"return",
+	"RETURN",
 
-	"struct_field",
+	"STRUCT_FIELD",
 
-	"build_struct",
+	"BUILD_STRUCT",
 };
 
 const char * OperTypeStrs[ _OP_LAST ] = {

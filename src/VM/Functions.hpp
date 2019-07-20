@@ -56,7 +56,7 @@ class functions_t
 	std::vector< function_t > m_funcs;
 	// uses mangled names and used for getting functions quickly
 	// mangled style:
-	// modname_fnname_argtypes
+	// fnname_argtypes
 	std::unordered_map< std::string, const function_t * > m_cached_funcs;
 
 	inline bool exists( const function_t & func )

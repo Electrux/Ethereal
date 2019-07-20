@@ -21,10 +21,16 @@ var_base_t * clear( std::vector< var_base_t * > & vars )
 	return nullptr;
 }
 
+var_base_t * to_int( std::vector< var_base_t * > & vars )
+{
+	return new var_int_t( AS_STR( vars[ 0 ] )->get(), vars[ 0 ]->parse_ctr() );
+}
+
 REGISTER_MODULE( str )
 {
 	functions_t & strfns = vm.typefuncs[ "str" ];
 
 	strfns.add( { "len", 0, 0, {}, FnType::MODULE, { .modfn = len }, true } );
 	strfns.add( { "clear", 0, 0, {}, FnType::MODULE, { .modfn = clear }, false } );
+	strfns.add( { "to_int", 0, 0, {}, FnType::MODULE, { .modfn = to_int }, true } );
 }

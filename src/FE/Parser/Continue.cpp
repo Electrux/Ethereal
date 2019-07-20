@@ -14,6 +14,8 @@ bool stmt_continue_t::bytecode( src_t & src ) const
 {
 	int line = src.toks[ m_tok_ctr ].line;
 	int col = src.toks[ m_tok_ctr ].col;
+	// -2 to skip the first and second scopes of a loop
+	src.bcode.push_back( { m_tok_ctr, line, col, IC_REM_SCOPE, { OP_INT, std::to_string( src.block_depth.back() - 2 ) } } );
 	src.bcode.push_back( { m_tok_ctr, line, col, IC_JUMP, { OP_INT, "<continue-placeholder>" } } );
 	return true;
 }

@@ -17,7 +17,7 @@
 	{									\
 		bool lhs = vars[ 1 ]->to_bool();				\
 		bool rhs = vars[ 0 ]->to_bool();				\
-		return new ret_type( lhs oper rhs, vars[ 0 ]->parse_ctr() );	\
+		return new ret_type( lhs oper rhs, vars[ 1 ]->parse_ctr() );	\
 	}
 
 #define DECL_FUNC_ASSN__BOOL( name, oper )				\
@@ -26,7 +26,7 @@
 		bool lhs = vars[ 0 ]->to_bool();			\
 		bool rhs = vars[ 1 ]->to_bool();			\
 		lhs oper rhs;						\
-		return vars[ 1 ];					\
+		return vars[ 0 ];					\
 	}
 
 DECL_FUNC_ALLOC__BOOL( log_and, &&, var_bool_t )

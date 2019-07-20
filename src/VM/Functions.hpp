@@ -41,6 +41,7 @@ struct function_t
 	std::vector< std::string > arg_types;
 	FnType type;
 	Func func;
+	bool manual_res_free;
 };
 
 #define REGISTER_MODULE( name )				\

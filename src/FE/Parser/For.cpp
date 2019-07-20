@@ -46,6 +46,7 @@ stmt_for_t * parse_for( src_t & src, parse_helper_t * ph, std::vector< GrammarTy
 	}
 	cond = parse_expr( src, ph, cond_cols );
 	if( cond.res != 0 ) goto fail;
+	if( cond.expr ) cond.expr->m_is_top_expr = false;
 	ph->set_tok_ctr( cond_cols );
 
 	// step
@@ -84,7 +85,9 @@ bool stmt_for_t::bytecode( src_t & src ) const
 	int line = src.toks[ m_tok_ctr ].line;
 	int col = src.toks[ m_tok_ctr ].col;
 
-	src.bcode.push_back( { m_tok_ctr, line, col, IC_ADD_SCOPE, { OP_NONE, "" } } );
+	ADD_SCOPE();
+	// add first layer
+	INC_SCOPE();
 
 	if( m_init != nullptr ) {
 		if( !m_init->bytecode( src ) ) return false;
@@ -99,7 +102,8 @@ bool stmt_for_t::bytecode( src_t & src ) const
 
 	int block_start_loc = src.bcode.size();
 
-	src.bcode.push_back( { m_tok_ctr, line, col, IC_ADD_SCOPE, { OP_NONE, "" } } );
+	// add second layer
+	INC_SCOPE();
 
 	int cont_brk_from = -1, cont_brk_to = -1;
 	if( m_block != nullptr ) {
@@ -119,8 +123,6 @@ bool stmt_for_t::bytecode( src_t & src ) const
 		if( !m_cond->bytecode( src ) ) return false;
 	}
 
-	// remove second layer
-	src.bcode.push_back( { m_tok_ctr, line, col, IC_REM_SCOPE, { OP_NONE, "" } } );
 	if( continue_loc == -1 ) continue_loc = src.bcode.size() - 1;
 
 	if( m_cond == nullptr ) {
@@ -134,8 +136,12 @@ bool stmt_for_t::bytecode( src_t & src ) const
 		src.bcode[ cond_end_loc ].oper.val = std::to_string( src.bcode.size() );
 	}
 
+	// remove second layer
+	DEC_SCOPE();
+
+	DEC_SCOPE();
 	// remove first layer
-	src.bcode.push_back( { m_tok_ctr, line, col, IC_REM_SCOPE, { OP_NONE, "" } } );
+	REM_SCOPE();
 
 	// set continue and break locations
 	if( m_block != nullptr ) {

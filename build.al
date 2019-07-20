@@ -42,7 +42,7 @@ builds( lib, dynamic ) {
 }
 
 builds( bin ) {
-	sources( "src/(.*)\.cpp", "-src/VM/Modules/(.*)\.cpp" )
+	sources( "src/(.*)\.cpp", "-src/VM/Modules/(.*)\.cpp", "-src/VM/Main.cpp" )
 	build( et, "src/FE/Main.cpp" )
 }
 

@@ -21,7 +21,13 @@ int exec_internal( vm_state_t & vm, long begin, long end )
 
 	for( int i = begin; i < end; ++i ) {
 		instr_t & ins = src.bcode[ i ];
-
+/*
+		fprintf( stdout, "Current stack (operation [%d]: %s[%s]): ", i, InstrCodeStrs[ ins.opcode ], ins.oper.val.c_str() );
+		for( auto & s : vm.stack->get() ) {
+			fprintf( stdout, "%s[%d] ", s->to_str().c_str(), s->ref() );
+		}
+		fprintf( stdout, "\n" );
+*/
 		switch( ins.opcode ) {
 		case IC_PUSH: {
 			var_base_t * val = nullptr;
@@ -43,7 +49,7 @@ int exec_internal( vm_state_t & vm, long begin, long end )
 				VM_FAIL( "cannot pop from vm stack since it is already empty" );
 				goto fail;
 			}
-			vm.stack->pop_back( false );
+			vm.stack->pop_back();
 			break;
 		}
 		case IC_STORE: // fallthrough
@@ -64,7 +70,14 @@ int exec_internal( vm_state_t & vm, long begin, long end )
 					VM_FAIL_TOK_CTR( val->parse_ctr(), "original declared here" );
 					goto fail;
 				}
-				val->swap( newval );
+				VarType type = val->type();
+
+				if( type == VT_INT ) AS_INT( val )->get() = AS_INT( newval )->get();
+				else if( type == VT_FLT ) AS_FLT( val )->get() = AS_FLT( newval )->get();
+				else if( type == VT_STR ) AS_STR( val )->get() = AS_STR( newval )->get();
+				else if( type == VT_BOOL ) AS_BOOL( val )->get() = AS_BOOL( newval )->get();
+				// TODO:
+
 				vm.stack->pop_back();
 				if( ins.opcode == IC_STORE_LOAD ) {
 					vm.stack->push_back( val );
@@ -78,11 +91,18 @@ int exec_internal( vm_state_t & vm, long begin, long end )
 			}
 			break;
 		}
-		case IC_ADD_SCOPE: { vm.vars->add_scope(); break; }
+		case IC_ADD_SCOPE: {
+			int count = std::stoi( ins.oper.val );
+			while( count-- > 0 ) vm.vars->add_scope();
+			break;
+		}
 		case IC_REM_SCOPE: {
-			std::vector< void * > locs;
-			vm.vars->pop_scope( & locs );
-			for( auto & loc : locs ) VAR_DREF( loc );
+			int count = std::stoi( ins.oper.val );
+			while( count-- > 0 ) {
+				std::vector< void * > locs;
+				vm.vars->pop_scope( & locs );
+				for( auto & loc : locs ) VAR_DREF( loc );
+			}
 			break;
 		}
 		case IC_JUMP_FALSE: // fallthrough

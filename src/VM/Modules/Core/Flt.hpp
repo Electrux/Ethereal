@@ -17,7 +17,7 @@
 	{									\
 		auto & lhs = AS_FLT( vars[ 1 ] )->get();			\
 		auto & rhs = AS_FLT( vars[ 0 ] )->get();			\
-		return new ret_type( lhs oper rhs, vars[ 0 ]->parse_ctr() );	\
+		return new ret_type( lhs oper rhs, vars[ 1 ]->parse_ctr() );	\
 	}
 
 #define DECL_FUNC_ASSN__FLT( name, oper )				\
@@ -26,7 +26,7 @@
 		auto & lhs = AS_FLT( vars[ 0 ] )->get();		\
 		auto & rhs = AS_FLT( vars[ 1 ] )->get();		\
 		lhs oper rhs;						\
-		return vars[ 1 ];					\
+		return vars[ 0 ];					\
 	}
 
 DECL_FUNC_ALLOC__FLT( addf, +, var_flt_t )
@@ -50,7 +50,7 @@ var_base_t * powerf( std::vector< var_base_t * > & vars )
 {
 	auto & lhs = AS_FLT( vars[ 1 ] )->get();
 	auto & rhs = AS_INT( vars[ 0 ] )->get();
-	var_flt_t * res = new var_flt_t( "0", vars[ 0 ]->parse_ctr() );
+	var_flt_t * res = new var_flt_t( "0", vars[ 1 ]->parse_ctr() );
 	mpf_pow_ui( res->get().get_mpf_t(), lhs.get_mpf_t(), rhs.get_ui() );
 	return res;
 }

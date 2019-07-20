@@ -28,8 +28,8 @@ enum InstrCode
 	IC_BUILD_VEC,		// args: count of elements to take from stack
 	IC_BUILD_MAP,		// args: count of elements to take from stack
 
-	IC_ADD_SCOPE,		// args: none
-	IC_REM_SCOPE,		// args: none
+	IC_ADD_SCOPE,		// args: count of scopes to add
+	IC_REM_SCOPE,		// args: count of scopes to remove
 
 	IC_LDMOD,		// args: count: 1 = what, 2 = what + as
 	IC_IMPORT,		// args: count: 1 = what

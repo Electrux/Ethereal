@@ -17,7 +17,7 @@
 	{									\
 		auto & lhs = AS_INT( vars[ 1 ] )->get();			\
 		auto & rhs = AS_INT( vars[ 0 ] )->get();			\
-		return new ret_type( lhs oper rhs, vars[ 0 ]->parse_ctr() );	\
+		return new ret_type( lhs oper rhs, vars[ 1 ]->parse_ctr() );	\
 	}
 
 #define DECL_FUNC_ASSN__INT( name, oper )				\
@@ -26,7 +26,7 @@
 		auto & lhs = AS_INT( vars[ 0 ] )->get();		\
 		auto & rhs = AS_INT( vars[ 1 ] )->get();		\
 		lhs oper rhs;						\
-		return vars[ 1 ];					\
+		return vars[ 0 ];					\
 	}
 
 DECL_FUNC_ALLOC__INT( add, +, var_int_t )
@@ -52,7 +52,7 @@ var_base_t * power( std::vector< var_base_t * > & vars )
 {
 	auto & lhs = AS_INT( vars[ 1 ] )->get();
 	auto & rhs = AS_INT( vars[ 0 ] )->get();
-	var_int_t * res = new var_int_t( "0", vars[ 0 ]->parse_ctr() );
+	var_int_t * res = new var_int_t( "0", vars[ 1 ]->parse_ctr() );
 	mpz_pow_ui( res->get().get_mpz_t(), lhs.get_mpz_t(), rhs.get_ui() );
 	return res;
 }

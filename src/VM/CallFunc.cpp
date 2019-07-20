@@ -78,7 +78,7 @@ int CallFunc( vm_state_t & vm, const int ins_ctr )
 	for( auto & arg : args ) VAR_DREF( arg );
 
 	if( res.data != nullptr ) {
-		vm.stack->push_back( res.data, false );
+		vm.stack->push_back( res.data, !fn->manual_res_free );
 	}
 
 	vm.vars->pop_scope( & rem_locs );

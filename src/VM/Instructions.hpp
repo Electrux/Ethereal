@@ -27,6 +27,7 @@ enum InstrCode
 	IC_BUILD_ENUM,		// args: count of elements to take from stack
 	IC_BUILD_VEC,		// args: count of elements to take from stack
 	IC_BUILD_MAP,		// args: count of elements to take from stack
+	IC_BUILD_STRUCT,	// args: count of fields
 
 	IC_ADD_SCOPE,		// args: count of scopes to add
 	IC_REM_SCOPE,		// args: count of scopes to remove
@@ -38,15 +39,13 @@ enum InstrCode
 	IC_MFN_CALL,		// args: same as IC_FN_CALL
 
 	IC_STRUCT_DECL,		// args: same as IC_FN_CALL
-	IC_STRUCT_ATTR,		// args: same as IC_FN_CALL
+	IC_ATTR,		// args: same as IC_FN_CALL
 
 	IC_SUBSCR,		// args: name of variable
 
 	IC_RETURN,		// args: bool - returns something or not (not = returns OP_NONE)
 
 	IC_STRUCT_FIELD,	// args: name of the field, takes one from stack as default value
-
-	IC_STRUCT_BUILD,	// args: count of fields
 
 	_IC_LAST,
 };

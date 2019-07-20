@@ -41,7 +41,7 @@ bool stmt_import_t::bytecode( src_t & src ) const
 	std::string file = m_what->data;
 	int res = format_file_str( file );
 	if( res != 0 ) {
-		src_fail( src.code[ m_what->line - 1 ], m_what->line, m_what->col,
+		src_fail( src.name, src.code[ m_what->line - 1 ], m_what->line, m_what->col,
 			  "could not find file '%s' for importing", file.c_str() );
 		return false;
 	}

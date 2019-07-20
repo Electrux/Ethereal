@@ -22,6 +22,8 @@ enum VarType
 	VT_FLT,
 	VT_BOOL,
 
+	VT_ENUM,
+
 	VT_FUNC,
 
 	_VT_LAST,
@@ -50,7 +52,6 @@ public:
 	virtual mpz_class to_int() const = 0;
 	virtual bool to_bool() const = 0;
 	virtual var_base_t * copy() const = 0;
-	virtual void swap( var_base_t * with ) = 0;
 };
 
 #define VAR_IREF( var ) do { ( ( var_base_t * )var )->inc_ref(); } while( 0 )
@@ -78,7 +79,6 @@ public:
 	mpz_class to_int() const;
 	bool to_bool() const;
 	var_base_t * copy() const;
-	void swap( var_base_t * with );
 	mpz_class & get();
 };
 #define AS_INT( x ) static_cast< var_int_t * >( x )
@@ -93,7 +93,6 @@ public:
 	mpz_class to_int() const;
 	bool to_bool() const;
 	var_base_t * copy() const;
-	void swap( var_base_t * with );
 	std::string & get();
 };
 #define AS_STR( x ) static_cast< var_str_t * >( x )
@@ -112,7 +111,6 @@ public:
 	mpz_class to_int() const;
 	bool to_bool() const;
 	var_base_t * copy() const;
-	void swap( var_base_t * with );
 	mpf_class & get();
 };
 #define AS_FLT( x ) static_cast< var_flt_t * >( x )
@@ -131,9 +129,25 @@ public:
 	mpz_class to_int() const;
 	bool to_bool() const;
 	var_base_t * copy() const;
-	void swap( var_base_t * with );
 	bool & get();
 };
 #define AS_BOOL( x ) static_cast< var_bool_t * >( x )
+
+class var_enum_t : public var_base_t
+{
+	std::string m_name;
+	std::unordered_map< std::string, var_int_t * > m_val;
+public:
+	var_enum_t( const std::string & name, std::unordered_map< std::string, var_int_t * > & val,
+		    const int parse_ctr );
+	~var_enum_t();
+	std::string to_str() const;
+	mpz_class to_int() const;
+	bool to_bool() const;
+	var_base_t * copy() const;
+	std::string get_name();
+	std::unordered_map< std::string, var_int_t * > & get_val();
+};
+#define AS_ENUM( x ) static_cast< var_enum_t * >( x )
 
 #endif // VM_VARS_BASE_HPP

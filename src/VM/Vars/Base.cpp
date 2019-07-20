@@ -14,6 +14,10 @@ const char * VarTypeStrs[ _VT_LAST ] = {
 	"str",
 	"flt",
 	"bool",
+
+	"enum",
+
+	"func",
 };
 
 var_base_t::var_base_t( const VarType type, const int parse_ctr )

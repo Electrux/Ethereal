@@ -11,7 +11,7 @@
 #include <cstdlib>
 #include <string>
 #include <cctype>
-#include <stdarg.h>
+#include <cstdarg>
 
 #include "FS.hpp"
 #include "Lexer.hpp"
@@ -115,16 +115,16 @@ const char * TokStrs[ _TOK_LAST ] = {
 #define PREV( line ) ( line.size() > 0 && i - 1 >= 0 ? line[ i - 1 ] : 0 )
 #define SET_OP_TYPE_BRK( type ) op_type = type; break
 
-#define SRC_FAIL( ... ) src_fail( line, line_num, i + 1, __VA_ARGS__ )
+#define SRC_FAIL( ... ) src_fail( src, line, line_num, i + 1, __VA_ARGS__ )
 
-static int tokenize_line( const std::string & line, const int line_len, const int line_num,
-			  toks_t & toks, const bool is_main_src );
+static int tokenize_line( const std::string & src, const std::string & line, const int line_len,
+			  const int line_num, toks_t & toks, const bool is_main_src );
 
 static std::string get_name( const std::string & input, const int input_len, int & i );
 static int classify_str( const std::string & str );
-static std::string get_num( const std::string & input, const int input_len, const int line_num, int & i, int & num_type );
-static int get_const_str( const std::string & input, const int input_len, const int line_num, int & i, std::string & buf );
-static int get_operator( const std::string & input, const int input_len, const int line_num, int & i );
+static std::string get_num( const std::string & src, const std::string & line, const int line_len, const int line_num, int & i, int & num_type );
+static int get_const_str( const std::string & src, const std::string & line, const int line_len, const int line_num, int & i, std::string & buf );
+static int get_operator( const std::string & src, const std::string & line, const int line_len, const int line_num, int & i );
 static inline bool is_valid_num_char( const char c );
 
 // TODO: The src stack and map shall be updated prior to this function
@@ -147,15 +147,15 @@ int tokenize( src_t & src )
 		auto & line = lines[ i ];
 		const int line_len = line.size();
 		if( line_len < 1 || line[ 0 ] == '\n' ) continue;
-		int res = tokenize_line( line, line_len, i + 1, toks, src.is_main_src );
+		int res = tokenize_line( src.name, line, line_len, i + 1, toks, src.is_main_src );
 		if( res != E_OK ) return res;
 	}
 
 	return E_OK;
 }
 
-static int tokenize_line( const std::string & line, const int line_len, const int line_num,
-			  toks_t & toks, const bool is_main_src )
+static int tokenize_line( const std::string & src, const std::string & line, const int line_len,
+			  const int line_num, toks_t & toks, const bool is_main_src )
 {
 	int i = 0;
 	int err = E_OK;
@@ -212,7 +212,7 @@ static int tokenize_line( const std::string & line, const int line_len, const in
 		// numbers
 		if( isdigit( CURR( line ) ) ) {
 			int num_type = TOK_INT;
-			std::string num = get_num( line, line_len, line_num, i, num_type );
+			std::string num = get_num( src, line, line_len, line_num, i, num_type );
 			if( num.empty() ) {
 				err = E_PARSE_FAIL;
 				break;
@@ -224,7 +224,7 @@ static int tokenize_line( const std::string & line, const int line_len, const in
 		// const strings
 		if( CURR( line ) == '\"' || CURR( line ) == '\'' ) {
 			std::string str;
-			int res = get_const_str( line, line_len, line_num, i, str );
+			int res = get_const_str( src, line, line_len, line_num, i, str );
 			if( res != E_OK ) {
 				err = res;
 				break;
@@ -234,7 +234,7 @@ static int tokenize_line( const std::string & line, const int line_len, const in
 		}
 
 		// operators
-		int op_type = get_operator( line, line_len, line_num, i );
+		int op_type = get_operator( src, line, line_len, line_num, i );
 		if( op_type < 0 ) {
 			err = E_LEX_FAIL;
 			break;
@@ -280,7 +280,7 @@ static int classify_str( const std::string & str )
 	return TOK_IDEN;
 }
 
-static std::string get_num( const std::string & line, const int line_len, const int line_num, int & i, int & num_type )
+static std::string get_num( const std::string & src, const std::string & line, const int line_len, const int line_num, int & i, int & num_type )
 {
 	std::string buf;
 	int first_digit_at = i;
@@ -338,7 +338,7 @@ static std::string get_num( const std::string & line, const int line_len, const 
 	return buf;
 }
 
-static int get_const_str( const std::string & line, const int line_len, const int line_num, int & i, std::string & buf )
+static int get_const_str( const std::string & src, const std::string & line, const int line_len, const int line_num, int & i, std::string & buf )
 {
 	buf.clear();
 	const char quote_type = CURR( line );
@@ -361,7 +361,7 @@ static int get_const_str( const std::string & line, const int line_len, const in
 	return E_OK;
 }
 
-static int get_operator( const std::string & line, const int line_len, const int line_num, int & i )
+static int get_operator( const std::string & src, const std::string & line, const int line_len, const int line_num, int & i )
 {
 	int op_type = -1;
 	switch( CURR( line ) ) {

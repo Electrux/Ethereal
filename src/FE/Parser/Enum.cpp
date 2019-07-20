@@ -44,7 +44,7 @@ bool stmt_enum_t::bytecode( src_t & src ) const
 	for( auto v = m_vals.rbegin(); v != m_vals.rend(); ++v ) {
 		src.bcode.push_back( { m_tok_ctr, ( * v )->line, ( * v )->col, IC_PUSH, { OP_CONST, ( * v )->data } } );
 	}
+	src.bcode.push_back( { m_tok_ctr, m_name->line, m_name->col, IC_PUSH, { OP_CONST, m_name->data } } );
 	src.bcode.push_back( { m_tok_ctr, m_name->line, m_name->col, IC_BUILD_ENUM, { OP_INT, std::to_string( m_vals.size() ) } } );
-	src.bcode.push_back( { m_tok_ctr, m_name->line, m_name->col, IC_STORE, { OP_CONST, m_name->data } } );
 	return true;
 }

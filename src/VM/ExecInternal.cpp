@@ -182,6 +182,46 @@ int exec_internal( vm_state_t & vm, long begin, long end )
 			if( res != E_OK ) goto fail;
 			break;
 		}
+		case IC_ATTR: {
+			VERIFY_STACK_MIN( 2 );
+			std::string attr = vm.stack->back()->to_str();
+			vm.stack->pop_back();
+			var_base_t * base = vm.stack->back();
+			vm.stack->pop_back();
+			if( base->type() != VT_ENUM ) {
+				VM_FAIL( "expected one of 'enum' but found: %s", base->type_str().c_str() );
+				goto fail;
+			}
+			if( base->type() == VT_ENUM ) {
+				std::unordered_map< std::string, var_int_t * > & val = AS_ENUM( base )->get_val();
+				if( val.find( attr ) == val.end() ) {
+					VM_FAIL( "the enum '%s' does not contain attribute '%s'",
+						 AS_ENUM( base )->get_name().c_str(), attr.c_str() );
+					goto fail;
+				}
+				vm.stack->push_back( val[ attr ] );
+			}
+			break;
+		}
+		case IC_BUILD_ENUM: {
+			std::string name = vm.stack->back()->to_str();
+			vm.stack->pop_back();
+			if( vm.vars->exists( name, true ) ) {
+				var_base_t * val = vm.vars->get( name );
+				VM_FAIL( "variable '%s' already declared at another location" );
+				VM_FAIL_TOK_CTR( val->parse_ctr(), "original declared here" );
+				goto fail;
+			}
+			int count = std::stoi( ins.oper.val );
+			VERIFY_STACK_MIN( ( size_t )count );
+			std::unordered_map< std::string, var_int_t * > map;
+			for( int i = 0; i < count; ++i ) {
+				map[ vm.stack->back()->to_str() ] = new var_int_t( i, vm.stack->back()->parse_ctr() );
+				vm.stack->pop_back();
+			}
+			vm.vars->add( name, new var_enum_t( name, map, ins.parse_ctr ) );
+			break;
+		}
 		case _IC_LAST: {}
 		}
 	}

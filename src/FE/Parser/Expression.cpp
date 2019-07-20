@@ -390,7 +390,7 @@ bool stmt_expr_t::bytecode( src_t & src ) const
 			if( m_rhs->m_type != GRAM_EXPR && m_rhs->m_type != GRAM_SIMPLE ) {
 				return true;
 			}
-			src.bcode.push_back( { m_oper->m_tok_ctr, line, col, IC_STRUCT_ATTR, { OP_NONE, "" } } );
+			src.bcode.push_back( { m_oper->m_tok_ctr, line, col, IC_ATTR, { OP_NONE, "" } } );
 			goto end;
 		}
 		return true;

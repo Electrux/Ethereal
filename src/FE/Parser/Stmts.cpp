@@ -18,7 +18,7 @@ const char * GrammarTypeStrs[ _GRAM_LAST ] = {
 	"Struct",
 	"Block",
 	"Function Def",
-	"Func/Struct Call",
+	"Func/Struct/Subscr Call",
 	"If Conditional",
 	"For Loop",
 	"Return",
@@ -263,16 +263,16 @@ const char * CallTypeStrs[ _CT_LAST ] = {
 };
 
 stmt_func_struct_subscr_call_t::stmt_func_struct_subscr_call_t( const stmt_simple_t * name,
-						  const stmt_expr_t * args,
-						  const int tok_ctr )
-	: stmt_base_t( GRAM_FN_STRUCT_CALL, tok_ctr ),
+								std::vector< stmt_expr_t * > args,
+								const int tok_ctr )
+	: stmt_base_t( GRAM_FN_STRUCT_SUBSCR_CALL, tok_ctr ),
 	  m_name( name ), m_args( args ), m_ctype( CT_FUNC ),
 	  m_post_dot( false ) {}
 
 stmt_func_struct_subscr_call_t::~stmt_func_struct_subscr_call_t()
 {
-	delete m_name;
-	if( m_args ) delete m_args;
+	if( m_name ) delete m_name;
+	for( auto & arg : m_args ) if( arg ) delete arg;
 }
 
 void stmt_func_struct_subscr_call_t::disp( const bool has_next ) const
@@ -288,11 +288,12 @@ void stmt_func_struct_subscr_call_t::disp( const bool has_next ) const
 		IO::print( has_next, "Subscript of '%s' at: %x (inside scope: %s)\n",
 			   m_name->m_val->data.c_str(), this, m_post_dot ? "yes" : "no" );
 	}
-	if( m_args ) {
-		IO::tab_add( false );
-		IO::print( false, "Argument(s):\n" );
-		m_args->disp( false );
-		IO::tab_rem();
+	IO::tab_add( false );
+	IO::print( false, "Argument(s):\n" );
+	for( auto & arg : m_args ) {
+		if( arg ) {
+			arg->disp( false );
+		}
 	}
 	IO::tab_rem();
 }

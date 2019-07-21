@@ -42,37 +42,57 @@ expr_res_t parse_expr( const src_t & src, parse_helper_t * ph, const int end, co
 			if( struct_args.res != 0 ) goto fail;
 			stmt_func_struct_subscr_call_t * struct_call = new stmt_func_struct_subscr_call_t(
 				new stmt_simple_t( SIMPLE_TOKEN, name, tok_val ),
-				struct_args.expr, tok_val
+				{ struct_args.expr }, tok_val
 			);
 			struct_call->m_ctype = CT_STRUCT;
 			if( !stack.empty() && stack.back()->m_val->type == TOK_DOT ) struct_call->m_post_dot = true;
 			data.push_back( struct_call );
-		} else if( ( ph->peak()->type == TOK_IDEN || ph->peak()->type == TOK_STR ) &&
+		} else if( ( ( ph->peak()->type == TOK_IDEN || ph->peak()->type == TOK_STR ) &&
 		           ( end == -1 || ph->tok_ctr() + 1 < end ) &&
-			   ph->peak( 1 )->type == TOK_LBRACK ) {
-			tok_t * name = ph->peak();
-			int tok_val = ph->tok_ctr();
-			ph->next();
-			int rbrack_loc;
-			int err = find_next_of( ph, rbrack_loc, { TOK_RBRACK }, TOK_LBRACK );
-			if( err < 0 ) {
-				if( err == -1 ) {
-					PARSE_FAIL( "could not find the equivalent ending bracket for parsing the subscript of '%s'", name->data.c_str() );
-				} else if( err == -2 ) {
-					PARSE_FAIL( "found end of statement (semicolon) before the equivalent ending bracket for subscript declaration" );
+			   ph->peak( 1 )->type == TOK_LBRACK ) ||
+			   ( ph->peak()->type == TOK_LBRACK &&
+			   ( data.size() > 0 && data.back()->m_type == GRAM_FN_STRUCT_SUBSCR_CALL &&
+			   static_cast< stmt_func_struct_subscr_call_t * >( data.back() )->m_ctype == CT_SUBSCR ) ) ) {
+			if( ph->peak()->type == TOK_LBRACK ) {
+				int rbrack_loc;
+				int err = find_next_of( ph, rbrack_loc, { TOK_RBRACK }, TOK_LBRACK );
+				if( err < 0 ) {
+					if( err == -1 ) {
+						PARSE_FAIL( "could not find the equivalent ending bracket for parsing the sub-subscript" );
+					} else if( err == -2 ) {
+						PARSE_FAIL( "found end of statement (semicolon) before the equivalent ending bracket for subscript declaration" );
+					}
+					goto fail;
 				}
-				goto fail;
+				ph->next();
+				expr_res_t subscr = parse_expr( src, ph, rbrack_loc, false );
+				if( subscr.res != 0 ) goto fail;
+				static_cast< stmt_func_struct_subscr_call_t * >( data.back() )->m_args.push_back( subscr.expr );
+			} else {
+				tok_t * name = ph->peak();
+				int tok_val = ph->tok_ctr();
+				ph->next();
+				int rbrack_loc;
+				int err = find_next_of( ph, rbrack_loc, { TOK_RBRACK }, TOK_LBRACK );
+				if( err < 0 ) {
+					if( err == -1 ) {
+						PARSE_FAIL( "could not find the equivalent ending bracket for parsing the subscript of '%s'", name->data.c_str() );
+					} else if( err == -2 ) {
+						PARSE_FAIL( "found end of statement (semicolon) before the equivalent ending bracket for subscript declaration" );
+					}
+					goto fail;
+				}
+				ph->next();
+				expr_res_t subscr = parse_expr( src, ph, rbrack_loc, false );
+				if( subscr.res != 0 ) goto fail;
+				stmt_func_struct_subscr_call_t * subscr_call = new stmt_func_struct_subscr_call_t(
+					new stmt_simple_t( SIMPLE_TOKEN, name, tok_val ),
+					{ subscr.expr }, tok_val
+				);
+				subscr_call->m_ctype = CT_SUBSCR;
+				if( !stack.empty() && stack.back()->m_val->type == TOK_DOT ) subscr_call->m_post_dot = true;
+				data.push_back( subscr_call );
 			}
-			ph->next();
-			expr_res_t subscr = parse_expr( src, ph, rbrack_loc, false );
-			if( subscr.res != 0 ) goto fail;
-			stmt_func_struct_subscr_call_t * subscr_call = new stmt_func_struct_subscr_call_t(
-				new stmt_simple_t( SIMPLE_TOKEN, name, tok_val ),
-				subscr.expr, tok_val
-			);
-			subscr_call->m_ctype = CT_SUBSCR;
-			if( !stack.empty() && stack.back()->m_val->type == TOK_DOT ) subscr_call->m_post_dot = true;
-			data.push_back( subscr_call );
 		} else if( ph->peak()->type == TOK_IDEN && ( end == -1 || ph->tok_ctr() + 1 < end ) && ph->peak( 1 )->type == TOK_LPAREN ) {
 			tok_t * name = ph->peak();
 			int tok_val = ph->tok_ctr();
@@ -92,7 +112,7 @@ expr_res_t parse_expr( const src_t & src, parse_helper_t * ph, const int end, co
 			if( fn_args.res != 0 ) goto fail;
 			stmt_func_struct_subscr_call_t * fn_call = new stmt_func_struct_subscr_call_t(
 				new stmt_simple_t( SIMPLE_TOKEN, name, tok_val ),
-				fn_args.expr, tok_val
+				{ fn_args.expr }, tok_val
 			);
 			if( !stack.empty() && stack.back()->m_val->type == TOK_DOT ) fn_call->m_post_dot = true;
 			data.push_back( fn_call );
@@ -397,13 +417,13 @@ bool stmt_expr_t::bytecode( src_t & src ) const
 	}
 
 	if( ttype == TOK_ASSN ) {
-		int child_cc = 0;
-		child_comma_count( this, child_cc );
-		if( child_cc == 0 ) src.bcode.push_back( { m_oper->m_tok_ctr, line, col,
-							   m_is_top_expr ? IC_STORE : IC_STORE_LOAD, { OP_NONE, "" } } );
-		else src.bcode.push_back( { m_oper->m_tok_ctr, line, col,
-					    m_is_top_expr ? IC_STORE : IC_STORE_LOAD,
-					    { OP_INT, std::to_string( child_cc / 2 + 1 ) } } );
+		if( src.bcode.back().opcode != IC_PUSH ) {
+			src.bcode.push_back( { m_oper->m_tok_ctr, line, col,
+					       m_is_top_expr ? IC_STORE_STACK : IC_STORE_LOAD_STACK, { OP_NONE, "" } } );
+		} else {
+			src.bcode.push_back( { m_oper->m_tok_ctr, line, col,
+					       m_is_top_expr ? IC_STORE : IC_STORE_LOAD, { OP_NONE, "" } } );
+		}
 		return true;
 	}
 

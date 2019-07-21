@@ -12,19 +12,30 @@
 
 bool stmt_func_struct_subscr_call_t::bytecode( src_t & src ) const
 {
+	int line = src.toks[ m_tok_ctr ].line;
+	int col = src.toks[ m_tok_ctr ].col;
+
+	if( m_ctype == CT_SUBSCR ) {
+		bool bcodeasconst = src.bcode_as_const;
+		src.bcode_as_const = false;
+		if( m_name ) m_name->bytecode( src );
+		for( auto & arg : m_args ) {
+			if( arg == nullptr ) continue;
+			arg->bytecode( src );
+			src.bcode.push_back( { m_tok_ctr, m_name ? m_name->m_val->line : line , m_name ? m_name->m_val->col : col,
+					       IC_SUBSCR, { OP_NONE, "" } } );
+		}
+		src.bcode_as_const = bcodeasconst;
+		return true;
+	}
+
 	int args = 0;
-	if( m_args ) {
-		m_args->bytecode( src );
+	if( m_args.size() > 0 && m_args[ 0 ] != nullptr ) {
+		m_args[ 0 ]->bytecode( src );
 		int child_cc = 0;
-		child_comma_count( m_args, child_cc );
+		child_comma_count( m_args[ 0 ], child_cc );
 		if( child_cc == 0 ) args = 1;
 		else args = child_cc + 1;
-	}
-	if( m_ctype == CT_SUBSCR ) {
-		m_name->bytecode( src );
-		src.bcode.push_back( { m_tok_ctr, m_name->m_val->line, m_name->m_val->col,
-				       IC_SUBSCR, { OP_NONE, "" } } );
-		return true;
 	}
 
 	src.bcode.push_back( { m_tok_ctr, m_name->m_val->line, m_name->m_val->col,

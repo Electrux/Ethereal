@@ -36,10 +36,10 @@ int exec_internal( vm_state_t & vm, long begin, long end )
 		stamp = clk_t::now();
 
 		fprintf( stdout, "Current stack (operation [%d]: %s[%s]): ", i, InstrCodeStrs[ ins.opcode ], ins.oper.val.c_str() );
-		fprintf( stdout, "%f", std::chrono::duration_cast< std::chrono::duration< double, std::milli > >( stamp - start ).count() );
-		//for( auto & s : vm.stack->get() ) {
-		//	fprintf( stdout, "%s[%d] ", s->to_str().c_str(), s->ref() );
-		//}
+		//fprintf( stdout, "%f", std::chrono::duration_cast< std::chrono::duration< double, std::milli > >( stamp - start ).count() );
+		for( auto & s : vm.stack->get() ) {
+			fprintf( stdout, "%s ", s->to_str().c_str() );
+		}
 		start = stamp;
 		fprintf( stdout, "\n" );
 #endif
@@ -70,13 +70,9 @@ int exec_internal( vm_state_t & vm, long begin, long end )
 		case IC_STORE: // fallthrough
 		case IC_STORE_LOAD: {
 			std::string var;
-			if( ins.oper.type == OP_NONE ) {
-				VERIFY_STACK_MIN( 1 );
-				var = vm.stack->back()->to_str();
-				vm.stack->pop_back();
-			} else {
-				// TODO:
-			}
+			VERIFY_STACK_MIN( 1 );
+			var = vm.stack->back()->to_str();
+			vm.stack->pop_back();
 			var_base_t * newval = vm.stack->back();
 			if( vm.vars->exists( var, true ) ) {
 				var_base_t * val = vm.vars->get( var );
@@ -103,6 +99,35 @@ int exec_internal( vm_state_t & vm, long begin, long end )
 			vm.stack->pop_back();
 			if( ins.opcode == IC_STORE_LOAD ) {
 				vm.stack->push_back( vm.vars->get( var ) );
+			}
+			break;
+		}
+		case IC_STORE_STACK: // fallthrough
+		case IC_STORE_LOAD_STACK: {
+			var_base_t * var;
+			VERIFY_STACK_MIN( 1 );
+			if( vm.stack->back()->ref() == 1 ) {
+				VM_FAIL( "storing a value requires the LHS to be an lvalue" );
+				goto fail;
+			}
+			var = vm.stack->back();
+			vm.stack->pop_back();
+			var_base_t * newval = vm.stack->back();
+			if( var->type() != newval->type() ) {
+				VM_FAIL( "assignment of an existing value expects same type, found lhs: %s and rhs: %s",
+						var->type_str().c_str(), newval->type_str().c_str() );
+				goto fail;
+			}
+			VarType type = var->type();
+
+			if( type == VT_INT ) AS_INT( var )->get() = AS_INT( newval )->get();
+			else if( type == VT_FLT ) AS_FLT( var )->get() = AS_FLT( newval )->get();
+			else if( type == VT_STR ) AS_STR( var )->get() = AS_STR( newval )->get();
+			else if( type == VT_BOOL ) AS_BOOL( var )->get() = AS_BOOL( newval )->get();
+
+			vm.stack->pop_back();
+			if( ins.opcode == IC_STORE_LOAD_STACK ) {
+				vm.stack->push_back( var );
 			}
 			break;
 		}
@@ -205,37 +230,40 @@ int exec_internal( vm_state_t & vm, long begin, long end )
 		}
 		case IC_SUBSCR: {
 			VERIFY_STACK_MIN( 2 );
+			// TODO: move the pop back for subscript at the end (here and in IC_ATTR)
+			var_base_t * sub = vm.stack->back();
+			bool manual_del_sub = false;
+			if( sub->ref() == 1 ) { manual_del_sub = true; vm.stack->pop_back( false ); }
+			else vm.stack->pop_back();
 			var_base_t * var = vm.stack->back();
 			vm.stack->pop_back();
 			if( var == nullptr ) {
 				VM_FAIL( "variable '%s' does not exist", ins.oper.val.c_str() );
-				goto fail;
+				goto tmp_fail;
 			}
 			if( var->type() != VT_STR && var->type() != VT_VEC && var->type() != VT_MAP ) {
 				VM_FAIL( "expected one of 'str', 'vec', or 'map' but found: %s", var->type_str().c_str() );
-				goto fail;
+				goto tmp_fail;
 			}
-			var_base_t * sub = vm.stack->back();
-			vm.stack->pop_back();
 			if( var->type() == VT_STR || var->type() == VT_VEC ) {
 				if( sub->type() != VT_INT ) {
 					VM_FAIL( "subscript expression must be of integer type, but found: '%s'",
 						 sub->type_str().c_str() );
-					goto fail;
+					goto tmp_fail;
 				}
 				int idx = sub->to_int().get_si();
 				if( var->type() == VT_STR ) {
 					std::string & val = AS_STR( var )->get();
 					if( idx < 0 || idx >= ( int )val.size() ) {
 						VM_FAIL( "index can only be between [0, %zu), but is: %d", val.size(), idx );
-						goto fail;
+						goto tmp_fail;
 					}
 					vm.stack->push_back( new var_str_t( std::string( 1, val[ idx ] ), ins.parse_ctr ), false );
 				} else if( var->type() == VT_VEC ) {
 					std::vector< var_base_t * > & val = AS_VEC( var )->get();
 					if( idx < 0 || idx >= ( int )val.size() ) {
 						VM_FAIL( "index can only be between [0, %zu), but is: %d", val.size(), idx );
-						goto fail;
+						goto tmp_fail;
 					}
 					vm.stack->push_back( val[ idx ] );
 				}
@@ -244,16 +272,20 @@ int exec_internal( vm_state_t & vm, long begin, long end )
 				if( sub->type() != VT_STR && sub->type() != VT_INT ) {
 					VM_FAIL( "subscript expression must be of string or int type, but found: '%s'",
 						 sub->type_str().c_str() );
-					goto fail;
+					goto tmp_fail;
 				}
 				const std::string key = sub->to_str();
 				if( val.find( key ) == val.end() ) {
 					VM_FAIL( "map does not contain a key '%s'", key.c_str() );
-					goto fail;
+					goto tmp_fail;
 				}
 				vm.stack->push_back( val.at( key ) );
 			}
+			if( manual_del_sub ) VAR_DREF( sub );
 			break;
+tmp_fail:
+			if( manual_del_sub ) VAR_DREF( sub );
+			goto fail;
 		}
 		case IC_BUILD_ENUM: {
 			std::string name = vm.stack->back()->to_str();

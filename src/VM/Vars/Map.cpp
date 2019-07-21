@@ -17,7 +17,20 @@ var_map_t::~var_map_t()
 		VAR_DREF( v.second );
 	}
 }
-std::string var_map_t::to_str() const { return "map(" + std::to_string( m_val.size() ) + ")"; }
+std::string var_map_t::to_str() const
+{
+	std::string str = "{";
+	for( auto it = m_val.begin(); it != m_val.end(); ++it ) {
+		str += it->first + ": " + it->second->to_str() + ", ";
+	}
+	// remove the extra commas
+	if( m_val.size() > 0 ) {
+		str.pop_back();
+		str.pop_back();
+	}
+	str += "}";
+	return str;
+}
 mpz_class var_map_t::to_int() const { return mpz_class( m_val.size() ); }
 bool var_map_t::to_bool() const { return m_val.size() > 0; }
 

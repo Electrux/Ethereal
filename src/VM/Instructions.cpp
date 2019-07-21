@@ -14,6 +14,8 @@ const char * InstrCodeStrs[ _IC_LAST ] = {
 	"POP",
 	"STORE",
 	"STORE_LOAD",
+	"STORE_STACK",
+	"STORE_LOAD_STACK",
 
 	"JUMP",
 	"JUMP_TRUE",

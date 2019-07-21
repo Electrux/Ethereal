@@ -26,7 +26,7 @@ enum GrammarTypes
 	GRAM_STRUCT,
 	GRAM_BLOCK,
 	GRAM_FUNC,
-	GRAM_FN_STRUCT_CALL,
+	GRAM_FN_STRUCT_SUBSCR_CALL,
 	GRAM_IF,
 	GRAM_FOR,
 	GRAM_RETURN,
@@ -178,11 +178,11 @@ extern const char * CallTypeStrs[ _CT_LAST ];
 class stmt_func_struct_subscr_call_t : public stmt_base_t
 {
 	const stmt_simple_t * m_name;
-	const stmt_expr_t * m_args;
 public:
+	std::vector< stmt_expr_t * > m_args;
 	CallType m_ctype;
 	bool m_post_dot;
-	stmt_func_struct_subscr_call_t( const stmt_simple_t * name, const stmt_expr_t * args,
+	stmt_func_struct_subscr_call_t( const stmt_simple_t * name, std::vector< stmt_expr_t * > args,
 					const int tok_ctr );
 	~stmt_func_struct_subscr_call_t();
 	void disp( const bool has_next ) const;

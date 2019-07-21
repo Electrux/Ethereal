@@ -17,7 +17,16 @@ var_vec_t::~var_vec_t()
 		VAR_DREF( v );
 	}
 }
-std::string var_vec_t::to_str() const { return "vec(" + std::to_string( m_val.size() ) + ")"; }
+std::string var_vec_t::to_str() const
+{
+	std::string str = "[";
+	for( auto it = m_val.begin(); it != m_val.end(); ++it ) {
+		if( it == m_val.end() - 1 ) str += ( * it )->to_str();
+		else str += ( * it )->to_str() + ", ";
+	}
+	str += "]";
+	return str;
+}
 mpz_class var_vec_t::to_int() const { return mpz_class( m_val.size() ); }
 bool var_vec_t::to_bool() const { return m_val.size() > 0; }
 

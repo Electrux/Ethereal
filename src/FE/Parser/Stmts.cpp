@@ -295,7 +295,7 @@ void stmt_func_struct_subscr_call_t::disp( const bool has_next ) const
 			arg->disp( false );
 		}
 	}
-	IO::tab_rem();
+	IO::tab_rem( 2 );
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////

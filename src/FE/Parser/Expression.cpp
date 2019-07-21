@@ -358,7 +358,11 @@ fail:
 bool stmt_expr_t::bytecode( src_t & src ) const
 {
 	if( !m_oper ) {
-		if( m_rhs ) m_rhs->bytecode( src );
+		if( m_rhs ) {
+			if( src.found_assn ) src.bcode_as_const = true;
+			m_rhs->bytecode( src );
+			if( src.found_assn ) src.bcode_as_const = false;
+		}
 		if( m_lhs ) m_lhs->bytecode( src );
 	} else {
 		const tok_t * oper = m_oper->m_val;
@@ -388,10 +392,12 @@ bool stmt_expr_t::bytecode( src_t & src ) const
 			if( m_rhs ) m_rhs->bytecode( src );
 			if( m_lhs ) {
 				if( m_oper->m_val->type == TOK_ASSN ) {
-					src.bcode_as_const = true;
+					src.found_assn = true;
 				}
+				if( src.found_assn && m_lhs->m_type == GRAM_SIMPLE ) src.bcode_as_const = true;
 				m_lhs->bytecode( src );
-				src.bcode_as_const = false;
+				if( src.found_assn && m_lhs->m_type == GRAM_SIMPLE ) src.bcode_as_const = false;
+				src.found_assn = false;
 			}
 		}
 	}

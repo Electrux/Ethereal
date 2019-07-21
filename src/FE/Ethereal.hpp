@@ -26,6 +26,7 @@ struct src_t
 	std::vector< int > block_depth;
 	parse_tree_t * ptree;
 	bool is_main_src;
+	bool found_assn;
 	bool bcode_as_const;
 
 	// for VM

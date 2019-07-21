@@ -47,8 +47,6 @@ enum InstrCode
 
 	IC_RETURN,		// args: bool - returns something or not (not = returns OP_NONE)
 
-	IC_STRUCT_FIELD,	// args: name of the field, takes one from stack as default value
-
 	_IC_LAST,
 };
 

@@ -20,6 +20,8 @@ typedef std::vector< src_t * > src_stack_t;
 
 typedef std::unordered_map< std::string, functions_t > type_funcs_t;
 
+typedef std::unordered_map< std::string, var_struct_def_t * > structs_t;
+
 struct vm_state_t
 {
 	size_t flags;
@@ -28,6 +30,7 @@ struct vm_state_t
 	srcs_t srcs;
 
 	vars_t * vars;
+	structs_t structs;
 
 	dyn_lib_t * dlib;
 	consts_t * consts;

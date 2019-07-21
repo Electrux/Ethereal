@@ -19,6 +19,8 @@ const char * VarTypeStrs[ _VT_LAST ] = {
 	"vec",
 	"map",
 
+	"struct",
+
 	"func",
 };
 

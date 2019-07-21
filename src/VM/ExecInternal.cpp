@@ -17,6 +17,8 @@
 #include <chrono>
 #endif
 
+bool copy_data( var_base_t * a, var_base_t * b );
+
 int exec_internal( vm_state_t & vm, long begin, long end )
 {
 	src_t & src = * vm.srcstack.back();
@@ -81,13 +83,11 @@ int exec_internal( vm_state_t & vm, long begin, long end )
 					VM_FAIL_TOK_CTR( val->parse_ctr(), "original declared here" );
 					goto fail;
 				}
-				VarType type = val->type();
-
-				if( type == VT_INT ) AS_INT( val )->get() = AS_INT( newval )->get();
-				else if( type == VT_FLT ) AS_FLT( val )->get() = AS_FLT( newval )->get();
-				else if( type == VT_STR ) AS_STR( val )->get() = AS_STR( newval )->get();
-				else if( type == VT_BOOL ) AS_BOOL( val )->get() = AS_BOOL( newval )->get();
-				// TODO:
+				
+				if( !copy_data( val, newval ) ) {
+					VM_FAIL( "assignment symantics not implemented for variable type '%s'", val->type_str().c_str() );
+					goto fail;
+				}
 
 				vm.stack->pop_back();
 				if( ins.opcode == IC_STORE_LOAD ) {
@@ -213,8 +213,8 @@ int exec_internal( vm_state_t & vm, long begin, long end )
 			vm.stack->pop_back();
 			var_base_t * base = vm.stack->back();
 			vm.stack->pop_back();
-			if( base->type() != VT_ENUM ) {
-				VM_FAIL( "expected one of 'enum' but found: %s", base->type_str().c_str() );
+			if( base->type() != VT_ENUM && base->type() != VT_STRUCT ) {
+				VM_FAIL( "expected one of 'enum' or 'struct' but found: %s", base->type_str().c_str() );
 				goto fail;
 			}
 			if( base->type() == VT_ENUM ) {
@@ -222,6 +222,14 @@ int exec_internal( vm_state_t & vm, long begin, long end )
 				if( val.find( attr ) == val.end() ) {
 					VM_FAIL( "the enum '%s' does not contain attribute '%s'",
 						 AS_ENUM( base )->get_name().c_str(), attr.c_str() );
+					goto fail;
+				}
+				vm.stack->push_back( val[ attr ] );
+			} else if( base->type() == VT_STRUCT ) {
+				std::unordered_map< std::string, var_base_t * > & val = AS_STRUCT( base )->get_val();
+				if( val.find( attr ) == val.end() ) {
+					VM_FAIL( "the struct '%s' does not contain attribute '%s'",
+						 AS_STRUCT( base )->get_name().c_str(), attr.c_str() );
 					goto fail;
 				}
 				vm.stack->push_back( val[ attr ] );
@@ -330,6 +338,67 @@ tmp_fail:
 			vm.stack->push_back( new var_map_t( map, ins.parse_ctr ), false );
 			break;
 		}
+		case IC_BUILD_STRUCT: {
+			int count = std::stoi( ins.oper.val );
+			VERIFY_STACK_MIN( ( size_t )count * 2 + 1 );
+			std::string name = vm.stack->back()->to_str();
+			if( vm.structs.find( name ) != vm.structs.end() ) {
+				VM_FAIL( "struct by name '%s' is already defined", name.c_str() );
+				goto fail;
+			}
+			vm.stack->pop_back();
+			std::unordered_map< std::string, var_base_t * > map;
+			std::vector< std::string > pos;
+			for( int i = 0; i < count; ++i ) {
+				std::string fname = vm.stack->back()->to_str();
+				if( map.find( fname ) != map.end() ) {
+					VM_FAIL_TOK_CTR( vm.stack->back()->parse_ctr(),
+							 "field name '%s' has already been used before",
+							 fname.c_str() );
+					goto fail;
+				}
+				vm.stack->pop_back();
+				var_base_t * fval = vm.stack->back()->copy( ins.parse_ctr );
+				vm.stack->pop_back();
+				map[ fname ] = fval;
+				pos.insert( pos.begin(), fname );
+			}
+			vm.structs[ name ] = new var_struct_def_t( name, pos, map, ins.parse_ctr );
+			break;
+		}
+		case IC_STRUCT_DECL: {
+			int count = std::stoi( ins.oper.val );
+			std::string name = vm.stack->back()->to_str();
+			vm.stack->pop_back();
+			if( vm.structs.find( name ) == vm.structs.end() ) {
+				VM_FAIL( "struct by name '%s' does not exist", name.c_str() );
+				goto fail;
+			}
+			var_struct_def_t * stdef = vm.structs[ name ];
+			if( count != 0 && stdef->get_pos().size() != ( size_t )count ) {
+				VM_FAIL( "struct '%s' expects %zu arguments (or none at all) (provided %d args)",
+					 name.c_str(), stdef->get_pos().size(), count );
+				goto fail;
+			}
+			var_struct_t * st = ( var_struct_t * )vm.structs[ name ]->copy( ins.parse_ctr );
+			std::unordered_map< std::string, var_base_t * > & map = st->get_val();
+			const std::vector< std::string > & pos = stdef->get_pos();
+			for( int i = 0; i < count; ++i ) {
+				if( map[ pos[ i ] ]->type() != vm.stack->back()->type() ) {
+					VM_FAIL_TOK_CTR( vm.stack->back()->parse_ctr(),
+							 "argument type mismatch: expected '%s', found '%s'",
+							 map[ pos[ i ] ]->type_str().c_str(), vm.stack->back()->type_str().c_str() );
+					goto fail;
+				}
+				if( !copy_data( map[ pos[ i ] ], vm.stack->back() ) ) {
+					VM_FAIL( "assignment symantics not implemented for variable type '%s'", map[ pos[ i ] ]->type_str().c_str() );
+					goto fail;
+				}
+				vm.stack->pop_back();
+			}
+			vm.stack->push_back( st, false );
+			break;
+		}
 		case _IC_LAST: {}
 		}
 	}
@@ -337,4 +406,18 @@ tmp_fail:
 	return E_OK;
 fail:
 	return E_VM_FAIL;
+}
+
+bool copy_data( var_base_t * a, var_base_t * b )
+{
+	VarType type = a->type();
+
+	if( type == VT_INT ) AS_INT( a )->get() = AS_INT( b )->get();
+	else if( type == VT_FLT ) AS_FLT( a )->get() = AS_FLT( b )->get();
+	else if( type == VT_STR ) AS_STR( a )->get() = AS_STR( b )->get();
+	else if( type == VT_BOOL ) AS_BOOL( a )->get() = AS_BOOL( b )->get();
+	// TODO:
+	else return false;
+
+	return true;
 }

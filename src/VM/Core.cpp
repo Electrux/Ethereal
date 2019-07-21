@@ -20,9 +20,8 @@ vm_state_t::~vm_state_t()
 	delete consts;
 	delete vars;
 	delete dlib;
-	for( auto & src : srcs ) {
-		delete src.second;
-	}
+	for( auto & struct_ : structs ) delete struct_.second;
+	for( auto & src : srcs ) delete src.second;
 }
 
 bool set_init_mods( vm_state_t & vm )

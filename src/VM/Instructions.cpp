@@ -40,8 +40,6 @@ const char * InstrCodeStrs[ _IC_LAST ] = {
 	"SUBSCRIPT",
 
 	"RETURN",
-
-	"STRUCT_FIELD",
 };
 
 const char * OperTypeStrs[ _OP_LAST ] = {

@@ -215,7 +215,7 @@ void stmt_block_t::disp( const bool has_next ) const
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 
 stmt_func_t::stmt_func_t( const stmt_simple_t * name, const stmt_expr_t * args,
-			  const stmt_block_t * block, const stmt_expr_t * mem_type,
+			  const stmt_block_t * block, const stmt_simple_t * mem_type,
 			  const int tok_ctr )
 	: stmt_base_t( GRAM_FUNC, tok_ctr ), m_name( name ), m_args( args ), m_block( block ),
 	  m_mem_type( mem_type ) {}
@@ -401,7 +401,7 @@ void stmt_return_t::disp( const bool has_next ) const
 	IO::tab_add( has_next );
 	IO::print( has_next, "Return at: %x\n", this );
 
-	m_ret_val->disp( false );
+	if( m_ret_val ) m_ret_val->disp( false );
 
 	IO::tab_rem( 1 );
 }

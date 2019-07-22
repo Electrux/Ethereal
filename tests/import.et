@@ -1,4 +1,1 @@
-import tmp;
-import tmp as t2;
-import "./mymodule" as mm;
-import core.math as m;
+import some;

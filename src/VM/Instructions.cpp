@@ -25,6 +25,8 @@ const char * InstrCodeStrs[ _IC_LAST ] = {
 	"BUILD_VEC",
 	"BUILD_MAP",
 	"BUILD_STRUCT",
+	"BUILD_FUNC",
+	"BUILD_MEM_FUNC",
 
 	"ADD_SCOPE",
 	"REM_SCOPE",
@@ -39,7 +41,11 @@ const char * InstrCodeStrs[ _IC_LAST ] = {
 
 	"SUBSCRIPT",
 
+	"BLOCK_TILL",
+	"ARGS_TILL",
+
 	"RETURN",
+	"RETURN_EMPTY",
 };
 
 const char * OperTypeStrs[ _OP_LAST ] = {

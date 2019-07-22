@@ -19,23 +19,12 @@ stmt_func_t * parse_func( src_t & src, parse_helper_t * ph )
 
 	std::vector< GrammarTypes > parents;
 
-	expr_res_t mem_type = { 0, nullptr };
+	stmt_simple_t * mem_type = nullptr;
 	if( is_member_func ) {
 		NEXT_VALID( TOK_LT );
-		int mem_type_end;
-		int err = find_next_of( ph, mem_type_end, { TOK_GT } );
-		if( err < 0 ) {
-			if( err == -1 ) {
-				PARSE_FAIL( "could not find the right angular brace for member function type" );
-			} else if( err == -2 ) {
-				PARSE_FAIL( "found end of statement (;) before ending of member function type" );
-			}
-			return nullptr;
-		}
-		ph->next();
-		mem_type = parse_expr( src, ph, mem_type_end );
-		if( mem_type.res != 0 ) return nullptr;
-		ph->set_tok_ctr( mem_type_end );
+		NEXT_VALID2( TOK_IDEN, TOK_STR );
+		mem_type = new stmt_simple_t( SIMPLE_TOKEN, ph->peak(), ph->tok_ctr() );
+		NEXT_VALID( TOK_GT );
 	}
 
 	const tok_t * name = nullptr;
@@ -73,15 +62,38 @@ end_args:
 	parents.pop_back();
 	if( block == nullptr ) goto fail;
 	return new stmt_func_t( new stmt_simple_t( SIMPLE_TOKEN, name, tok_ctr + 1 ),
-				arg_expr.expr, block, mem_type.expr, tok_ctr );
+				arg_expr.expr, block, mem_type, tok_ctr );
 fail:
 	if( arg_expr.expr ) delete arg_expr.expr;
 	if( block ) delete block;
-	if( mem_type.expr ) delete mem_type.expr;
+	if( mem_type ) delete mem_type;
 	return nullptr;
 }
 
 bool stmt_func_t::bytecode( src_t & src ) const
 {
+	int block_till_loc = src.bcode.size();
+	src.bcode.push_back( { m_tok_ctr, m_name->m_val->line, m_name->m_val->col, IC_BLOCK_TILL, { OP_INT, "<func-block-placeholder>" } } );
+	ADD_SCOPE();
+	m_block->bytecode( src );
+	REM_SCOPE();
+	// not used src.bcode.size() - 1 because the exec loop runs till < end and not <= end
+	src.bcode[ block_till_loc ].oper.val = std::to_string( src.bcode.size() );
+
+	if( m_args == nullptr ) {
+		src.bcode.push_back( { m_tok_ctr, m_name->m_val->line, m_name->m_val->col, IC_ARGS_TILL, { OP_INT, "-1" } } );
+	} else {
+		int args_till_loc = src.bcode.size();
+		src.bcode.push_back( { m_tok_ctr, m_name->m_val->line, m_name->m_val->col, IC_ARGS_TILL, { OP_INT, "<func-args-placeholder>" } } );
+		m_args->bytecode( src );
+		src.bcode[ args_till_loc ].oper.val = std::to_string( src.bcode.size() - 1 );
+	}
+
+	if( m_mem_type ) {
+		src.bcode.push_back( { m_tok_ctr, m_mem_type->m_val->line, m_mem_type->m_val->col, IC_PUSH, { OP_CONST, m_mem_type->m_val->data } } );
+		src.bcode.push_back( { m_tok_ctr, m_mem_type->m_val->line, m_mem_type->m_val->col, IC_BUILD_MFN, { OP_NONE, "" } } );
+	} else {
+		src.bcode.push_back( { m_tok_ctr, m_name->m_val->line, m_name->m_val->col, IC_BUILD_FN, { OP_NONE, "" } } );
+	}
 	return true;
 }

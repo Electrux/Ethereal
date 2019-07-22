@@ -1,4 +1,1 @@
 ldmod tmp;
-ldmod tmp as t2;
-ldmod "./mymodule" as mm;
-ldmod math as m;

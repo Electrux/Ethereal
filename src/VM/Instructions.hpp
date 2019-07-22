@@ -30,6 +30,8 @@ enum InstrCode
 	IC_BUILD_VEC,		// args: count of elements to take from stack
 	IC_BUILD_MAP,		// args: count of elements to take from stack
 	IC_BUILD_STRUCT,	// args: count of fields
+	IC_BUILD_FN,		// args: none
+	IC_BUILD_MFN,		// args: none
 
 	IC_ADD_SCOPE,		// args: count of scopes to add
 	IC_REM_SCOPE,		// args: count of scopes to remove
@@ -45,7 +47,11 @@ enum InstrCode
 
 	IC_SUBSCR,		// args: name of variable
 
-	IC_RETURN,		// args: bool - returns something or not (not = returns OP_NONE)
+	IC_BLOCK_TILL,		// args: index of bcode uptil where block lasts
+	IC_ARGS_TILL,
+
+	IC_RETURN,		// args: count of scopes to remove
+	IC_RETURN_EMPTY,	// args: count of scopes to remove
 
 	_IC_LAST,
 };

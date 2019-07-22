@@ -1,7 +1,10 @@
-if a == a {
-	print( 'hi' );
-} elif b == b {
-	print( 'ok' );
+a = 5;
+b = 10;
+
+if a == b {
+	println( 'hi' );
+} elif b == a {
+	println( 'ok' );
 } else {
-	print( 'fuck' );
+	println( 'fuck' );
 }

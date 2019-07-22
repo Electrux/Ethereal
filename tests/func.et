@@ -10,15 +10,3 @@ fn one_arg( a ) {
 fn two_arg( a, b ) {
 	c = a * b;
 }
-
-fn arg_expr( a = 1 ) {
-	b = a * 2;
-}
-
-fn arg_expr2( a = 1, b = 2 ) {
-	c = a * b;
-}
-
-fn arg_expr_vec( a = [ 1, 2 ] ) {
-	c = a * 2;
-}

@@ -1,7 +1,0 @@
-mfn< string.str > len() {
-	string.len( self );
-}
-
-mfn< string.str > append( str = "" ) {
-	self += str;
-}

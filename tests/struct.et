@@ -1,7 +1,8 @@
-struct tmp
-{
-	one = "hi";
-	two = 1 + 7;
+struct s {
+	t = "hi";
+	u = 5;
 }
 
-t = some.tmp{ "hi", 10 };
+a = s{ "hi", 7 };
+a.t = "true";
+println( a.t );

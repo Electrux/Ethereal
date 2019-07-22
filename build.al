@@ -12,7 +12,7 @@ if( "${PREFIX}" == "" ) {
 }
 
 builds.add_flags( "-fPIC", "-Wall", "-Wextra", "-Wno-unused-parameter",
-		"-DBUILD_PREFIX_DIR=${PREFIX}", "-Wl,-rpath,./buildfiles/" )
+		  "-DBUILD_PREFIX_DIR=${PREFIX}", "-Wl,-rpath,${PREFIX}/lib/ethereal/" )
 if( "${CC}" != "g++" ) {
 	builds.add_flags( "-Wno-c99-extensions", "-Wno-unused-command-line-argument" )
 }
@@ -38,6 +38,9 @@ if( "${ARGC}" > 0 && "${ARG_0}" == debug || "${ARG_0}" == memlog ) {
 builds( lib, dynamic ) {
 	builds.add_flags( "-DAS_LIB" )
 	sources( "src/(.*)\.cpp", "-src/VM/Main.cpp", "-src/VM/Modules/(.*)\.cpp" )
+	if( "${OS}" == OS_OSX ) {
+		builds.add_flags( "-Wl,-install_name -Wl,@rpath/libet.so" )
+	}
 	build( et, "src/VM/Main.cpp" )
 }
 
@@ -48,7 +51,13 @@ builds( bin ) {
 
 builds( lib, dynamic ) {
 	builds.add_lib_flags( "-let" )
+	if( "${OS}" == OS_OSX ) {
+		builds.add_flags( "-Wl,-install_name -Wl,@rpath/libcore.so" )
+	}
 	build( core, "src/VM/Modules/core.cpp" )
+	if( "${OS}" == OS_OSX ) {
+		builds.add_flags( "-Wl,-install_name -Wl,@rpath/libstr.so" )
+	}
 	build( str, "src/VM/Modules/str.cpp" )
 }
 

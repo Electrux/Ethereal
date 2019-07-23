@@ -262,7 +262,7 @@ int exec_internal( vm_state_t & vm, long begin, long end, var_base_t * ret )
 				goto tmp_fail;
 			}
 			if( var->type() == VT_STR || var->type() == VT_VEC ) {
-				if( sub->type() != VT_INT ) {
+				if( sub->type() != VT_INT && sub->type() != VT_STR ) {
 					VM_FAIL( "subscript expression must be of integer type, but found: '%s'",
 						 sub->type_str().c_str() );
 					goto tmp_fail;

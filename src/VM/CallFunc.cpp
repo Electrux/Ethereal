@@ -10,7 +10,7 @@
 #include "ExecInternal.hpp"
 #include "CallFunc.hpp"
 
-std::string args_types_to_string( const std::vector< var_base_t * > & args );
+std::string args_types_to_string( const std::vector< var_base_t * > & args, bool is_mem );
 
 int CallFunc( vm_state_t & vm, const int ins_ctr )
 {
@@ -58,7 +58,7 @@ int CallFunc( vm_state_t & vm, const int ins_ctr )
 	if( fn == nullptr ) {
 		VM_FAIL( "%sfunction with name '%s' and arg count %d (%s) does not exist",
 			 ins.opcode == IC_MFN_CALL ? "member " : "", fn_name.c_str(),
-			 args_count, args_types_to_string( args ).c_str() );
+			 args_count, args_types_to_string( args, member ).c_str() );
 		goto fail;
 	}
 	if( fn->type == FnType::MODULE ) mfnptr = fn->func.modfn;
@@ -104,13 +104,13 @@ fail:
 	return E_VM_FAIL;
 }
 
-std::string args_types_to_string( const std::vector< var_base_t * > & args )
+std::string args_types_to_string( const std::vector< var_base_t * > & args, bool is_mem )
 {
 	std::string res = "";
-	int size = args.size();
-	for( int i = size - 1; i >= 0; --i ) {
+	size_t size = args.size();
+	for( size_t i = 0 + is_mem; i < size; ++i ) {
 		res += args[ i ]->type_str();
-		if( i > 0 ) res += ", ";
+		if( i < size - 1 ) res += ", ";
 	}
 	return res;
 }

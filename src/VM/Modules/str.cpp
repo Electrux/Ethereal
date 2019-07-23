@@ -26,6 +26,15 @@ var_base_t * to_int( std::vector< var_base_t * > & vars )
 	return new var_int_t( AS_STR( vars[ 0 ] )->get(), vars[ 0 ]->parse_ctr() );
 }
 
+var_base_t * set_at( std::vector< var_base_t * > & vars )
+{
+	std::string & dat = AS_STR( vars[ 0 ] )->get();
+	int idx = vars[ 1 ]->to_int().get_si();
+	if( idx < 0 || idx >= ( int )dat.size() ) return vars[ 0 ];
+	if( vars[ 2 ]->to_str().size() > 0 ) dat[ idx ] = vars[ 2 ]->to_str()[ 0 ];
+	return vars[ 0 ];
+}
+
 REGISTER_MODULE( str )
 {
 	functions_t & strfns = vm.typefuncs[ "str" ];
@@ -33,4 +42,5 @@ REGISTER_MODULE( str )
 	strfns.add( { "len", 0, 0, {}, FnType::MODULE, { .modfn = len }, true } );
 	strfns.add( { "clear", 0, 0, {}, FnType::MODULE, { .modfn = clear }, false } );
 	strfns.add( { "to_int", 0, 0, {}, FnType::MODULE, { .modfn = to_int }, true } );
+	strfns.add( { "set_at", 2, 2, { "int", "str" }, FnType::MODULE, { .modfn = set_at }, false } );
 }

@@ -454,9 +454,10 @@ tmp_fail:
 		}
 		case IC_RETURN: // fallthrough
 		case IC_RETURN_EMPTY: {
-			/*if( ins.opcode == IC_RETURN_EMPTY )*/ return E_OK;
-			//ret = vm.stack->back();
-			//vm.stack->pop_back( false );
+			std::vector< void * > locs;
+			vm.vars->pop_scope( & locs, std::stoi( ins.oper.val ) );
+			for( auto & loc : locs ) VAR_DREF( loc );
+			return E_OK;
 		}
 		case _IC_LAST: {}
 		}

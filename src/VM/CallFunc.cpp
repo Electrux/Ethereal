@@ -23,10 +23,10 @@ int CallFunc( vm_state_t & vm, const int ins_ctr )
 	std::vector< var_base_t * > args;
 	const function_t * fn;
 	modfnptr_t mfnptr = nullptr;
-	//langfnptr_t lfnptr = nullptr;
+	const langfn_t * lfnptr = nullptr;
 	// 1 for function name
 	int func_name_count = 1;
-	res_t< var_base_t * > res;
+	res_t< var_base_t * > res = { 0, nullptr };
 	std::vector< void * > rem_locs;
 
 	VERIFY_STACK_MIN( 1 );
@@ -62,8 +62,8 @@ int CallFunc( vm_state_t & vm, const int ins_ctr )
 		goto fail;
 	}
 	if( fn->type == FnType::MODULE ) mfnptr = fn->func.modfn;
-	//else lfnptr = fn->func.langfn;
-	if( mfnptr == nullptr /* && lfnptr == nullptr */ ) {
+	else lfnptr = & fn->func.langfn;
+	if( mfnptr == nullptr && lfnptr == nullptr ) {
 		VM_FAIL( "function with name '%s' is null", fn_name.c_str() );
 		goto fail;
 	}
@@ -72,12 +72,25 @@ int CallFunc( vm_state_t & vm, const int ins_ctr )
 
 	// execute the function
 	res.code = E_OK;
-	res.data = mfnptr( args );
-	// for lang function, args are moved to vars' new layer which is popped at the end
-	// member is also added to args and hence erased
-	for( auto & arg : args ) VAR_DREF( arg );
-
-	if( res.data != nullptr ) {
+	if( mfnptr ) {
+		res.data = mfnptr( args );
+		// for lang function, args are moved to vars' new layer which is popped at the end
+		// member is also added to args and hence erased
+		for( auto & arg : args ) VAR_DREF( arg );
+	} else {
+		vm.srcstack.push_back( vm.srcs[ lfnptr->src ] );
+		if( member ) vm.vars->add( "self", member );
+		for( size_t i = 0; i < fn->arg_types.size(); ++i ) {
+			vm.vars->add( fn->arg_types[ i ], args[ i ] );
+		}
+		res.code = exec_internal( vm, lfnptr->beg, lfnptr->end, res.data );
+		vm.srcstack.pop_back();
+		if( res.code != E_OK ) {
+			VM_FAIL( "function '%s' failed to execute properly", fn_name.c_str() );
+			goto fail;
+		}
+	}
+	if( mfnptr && res.data != nullptr ) {
 		vm.stack->push_back( res.data, !fn->manual_res_free );
 	}
 

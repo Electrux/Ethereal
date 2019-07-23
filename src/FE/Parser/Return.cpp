@@ -25,7 +25,7 @@ stmt_return_t * parse_return( src_t & src, parse_helper_t * ph )
 		goto fail;
 	}
 
-	expr = parse_expr( src, ph, cols );
+	expr = parse_expr( src, ph, cols, false );
 	ph->set_tok_ctr( cols );
 	if( expr.res != 0 ) goto fail;
 	return new stmt_return_t( expr.expr, tok_ctr );

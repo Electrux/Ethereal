@@ -15,11 +15,14 @@
 #include <unordered_map>
 
 class var_base_t;
-class var_func_t;
 struct vm_state_t;
 
 typedef var_base_t * ( * modfnptr_t )( std::vector< var_base_t * > & args );
-//typedef var_func_t * langfnptr_t;
+struct langfn_t
+{
+	const char * src;
+	int beg, end;
+};
 
 enum FnType
 {
@@ -30,7 +33,7 @@ enum FnType
 union Func
 {
 	modfnptr_t modfn;
-//	langfnptr_t langfn;
+	langfn_t langfn;
 };
 
 struct function_t

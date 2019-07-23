@@ -27,11 +27,7 @@ bool operator ==( const function_t & func1, const function_t & func2 )
 functions_t::functions_t() {}
 
 functions_t::~functions_t()
-{
-	for( auto & fninf : m_funcs ) {
-		//if( fninf.type == LANG ) VAR_DREF( fninf.func.langfn );
-	}
-}
+{}
 
 bool functions_t::add( const function_t & func )
 {

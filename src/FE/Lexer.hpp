@@ -41,7 +41,6 @@ enum TokType
 	TOK_CONTINUE,
 	TOK_BREAK,
 	TOK_LDMOD,
-	TOK_SELF, // using the struct reference for member functions
 	// if the source file is the actual executed one, execute the code between these symbols
 	TOK_MAIN_SRC_BEG,
 	TOK_MAIN_SRC_END,
@@ -134,7 +133,7 @@ int tokenize( src_t & src );
 inline bool token_type_is_data( const int type )
 {
 	return type == TOK_INT || type == TOK_FLT || type == TOK_STR || type == TOK_IDEN ||
-	       type == TOK_TRUE || type == TOK_FALSE || type == TOK_NIL || type == TOK_SELF;
+	       type == TOK_TRUE || type == TOK_FALSE || type == TOK_NIL;
 }
 
 inline bool token_type_is_oper( const int type )

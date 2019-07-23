@@ -12,6 +12,6 @@
 
 #include "VM.hpp"
 
-int exec_internal( vm_state_t & vm, long begin = -1, long end = -1 );
+int exec_internal( vm_state_t & vm, long begin = -1, long end = -1, var_base_t * ret = nullptr );
 
 #endif // VM_EXEC_INTERNAL_HPP

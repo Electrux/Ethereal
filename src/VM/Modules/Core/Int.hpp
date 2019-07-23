@@ -65,8 +65,7 @@ var_base_t * unary_sub( std::vector< var_base_t * > & vars )
 
 var_base_t * num( std::vector< var_base_t * > & vars )
 {
-	auto num_str = vars[ 0 ]->to_str();
-	return new var_int_t( num_str, vars[ 0 ]->parse_ctr() );
+	return new var_int_t( vars[ 0 ]->to_int(), vars[ 0 ]->parse_ctr() );
 }
 
 #endif // VM_MODULES_CORE_INT_HPP

@@ -91,9 +91,9 @@ bool stmt_func_t::bytecode( src_t & src ) const
 
 	if( m_mem_type ) {
 		src.bcode.push_back( { m_tok_ctr, m_mem_type->m_val->line, m_mem_type->m_val->col, IC_PUSH, { OP_CONST, m_mem_type->m_val->data } } );
-		src.bcode.push_back( { m_tok_ctr, m_mem_type->m_val->line, m_mem_type->m_val->col, IC_BUILD_MFN, { OP_NONE, "" } } );
+		src.bcode.push_back( { m_tok_ctr, m_mem_type->m_val->line, m_mem_type->m_val->col, IC_BUILD_MFN, { OP_CONST, m_name->m_val->data } } );
 	} else {
-		src.bcode.push_back( { m_tok_ctr, m_name->m_val->line, m_name->m_val->col, IC_BUILD_FN, { OP_NONE, "" } } );
+		src.bcode.push_back( { m_tok_ctr, m_name->m_val->line, m_name->m_val->col, IC_BUILD_FN, { OP_CONST, m_name->m_val->data } } );
 	}
 	return true;
 }

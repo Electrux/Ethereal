@@ -41,7 +41,6 @@ const char * TokStrs[ _TOK_LAST ] = {
 	"continue",
 	"break",
 	"ldmod",
-	"self", // using the struct reference for member functions
 	// if the source file is the actual executed one, execute the code between these symbols
 	"_MAIN_BEG_",
 	"_MAIN_END_",
@@ -275,7 +274,6 @@ static int classify_str( const std::string & str )
 	else if( str == TokStrs[ TOK_CONTINUE ] ) return TOK_CONTINUE;
 	else if( str == TokStrs[ TOK_BREAK ] ) return TOK_BREAK;
 	else if( str == TokStrs[ TOK_LDMOD ] ) return TOK_LDMOD;
-	else if( str == TokStrs[ TOK_SELF ] ) return TOK_SELF;
 
 	return TOK_IDEN;
 }

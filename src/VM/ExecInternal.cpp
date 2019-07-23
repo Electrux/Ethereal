@@ -19,11 +19,19 @@
 
 bool copy_data( var_base_t * a, var_base_t * b );
 
-int exec_internal( vm_state_t & vm, long begin, long end )
+struct fn_blk_t
+{
+	int beg, end;
+};
+
+int exec_internal( vm_state_t & vm, long begin, long end, var_base_t * ret )
 {
 	src_t & src = * vm.srcstack.back();
 	begin = begin == -1 ? 0 : begin;
 	end = end == -1 ? src.bcode.size() : end;
+
+	std::vector< fn_blk_t > fn_blks;
+	std::vector< std::vector< std::string > > fn_args;
 
 #ifdef DEBUG_MODE
 	typedef std::chrono::high_resolution_clock clk_t;
@@ -72,7 +80,7 @@ int exec_internal( vm_state_t & vm, long begin, long end )
 		case IC_STORE: // fallthrough
 		case IC_STORE_LOAD: {
 			std::string var;
-			VERIFY_STACK_MIN( 1 );
+			VERIFY_STACK_MIN( 2 );
 			var = vm.stack->back()->to_str();
 			vm.stack->pop_back();
 			var_base_t * newval = vm.stack->back();
@@ -307,18 +315,18 @@ tmp_fail:
 			int count = std::stoi( ins.oper.val );
 			VERIFY_STACK_MIN( ( size_t )count );
 			std::unordered_map< std::string, var_int_t * > map;
-			for( int i = 0; i < count; ++i ) {
-				map[ vm.stack->back()->to_str() ] = new var_int_t( i, vm.stack->back()->parse_ctr() );
+			for( int j = 0; j < count; ++j ) {
+				map[ vm.stack->back()->to_str() ] = new var_int_t( j, vm.stack->back()->parse_ctr() );
 				vm.stack->pop_back();
 			}
 			vm.vars->add( name, new var_enum_t( name, map, ins.parse_ctr ) );
 			break;
 		}
 		case IC_BUILD_VEC: {
-			const int count = std::stoi( ins.oper.val );
+			int count = std::stoi( ins.oper.val );
 			VERIFY_STACK_MIN( ( size_t )count );
 			std::vector< var_base_t * > vec;
-			for( int i = 0; i < count; ++i ) {
+			while( count-- > 0 ) {
 				vec.push_back( vm.stack->back()->copy( ins.parse_ctr ) );
 				vm.stack->pop_back();
 			}
@@ -326,10 +334,10 @@ tmp_fail:
 			break;
 		}
 		case IC_BUILD_MAP: {
-			const int count = std::stoi( ins.oper.val );
+			int count = std::stoi( ins.oper.val );
 			VERIFY_STACK_MIN( ( size_t )count * 2 );
 			std::unordered_map< std::string, var_base_t * > map;
-			for( int i = 0; i < count; ++i ) {
+			while( count-- > 0 ) {
 				std::string key = vm.stack->back()->to_str();
 				vm.stack->pop_back();
 				map[ key ] = vm.stack->back()->copy( ins.parse_ctr );
@@ -349,7 +357,7 @@ tmp_fail:
 			vm.stack->pop_back();
 			std::unordered_map< std::string, var_base_t * > map;
 			std::vector< std::string > pos;
-			for( int i = 0; i < count; ++i ) {
+			while( count-- > 0 ) {
 				std::string fname = vm.stack->back()->to_str();
 				if( map.find( fname ) != map.end() ) {
 					VM_FAIL_TOK_CTR( vm.stack->back()->parse_ctr(),
@@ -383,21 +391,72 @@ tmp_fail:
 			var_struct_t * st = ( var_struct_t * )vm.structs[ name ]->copy( ins.parse_ctr );
 			std::unordered_map< std::string, var_base_t * > & map = st->get_val();
 			const std::vector< std::string > & pos = stdef->get_pos();
-			for( int i = 0; i < count; ++i ) {
-				if( map[ pos[ i ] ]->type() != vm.stack->back()->type() ) {
+			for( int j = 0; j < count; ++j ) {
+				if( map[ pos[ j ] ]->type() != vm.stack->back()->type() ) {
 					VM_FAIL_TOK_CTR( vm.stack->back()->parse_ctr(),
 							 "argument type mismatch: expected '%s', found '%s'",
-							 map[ pos[ i ] ]->type_str().c_str(), vm.stack->back()->type_str().c_str() );
+							 map[ pos[ j ] ]->type_str().c_str(), vm.stack->back()->type_str().c_str() );
 					goto fail;
 				}
-				if( !copy_data( map[ pos[ i ] ], vm.stack->back() ) ) {
-					VM_FAIL( "assignment symantics not implemented for variable type '%s'", map[ pos[ i ] ]->type_str().c_str() );
+				if( !copy_data( map[ pos[ j ] ], vm.stack->back() ) ) {
+					VM_FAIL( "assignment symantics not implemented for variable type '%s'", map[ pos[ j ] ]->type_str().c_str() );
 					goto fail;
 				}
 				vm.stack->pop_back();
 			}
 			vm.stack->push_back( st, false );
 			break;
+		}
+		case IC_BLOCK_TILL: {
+			int from = i + 1;
+			int to = std::stoi( ins.oper.val );
+			fn_blks.push_back( { from, to } );
+			i = to - 1;
+			break;
+		}
+		case IC_ARGS_TILL: {
+			int till = std::stoi( ins.oper.val );
+			std::vector< std::string > args;
+			for( int j = till; j > i; --j ) {
+				args.push_back( src.bcode[ j ].oper.val );
+			}
+			fn_args.push_back( args );
+			if( till != -1 ) i = till;
+			break;
+		}
+		case IC_BUILD_FN: // fallthrough
+		case IC_BUILD_MFN: {
+			fn_blk_t blk = fn_blks.back();
+			fn_blks.pop_back();
+			std::vector< std::string > args = fn_args.back();
+			fn_args.pop_back();
+			std::string member_of;
+			if( ins.opcode == IC_BUILD_MFN ) {
+				VERIFY_STACK_MIN( 1 );
+				member_of = vm.stack->back()->to_str();
+				vm.stack->pop_back();
+			}
+			std::string name = ins.oper.val;
+			int args_count = args.size();
+			const function_t * fn = member_of == "" ? vm.funcs.get( name, args_count, {} ) : vm.typefuncs[ member_of ].get( name, args_count, {} );
+			if( fn != nullptr ) {
+				VM_FAIL( "function '%s' already exists" );
+				goto fail;
+			}
+			if( ins.opcode == IC_BUILD_MFN ) {
+				vm.typefuncs[ member_of ].add( { name, args_count, args_count, args, FnType::LANG,
+							         { .langfn = { src.name.c_str(), blk.beg, blk.end } }, false } );
+			} else {
+				vm.funcs.add( { name, args_count, args_count, args, FnType::LANG,
+						{ .langfn = { src.name.c_str(), blk.beg, blk.end } }, false } );
+			}
+			break;
+		}
+		case IC_RETURN: // fallthrough
+		case IC_RETURN_EMPTY: {
+			/*if( ins.opcode == IC_RETURN_EMPTY )*/ return E_OK;
+			//ret = vm.stack->back();
+			//vm.stack->pop_back( false );
 		}
 		case _IC_LAST: {}
 		}

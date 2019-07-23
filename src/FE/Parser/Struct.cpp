@@ -26,7 +26,8 @@ stmt_struct_t * parse_struct( const src_t & src, parse_helper_t * ph )
 	int semicol_loc = -1;
 	int err = 0;
 field_begin:
-	NEXT_VALID_FAIL( TOK_IDEN );
+	NEXT_VALID2_FAIL(TOK_IDEN, TOK_RBRACE );
+	if( ph->peak()->type == TOK_RBRACE ) goto end;
 	fname = ph->peak();
 	fname_tok_ctr = ph->tok_ctr();
 	NEXT_VALID_FAIL( TOK_ASSN );
@@ -56,6 +57,7 @@ field_begin:
 		goto field_begin;
 	}
 	ph->next();
+end:
 	// now at RBRACE
 	return new stmt_struct_t( new stmt_simple_t( SIMPLE_TOKEN, name, tok_ctr + 1 ), fields, tok_ctr );
 fail:

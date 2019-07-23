@@ -59,6 +59,10 @@ builds( lib, dynamic ) {
 		builds.add_flags( "-Wl,-install_name -Wl,@rpath/libstr.so" )
 	}
 	build( str, "src/VM/Modules/str.cpp" )
+	if( "${OS}" == OS_OSX ) {
+		builds.add_flags( "-Wl,-install_name -Wl,@rpath/libos.so" )
+	}
+	build( os, "src/VM/Modules/os.cpp" )
 }
 
 if( "${ARGC}" > 0 && "${ARG_0}" == "install" || "${USE_SELF_PREFIX}" == "true" ) {

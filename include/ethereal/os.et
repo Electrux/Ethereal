@@ -1,5 +1,5 @@
 ldmod os;
 
-struct os {}
+struct _os_t {}
 
-os = os{};
+os = _os_t{};

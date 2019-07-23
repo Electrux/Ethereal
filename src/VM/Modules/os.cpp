@@ -60,7 +60,7 @@ var_base_t * exec_custom( std::vector< var_base_t * > & vars )
 
 REGISTER_MODULE( os )
 {
-	functions_t & os = vm.typefuncs[ "os" ];
+	functions_t & os = vm.typefuncs[ "_os_t" ];
 
 	os.add( { "sleep", 1, 1, { "int" }, FnType::MODULE, { .modfn = sleep_custom }, false } );
 	os.add( { "get_env", 1, 1, { "str" }, FnType::MODULE, { .modfn = get_env }, true } );

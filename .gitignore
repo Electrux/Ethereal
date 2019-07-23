@@ -13,7 +13,6 @@
 testbin/
 bin/
 lib/
-include/
 build/
 buildfiles/
 CMakeFiles/

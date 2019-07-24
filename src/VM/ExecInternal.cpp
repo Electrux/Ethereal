@@ -252,7 +252,9 @@ int exec_internal( vm_state_t & vm, long begin, long end, var_base_t * ret )
 			if( sub->ref() == 1 ) { manual_del_sub = true; vm.stack->pop_back( false ); }
 			else vm.stack->pop_back();
 			var_base_t * var = vm.stack->back();
-			vm.stack->pop_back();
+			bool manual_del_var = false;
+			if( var->ref() == 1 ) { manual_del_var = true; vm.stack->pop_back( false ); }
+			else vm.stack->pop_back();
 			if( var == nullptr ) {
 				VM_FAIL( "variable '%s' does not exist", ins.oper.val.c_str() );
 				goto tmp_fail;
@@ -298,9 +300,11 @@ int exec_internal( vm_state_t & vm, long begin, long end, var_base_t * ret )
 				vm.stack->push_back( val.at( key ) );
 			}
 			if( manual_del_sub ) VAR_DREF( sub );
+			if( manual_del_var ) VAR_DREF( var );
 			break;
 tmp_fail:
 			if( manual_del_sub ) VAR_DREF( sub );
+			if( manual_del_var ) VAR_DREF( var );
 			goto fail;
 		}
 		case IC_BUILD_ENUM: {

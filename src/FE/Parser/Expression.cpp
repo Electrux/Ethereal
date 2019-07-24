@@ -51,8 +51,7 @@ expr_res_t parse_expr( const src_t & src, parse_helper_t * ph, const int end, co
 		           ( end == -1 || ph->tok_ctr() + 1 < end ) &&
 			   ph->peak( 1 )->type == TOK_LBRACK ) ||
 			   ( ph->peak()->type == TOK_LBRACK &&
-			   ( data.size() > 0 && data.back()->m_type == GRAM_FN_STRUCT_SUBSCR_CALL &&
-			   static_cast< stmt_func_struct_subscr_call_t * >( data.back() )->m_ctype == CT_SUBSCR ) ) ) {
+			   ( data.size() > 0 && data.back()->m_type == GRAM_FN_STRUCT_SUBSCR_CALL ) ) ) {
 			if( ph->peak()->type == TOK_LBRACK ) {
 				int rbrack_loc;
 				int err = find_next_of( ph, rbrack_loc, { TOK_RBRACK }, TOK_LBRACK );

@@ -12,6 +12,23 @@
 
 std::vector< std::string > str_delimit( const std::string & str, const char ch );
 
+var_base_t * add( std::vector< var_base_t * > & vars )
+{
+	std::string res;
+	std::string & a = AS_STR( vars[ 1 ] )->get();
+	std::string & b = AS_STR( vars[ 0 ] )->get();
+	res = a + b;
+	return new var_str_t( res, vars[ 1 ]->parse_ctr() );
+}
+
+var_base_t * add_assn( std::vector< var_base_t * > & vars )
+{
+	std::string & a = AS_STR( vars[ 0 ] )->get();
+	std::string & b = AS_STR( vars[ 1 ] )->get();
+	a += b;
+	return vars[ 0 ];
+}
+
 var_base_t * len( std::vector< var_base_t * > & vars )
 {
 	return new var_int_t( ( int )AS_STR( vars[ 0 ] )->get().size(), vars[ 0 ]->parse_ctr() );
@@ -56,6 +73,9 @@ var_base_t * split( std::vector< var_base_t * > & vars )
 
 REGISTER_MODULE( str )
 {
+	vm.funcs.add( { "+", 2, 2, { "str", "str" }, FnType::MODULE, { .modfn = add }, true } );
+	vm.funcs.add( { "+=", 2, 2, { "str", "str" }, FnType::MODULE, { .modfn = add_assn }, false } );
+
 	functions_t & strfns = vm.typefuncs[ "str" ];
 
 	strfns.add( { "len", 0, 0, {}, FnType::MODULE, { .modfn = len }, true } );

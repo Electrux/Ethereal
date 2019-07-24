@@ -1,0 +1,36 @@
+import str;
+import vec;
+import os;
+
+_auth = os.get_env( 'USER' );
+
+struct author_t {
+	name = _auth.empty() ? "temp" : _auth;
+	email = "";
+}
+
+struct proj_t {
+	name = "New C++ Project";
+	author = author_t{};
+	version = "0.1";
+	std = "11";
+	license = "bsd3";
+	flags = [];
+}
+
+fn cxx_new_proj() {
+	return proj_t{};
+}
+
+mfn< proj_t > set_author( name, email ) {
+	self.author.name = name;
+	self.author.email = email;
+}
+
+mfn< proj_t > add_flags( flags ) {
+	sz = flags.len();
+	for i = 0; i < sz; i += 1 {
+		self.flags.push( flags[ i ] );
+	}
+}
+

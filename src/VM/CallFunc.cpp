@@ -79,10 +79,14 @@ int CallFunc( vm_state_t & vm, const int ins_ctr )
 		for( auto & arg : args ) VAR_DREF( arg );
 	} else {
 		vm.srcstack.push_back( vm.srcs[ lfnptr->src ] );
-		if( member ) vm.vars->add( "self", member );
+		if( member ) {
+			args.erase( args.begin() );
+			vm.vars->add( "self", member );
+		}
 		for( size_t i = 0; i < fn->arg_types.size(); ++i ) {
 			vm.vars->add( fn->arg_types[ i ], args[ i ] );
 		}
+		args.clear();
 		res.code = exec_internal( vm, lfnptr->beg, lfnptr->end, res.data );
 		vm.srcstack.pop_back();
 		if( res.code != E_OK ) {
@@ -99,6 +103,7 @@ int CallFunc( vm_state_t & vm, const int ins_ctr )
 	return E_OK;
 fail:
 	// for lang function, args are moved to vars' new layer which is popped at the end
+	vm.vars->pop_scope( & rem_locs );
 	for( auto & arg : args ) VAR_DREF( arg );
 	for( auto & rll : rem_locs ) VAR_DREF( rll );
 	return E_VM_FAIL;

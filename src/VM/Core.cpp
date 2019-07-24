@@ -19,8 +19,8 @@ vm_state_t::~vm_state_t()
 	delete stack;
 	delete consts;
 	delete vars;
-	delete dlib;
 	for( auto & struct_ : structs ) delete struct_.second;
+	delete dlib;
 	for( auto & src : srcs ) delete src.second;
 }
 

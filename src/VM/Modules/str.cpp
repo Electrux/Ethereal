@@ -17,6 +17,11 @@ var_base_t * len( std::vector< var_base_t * > & vars )
 	return new var_int_t( ( int )AS_STR( vars[ 0 ] )->get().size(), vars[ 0 ]->parse_ctr() );
 }
 
+var_base_t * empty( std::vector< var_base_t * > & vars )
+{
+	return new var_bool_t( AS_STR( vars[ 0 ] )->get().empty(), vars[ 0 ]->parse_ctr() );
+}
+
 var_base_t * clear( std::vector< var_base_t * > & vars )
 {
 	AS_STR( vars[ 0 ] )->get().clear();
@@ -54,6 +59,7 @@ REGISTER_MODULE( str )
 	functions_t & strfns = vm.typefuncs[ "str" ];
 
 	strfns.add( { "len", 0, 0, {}, FnType::MODULE, { .modfn = len }, true } );
+	strfns.add( { "empty", 0, 0, {}, FnType::MODULE, { .modfn = empty }, true } );
 	strfns.add( { "clear", 0, 0, {}, FnType::MODULE, { .modfn = clear }, false } );
 	strfns.add( { "to_int", 0, 0, {}, FnType::MODULE, { .modfn = to_int }, true } );
 	strfns.add( { "set_at", 2, 2, { "int", "str" }, FnType::MODULE, { .modfn = set_at }, false } );

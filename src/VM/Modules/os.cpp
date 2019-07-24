@@ -34,7 +34,7 @@ var_base_t * set_env( std::vector< var_base_t * > & vars )
 	std::string val = vars[ 2 ]->to_str();
 
 	bool overwrite = true;
-	if( vars.size() > 2 ) overwrite = vars[ 3 ]->to_bool();
+	if( vars.size() > 3 ) overwrite = vars[ 3 ]->to_bool();
 	return new var_int_t( setenv( var.c_str(), val.c_str(), overwrite ), vars[ 0 ]->parse_ctr() );
 }
 
@@ -64,6 +64,6 @@ REGISTER_MODULE( os )
 
 	os.add( { "sleep", 1, 1, { "int" }, FnType::MODULE, { .modfn = sleep_custom }, false } );
 	os.add( { "get_env", 1, 1, { "str" }, FnType::MODULE, { .modfn = get_env }, true } );
-	os.add( { "set_env", 2, 3, { "str", "str" }, FnType::MODULE, { .modfn = set_env }, true } );
+	os.add( { "set_env", 2, 3, { "str", "str", "_any_" }, FnType::MODULE, { .modfn = set_env }, true } );
 	os.add( { "exec", 1, 1, { "str" }, FnType::MODULE, { .modfn = exec_custom }, true } );
 }

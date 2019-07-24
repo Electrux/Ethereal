@@ -33,7 +33,7 @@ var_base_t * set_env( std::vector< var_base_t * > & vars )
 	std::string var = vars[ 1 ]->to_str();
 	std::string val = vars[ 2 ]->to_str();
 
-	bool overwrite = true;
+	bool overwrite = false;
 	if( vars.size() > 3 ) overwrite = vars[ 3 ]->to_bool();
 	return new var_int_t( setenv( var.c_str(), val.c_str(), overwrite ), vars[ 0 ]->parse_ctr() );
 }

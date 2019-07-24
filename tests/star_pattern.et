@@ -1,0 +1,27 @@
+/*
+   ......*******
+   .....*     *
+   ....*     *
+   ...*     *
+   ..*     *
+   .*     *
+   *******
+*/
+
+count = num( scan( "Enter star count: " ) );
+
+for i = 0; i < count; i += 1 {
+	for j = 0; j < count - i - 1; j += 1 {
+		print( ' ' );
+	}
+	for j = 0; j < count; j += 1 {
+		# print( i == 0 || i == count - 1 || j == 0 || j == count - 1 ? '*' : ' ' );
+		# TODO: optimize the multiple conditions
+		if i == 0 || i == count - 1 || j == 0 || j == count - 1 {
+			print( '*' );
+		} else {
+			print( ' ' );
+		}
+	}
+	println();
+}

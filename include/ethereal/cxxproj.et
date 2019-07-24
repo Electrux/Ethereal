@@ -16,6 +16,7 @@ struct proj_t {
 	std = "11";
 	license = "bsd3";
 	flags = [];
+	lib_dirs = [];
 }
 
 fn cxx_new_proj() {
@@ -34,3 +35,9 @@ mfn< proj_t > add_flags( flags ) {
 	}
 }
 
+mfn< proj_t > add_lib_dirs( dirs ) {
+	sz = dirs.len();
+	for i = 0; i < sz; i += 1 {
+		self.lib_dirs.push( dirs[ i ] );
+	}
+}

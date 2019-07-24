@@ -102,9 +102,6 @@ bool stmt_for_t::bytecode( src_t & src ) const
 
 	int block_start_loc = src.bcode.size();
 
-	// add second layer
-	INC_SCOPE();
-
 	int cont_brk_from = -1, cont_brk_to = -1;
 	if( m_block != nullptr ) {
 		cont_brk_from = src.bcode.size();
@@ -135,9 +132,6 @@ bool stmt_for_t::bytecode( src_t & src ) const
 	if( cond_end_loc >= 0 ) {
 		src.bcode[ cond_end_loc ].oper.val = std::to_string( src.bcode.size() );
 	}
-
-	// remove second layer
-	DEC_SCOPE();
 
 	DEC_SCOPE();
 	// remove first layer

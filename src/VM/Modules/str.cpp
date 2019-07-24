@@ -71,10 +71,33 @@ var_base_t * split( std::vector< var_base_t * > & vars )
 	return new var_vec_t( res_b, vars[ 0 ]->parse_ctr() );
 }
 
+#define DECL_FUNC_ALLOC__INT( name, oper, ret_type )				\
+	var_base_t * name( std::vector< var_base_t * > & vars )			\
+	{									\
+		auto & lhs = AS_STR( vars[ 1 ] )->get();			\
+		auto & rhs = AS_STR( vars[ 0 ] )->get();			\
+		return new ret_type( lhs oper rhs, vars[ 1 ]->parse_ctr() );	\
+	}
+
+DECL_FUNC_ALLOC__INT( eq, ==, var_bool_t )
+DECL_FUNC_ALLOC__INT( ne, !=, var_bool_t )
+DECL_FUNC_ALLOC__INT( lt, <, var_bool_t )
+DECL_FUNC_ALLOC__INT( le, <=, var_bool_t )
+DECL_FUNC_ALLOC__INT( gt, >, var_bool_t )
+DECL_FUNC_ALLOC__INT( ge, >=, var_bool_t )
+
 REGISTER_MODULE( str )
 {
 	vm.funcs.add( { "+", 2, 2, { "str", "str" }, FnType::MODULE, { .modfn = add }, true } );
 	vm.funcs.add( { "+=", 2, 2, { "str", "str" }, FnType::MODULE, { .modfn = add_assn }, false } );
+
+	// comparisons
+	vm.funcs.add( { "==", 2, 2, { "str", "str" }, FnType::MODULE, { .modfn = eq }, true } );
+	vm.funcs.add( { "!=", 2, 2, { "str", "str" }, FnType::MODULE, { .modfn = ne }, true } );
+	vm.funcs.add( { "<",  2, 2, { "str", "str" }, FnType::MODULE, { .modfn = lt }, true } );
+	vm.funcs.add( { "<=", 2, 2, { "str", "str" }, FnType::MODULE, { .modfn = le }, true } );
+	vm.funcs.add( { ">",  2, 2, { "str", "str" }, FnType::MODULE, { .modfn = gt }, true } );
+	vm.funcs.add( { ">=", 2, 2, { "str", "str" }, FnType::MODULE, { .modfn = ge }, true } );
 
 	functions_t & strfns = vm.typefuncs[ "str" ];
 

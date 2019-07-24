@@ -72,15 +72,28 @@ var_base_t * clear( std::vector< var_base_t * > & vars )
 	return nullptr;
 }
 
-var_base_t * append_assn( std::vector< var_base_t * > & vars )
+var_base_t * add_assn( std::vector< var_base_t * > & vars )
 {
 	std::vector< var_base_t * > & a = AS_VEC( vars[ 0 ] )->get();
 	std::vector< var_base_t * > & b = AS_VEC( vars[ 1 ] )->get();
-	fprintf( stdout, "lhs: %s, rhs: %s\n", vars[ 0 ]->to_str().c_str(), vars[ 1 ]->to_str().c_str() );
 	for( auto & x : b ) {
 		a.push_back( x->copy( vars[ 0 ]->parse_ctr() ) );
 	}
 	return vars[ 0 ];
+}
+
+var_base_t * add( std::vector< var_base_t * > & vars )
+{
+	std::vector< var_base_t * > res;
+	std::vector< var_base_t * > & a = AS_VEC( vars[ 1 ] )->get();
+	std::vector< var_base_t * > & b = AS_VEC( vars[ 0 ] )->get();
+	for( auto & x : a ) {
+		res.push_back( x->copy( vars[ 1 ]->parse_ctr() ) );
+	}
+	for( auto & x : b ) {
+		res.push_back( x->copy( vars[ 1 ]->parse_ctr() ) );
+	}
+	return new var_vec_t( res, vars[ 1 ]->parse_ctr() );
 }
 
 REGISTER_MODULE( vec )
@@ -96,5 +109,6 @@ REGISTER_MODULE( vec )
 	vecfns.add( { "len", 0, 0, {}, FnType::MODULE, { .modfn = len }, true } );
 	vecfns.add( { "clear", 0, 0, {}, FnType::MODULE, { .modfn = clear }, false } );
 
-	vm.funcs.add( { "+=", 2, 2, { "vec", "vec" }, FnType::MODULE, { .modfn = append_assn }, false } );
+	vm.funcs.add( { "+=", 2, 2, { "vec", "vec" }, FnType::MODULE, { .modfn = add_assn }, false } );
+	vm.funcs.add( { "+", 2, 2, { "vec", "vec" }, FnType::MODULE, { .modfn = add }, true } );
 }

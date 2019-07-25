@@ -444,7 +444,9 @@ tmp_fail:
 			int args_count = args.size();
 			const function_t * fn = member_of == "" ? vm.funcs.get( name, args_count, {} ) : vm.typefuncs[ member_of ].get( name, args_count, {} );
 			if( fn != nullptr ) {
-				VM_FAIL( "function '%s' already exists" );
+				VM_FAIL( "function '%s%s' already exists",
+					 member_of == "" ? "" : ( member_of + "::" ).c_str(),
+					 name.c_str() );
 				goto fail;
 			}
 			if( ins.opcode == IC_BUILD_MFN ) {

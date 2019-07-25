@@ -9,7 +9,7 @@ struct author_t {
 	email = "";
 }
 
-struct proj_t {
+struct cxx_proj_t {
 	name = "New C++ Project";
 	author = author_t{};
 	version = "0.1";
@@ -20,30 +20,30 @@ struct proj_t {
 }
 
 fn cxx_new_proj() {
-	return proj_t{};
+	return cxx_proj_t{};
 }
 
-mfn< proj_t > set_author( name, email ) {
+mfn< cxx_proj_t > set_author( name, email ) {
 	self.author.name = name;
 	self.author.email = email;
 }
 
-mfn< proj_t > add_flags( flags ) {
+mfn< cxx_proj_t > add_flags( flags ) {
 	sz = flags.len();
 	for i = 0; i < sz; i += 1 {
 		self.flags.push( flags[ i ] );
 	}
 }
 
-mfn< proj_t > add_lib_dirs( dirs ) {
+mfn< cxx_proj_t > add_lib_dirs( dirs ) {
 	sz = dirs.len();
 	for i = 0; i < sz; i += 1 {
 		self.lib_dirs.push( dirs[ i ] );
 	}
 }
 
-mfn< proj_t > use_libs( libs ) {
-	sz = libs.size();
+mfn< cxx_proj_t > use_libs( libs ) {
+	sz = libs.len();
 	for i = 0; i < sz; i += 1 {
 		# TODO:
 	}

@@ -72,6 +72,20 @@ var_base_t * clear( std::vector< var_base_t * > & vars )
 	return nullptr;
 }
 
+var_base_t * find( std::vector< var_base_t * > & vars )
+{
+	std::vector< var_base_t * > & v = AS_VEC( vars[ 0 ] )->get();
+	int loc = -1;
+	size_t sz = v.size();
+	for( size_t i = 0; i < sz; ++i ) {
+		if( v[ i ]->to_str() == vars[ 1 ]->to_str() ) {
+			loc = i;
+			break;
+		}
+	}
+	return new var_int_t( loc, vars[ 0 ]->parse_ctr() );
+}
+
 var_base_t * add( std::vector< var_base_t * > & vars )
 {
 	std::vector< var_base_t * > res;
@@ -108,6 +122,7 @@ REGISTER_MODULE( vec )
 	vecfns.add( { "back", 0, 0, {}, FnType::MODULE, { .modfn = back }, false } );
 	vecfns.add( { "len", 0, 0, {}, FnType::MODULE, { .modfn = len }, true } );
 	vecfns.add( { "clear", 0, 0, {}, FnType::MODULE, { .modfn = clear }, false } );
+	vecfns.add( { "find", 1, 1, { "_any_" }, FnType::MODULE, { .modfn = find }, true } );
 
 	vm.funcs.add( { "+", 2, 2, { "vec", "vec" }, FnType::MODULE, { .modfn = add }, true } );
 	vm.funcs.add( { "+=", 2, 2, { "vec", "vec" }, FnType::MODULE, { .modfn = add_assn }, false } );

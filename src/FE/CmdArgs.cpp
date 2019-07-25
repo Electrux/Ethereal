@@ -29,10 +29,11 @@ const size_t OPT_1 = 1 << 13;
 size_t cmd_get_args( const int argc, const char ** argv, std::vector< std::string > & args )
 {
 	size_t flags = 0;
+	bool src_found = false;
 
 	for( int i = 1; i < argc; ++i ) {
-		// fetch the location to be ls'ed in
-		if( argv[ i ][ 0 ] != '-' ) {
+		if( argv[ i ][ 0 ] != '-' || src_found ) {
+			src_found = true;
 			args.push_back( argv[ i ] );
 			continue;
 		}

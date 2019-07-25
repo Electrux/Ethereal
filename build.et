@@ -1,41 +1,38 @@
-import os;
-import cxxproj as cxx;
+import cxxproj;
 
-# structs will be instantiated using struct{} or struct() format...?
-proj = cxx.new_proj{ 'Ethereal', '0.1', '11', 'bsd3' };
-# or maybe, structs could have a construction helper function like below
-proj = cxx.new_proj( 'Ethereal', '0.1', '11', 'bsd3' );
-proj.set_author( 'Electrux', 'ElectruxRedsworth@gmail.com' );
+proj = cxx_new_proj();
+
+proj.set_author( 'Elec', 'ElectruxRedsworth@gmail.com' );
 
 self_prefix = false;
 if os.get_env( 'PREFIX' ).empty() {
-	os.set_env( 'PREFIX', os.exec_out( 'pwd' ) );
+	os.set_env( 'PREFIX', os.get_env( 'PWD' ) );
 	self_prefix = true;
 }
 
-proj.add_flags( '-fPIC', '-pedantic', '-Wall', '-Wextra', '-Wno-unused-parameter',
-		'-DBUILD_PREFIX_DIR=' + os.get_env( 'PREFIX' ), '-Wl,-rpath,./buildfiles/' );
+proj.add_flags( [ '-fPIC', '-pedantic', '-Wall', '-Wextra', '-Wno-unused-parameter',
+		  '-DBUILD_PREFIX_DIR=' + os.get_env( 'PREFIX' ),
+		  '-Wl,-rpath,./buildfiles/' ] );
 
 if os.get_env( 'CC' ) != 'g++' {
-	proj.add_flags( '-Wno-c99-extensions', '-Wno-unused-command-line-argument' );
+	proj.add_flags( [ '-Wno-c99-extensions', '-Wno-unused-command-line-argument' ] );
 }
 
-proj.add_lib_dirs( '-L./buildfiles/' );
+proj.add_lib_dirs( [ '-L./buildfiles/' ] );
 
-proj.use_libs( 'dl', 'gmpxx' );
+proj.use_libs( [ 'dl', 'gmpxx' ] );
 
-# handle remove buildfiles if DEBUG_MODE is changed
-if argc > 0 && argv[ 0 ] == 'debug' || argv[ 0 ] == 'memlog' {
-	if os.exec( 'stat buildfiles 2>/dev/null' ) == 0 && os.exec( 'stat buildfiles/.debug_mode 2>/dev/null' ) != 0 {
-		os.exec( 'rm -rf buildfiles; mkdir buildfiles; touch buildfiles/.debug_mode' );
+if args.len() > 0 && args.find( 'debug' ) >= 0 || args.find( 'memlog' ) >= 0 {
+	if os.exec( 'stat buildfiles 1>/dev/null 2>&1' ) == 0 && os.exec( 'stat buildfiles/.debug_mode 1>/dev/null 2>&1' ) != 0 {
+		#os.exec( 'rm -rf buildfiles && mkdir buildfiles && touch buildfiles/.debug_mode' );
 	}
-	if argv[ 0 ] == 'debug' { proj.add_flags( '-DDEBUG_MODE', '-DMEM_LOGS' ); }
-	if argv[ 0 ] == 'memlog' { proj.add_flags( '-DMEM_LOGS' ); }
+	if args.find( 'debug' ) >= 0 { proj.add_flags( [ '-DDEBUG_MODE', '-DMEM_LOGS' ] ); }
+	else { proj.add_flags( [ '-DMEM_LOGS' ] ); }
 } else {
-	if os.exec( 'stat buildfiles 2>/dev/null' ) == 0 && os.exec( 'stat buildfiles/.debug_mode 2>/dev/null}' ) == 0 {
-		os.exec( 'rm -rf buildfiles' );
+	if os.exec( 'stat buildfiles 1>/dev/null 2>&1' ) == 0 && os.exec( 'stat buildfiles/.debug_mode 1>/dev/null 2>&1' ) == 0 {
+		#os.exec( 'rm -rf buildfiles' );
 	}
-	proj.add_flags( '-march=native', '-O2', '-flto' );
+	proj.add_flags( [ '-march=native', '-O2', '-flto' ] );
 }
 
 proj.add_build( 'et', 'bin' );

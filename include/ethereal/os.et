@@ -1,5 +1,7 @@
 ldmod os;
 
-struct _os_t {}
+struct _os_t {
+	name = os_get_name();
+}
 
 os = _os_t{};

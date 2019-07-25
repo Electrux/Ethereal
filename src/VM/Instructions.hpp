@@ -64,7 +64,6 @@ enum OperTypes
 	OP_STR,
 	OP_INT,
 	OP_FLT,
-	OP_BOOL,
 
 	OP_NONE,
 

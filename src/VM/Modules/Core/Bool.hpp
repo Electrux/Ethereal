@@ -20,15 +20,6 @@
 		return new ret_type( lhs oper rhs, vars[ 1 ]->parse_ctr() );	\
 	}
 
-#define DECL_FUNC_ASSN__BOOL( name, oper )				\
-	var_base_t * name( std::vector< var_base_t * > & vars )		\
-	{	/* lhs = 0 because Right to Left associativity */	\
-		bool lhs = vars[ 0 ]->to_bool();			\
-		bool rhs = vars[ 1 ]->to_bool();			\
-		lhs oper rhs;						\
-		return vars[ 0 ];					\
-	}
-
 DECL_FUNC_ALLOC__BOOL( log_and, &&, var_bool_t )
 DECL_FUNC_ALLOC__BOOL( log_or, ||, var_bool_t )
 DECL_FUNC_ALLOC__BOOL( log_eq, ==, var_bool_t )

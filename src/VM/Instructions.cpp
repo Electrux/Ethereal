@@ -53,7 +53,6 @@ const char * OperTypeStrs[ _OP_LAST ] = {
 	"string",
 	"int",
 	"float",
-	"bool",
 
 	"none",
 };

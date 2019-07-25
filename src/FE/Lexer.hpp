@@ -24,8 +24,6 @@ enum TokType
 	TOK_IDEN,
 
 	//Keywords
-	TOK_TRUE,
-	TOK_FALSE,
 	TOK_ENUM,
 	TOK_IMPORT,
 	TOK_AS,
@@ -132,8 +130,7 @@ int tokenize( src_t & src );
 
 inline bool token_type_is_data( const int type )
 {
-	return type == TOK_INT || type == TOK_FLT || type == TOK_STR || type == TOK_IDEN ||
-	       type == TOK_TRUE || type == TOK_FALSE || type == TOK_NIL;
+	return type == TOK_INT || type == TOK_FLT || type == TOK_STR || type == TOK_IDEN || type == TOK_NIL;
 }
 
 inline bool token_type_is_oper( const int type )

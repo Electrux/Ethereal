@@ -93,6 +93,8 @@ int main( int argc, char ** argv )
 			arg_vec.push_back( new var_str_t( v, 0 ) );
 		}
 		vm.vars->add( "args", new var_vec_t( arg_vec, 0 ) );
+		vm.vars->add( "true", new var_bool_t( true, 0 ) );
+		vm.vars->add( "false", new var_bool_t( false, 0 ) );
 		err = vm_exec( vm );
 		vm.srcstack.pop_back();
 		// reset working dir

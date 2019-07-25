@@ -15,6 +15,10 @@ stmt_return_t * parse_return( src_t & src, parse_helper_t * ph )
 	int tok_ctr = ph->tok_ctr();
 	ph->next();
 
+	if( ph->peak()->type == TOK_COLS ) {
+		return new stmt_return_t( nullptr, tok_ctr );
+	}
+
 	expr_res_t expr = { 0, nullptr };
 	int err, cols;
 	err = find_next_of( ph, cols, { TOK_COLS } );

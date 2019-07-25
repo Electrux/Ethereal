@@ -44,6 +44,11 @@ var_base_t * scan( std::vector< var_base_t * > & vars )
 	return new var_str_t( res, vars[ 0 ]->parse_ctr() );
 }
 
+var_base_t * type( std::vector< var_base_t * > & vars )
+{
+	return new var_str_t( vars[ 0 ]->type_str(), vars[ 0 ]->parse_ctr() );
+}
+
 REGISTER_MODULE( core )
 {
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -130,4 +135,8 @@ REGISTER_MODULE( core )
 
 	// other types to bool
 	vm.funcs.add( { "bool", 1, 1, { "_any_" }, FnType::MODULE, { .modfn = flt }, true } );
+
+	// global object functions
+	functions_t & anyfns = vm.typefuncs[ "_any_" ];
+	anyfns.add( { "type", 0, 0, {}, FnType::MODULE, { .modfn = type }, true } );
 }

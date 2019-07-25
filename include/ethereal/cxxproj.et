@@ -41,3 +41,11 @@ mfn< proj_t > add_lib_dirs( dirs ) {
 		self.lib_dirs.push( dirs[ i ] );
 	}
 }
+
+mfn< proj_t > use_libs( libs ) {
+	sz = libs.size();
+	for i = 0; i < sz; i += 1 {
+		# TODO:
+	}
+}
+

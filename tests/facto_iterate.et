@@ -1,0 +1,10 @@
+import str;
+
+num = scan( "Enter factorial of: " ).to_int();
+fact = 1;
+
+for x = num; x >= 2; x -= 1 {
+	fact *= x;
+}
+
+println( "Factorial of ", num, ": ", fact );

@@ -51,6 +51,9 @@ int CallFunc( vm_state_t & vm, const int ins_ctr )
 		vm.stack->pop_back( false );
 		args.insert( args.begin(), member );
 		fn = vm.typefuncs[ member->type_str() ].get( fn_name, args_count, arg_types );
+		if( fn == nullptr ) {
+			fn = vm.typefuncs[ "_any_" ].get( fn_name, args_count, arg_types );
+		}
 	} else {
 		// fetch the function pointer from Functions
 		fn = vm.funcs.get( fn_name, args_count, arg_types );

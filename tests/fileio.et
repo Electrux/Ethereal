@@ -1,12 +1,31 @@
 import fs;
 
-f = fopen( "some", "a" );
+fn write() {
+	f = fopen( "some", "a" );
 
-if f.get_err() != 0 {
-	println( 'failed to open file' );
-} else {
-	for x = 0; x < 20; x += 1 {
-		f.write( x, ': hi there\n' );
+	if f.get_err() != 0 {
+		println( 'failed to open file' );
+	} else {
+		for x = 0; x < 20; x += 1 {
+			f.write( x, ': hi there\n' );
+		}
+		fclose( f );
 	}
-	fclose( f );
 }
+
+fn read() {
+	f = fopen( "some", "r" );
+
+	if f.get_err() != 0 {
+		println( 'failed to open file' );
+	} else {
+		s = "";
+		for ; f.read( s ); {
+			println( 'recvd: ', s );
+		}
+		fclose( f );
+	}
+}
+
+write();
+read();

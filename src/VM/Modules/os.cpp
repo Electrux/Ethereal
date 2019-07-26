@@ -74,7 +74,7 @@ var_base_t * install( std::vector< var_base_t * > & vars )
 		return new var_int_t( -1, vars[ 0 ]->parse_ctr() );
 	}
 	std::string cmd_str;
-#if __linux__
+#if __linux__ || __ANDROID__
 	cmd_str = "cp -r --remove-destination " + src + " " + dest;
 #elif __APPLE__ || __FreeBSD__
 	cmd_str = "cp -rf " + src + " " + dest;
@@ -87,8 +87,12 @@ var_base_t * os_get_name( std::vector< var_base_t * > & vars )
 	std::string os_str;
 #if __linux__
 	os_str = "linux";
-#elif __APPLE__ || __FreeBSD__
+#elif __APPLE__
 	os_str = "macos";
+#elif __ANDROID__
+	os_str = "android";
+#elif __FreeBSD__
+	os_str = "bsd";
 #endif
 	return new var_str_t( os_str, 0 );
 }

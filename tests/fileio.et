@@ -1,0 +1,12 @@
+import fs;
+
+f = fopen( "some", "a" );
+
+if f.get_err() != 0 {
+	println( 'failed to open file' );
+} else {
+	for x = 0; x < 20; x += 1 {
+		f.write( x, ': hi there\n' );
+	}
+	fclose( f );
+}

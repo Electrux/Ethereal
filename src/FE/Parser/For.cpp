@@ -24,6 +24,9 @@ stmt_for_t * parse_for( src_t & src, parse_helper_t * ph, std::vector< GrammarTy
 
 	// initialization
 	ph->next();
+	if( ph->peak()->type == TOK_COLS ) {
+		goto cond;
+	}
 	err = find_next_of( ph, init_cols, { TOK_COLS } );
 	if( err < 0 ) {
 		if( err == -1 ) {
@@ -35,8 +38,12 @@ stmt_for_t * parse_for( src_t & src, parse_helper_t * ph, std::vector< GrammarTy
 	if( init.res != 0 ) goto fail;
 	ph->set_tok_ctr( init_cols );
 
+cond:
 	// condition
 	ph->next();
+	if( ph->peak()->type == TOK_COLS ) {
+		goto step;
+	}
 	err = find_next_of( ph, cond_cols, { TOK_COLS } );
 	if( err < 0 ) {
 		if( err == -1 ) {
@@ -49,8 +56,12 @@ stmt_for_t * parse_for( src_t & src, parse_helper_t * ph, std::vector< GrammarTy
 	if( cond.expr ) cond.expr->m_is_top_expr = false;
 	ph->set_tok_ctr( cond_cols );
 
+step:
 	// step
 	ph->next();
+	if( ph->peak()->type == TOK_LBRACE ) {
+		goto blk;
+	}
 	err = find_next_of( ph, step_brace, { TOK_LBRACE }, TOK_RBRACE );
 	if( err < 0 ) {
 		if( err == -1 ) {
@@ -64,6 +75,7 @@ stmt_for_t * parse_for( src_t & src, parse_helper_t * ph, std::vector< GrammarTy
 	if( step.res != 0 ) goto fail;
 	ph->set_tok_ctr( step_brace );
 
+blk:
 	// block
 	parents.push_back( GRAM_FOR );
 	block = parse_block( src, ph, parents );

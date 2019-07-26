@@ -21,6 +21,7 @@ var_base_t * print( std::vector< var_base_t * > & vars )
 	for( auto & v : vars ) {
 		fprintf( stdout, "%s", v->to_str().c_str() );
 	}
+	fflush( stdout );
 	return nullptr;
 }
 

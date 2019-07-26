@@ -123,6 +123,7 @@ static std::string get_num( const std::string & src, const std::string & line, c
 static int get_const_str( const std::string & src, const std::string & line, const int line_len, const int line_num, int & i, std::string & buf );
 static int get_operator( const std::string & src, const std::string & line, const int line_len, const int line_num, int & i );
 static inline bool is_valid_num_char( const char c );
+static void remove_back_slash( std::string & s );
 
 // TODO: The src stack and map shall be updated prior to this function
 int tokenize( src_t & src )
@@ -352,6 +353,7 @@ static int get_const_str( const std::string & src, const std::string & line, con
 	}
 	// omit ending quote
 	++i;
+	remove_back_slash( buf );
 	return E_OK;
 }
 
@@ -535,4 +537,21 @@ static inline bool is_valid_num_char( const char c )
 {
 	return ( c >= '0' && c <= '9' ) || ( c >= 'a' && c <= 'f' ) || ( c >= 'A' && c <= 'F' )
 		|| c == '.' || c == '-' || c == '+' || c == 'o' || c == 'O' || c == 'x' || c == 'X';
+}
+
+static void remove_back_slash( std::string & s )
+{
+	for( auto it = s.begin(); it != s.end(); ++it ) {
+		if( * it == '\\' ) {
+			if( it + 1 >= s.end() ) continue;
+			it = s.erase( it );
+			if( * it == 'a' ) * it = '\a';
+			else if( * it == 'b' ) * it = '\b';
+			else if( * it == 'f' ) * it = '\f';
+			else if( * it == 'n' ) * it = '\n';
+			else if( * it == 'r' ) * it = '\r';
+			else if( * it == 't' ) * it = '\t';
+			else if( * it == 'v' ) * it = '\v';
+		}
+	}
 }

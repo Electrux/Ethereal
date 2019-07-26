@@ -67,6 +67,10 @@ builds( lib, dynamic ) {
 		builds.add_flags( "-Wl,-install_name -Wl,@rpath/libvec.so" )
 	}
 	build( vec, "src/VM/Modules/vec.cpp" )
+	if( "${OS}" == OS_OSX ) {
+		builds.add_flags( "-Wl,-install_name -Wl,@rpath/libfs.so" )
+	}
+	build( fs, "src/VM/Modules/fs.cpp" )
 }
 
 if( "${ARGC}" > 0 && "${ARG_0}" == "install" || "${USE_SELF_PREFIX}" == "true" ) {

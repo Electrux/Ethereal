@@ -9,7 +9,6 @@ res = 0;
 op = '';
 
 for x = 0; x < sz; x += 1 {
-
 	if a[ x ].is_int() {
 		if op == '+' {
 			res += a[ x ].to_int();

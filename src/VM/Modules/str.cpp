@@ -45,6 +45,13 @@ var_base_t * clear( std::vector< var_base_t * > & vars )
 	return nullptr;
 }
 
+var_base_t * is_int( std::vector< var_base_t * > & vars )
+{
+	char * p;
+	strtol( AS_STR( vars[ 0 ] )->get().c_str(), & p, 10 );
+	return new var_bool_t( * p == 0, vars[ 0 ]->parse_ctr() );
+}
+
 var_base_t * to_int( std::vector< var_base_t * > & vars )
 {
 	return new var_int_t( AS_STR( vars[ 0 ] )->get(), vars[ 0 ]->parse_ctr() );
@@ -104,6 +111,7 @@ REGISTER_MODULE( str )
 	strfns.add( { "len", 0, 0, {}, FnType::MODULE, { .modfn = len }, true } );
 	strfns.add( { "empty", 0, 0, {}, FnType::MODULE, { .modfn = empty }, true } );
 	strfns.add( { "clear", 0, 0, {}, FnType::MODULE, { .modfn = clear }, false } );
+	strfns.add( { "is_int", 0, 0, {}, FnType::MODULE, { .modfn = is_int }, true } );
 	strfns.add( { "to_int", 0, 0, {}, FnType::MODULE, { .modfn = to_int }, true } );
 	strfns.add( { "set_at", 2, 2, { "int", "str" }, FnType::MODULE, { .modfn = set_at }, false } );
 	strfns.add( { "split", 0, 1, { "str" }, FnType::MODULE, { .modfn = split }, true } );

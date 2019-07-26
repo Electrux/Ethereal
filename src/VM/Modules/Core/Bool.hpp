@@ -25,4 +25,10 @@ DECL_FUNC_ALLOC__BOOL( log_or, ||, var_bool_t )
 DECL_FUNC_ALLOC__BOOL( log_eq, ==, var_bool_t )
 DECL_FUNC_ALLOC__BOOL( log_ne, !=, var_bool_t )
 
+var_base_t * not_operb( std::vector< var_base_t * > & vars )
+{
+	bool val = AS_BOOL( vars[ 0 ] )->get();
+	return new var_bool_t( !val, vars[ 0 ]->parse_ctr() );
+}
+
 #endif // VM_MODULES_CORE_BOOL_HPP

@@ -50,8 +50,8 @@ DECL_FUNC_ALLOC__INT( gei, >=, var_bool_t )
 
 var_base_t * power( std::vector< var_base_t * > & vars )
 {
-	auto & lhs = AS_INT( vars[ 1 ] )->get();
-	auto & rhs = AS_INT( vars[ 0 ] )->get();
+	mpz_class & lhs = AS_INT( vars[ 1 ] )->get();
+	mpz_class & rhs = AS_INT( vars[ 0 ] )->get();
 	var_int_t * res = new var_int_t( "0", vars[ 1 ]->parse_ctr() );
 	mpz_pow_ui( res->get().get_mpz_t(), lhs.get_mpz_t(), rhs.get_ui() );
 	return res;
@@ -59,8 +59,14 @@ var_base_t * power( std::vector< var_base_t * > & vars )
 
 var_base_t * unary_sub( std::vector< var_base_t * > & vars )
 {
-	auto & num = AS_INT( vars[ 0 ] )->get();
+	mpz_class & num = AS_INT( vars[ 0 ] )->get();
 	return new var_int_t( -num, vars[ 0 ]->parse_ctr() );
+}
+
+var_base_t * not_oper( std::vector< var_base_t * > & vars )
+{
+	mpz_class & num = AS_INT( vars[ 0 ] )->get();
+	return new var_bool_t( !num, vars[ 0 ]->parse_ctr() );
 }
 
 var_base_t * num( std::vector< var_base_t * > & vars )

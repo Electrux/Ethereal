@@ -48,8 +48,8 @@ DECL_FUNC_ALLOC__FLT( gef, >=, var_bool_t )
 
 var_base_t * powerf( std::vector< var_base_t * > & vars )
 {
-	auto & lhs = AS_FLT( vars[ 1 ] )->get();
-	auto & rhs = AS_INT( vars[ 0 ] )->get();
+	mpf_class & lhs = AS_FLT( vars[ 1 ] )->get();
+	mpz_class & rhs = AS_INT( vars[ 0 ] )->get();
 	var_flt_t * res = new var_flt_t( "0", vars[ 1 ]->parse_ctr() );
 	mpf_pow_ui( res->get().get_mpf_t(), lhs.get_mpf_t(), rhs.get_ui() );
 	return res;
@@ -57,8 +57,14 @@ var_base_t * powerf( std::vector< var_base_t * > & vars )
 
 var_base_t * unary_subf( std::vector< var_base_t * > & vars )
 {
-	auto & num = AS_FLT( vars[ 0 ] )->get();
+	mpf_class & num = AS_FLT( vars[ 0 ] )->get();
 	return new var_flt_t( -num, vars[ 0 ]->parse_ctr() );
+}
+
+var_base_t * not_operf( std::vector< var_base_t * > & vars )
+{
+	mpf_class & num = AS_FLT( vars[ 0 ] )->get();
+	return new var_bool_t( !num, vars[ 0 ]->parse_ctr() );
 }
 
 var_base_t * flt( std::vector< var_base_t * > & vars )

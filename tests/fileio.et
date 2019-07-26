@@ -1,7 +1,8 @@
+import vec;
 import fs;
 
 fn write() {
-	f = fopen( "some", "a" );
+	f = fopen( "some", "w" );
 
 	if f.get_err() != 0 {
 		println( 'failed to open file' );
@@ -27,5 +28,26 @@ fn read() {
 	}
 }
 
+fn read_all() {
+	f = fopen( "some", "r" );
+
+	if f.get_err() != 0 {
+		println( 'failed to open file' );
+	} else {
+		s = [];
+		if f.read_all( s ) {
+			println( 'recvd:' );
+			sz = s.len();
+			for i = 0; i < sz; i += 1 {
+				println( '--> ', s[ i ] );
+			}
+		} else {
+			println( 'nothing to read :(' );
+		}
+		fclose( f );
+	}
+}
+
 write();
 read();
+read_all();

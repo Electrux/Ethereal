@@ -43,4 +43,12 @@ var_base_t * var_map_t::copy( const int parse_ctr ) const
 	return new var_map_t( newmap, parse_ctr );
 }
 
+void var_map_t::clear()
+{
+	for( auto & v : m_val ) {
+		VAR_DREF( v.second );
+	}
+	m_val.clear();
+}
+
 std::unordered_map< std::string, var_base_t * > & var_map_t::get() { return m_val; }

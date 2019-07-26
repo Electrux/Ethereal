@@ -162,6 +162,7 @@ public:
 	mpz_class to_int() const;
 	bool to_bool() const;
 	var_base_t * copy( const int parse_ctr ) const;
+	void clear();
 	std::vector< var_base_t * > & get();
 };
 #define AS_VEC( x ) static_cast< var_vec_t * >( x )
@@ -176,6 +177,7 @@ public:
 	mpz_class to_int() const;
 	bool to_bool() const;
 	var_base_t * copy( const int parse_ctr ) const;
+	void clear();
 	std::unordered_map< std::string, var_base_t * > & get();
 };
 #define AS_MAP( x ) static_cast< var_map_t * >( x )

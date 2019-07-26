@@ -83,6 +83,35 @@ var_base_t * file_read( std::vector< var_base_t * > & vars )
 	return new var_bool_t( true, vars[ 0 ]->parse_ctr() );
 }
 
+var_base_t * file_read_full( std::vector< var_base_t * > & vars )
+{
+	if( AS_INT( AS_STRUCT( vars[ 0 ] )->get_val()[ "err" ] )->get() < 0 ) return new var_bool_t( false, vars[ 0 ]->parse_ctr() );
+	unsigned long long file = std::stoull( AS_INT( AS_STRUCT( vars[ 0 ] )->get_val()[ "handle" ] )->get().get_str() );
+	if( file == ( unsigned long long )-1 ) return new var_bool_t( false, vars[ 0 ]->parse_ctr() );
+	FILE * f = ( FILE * )file;
+
+	char * line = NULL;
+	size_t len = 0;
+	ssize_t read;
+	std::vector< var_base_t * > lines;
+	std::string line_str;
+
+	while( ( read = getline( & line, & len, f ) ) != -1 ) {
+		line_str = line;
+		if( line_str.size() > 0 && line_str.back() == '\n' ) {
+			line_str.erase( line_str.end() - 1 );
+		}
+		lines.push_back( new var_str_t( line_str, vars[ 0 ]->parse_ctr() ) );
+	}
+
+	if( line ) free( line );
+
+	AS_VEC( vars[ 1 ] )->clear();
+	AS_VEC( vars[ 1 ] )->get() = lines;
+
+	return new var_bool_t( true, vars[ 0 ]->parse_ctr() );
+}
+
 var_base_t * is_open( std::vector< var_base_t * > & vars )
 {
 	return new var_bool_t( AS_INT( AS_STRUCT( vars[ 0 ] )->get_val()[ "err" ] )->get() == 0 &&
@@ -120,4 +149,5 @@ REGISTER_MODULE( fs )
 	ft.add( { "get_err", 0, 0, {}, FnType::MODULE, { .modfn = get_err }, false } );
 	ft.add( { "err_str", 0, 0, {}, FnType::MODULE, { .modfn = err_str }, true } );
 	ft.add( { "read", 1, 1, { "str" }, FnType::MODULE, { .modfn = file_read }, true } );
+	ft.add( { "read_all", 1, 1, { "vec" }, FnType::MODULE, { .modfn = file_read_full }, true } );
 }

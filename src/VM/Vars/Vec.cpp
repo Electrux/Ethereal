@@ -39,4 +39,12 @@ var_base_t * var_vec_t::copy( const int parse_ctr ) const
 	return new var_vec_t( newvec, parse_ctr );
 }
 
+void var_vec_t::clear()
+{
+	for( auto & v : m_val ) {
+		VAR_DREF( v );
+	}
+	m_val.clear();
+}
+
 std::vector< var_base_t * > & var_vec_t::get() { return m_val; }

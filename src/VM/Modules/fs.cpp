@@ -34,8 +34,8 @@ var_file_t::var_file_t( FILE * file, const int parse_ctr )
 	  m_copied( false ) {}
 var_file_t::~var_file_t() { if( m_file != nullptr && !m_copied ) { fclose( m_file ); } }
 
-std::string var_file_t::type_str() const { return "file_t"; }
-std::string var_file_t::to_str() const { return "file_t"; }
+std::string var_file_t::type_str() const { return "_file_t"; }
+std::string var_file_t::to_str() const { return "_file_t"; }
 mpz_class var_file_t::to_int() const { return m_file == nullptr ? 0 : 1; }
 bool var_file_t::to_bool() const { return m_file != nullptr; }
 var_base_t * var_file_t::copy( const int parse_ctr )
@@ -129,7 +129,7 @@ REGISTER_MODULE( fs )
 {
 	vm.funcs.add( { "fopen", 2, 2, { "str", "str" }, FnType::MODULE, { .modfn = file_open }, true } );
 
-	functions_t & ft = vm.typefuncs[ "file_t" ];
+	functions_t & ft = vm.typefuncs[ "_file_t" ];
 	ft.add( { "write", 1, -1, { "_whatever_" }, FnType::MODULE, { .modfn = file_write }, true } );
 	ft.add( { "read", 1, 1, { "str" }, FnType::MODULE, { .modfn = file_read }, true } );
 	ft.add( { "read_all", 1, 1, { "vec" }, FnType::MODULE, { .modfn = file_read_full }, true } );

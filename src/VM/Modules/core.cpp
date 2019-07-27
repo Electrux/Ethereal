@@ -138,7 +138,7 @@ REGISTER_MODULE( core )
 	vm.funcs.add( { "!", 1, 1, { "bool" }, FnType::MODULE, { .modfn = not_operb }, true } );
 
 	// other types to bool
-	vm.funcs.add( { "bool", 1, 1, { "_any_" }, FnType::MODULE, { .modfn = flt }, true } );
+	vm.funcs.add( { "bool", 1, 1, { "_any_" }, FnType::MODULE, { .modfn = bool_create }, true } );
 
 	// global object functions
 	functions_t & anyfns = vm.typefuncs[ "_any_" ];

@@ -78,7 +78,7 @@ var_base_t * split( std::vector< var_base_t * > & vars )
 	return new var_vec_t( res_b, vars[ 0 ]->parse_ctr() );
 }
 
-#define DECL_FUNC_ALLOC__INT( name, oper, ret_type )				\
+#define DECL_FUNC_ALLOC__STR( name, oper, ret_type )				\
 	var_base_t * name( std::vector< var_base_t * > & vars )			\
 	{									\
 		auto & lhs = AS_STR( vars[ 1 ] )->get();			\
@@ -86,12 +86,12 @@ var_base_t * split( std::vector< var_base_t * > & vars )
 		return new ret_type( lhs oper rhs, vars[ 1 ]->parse_ctr() );	\
 	}
 
-DECL_FUNC_ALLOC__INT( eq, ==, var_bool_t )
-DECL_FUNC_ALLOC__INT( ne, !=, var_bool_t )
-DECL_FUNC_ALLOC__INT( lt, <, var_bool_t )
-DECL_FUNC_ALLOC__INT( le, <=, var_bool_t )
-DECL_FUNC_ALLOC__INT( gt, >, var_bool_t )
-DECL_FUNC_ALLOC__INT( ge, >=, var_bool_t )
+DECL_FUNC_ALLOC__STR( eq, ==, var_bool_t )
+DECL_FUNC_ALLOC__STR( ne, !=, var_bool_t )
+DECL_FUNC_ALLOC__STR( lt, <, var_bool_t )
+DECL_FUNC_ALLOC__STR( le, <=, var_bool_t )
+DECL_FUNC_ALLOC__STR( gt, >, var_bool_t )
+DECL_FUNC_ALLOC__STR( ge, >=, var_bool_t )
 
 REGISTER_MODULE( str )
 {

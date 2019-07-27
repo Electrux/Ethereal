@@ -31,4 +31,9 @@ var_base_t * not_operb( std::vector< var_base_t * > & vars )
 	return new var_bool_t( !val, vars[ 0 ]->parse_ctr() );
 }
 
+var_base_t * bool_create( std::vector< var_base_t * > & vars )
+{
+	return new var_bool_t( vars[ 0 ]->to_bool(), vars[ 0 ]->parse_ctr() );
+}
+
 #endif // VM_MODULES_CORE_BOOL_HPP

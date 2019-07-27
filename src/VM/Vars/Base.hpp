@@ -28,6 +28,8 @@ enum VarType
 
 	VT_STRUCT,
 
+	VT_CUSTOM,
+
 	_VT_LAST,
 };
 

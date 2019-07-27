@@ -20,6 +20,8 @@ const char * VarTypeStrs[ _VT_LAST ] = {
 	"map",
 
 	"struct",
+
+	"custom",
 };
 
 var_base_t::var_base_t( const VarType type, const int parse_ctr )

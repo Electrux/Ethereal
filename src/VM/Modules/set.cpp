@@ -12,66 +12,83 @@
 #include "../Vars/Base.hpp"
 #include "../Core.hpp"
 
+class var_set_t : public var_base_t
+{
+	std::unordered_set< std::string > m_set;
+public:
+	var_set_t( std::unordered_set< std::string > set, const int parse_ctr );
+	~var_set_t();
+
+	std::string type_str() const;
+	std::string to_str() const;
+	mpz_class to_int() const;
+	bool to_bool() const;
+	var_base_t * copy( const int parse_ctr ) const;
+	std::unordered_set< std::string > & get();
+};
+#define AS_SET( x ) static_cast< var_set_t * >( x )
+
+var_set_t::var_set_t( std::unordered_set< std::string > set, const int parse_ctr )
+	: var_base_t( VT_CUSTOM, parse_ctr ), m_set( set ) {}
+var_set_t::~var_set_t() {}
+
+std::string var_set_t::type_str() const { return "set_t"; }
+std::string var_set_t::to_str() const
+{
+	std::string str = "set_t{";
+	for( auto & s : m_set ) {
+		str += s + ", ";
+	}
+	// remove the extra commas
+	if( m_set.size() > 0 ) {
+		str.pop_back();
+		str.pop_back();
+	}
+	str += "}";
+	return str;
+}
+mpz_class var_set_t::to_int() const { return m_set.size(); }
+bool var_set_t::to_bool() const { return m_set.size() != 0; }
+var_base_t * var_set_t::copy( const int parse_ctr ) const
+{
+	return new var_set_t( m_set, parse_ctr );
+}
+std::unordered_set< std::string > & var_set_t::get() { return m_set; }
+
 var_base_t * set_create( std::vector< var_base_t * > & vars )
 {
-	std::unordered_set< std::string > * s = new std::unordered_set< std::string >();
-	std::unordered_map< std::string, var_base_t * > smap;
-	var_int_t * dat = new var_int_t( 0, 0 );
-	smap[ "handle" ] = dat;
-	var_struct_t * res = new var_struct_t( "_set_t", smap, 0 );
-	if( s == nullptr ) {
-		return res;
-	}
-	dat->get() = std::to_string( ( unsigned long long )s );
-	return res;
-}
-
-var_base_t * set_destroy( std::vector< var_base_t * > & vars )
-{
-	mpz_class & dat = AS_INT( AS_STRUCT( vars[ 0 ] )->get_val()[ "handle" ] )->get();
-	if( dat == 0 ) return nullptr;
-	std::unordered_set< std::string > * s = ( std::unordered_set< std::string > * )std::stoull( dat.get_str() );
-	delete s;
-	dat = 0;
-	return nullptr;
+	return new var_set_t( {}, 0 );
 }
 
 var_base_t * set_insert( std::vector< var_base_t * > & vars )
 {
-	mpz_class & dat = AS_INT( AS_STRUCT( vars[ 0 ] )->get_val()[ "handle" ] )->get();
-	if( dat == 0 ) return nullptr;
-	std::unordered_set< std::string > * s = ( std::unordered_set< std::string > * )std::stoull( dat.get_str() );
+	std::unordered_set< std::string > & s = AS_SET( vars[ 0 ] )->get();
 	for( size_t i = 1; i < vars.size(); ++i ) {
-		s->insert( vars[ i ]->to_str() );
+		s.insert( vars[ i ]->to_str() );
 	}
 	return nullptr;
 }
 
 var_base_t * set_erase( std::vector< var_base_t * > & vars )
 {
-	mpz_class & dat = AS_INT( AS_STRUCT( vars[ 0 ] )->get_val()[ "handle" ] )->get();
-	if( dat == 0 ) return nullptr;
-	std::unordered_set< std::string > * s = ( std::unordered_set< std::string > * )std::stoull( dat.get_str() );
+	std::unordered_set< std::string > & s = AS_SET( vars[ 0 ] )->get();
 	for( size_t i = 1; i < vars.size(); ++i ) {
-		s->erase( vars[ i ]->to_str() );
+		s.erase( vars[ i ]->to_str() );
 	}
 	return nullptr;
 }
 
 var_base_t * set_contains( std::vector< var_base_t * > & vars )
 {
-	mpz_class & dat = AS_INT( AS_STRUCT( vars[ 0 ] )->get_val()[ "handle" ] )->get();
-	if( dat == 0 ) return nullptr;
-	std::unordered_set< std::string > * s = ( std::unordered_set< std::string > * )std::stoull( dat.get_str() );
-	return new var_bool_t( s->find( vars[ 1 ]->to_str() ) != s->end(), vars[ 0 ]->parse_ctr() );
+	std::unordered_set< std::string > & s = AS_SET( vars[ 0 ] )->get();
+	return new var_bool_t( s.find( vars[ 1 ]->to_str() ) != s.end(), vars[ 0 ]->parse_ctr() );
 }
 
 REGISTER_MODULE( set )
 {
 	vm.funcs.add( { "set_create", 0, 0, {}, FnType::MODULE, { .modfn = set_create }, true } );
-	vm.funcs.add( { "set_destroy", 1, 1, { "_set_t" }, FnType::MODULE, { .modfn = set_destroy }, false } );
 
-	functions_t & st = vm.typefuncs[ "_set_t" ];
+	functions_t & st = vm.typefuncs[ "set_t" ];
 	st.add( { "insert", 1, -1, { "_whatever_" }, FnType::MODULE, { .modfn = set_insert }, false } );
 	st.add( { "erase", 1, -1, { "_whatever_" }, FnType::MODULE, { .modfn = set_erase }, false } );
 	st.add( { "contains", 1, 1, { "_any_" }, FnType::MODULE, { .modfn = set_contains }, true } );

@@ -1,5 +1,1 @@
 ldmod set;
-
-struct _set_t {
-	handle = 0;
-}

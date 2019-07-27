@@ -66,9 +66,7 @@ var_base_t * len( std::vector< var_base_t * > & vars )
 
 var_base_t * clear( std::vector< var_base_t * > & vars )
 {
-	std::vector< var_base_t * > & v = AS_VEC( vars[ 0 ] )->get();
-	for( auto & e : v ) VAR_DREF( e );
-	v.clear();
+	AS_VEC( vars[ 0 ] )->clear();
 	return nullptr;
 }
 

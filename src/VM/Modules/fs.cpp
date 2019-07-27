@@ -22,7 +22,7 @@ var_base_t * file_open( std::vector< var_base_t * > & vars )
 	var_int_t * dat = new var_int_t( 0, vars[ 0 ]->parse_ctr() );
 	smap[ "err" ] = err;
 	smap[ "handle" ] = dat;
-	var_struct_t * res = new var_struct_t( "file_t", smap, vars[ 0 ]->parse_ctr() );
+	var_struct_t * res = new var_struct_t( "_file_t", smap, vars[ 0 ]->parse_ctr() );
 	if( f == nullptr ) {
 		err->get() = -1;
 		return res;
@@ -140,9 +140,9 @@ var_base_t * err_str( std::vector< var_base_t * > & vars )
 REGISTER_MODULE( fs )
 {
 	vm.funcs.add( { "fopen", 2, 2, { "str", "str" }, FnType::MODULE, { .modfn = file_open }, true } );
-	vm.funcs.add( { "fclose", 1, 1, { "file_t" }, FnType::MODULE, { .modfn = file_close }, false } );
+	vm.funcs.add( { "fclose", 1, 1, { "_file_t" }, FnType::MODULE, { .modfn = file_close }, false } );
 
-	functions_t & ft = vm.typefuncs[ "file_t" ];
+	functions_t & ft = vm.typefuncs[ "_file_t" ];
 	ft.add( { "write", 1, -1, { "_whatever_" }, FnType::MODULE, { .modfn = file_write }, true } );
 	ft.add( { "is_open", 0, 0, {}, FnType::MODULE, { .modfn = is_open }, true } );
 	ft.add( { "is_good", 0, 0, {}, FnType::MODULE, { .modfn = is_good }, true } );

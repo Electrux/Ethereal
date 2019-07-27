@@ -71,6 +71,10 @@ builds( lib, dynamic ) {
 		builds.add_flags( "-Wl,-install_name -Wl,@rpath/libfs.so" )
 	}
 	build( fs, "src/VM/Modules/fs.cpp" )
+	if( "${OS}" == OS_OSX ) {
+		builds.add_flags( "-Wl,-install_name -Wl,@rpath/libset.so" )
+	}
+	build( set, "src/VM/Modules/set.cpp" )
 }
 
 if( "${ARGC}" > 0 && "${ARG_0}" == "install" || "${USE_SELF_PREFIX}" == "true" ) {

@@ -10,7 +10,7 @@
 #include "Base.hpp"
 
 var_map_t::var_map_t( std::unordered_map< std::string, var_base_t * > & val, const int parse_ctr )
-	: var_base_t( VT_MAP, parse_ctr ), m_val( val ) {}
+	: var_base_t( VT_MAP, parse_ctr, false ), m_val( val ) {}
 var_map_t::~var_map_t()
 {
 	for( auto & v : m_val ) {
@@ -34,7 +34,7 @@ std::string var_map_t::to_str() const
 mpz_class var_map_t::to_int() const { return mpz_class( m_val.size() ); }
 bool var_map_t::to_bool() const { return m_val.size() > 0; }
 
-var_base_t * var_map_t::copy( const int parse_ctr ) const
+var_base_t * var_map_t::copy( const int parse_ctr )
 {
 	std::unordered_map< std::string, var_base_t * > newmap;
 	for( auto & v : m_val ) {

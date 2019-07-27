@@ -1,6 +1,1 @@
 ldmod fs;
-
-struct _fs_t {
-	err = 0;
-	handle = 0;
-}

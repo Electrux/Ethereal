@@ -11,7 +11,7 @@
 
 var_enum_t::var_enum_t( const std::string & name, std::unordered_map< std::string, var_int_t * > & val,
 			const int parse_ctr )
-	: var_base_t( VT_ENUM, parse_ctr ), m_name( name ), m_val( val ) {}
+	: var_base_t( VT_ENUM, parse_ctr, false ), m_name( name ), m_val( val ) {}
 var_enum_t::~var_enum_t()
 {
 	for( auto & v : m_val ) {
@@ -22,7 +22,7 @@ std::string var_enum_t::to_str() const { return "enum:" + m_name + "(" + std::to
 mpz_class var_enum_t::to_int() const { return mpz_class( m_val.size() ); }
 bool var_enum_t::to_bool() const { return m_val.size() > 0; }
 
-var_base_t * var_enum_t::copy( const int parse_ctr ) const
+var_base_t * var_enum_t::copy( const int parse_ctr )
 {
 	std::unordered_map< std::string, var_int_t * > newmap;
 	for( auto & v : m_val ) {

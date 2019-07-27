@@ -1,0 +1,8 @@
+import set;
+
+s = set_create();
+
+s.insert( 'hello' );
+s.erase( 'hello' );
+
+println( s.contains( 'hello' ) );

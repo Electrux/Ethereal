@@ -23,13 +23,14 @@ public:
 	std::string to_str() const;
 	mpz_class to_int() const;
 	bool to_bool() const;
-	var_base_t * copy( const int parse_ctr ) const;
+	var_base_t * copy( const int parse_ctr );
+	void assn( var_base_t * b );
 	std::unordered_set< std::string > & get();
 };
 #define AS_SET( x ) static_cast< var_set_t * >( x )
 
 var_set_t::var_set_t( std::unordered_set< std::string > set, const int parse_ctr )
-	: var_base_t( VT_CUSTOM, parse_ctr ), m_set( set ) {}
+	: var_base_t( VT_CUSTOM, parse_ctr, true ), m_set( set ) {}
 var_set_t::~var_set_t() {}
 
 std::string var_set_t::type_str() const { return "set_t"; }
@@ -49,9 +50,13 @@ std::string var_set_t::to_str() const
 }
 mpz_class var_set_t::to_int() const { return m_set.size(); }
 bool var_set_t::to_bool() const { return m_set.size() != 0; }
-var_base_t * var_set_t::copy( const int parse_ctr ) const
+var_base_t * var_set_t::copy( const int parse_ctr )
 {
 	return new var_set_t( m_set, parse_ctr );
+}
+void var_set_t::assn( var_base_t * b )
+{
+	m_set = AS_SET( b )->get();
 }
 std::unordered_set< std::string > & var_set_t::get() { return m_set; }
 

@@ -11,7 +11,7 @@
 
 var_struct_def_t::var_struct_def_t( const std::string & name, std::vector< std::string > & pos,
 				    std::unordered_map< std::string, var_base_t * > & val, const int parse_ctr )
-	: var_base_t( VT_STRUCT, parse_ctr ), m_name( name ), m_pos( pos ), m_val( val ) {}
+	: var_base_t( VT_STRUCT, parse_ctr, false ), m_name( name ), m_pos( pos ), m_val( val ) {}
 var_struct_def_t::~var_struct_def_t()
 {
 	for( auto & v : m_val ) {
@@ -36,7 +36,7 @@ std::string var_struct_def_t::to_str() const
 mpz_class var_struct_def_t::to_int() const { return mpz_class( m_val.size() ); }
 bool var_struct_def_t::to_bool() const { return m_val.size() > 0; }
 
-var_base_t * var_struct_def_t::copy( const int parse_ctr ) const
+var_base_t * var_struct_def_t::copy( const int parse_ctr )
 {
 	std::unordered_map< std::string, var_base_t * > newmap;
 	for( auto & v : m_val ) {

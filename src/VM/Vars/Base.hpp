@@ -40,8 +40,9 @@ class var_base_t
 	VarType m_type;
 	int m_ref_ctr;
 	const int m_parse_ctr;
+	bool m_implements_assign;
 public:
-	var_base_t( const VarType type, const int parse_ctr );
+	var_base_t( const VarType type, const int parse_ctr, const bool implements_assign );
 	virtual ~var_base_t();
 
 	VarType type() const;
@@ -50,12 +51,14 @@ public:
 
 	inline void inc_ref() { ++m_ref_ctr; }
 	inline void dec_ref() { --m_ref_ctr; }
+	inline bool impls_assn() { return m_implements_assign; }
 
 	virtual std::string type_str() const;
 	virtual std::string to_str() const = 0;
 	virtual mpz_class to_int() const = 0;
 	virtual bool to_bool() const = 0;
-	virtual var_base_t * copy( const int parse_ctr ) const = 0;
+	virtual var_base_t * copy( const int parse_ctr ) = 0;
+	virtual void assn( var_base_t * b );
 };
 
 #define VAR_IREF( var ) do { ( ( var_base_t * )var )->inc_ref(); } while( 0 )
@@ -82,7 +85,8 @@ public:
 	std::string to_str() const;
 	mpz_class to_int() const;
 	bool to_bool() const;
-	var_base_t * copy( const int parse_ctr ) const;
+	var_base_t * copy( const int parse_ctr );
+	void assn( var_base_t * b );
 	mpz_class & get();
 };
 #define AS_INT( x ) static_cast< var_int_t * >( x )
@@ -96,7 +100,8 @@ public:
 	std::string to_str() const;
 	mpz_class to_int() const;
 	bool to_bool() const;
-	var_base_t * copy( const int parse_ctr ) const;
+	var_base_t * copy( const int parse_ctr );
+	void assn( var_base_t * b );
 	std::string & get();
 };
 #define AS_STR( x ) static_cast< var_str_t * >( x )
@@ -114,7 +119,8 @@ public:
 	std::string to_str() const;
 	mpz_class to_int() const;
 	bool to_bool() const;
-	var_base_t * copy( const int parse_ctr ) const;
+	var_base_t * copy( const int parse_ctr );
+	void assn( var_base_t * b );
 	mpf_class & get();
 };
 #define AS_FLT( x ) static_cast< var_flt_t * >( x )
@@ -132,7 +138,8 @@ public:
 	std::string to_str() const;
 	mpz_class to_int() const;
 	bool to_bool() const;
-	var_base_t * copy( const int parse_ctr ) const;
+	var_base_t * copy( const int parse_ctr );
+	void assn( var_base_t * b );
 	bool & get();
 };
 #define AS_BOOL( x ) static_cast< var_bool_t * >( x )
@@ -148,7 +155,7 @@ public:
 	std::string to_str() const;
 	mpz_class to_int() const;
 	bool to_bool() const;
-	var_base_t * copy( const int parse_ctr ) const;
+	var_base_t * copy( const int parse_ctr );
 	std::string get_name();
 	std::unordered_map< std::string, var_int_t * > & get_val();
 };
@@ -163,7 +170,7 @@ public:
 	std::string to_str() const;
 	mpz_class to_int() const;
 	bool to_bool() const;
-	var_base_t * copy( const int parse_ctr ) const;
+	var_base_t * copy( const int parse_ctr );
 	void clear();
 	std::vector< var_base_t * > & get();
 };
@@ -178,7 +185,7 @@ public:
 	std::string to_str() const;
 	mpz_class to_int() const;
 	bool to_bool() const;
-	var_base_t * copy( const int parse_ctr ) const;
+	var_base_t * copy( const int parse_ctr );
 	void clear();
 	std::unordered_map< std::string, var_base_t * > & get();
 };
@@ -197,7 +204,7 @@ public:
 	std::string to_str() const;
 	mpz_class to_int() const;
 	bool to_bool() const;
-	var_base_t * copy( const int parse_ctr ) const;
+	var_base_t * copy( const int parse_ctr );
 	std::string & get_name();
 	std::vector< std::string > & get_pos();
 	std::unordered_map< std::string, var_base_t * > & get_val();
@@ -214,7 +221,7 @@ public:
 	std::string to_str() const;
 	mpz_class to_int() const;
 	bool to_bool() const;
-	var_base_t * copy( const int parse_ctr ) const;
+	var_base_t * copy( const int parse_ctr );
 	std::string & get_name();
 	std::unordered_map< std::string, var_base_t * > & get_val();
 };

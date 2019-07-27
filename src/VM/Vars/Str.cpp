@@ -10,11 +10,12 @@
 #include "Base.hpp"
 
 var_str_t::var_str_t( const std::string & val, const int parse_ctr )
-	: var_base_t( VT_STR, parse_ctr ), m_val( val ) {}
+	: var_base_t( VT_STR, parse_ctr, true ), m_val( val ) {}
 
 std::string var_str_t::to_str() const { return m_val; }
 mpz_class var_str_t::to_int() const { return mpz_class( m_val ); }
 bool var_str_t::to_bool() const { return !m_val.empty(); }
-var_base_t * var_str_t::copy( const int parse_ctr ) const
+var_base_t * var_str_t::copy( const int parse_ctr )
 	{ return new var_str_t( this->m_val, parse_ctr ); }
+void var_str_t::assn( var_base_t * b ) { m_val = AS_STR( b )->get(); }
 std::string & var_str_t::get() { return m_val; }

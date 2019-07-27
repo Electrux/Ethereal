@@ -4,39 +4,36 @@ import fs;
 fn write() {
 	f = fopen( "some", "w" );
 
-	if f.get_err() != 0 {
+	if !f.is_open() {
 		println( 'failed to open file' );
 	} else {
 		for x = 0; x < 20; x += 1 {
 			f.write( x, ': hi there\n' );
 		}
-		fclose( f );
 	}
 }
 
 fn read() {
 	f = fopen( "some", "r" );
 
-	if f.get_err() != 0 {
+	if !f.is_open() {
 		println( 'failed to open file' );
 	} else {
 		s = "";
 		for ; f.read( s ); {
 			println( 'recvd: ', s );
 		}
-		fclose( f );
 	}
 }
 
 fn read_all() {
 	f = fopen( "some", "r" );
 
-	if f.get_err() != 0 {
+	if !f.is_open() {
 		println( 'failed to open file' );
 	} else {
 		s = [];
 		if f.read_all( s ) {
-			println( 'recvd:' );
 			sz = s.len();
 			for i = 0; i < sz; i += 1 {
 				println( '--> ', s[ i ] );
@@ -44,7 +41,6 @@ fn read_all() {
 		} else {
 			println( 'nothing to read :(' );
 		}
-		fclose( f );
 	}
 }
 

@@ -17,7 +17,7 @@
 #include <chrono>
 #endif
 
-bool copy_data( var_base_t ** a, var_base_t * b );
+bool copy_data( var_base_t * a, var_base_t * b );
 
 struct fn_blk_t
 {
@@ -92,7 +92,7 @@ int exec_internal( vm_state_t & vm, long begin, long end, var_base_t * ret )
 					goto fail;
 				}
 				
-				if( !copy_data( & val, newval ) ) {
+				if( !copy_data( val, newval ) ) {
 					VM_FAIL( "copy symantics not implemented for variable type '%s'", val->type_str().c_str() );
 					goto fail;
 				}
@@ -402,7 +402,7 @@ tmp_fail:
 							 map[ pos[ j ] ]->type_str().c_str(), vm.stack->back()->type_str().c_str() );
 					goto fail;
 				}
-				if( !copy_data( & map[ pos[ j ] ], vm.stack->back() ) ) {
+				if( !copy_data( map[ pos[ j ] ], vm.stack->back() ) ) {
 					VM_FAIL( "copy symantics not implemented for variable type '%s'", map[ pos[ j ] ]->type_str().c_str() );
 					goto fail;
 				}
@@ -474,16 +474,12 @@ fail:
 	return E_VM_FAIL;
 }
 
-bool copy_data( var_base_t ** a, var_base_t * b )
+bool copy_data( var_base_t * a, var_base_t * b )
 {
-	VarType type = ( * a )->type();
+	if( a->impls_assn() ) {
+		a->assn( b );
+		return true;
+	}
 
-	if( type == VT_INT ) AS_INT( * a )->get() = AS_INT( b )->get();
-	else if( type == VT_FLT ) AS_FLT( * a )->get() = AS_FLT( b )->get();
-	else if( type == VT_STR ) AS_STR( * a )->get() = AS_STR( b )->get();
-	else if( type == VT_BOOL ) AS_BOOL( * a )->get() = AS_BOOL( b )->get();
-	// TODO:
-	else return false;
-
-	return true;
+	return false;
 }

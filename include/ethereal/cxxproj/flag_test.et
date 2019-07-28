@@ -1,0 +1,7 @@
+fn check_compiler_flag( flag ) {
+	if flag.len() > 1 && flag[ 1 ] == 'D' { return true; }
+	cmd = "echo -e '#include <stdio.h>\\nint main() { return 0; }' | g++ " +
+		flag + " -o /dev/null -xc++ - 2>/dev/null";
+	res = os.exec( cmd ) == 0;
+	return res;
+}

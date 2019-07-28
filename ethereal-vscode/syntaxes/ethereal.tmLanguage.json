@@ -1,0 +1,130 @@
+{
+	"$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
+	"name": "Ethereal",
+	"patterns": [
+		{
+			"include": "#keywords"
+		},
+		{
+			"include": "#strings"
+		},
+		{
+			"include": "#strings_single"
+		},
+		{
+			"include": "#numerics"
+		},
+		{
+			"include": "#functions"
+		},
+		{
+			"include": "#structures"
+		},
+		{
+			"include": "#assignments"
+		},
+		{
+			"include": "#line_comment"
+		},
+		{
+			"include": "#block_comment"
+		}
+	],
+	"repository": {
+		"keywords": {
+			"patterns": [{
+				"name": "keyword.control.ethereal",
+				"match": "\\b(import|ldmod|struct|if|for|continue|break|return|fn|mfn|elif|else)\\b"
+			},
+			{
+				"name": "keyword.operator",
+				"match": "\\b(self)\\b"
+			},
+			{
+				"comment": "data types for member functions",
+				"match": "\\<[\\s]*\\b(.*)\\b[\\s]*\\>",
+				"captures": {
+					"1": {
+						"name": "entity.name.tag"
+					}
+				}
+			}]
+		},
+		"strings": {
+			"name": "string.quoted.double.ethereal",
+			"begin": "\"",
+			"end": "\"",
+			"patterns": [{
+				"name": "constant.character.escape.ethereal",
+				"match": "\\\\."
+			}]
+		},
+		"strings_single": {
+			"name": "string.quoted.single.ethereal",
+			"begin": "'",
+			"end": "'",
+			"patterns": [{
+				"name": "constant.character.escape.ethereal",
+				"match": "\\\\."
+			}]
+		},
+		"numerics": {
+			"patterns": [{
+				"match": "\\b([0-9]+[\\.]*[0-9]*)\\b",
+				"captures": {
+					"1": {
+						"name": "constant.numeric"
+					}
+				}
+			}]
+		},
+		"functions": {
+			"patterns": [{
+				"match": "[\\s\\.]\\b([_\\w]+)\\b[\\s]*\\(",
+				"captures": {
+					"1": {
+						"name": "entity.name.function"
+					}
+				}
+			}]
+		},
+		"structures": {
+			"patterns": [{
+				"match": "[^\\}][\\s\\.]\\b([_a-zA-Z]+[0-9]*[_a-zA-Z]*)\\b[\\s]*\\{",
+				"captures": {
+					"1": {
+						"name": "entity.name.tag"
+					}
+				}
+			}]
+		},
+		"assignments": {
+			"patterns": [{
+				"match": "\\b([_\\w]+)\\b[\\s]*\\=[\\s]*",
+				"captures": {
+					"1": {
+						"name": "entity.name.class"
+					}
+				}
+			}]
+		},
+		"line_comment": {
+			"comment": "Single-line comment",
+			"name": "comment.line",
+			"begin": "#",
+			"end": "$"
+		},
+		"block_comment": {
+			"comment": "Block comment",
+			"name": "comment.block",
+			"begin": "/\\*",
+			"end": "\\*/",
+			"patterns": [
+				{
+					"include": "#block_comment"
+				}
+			]
+		}
+	},
+	"scopeName": "source.et"
+}

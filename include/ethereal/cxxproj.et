@@ -1,6 +1,9 @@
 import str;
 import vec;
+import set;
+import fs;
 import os;
+import 'cxxproj/flag_test';
 
 _auth = os.get_env( 'USER' );
 
@@ -28,11 +31,42 @@ mfn< cxx_proj_t > set_author( name, email ) {
 	self.author.email = email;
 }
 
+fn read_flag_file( file, v ) {
+	f = fopen( file, 'r' );
+	if f.is_open() {
+		f.read_all( v );
+	}
+}
+
+fn write_flag_file( file, v ) {
+	f = fopen( file, 'a' );
+	if f.is_open() {
+		sz = v.len();
+		for x = 0; x < sz; x += 1 {
+			f.write( v[ x ] + '\n' );
+		}
+	}
+}
+
 mfn< cxx_proj_t > add_flags( flags ) {
+	avail_flags = [];
+	not_avail_flags = [];
+	read_flag_file( 'flag_cache', avail_flags );
 	sz = flags.len();
 	for i = 0; i < sz; i += 1 {
-		self.flags.push( flags[ i ] );
+		print( 'checking if compiler supports ', flags[ i ], ' ... ' );
+		if avail_flags.find( flags[ i ] ) >= 0 {
+			self.flags.push( flags[ i ] );
+			println( '(cached) yes' );
+		} elif check_compiler_flag( flags[ i ] ) {
+			self.flags.push( flags[ i ] );
+			not_avail_flags.push( flags[ i ] );
+			println( 'yes' );
+		} else {
+			println( 'no' );
+		}
 	}
+	write_flag_file( 'flag_cache', not_avail_flags );
 }
 
 mfn< cxx_proj_t > add_lib_dirs( dirs ) {

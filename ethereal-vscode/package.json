@@ -1,0 +1,25 @@
+{
+    "name": "ethereal",
+    "displayName": "Ethereal",
+    "description": "Ethereal language support for VS Code",
+    "version": "0.0.1",
+    "engines": {
+        "vscode": "^1.36.0"
+    },
+    "categories": [
+        "Programming Languages"
+    ],
+    "contributes": {
+        "languages": [{
+            "id": "ethereal",
+            "aliases": ["Ethereal", "ethereal"],
+            "extensions": [".et"],
+            "configuration": "./language-configuration.json"
+        }],
+        "grammars": [{
+            "language": "ethereal",
+            "scopeName": "source.et",
+            "path": "./syntaxes/ethereal.tmLanguage.json"
+        }]
+    }
+}

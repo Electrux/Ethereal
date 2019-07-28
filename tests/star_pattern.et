@@ -8,20 +8,33 @@
    *******
 */
 
-count = num( scan( "Enter star count: " ) );
+import vec;
+
+count = 5;
+if args.len() < 2 {
+	count = num( scan( "Enter star count: " ) );
+}
 
 for i = 0; i < count; i += 1 {
 	for j = 0; j < count - i - 1; j += 1 {
-		print( ' ' );
+		if args.len() < 2 {
+			print( ' ' );
+		}
 	}
 	for j = 0; j < count; j += 1 {
 		# print( i == 0 || i == count - 1 || j == 0 || j == count - 1 ? '*' : ' ' );
 		# TODO: optimize the multiple conditions
 		if i == 0 || i == count - 1 || j == 0 || j == count - 1 {
-			print( '*' );
+			if args.len() < 2 {
+				print( '*' );
+			}
 		} else {
-			print( ' ' );
+			if args.len() < 2 {
+				print( ' ' );
+			}
 		}
 	}
-	println();
+	if args.len() < 2 {
+		println();
+	}
 }

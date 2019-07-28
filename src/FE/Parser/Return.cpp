@@ -44,6 +44,6 @@ bool stmt_return_t::bytecode( src_t & src ) const
 	int line = src.toks[ m_tok_ctr ].line;
 	int col = src.toks[ m_tok_ctr ].col;
 	src.bcode.push_back( { m_tok_ctr, line, col, m_ret_val ? IC_RETURN : IC_RETURN_EMPTY,
-			       { OP_INT, std::to_string( src.block_depth.back() ) } } );
+			       { OP_INT, std::to_string( src.block_depth.size() > 0 ? src.block_depth.back() : 0 ) } } );
 	return true;
 }

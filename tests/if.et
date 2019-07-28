@@ -1,10 +1,18 @@
+import vec;
+
 a = 5;
 b = 10;
 
 if a == b {
-	println( 'hi' );
+	if args.len() < 2 {
+		println( 'hi' );
+	}
 } elif b == a {
-	println( 'ok' );
+	if args.len() < 2 {
+		println( 'ok' );
+	}
 } else {
-	println( 'fuck' );
+	if args.len() < 2 {
+		println( 'fuck' );
+	}
 }

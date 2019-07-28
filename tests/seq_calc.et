@@ -22,4 +22,6 @@ for x = 0; x < sz; x += 1 {
 	}
 }
 
-println( "final result: ", res );
+if args.len() < 2 {
+	println( "final result: ", res );
+}

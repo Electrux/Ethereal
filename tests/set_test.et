@@ -1,8 +1,11 @@
 import set;
+import vec;
 
 s = set_create();
 
 s.insert( 'hello' );
 s.erase( 'hello' );
 
-println( s.contains( 'hello' ) );
+if args.len() < 2 {
+	println( s.contains( 'hello' ) );
+}

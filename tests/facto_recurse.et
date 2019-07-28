@@ -1,6 +1,15 @@
+import vec;
+
 fn facto( n ) {
 	if n < 2 { return 1; }
 	return n * facto( n - 1 );
+}
+
+if args.len() > 1 {
+	if facto( 5 ) != 120 {
+		println( 'factorial invalid' );
+	}
+	return;
 }
 
 println( facto( 5 ) );

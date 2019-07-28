@@ -1,3 +1,5 @@
+import vec;
+
 struct s {
 	t = "hi";
 	u = 5;
@@ -5,4 +7,6 @@ struct s {
 
 a = s{ "hi", 7 };
 a.t = "true";
-println( a.t );
+if args.len() < 2 {
+	println( a.t );
+}

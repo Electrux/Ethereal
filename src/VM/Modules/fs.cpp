@@ -8,6 +8,7 @@
 */
 
 #include <cstdio>
+#include <dirent.h>
 
 #include "../Vars/Base.hpp"
 #include "../Core.hpp"
@@ -125,6 +126,23 @@ var_base_t * is_open( std::vector< var_base_t * > & vars )
 	return new var_bool_t( AS_FILE( vars[ 0 ] )->get() != NULL, vars[ 0 ]->parse_ctr() );
 }
 
+var_base_t * get_dir_entries( std::vector< var_base_t * > & vars )
+{
+	DIR * dir;
+	struct dirent * ent;
+	std::vector< var_base_t * > v;
+	std::string dir_str = vars[ 1 ]->to_str();
+	if( dir_str.size() > 0 && dir_str.back() != '/' ) dir_str += "/";
+	if( ( dir = opendir( dir_str.c_str() ) ) != NULL ) {
+		while( ( ent = readdir( dir ) ) != NULL ) {
+			if( strcmp( ent->d_name, "." ) == 0 || strcmp( ent->d_name, ".." ) == 0 ) continue;
+			v.push_back( new var_str_t( dir_str + ent->d_name, vars[ 1 ]->parse_ctr() ) );
+		}
+		closedir( dir );
+	}
+	return new var_vec_t( v, vars[ 0 ]->parse_ctr() );
+}
+
 REGISTER_MODULE( fs )
 {
 	vm.funcs.add( { "fopen", 2, 2, { "str", "str" }, FnType::MODULE, { .modfn = file_open }, true } );
@@ -134,4 +152,7 @@ REGISTER_MODULE( fs )
 	ft.add( { "read", 1, 1, { "str" }, FnType::MODULE, { .modfn = file_read }, true } );
 	ft.add( { "read_all", 1, 1, { "vec" }, FnType::MODULE, { .modfn = file_read_full }, true } );
 	ft.add( { "is_open", 0, 0, {}, FnType::MODULE, { .modfn = is_open }, true } );
+
+	functions_t & fst = vm.typefuncs[ "_fs_t" ];
+	fst.add( { "dir_entries", 1, 1, { "str" }, FnType::MODULE, { .modfn = get_dir_entries }, true } );
 }

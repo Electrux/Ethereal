@@ -44,10 +44,11 @@ parse_tree_t * parse( src_t & src, parse_helper_t * pre_ph, std::vector< Grammar
 		} else if( ph->peak()->type == TOK_FOR ) {
 			res = parse_for( src, ph, parent_stack );
 		} else if( ph->peak()->type == TOK_RETURN ) {
-			if( std::find( parent_stack.begin(), parent_stack.end(), GRAM_FUNC ) == parent_stack.end() ) {
+			// can return from script too, hence no function block required
+			/*if( std::find( parent_stack.begin(), parent_stack.end(), GRAM_FUNC ) == parent_stack.end() ) {
 				PARSE_FAIL( "keyword 'return' can only be used inside a function" );
 				goto fail;
-			}
+			}*/
 			res = parse_return( src, ph );
 		} else if( ph->peak()->type == TOK_CONTINUE ) {
 			if( std::find( parent_stack.begin(), parent_stack.end(), GRAM_FOR ) == parent_stack.end() ) {

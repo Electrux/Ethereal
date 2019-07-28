@@ -1,5 +1,6 @@
 import vec;
 import fs;
+import os;
 
 fn write() {
 	f = fopen( "some", "w" );
@@ -21,7 +22,9 @@ fn read() {
 	} else {
 		s = "";
 		for ; f.read( s ); {
-			println( 'recvd: ', s );
+			if args.len() < 2 {
+				println( 'recvd: ', s );
+			}
 		}
 	}
 }
@@ -36,7 +39,9 @@ fn read_all() {
 		if f.read_all( s ) {
 			sz = s.len();
 			for i = 0; i < sz; i += 1 {
-				println( '--> ', s[ i ] );
+				if args.len() < 2 {
+					println( '--> ', s[ i ] );
+				}
 			}
 		} else {
 			println( 'nothing to read :(' );
@@ -47,3 +52,5 @@ fn read_all() {
 write();
 read();
 read_all();
+# TODO: make it so that return without function can be used to receive exit code by VM
+os.exec( 'rm some' );

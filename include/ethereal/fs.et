@@ -1,1 +1,5 @@
 ldmod fs;
+
+struct _fs_t {}
+
+fs = _fs_t{};

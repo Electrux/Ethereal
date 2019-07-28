@@ -1,0 +1,22 @@
+import vec;
+import str;
+import fs;
+import os;
+
+if args.len() < 2 {
+	println( 'usage: ', args[ 0 ], ' <location of ethereal\'s binary>' );
+	return;
+}
+
+files = fs.dir_entries( 'tests' );
+
+sz = files.len();
+
+for i = 0; i < sz; i += 1 {
+	cprint( '{c}performing test{0}: {y}', files[ i ], '{0} ... ' );
+	if os.exec( args[ 1 ] + ' ' + files[ i ] + ' ' + 'test' ) == 0 {
+		cprintln( '{g}passed{0}' );
+	} else {
+		cprintln( '{r}failed{0}' );
+	}
+}

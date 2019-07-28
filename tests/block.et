@@ -1,3 +1,14 @@
+import vec;
+
+# TODO: make the entire vm available for module functions so that functions like
+# vm.var_exists() can be implemented
+if args.len() > 1 {
+	a = 5 + 2;
+	{
+		b = 5 - 2;
+	}
+	return;
+}
 {
 	a = 1 + 2;
 	{

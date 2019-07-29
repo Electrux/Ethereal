@@ -355,6 +355,9 @@ fail:
 
 bool stmt_expr_t::bytecode( src_t & src ) const
 {
+	int line = m_oper ? m_oper->m_val->line : src.toks[ m_tok_ctr ].line;
+	int col = m_oper ? m_oper->m_val->col : src.toks[ m_tok_ctr ].col;
+
 	if( !m_oper ) {
 		if( m_rhs ) {
 			if( src.found_assn ) src.bcode_as_const = true;
@@ -398,43 +401,35 @@ bool stmt_expr_t::bytecode( src_t & src ) const
 				src.found_assn = false;
 			}
 		}
-	}
+		const TokType ttype = m_oper ? m_oper->m_val->type : TOK_INVALID;
 
-	if( !m_oper ) return true;
+		if( ttype == TOK_COMMA || ttype == TOK_QUEST || ttype == TOK_COL ) return true;
 
-	const TokType ttype = m_oper ? m_oper->m_val->type : TOK_INVALID;
-
-	int line = m_oper ? m_oper->m_val->line : src.toks[ m_tok_ctr ].line;
-	int col = m_oper ? m_oper->m_val->col : src.toks[ m_tok_ctr ].col;
-
-	if( ttype == TOK_COMMA || ttype == TOK_QUEST || ttype == TOK_COL ) return true;
-
-	if( ttype == TOK_DOT ) {
-		if( m_rhs != nullptr ) {
-			if( m_rhs->m_type != GRAM_EXPR && m_rhs->m_type != GRAM_SIMPLE ) {
-				return true;
+		if( ttype == TOK_DOT ) {
+			if( m_rhs != nullptr ) {
+				if( m_rhs->m_type == GRAM_EXPR || m_rhs->m_type == GRAM_SIMPLE ) {
+					src.bcode.push_back( { m_oper->m_tok_ctr, line, col, IC_ATTR, { OP_NONE, "" } } );
+				}
+				goto end;
 			}
-			src.bcode.push_back( { m_oper->m_tok_ctr, line, col, IC_ATTR, { OP_NONE, "" } } );
-			goto end;
+			return true;
 		}
-		return true;
-	}
 
-	if( ttype == TOK_ASSN ) {
-		if( src.bcode.back().opcode != IC_PUSH ) {
-			src.bcode.push_back( { m_oper->m_tok_ctr, line, col,
-					       m_is_top_expr ? IC_STORE_STACK : IC_STORE_LOAD_STACK, { OP_NONE, "" } } );
-		} else {
-			src.bcode.push_back( { m_oper->m_tok_ctr, line, col,
-					       m_is_top_expr ? IC_STORE : IC_STORE_LOAD, { OP_NONE, "" } } );
+		if( ttype == TOK_ASSN ) {
+			if( src.bcode.back().opcode != IC_PUSH ) {
+				src.bcode.push_back( { m_oper->m_tok_ctr, line, col,
+						       m_is_top_expr ? IC_STORE_STACK : IC_STORE_LOAD_STACK, { OP_NONE, "" } } );
+			} else {
+				src.bcode.push_back( { m_oper->m_tok_ctr, line, col,
+						       m_is_top_expr ? IC_STORE : IC_STORE_LOAD, { OP_NONE, "" } } );
+			}
+			return true;
 		}
-		return true;
+
+		m_oper->bytecode( src );
+		src.bcode.push_back( { m_oper->m_tok_ctr, line, col, IC_FN_CALL,
+				       { OP_INT, std::to_string( oper_arg_count( m_oper->m_val ) ) } } );
 	}
-
-	m_oper->bytecode( src );
-	src.bcode.push_back( { m_oper->m_tok_ctr, line, col, IC_FN_CALL,
-			       { OP_INT, std::to_string( oper_arg_count( m_oper->m_val ) ) } } );
-
 end:
 	if( m_is_top_expr ) {
 		src.bcode.push_back( { m_tok_ctr, line, col, IC_POP, { OP_NONE, "" } } );

@@ -18,6 +18,11 @@ int load_src( vm_state_t & vm, const std::string & file, const std::string & ali
 	auto last_slash_loc = file.find_last_of( '/' ) + 1;
 	auto last_dot_loc = file.find_last_of( '.' );
 	std::string mod_name = alias == "" ? file.substr( last_slash_loc, last_dot_loc ) : alias;
+	if( vm.bcodectr.size() == MAX_BCODE_CTR_SRCS ) {
+		VM_FAIL( "internal error: too many nested imports, cannot continue (max nested size is: %zu, including main source",
+			 vm.bcodectr.capacity() );
+		return E_VM_FAIL;
+	}
 	if( vm.srcs.find( mod_name ) != vm.srcs.end() ) {
 		VM_FAIL( "warning: import module '%s' already imported and won't be imported again",
 			 mod_name.c_str() );

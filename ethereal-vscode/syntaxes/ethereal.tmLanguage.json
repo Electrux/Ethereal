@@ -37,6 +37,10 @@
 				"match": "\\b(import|ldmod|struct|if|for|continue|break|return|fn|mfn|elif|else)\\b"
 			},
 			{
+				"name": "keyword.other",
+				"match": "\\b(true|false)\\b"
+			},
+			{
 				"name": "keyword.operator",
 				"match": "\\b(self)\\b"
 			},
@@ -100,7 +104,7 @@
 		},
 		"assignments": {
 			"patterns": [{
-				"match": "\\b([_\\w]+)\\b[\\s]*\\=[\\s]*",
+				"match": "\\b([_\\w]+)\\b[\\s]*\\=(?!\\=)[\\s]*",
 				"captures": {
 					"1": {
 						"name": "entity.name.class"

@@ -39,7 +39,8 @@ int exec_internal( vm_state_t & vm, long begin, long end, var_base_t * ret )
 	std::chrono::time_point< clk_t > stamp;
 #endif
 
-	for( int i = begin; i < end; ++i ) {
+	int & i = vm.bcodectr.back();
+	for( i = begin; i < end; ++i ) {
 		instr_t & ins = src.bcode[ i ];
 
 #ifdef DEBUG_MODE
@@ -71,8 +72,8 @@ int exec_internal( vm_state_t & vm, long begin, long end, var_base_t * ret )
 		}
 		case IC_POP: {
 			if( vm.stack->size() == 0 ) {
-				VM_FAIL( "cannot pop from vm stack since it is already empty" );
-				goto fail;
+				// just break, it's most likely a function which didn't return anything
+				break;
 			}
 			vm.stack->pop_back();
 			break;

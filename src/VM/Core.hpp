@@ -22,11 +22,15 @@ typedef std::unordered_map< std::string, functions_t > type_funcs_t;
 
 typedef std::unordered_map< std::string, var_struct_def_t * > structs_t;
 
+#define MAX_BCODE_CTR_SRCS 100
+
 struct vm_state_t
 {
 	size_t flags;
 	bool exit_called;
 	int exit_status;
+
+	std::vector< int > bcodectr;
 
 	std::vector< var_base_t * > args;
 

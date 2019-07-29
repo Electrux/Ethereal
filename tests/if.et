@@ -6,13 +6,19 @@ b = 10;
 if a == b {
 	if args.len() < 2 {
 		println( 'hi' );
+	} else {
+		assert( false, a, ' cannot be equal to ', b );
 	}
 } elif b == a {
 	if args.len() < 2 {
 		println( 'ok' );
+	} else {
+		assert( false, b, ' cannot be equal to ', a );
 	}
 } else {
 	if args.len() < 2 {
 		println( 'fuck' );
+	} else {
+		assert( true, 'yep it worked, but u won\'t see this' );
 	}
 }

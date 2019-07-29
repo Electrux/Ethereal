@@ -88,7 +88,9 @@ int CallFunc( vm_state_t & vm, const int ins_ctr )
 			vm.vars->add( fn->arg_types[ i ], vm.args[ i ] );
 		}
 		vm.args.clear();
+		vm.bcodectr.push_back( 0 );
 		res.code = exec_internal( vm, lfnptr->beg, lfnptr->end, res.data );
+		vm.bcodectr.pop_back();
 		vm.srcstack.pop_back();
 		if( res.code != E_OK ) {
 			VM_FAIL( "function '%s' failed to execute properly", fn_name.c_str() );

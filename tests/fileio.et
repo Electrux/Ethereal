@@ -52,5 +52,4 @@ fn read_all() {
 write();
 read();
 read_all();
-# TODO: make it so that return without function can be used to receive exit code by VM
-os.exec( 'rm some' );
+exit( os.exec( 'rm some' ) );

@@ -37,7 +37,7 @@ if( "${ARGC}" > 0 && "${ARG_0}" == debug || "${ARG_0}" == memlog ) {
 
 builds( lib, dynamic ) {
 	builds.add_flags( "-DAS_LIB" )
-	sources( "src/(.*)\.cpp", "-src/VM/Main.cpp", "-src/VM/Modules/(.*)\.cpp" )
+	sources( "src/(.*)\.cpp", "-src/VM/Main.cpp", "-src/FE/Main.cpp", "-src/VM/Modules/(.*)\.cpp" )
 	if( "${OS}" == OS_OSX ) {
 		builds.add_flags( "-Wl,-install_name -Wl,@rpath/libet.so" )
 	}

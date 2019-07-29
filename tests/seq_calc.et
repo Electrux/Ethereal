@@ -24,4 +24,6 @@ for x = 0; x < sz; x += 1 {
 
 if args.len() < 2 {
 	println( "final result: ", res );
+} else {
+	assert( res == 12, res, ' should be equal to: 5 + 9 - 2 = 12' );
 }

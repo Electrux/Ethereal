@@ -6,10 +6,8 @@ fn facto( n ) {
 }
 
 if args.len() > 1 {
-	if facto( 5 ) != 120 {
-		println( 'factorial invalid' );
-	}
-	return;
+	fact = facto( 5 );
+	assert( fact == 120, 'factorial of 5 should be 120, found: ', fact );
+} else {
+	println( 'factorial of 5 is: ', facto( 5 ) );
 }
-
-println( facto( 5 ) );

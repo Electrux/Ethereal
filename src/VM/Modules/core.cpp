@@ -86,6 +86,24 @@ var_base_t * println( vm_state_t & vm )
 	return nullptr;
 }
 
+var_base_t * dprint( vm_state_t & vm )
+{
+	for( auto & v : vm.args ) {
+		fprintf( stderr, "%s", v->to_str().c_str() );
+	}
+	fflush( stderr );
+	return nullptr;
+}
+
+var_base_t * dprintln( vm_state_t & vm )
+{
+	for( auto & v : vm.args ) {
+		fprintf( stderr, "%s", v->to_str().c_str() );
+	}
+	fprintf( stderr, "\n" );
+	return nullptr;
+}
+
 var_base_t * cprint( vm_state_t & vm )
 {
 	for( auto & v : vm.args ) {
@@ -124,16 +142,50 @@ var_base_t * type( vm_state_t & vm )
 	return new var_str_t( vm.args[ 0 ]->type_str(), vm.args[ 0 ]->parse_ctr() );
 }
 
+var_base_t * _exit( vm_state_t & vm )
+{
+	vm.exit_called = true;
+	vm.exit_status = vm.args.size() == 0 ? 0 : vm.args[ 0 ]->to_int().get_si();
+	return nullptr;
+}
+
+var_base_t * _assert( vm_state_t & vm )
+{
+	if( vm.args[ 0 ]->to_bool() ) { return nullptr; }
+	src_t & src = * vm.srcstack.back();
+	int line = src.bcode[ vm.bcodectr.back() ].line;
+	int col = src.bcode[ vm.bcodectr.back() ].col;
+	std::string op;
+	int sz = vm.args.size();
+	for( int i = 1; i < sz; ++i ) {
+		op += vm.args[ i ]->to_str();
+	}
+	src_fail( src.name, src.code[ line - 1 ], line, col, "assertion failed: %s", op.c_str() );
+	vm.exit_called = true;
+	vm.exit_status = 1;
+	return nullptr;
+}
+
+var_base_t * var_exists( vm_state_t & vm )
+{
+	return new var_bool_t( vm.vars->exists( vm.args[ 0 ]->to_str(), true ), vm.args[ 0 ]->parse_ctr() );
+}
+
 REGISTER_MODULE( core )
 {
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	///////////////////////////////////////////////////////////////// CORE ////////////////////////////////////////////////////////////////
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	vm.funcs.add( { "print",    1, -1, { "_whatever_" }, FnType::MODULE, { .modfn = print }, false } );
-	vm.funcs.add( { "println",  0, -1, { "_whatever_" }, FnType::MODULE, { .modfn = println }, false } );
-	vm.funcs.add( { "cprint",   1, -1, { "_whatever_" }, FnType::MODULE, { .modfn = cprint }, false } );
-	vm.funcs.add( { "cprintln", 0, -1, { "_whatever_" }, FnType::MODULE, { .modfn = cprintln }, false } );
-	vm.funcs.add( { "scan",     0,  1, { "_whatever_" }, FnType::MODULE, { .modfn = scan }, true } );
+	vm.funcs.add( { "print",      1, -1, { "_whatever_" }, FnType::MODULE, { .modfn = print }, false } );
+	vm.funcs.add( { "println",    0, -1, { "_whatever_" }, FnType::MODULE, { .modfn = println }, false } );
+	vm.funcs.add( { "dprint",     1, -1, { "_whatever_" }, FnType::MODULE, { .modfn = dprint }, false } );
+	vm.funcs.add( { "dprintln",   0, -1, { "_whatever_" }, FnType::MODULE, { .modfn = dprintln }, false } );
+	vm.funcs.add( { "cprint",     1, -1, { "_whatever_" }, FnType::MODULE, { .modfn = cprint }, false } );
+	vm.funcs.add( { "cprintln",   0, -1, { "_whatever_" }, FnType::MODULE, { .modfn = cprintln }, false } );
+	vm.funcs.add( { "scan",       0,  1, { "_whatever_" }, FnType::MODULE, { .modfn = scan }, true } );
+	vm.funcs.add( { "exit",       0,  1, { "_any_" }, FnType::MODULE, { .modfn = _exit }, false } );
+	vm.funcs.add( { "assert",     2,  -1, { "_any_", "_whatever_" }, FnType::MODULE, { .modfn = _assert }, false } );
+	vm.funcs.add( { "var_exists", 1,  1, { "str" }, FnType::MODULE, { .modfn = var_exists }, true } );
 
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////// INT ////////////////////////////////////////////////////////////////

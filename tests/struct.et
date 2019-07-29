@@ -1,4 +1,5 @@
 import vec;
+import str;
 
 struct s {
 	t = "hi";
@@ -9,4 +10,6 @@ a = s{ "hi", 7 };
 a.t = "true";
 if args.len() < 2 {
 	println( a.t );
+} else {
+	assert( a.t == 'true', 'a.t should have been a string: \'true\'' );
 }

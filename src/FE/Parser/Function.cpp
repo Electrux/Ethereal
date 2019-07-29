@@ -52,7 +52,7 @@ stmt_func_t * parse_func( src_t & src, parse_helper_t * ph )
 		}
 		goto fail;
 	}
-	arg_expr = parse_expr( src, ph, arg_expr_end );
+	arg_expr = parse_expr( src, ph, arg_expr_end, false );
 	if( arg_expr.res != 0 ) goto fail;
 	ph->set_tok_ctr( arg_expr_end );
 end_args:

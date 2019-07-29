@@ -11,9 +11,12 @@
 
 #include "Core.hpp"
 
+// bcodectr reserved by default because it can't go to more depth
+// if it does, it will cause reallocation and invalidate the reference (i) used in exec_internal()
 vm_state_t::vm_state_t() : exit_called( false ), exit_status( 0 ),
 	vars( new vars_t ), dlib( new dyn_lib_t() ),
-	consts( new consts_t() ), stack( new vm_stack_t() ) {}
+	consts( new consts_t() ), stack( new vm_stack_t() )
+{ bcodectr.reserve( MAX_BCODE_CTR_SRCS ); }
 
 vm_state_t::~vm_state_t()
 {

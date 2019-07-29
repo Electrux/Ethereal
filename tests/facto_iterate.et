@@ -1,12 +1,20 @@
 import str;
 import vec;
-# TODO: implement assert
-num = 5;
-num = scan( "Enter factorial of: " ).to_int();
-fact = 1;
 
-for x = num; x >= 2; x -= 1 {
-	fact *= x;
+if args.len() > 1 {
+	num = 5;
+	fact = 1;
+	for x = num; x >= 2; x -= 1 {
+		fact *= x;
+	}
+	assert( fact == 120, 'factorial of 5 should be 120, found: ', fact );
+} else {
+	num = scan( "Enter factorial of: " ).to_int();
+	fact = 1;
+
+	for x = num; x >= 2; x -= 1 {
+		fact *= x;
+	}
+
+	println( "Factorial of ", num, ": ", fact );
 }
-
-println( "Factorial of ", num, ": ", fact );

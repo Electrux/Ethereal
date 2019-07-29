@@ -14,9 +14,7 @@
 
 void src_fail( const std::string & src, const std::string & line_str, const int line, const int col, const char * msg, ... )
 {
-	fprintf( stderr,
-		 "%s %d[%d]: error: ",
-		 src.c_str(), line, col );
+	fprintf( stderr, "%s %d[%d]: error: ", src.c_str(), line, col );
 	va_list vargs;
 	va_start( vargs, msg );
 	vfprintf( stderr, msg, vargs );

@@ -4,3 +4,10 @@ import vec;
 s = set_create();
 
 s.insert( 'hello' );
+s.erase( 'hello' );
+
+if args.len() < 2 {
+	println( s.contains( 'hello' ) );
+} else {
+	assert( !s.contains( 'hello' ), 'set should not have contained \'hello\'' );
+}

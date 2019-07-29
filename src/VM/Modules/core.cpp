@@ -125,16 +125,23 @@ var_base_t * type( std::vector< var_base_t * > & vars )
 	return new var_str_t( vars[ 0 ]->type_str(), vars[ 0 ]->parse_ctr() );
 }
 
+var_base_t * _exit( std::vector< var_base_t * > & vars )
+{
+	exit( vars[ 0 ]->to_int().get_si() );
+	return nullptr;
+}
+
 REGISTER_MODULE( core )
 {
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	///////////////////////////////////////////////////////////////// CORE ////////////////////////////////////////////////////////////////
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	vm.funcs.add( { "print",   1, -1, { "_whatever_" }, FnType::MODULE, { .modfn = print }, false } );
-	vm.funcs.add( { "println", 0, -1, { "_whatever_" }, FnType::MODULE, { .modfn = println }, false } );
+	vm.funcs.add( { "print",    1, -1, { "_whatever_" }, FnType::MODULE, { .modfn = print }, false } );
+	vm.funcs.add( { "println",  0, -1, { "_whatever_" }, FnType::MODULE, { .modfn = println }, false } );
 	vm.funcs.add( { "cprint",   1, -1, { "_whatever_" }, FnType::MODULE, { .modfn = cprint }, false } );
 	vm.funcs.add( { "cprintln", 0, -1, { "_whatever_" }, FnType::MODULE, { .modfn = cprintln }, false } );
-	vm.funcs.add( { "scan",    0,  1, { "_whatever_" }, FnType::MODULE, { .modfn = scan }, true } );
+	vm.funcs.add( { "scan",     0,  1, { "_whatever_" }, FnType::MODULE, { .modfn = scan }, true } );
+	vm.funcs.add( { "exit",     1,  1, { "int" }, FnType::MODULE, { .modfn = _exit }, false } );
 
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////// INT ////////////////////////////////////////////////////////////////
@@ -160,7 +167,7 @@ REGISTER_MODULE( core )
 	vm.funcs.add( { "<=", 2, 2, { "int", "int" }, FnType::MODULE, { .modfn = lei }, true } );
 	vm.funcs.add( { ">",  2, 2, { "int", "int" }, FnType::MODULE, { .modfn = gti }, true } );
 	vm.funcs.add( { ">=", 2, 2, { "int", "int" }, FnType::MODULE, { .modfn = gei }, true } );
-	vm.funcs.add( { "!", 1, 1, { "int" }, FnType::MODULE, { .modfn = not_oper }, true } );
+	vm.funcs.add( { "!",  1, 1, { "int" }, FnType::MODULE, { .modfn = not_oper }, true } );
 
 	// cool arithmetic
 	vm.funcs.add( { "**",  2, 2, { "int", "int" }, FnType::MODULE, { .modfn = power }, true } );
@@ -193,7 +200,7 @@ REGISTER_MODULE( core )
 	vm.funcs.add( { "<=", 2, 2, { "flt", "flt" }, FnType::MODULE, { .modfn = lef }, true } );
 	vm.funcs.add( { ">",  2, 2, { "flt", "flt" }, FnType::MODULE, { .modfn = gtf }, true } );
 	vm.funcs.add( { ">=", 2, 2, { "flt", "flt" }, FnType::MODULE, { .modfn = gef }, true } );
-	vm.funcs.add( { "!", 1, 1, { "flt" }, FnType::MODULE, { .modfn = not_operf }, true } );
+	vm.funcs.add( { "!",  1, 1, { "flt" }, FnType::MODULE, { .modfn = not_operf }, true } );
 
 	// cool arithmetic
 	vm.funcs.add( { "**",  2, 2, { "flt", "int" }, FnType::MODULE, { .modfn = powerf }, true } );
@@ -208,11 +215,11 @@ REGISTER_MODULE( core )
 	////////////////////////////////////////////////////////////////// BOOL ///////////////////////////////////////////////////////////////
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// basic arithmetic
-	vm.funcs.add( { "&&",   2, 2, { "bool", "bool" }, FnType::MODULE, { .modfn = log_and }, true } );
-	vm.funcs.add( { "||",   2, 2, { "bool", "bool" }, FnType::MODULE, { .modfn = log_or }, true } );
-	vm.funcs.add( { "==",   2, 2, { "bool", "bool" }, FnType::MODULE, { .modfn = log_eq }, true } );
-	vm.funcs.add( { "!=",   2, 2, { "bool", "bool" }, FnType::MODULE, { .modfn = log_ne }, true } );
-	vm.funcs.add( { "!", 1, 1, { "bool" }, FnType::MODULE, { .modfn = not_operb }, true } );
+	vm.funcs.add( { "&&", 2, 2, { "bool", "bool" }, FnType::MODULE, { .modfn = log_and }, true } );
+	vm.funcs.add( { "||", 2, 2, { "bool", "bool" }, FnType::MODULE, { .modfn = log_or }, true } );
+	vm.funcs.add( { "==", 2, 2, { "bool", "bool" }, FnType::MODULE, { .modfn = log_eq }, true } );
+	vm.funcs.add( { "!=", 2, 2, { "bool", "bool" }, FnType::MODULE, { .modfn = log_ne }, true } );
+	vm.funcs.add( { "!",  1, 1, { "bool" }, FnType::MODULE, { .modfn = not_operb }, true } );
 
 	// other types to bool
 	vm.funcs.add( { "bool", 1, 1, { "_any_" }, FnType::MODULE, { .modfn = bool_create }, true } );

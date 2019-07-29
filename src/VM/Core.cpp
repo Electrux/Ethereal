@@ -11,7 +11,8 @@
 
 #include "Core.hpp"
 
-vm_state_t::vm_state_t() : vars( new vars_t ), dlib( new dyn_lib_t() ),
+vm_state_t::vm_state_t() : exit_called( false ), exit_status( 0 ),
+	vars( new vars_t ), dlib( new dyn_lib_t() ),
 	consts( new consts_t() ), stack( new vm_stack_t() ) {}
 
 vm_state_t::~vm_state_t()

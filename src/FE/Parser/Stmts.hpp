@@ -30,6 +30,7 @@ enum GrammarTypes
 	GRAM_IF,
 	GRAM_FOR,
 	GRAM_RETURN,
+	GRAM_EXIT,
 	GRAM_CONTINUE,
 	GRAM_BREAK,
 	GRAM_COLLECTION,
@@ -236,6 +237,15 @@ struct stmt_return_t : public stmt_base_t
 	stmt_expr_t * m_ret_val;
 	stmt_return_t( stmt_expr_t * ret_val, const int tok_ctr );
 	~stmt_return_t();
+	void disp( const bool has_next ) const;
+	bool bytecode( src_t & src ) const;
+};
+
+struct stmt_exit_t : public stmt_base_t
+{
+	stmt_expr_t * m_exit_val;
+	stmt_exit_t( stmt_expr_t * exit_val, const int tok_ctr );
+	~stmt_exit_t();
 	void disp( const bool has_next ) const;
 	bool bytecode( src_t & src ) const;
 };

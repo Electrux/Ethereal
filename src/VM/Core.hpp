@@ -25,6 +25,8 @@ typedef std::unordered_map< std::string, var_struct_def_t * > structs_t;
 struct vm_state_t
 {
 	size_t flags;
+	bool exit_called;
+	int exit_status;
 
 	src_stack_t srcstack;
 	srcs_t srcs;

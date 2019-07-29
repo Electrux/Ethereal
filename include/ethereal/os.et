@@ -5,3 +5,7 @@ struct _os_t {
 }
 
 os = _os_t{};
+
+mfn< _os_t > exit( e_code ) {
+	_exit e_code;
+}

@@ -39,6 +39,7 @@ enum TokType
 	TOK_CONTINUE,
 	TOK_BREAK,
 	TOK_LDMOD,
+	TOK_EXIT,
 	// if the source file is the actual executed one, execute the code between these symbols
 	TOK_MAIN_SRC_BEG,
 	TOK_MAIN_SRC_END,

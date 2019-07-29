@@ -387,7 +387,6 @@ void stmt_for_t::disp( const bool has_next ) const
 	IO::tab_rem( 2 );
 }
 
-
 ////////////////////////////////////////////
 /////////////// stmt_return_t //////////////
 ////////////////////////////////////////////
@@ -402,6 +401,24 @@ void stmt_return_t::disp( const bool has_next ) const
 	IO::print( has_next, "Return at: %x\n", this );
 
 	if( m_ret_val ) m_ret_val->disp( false );
+
+	IO::tab_rem( 1 );
+}
+
+////////////////////////////////////////////
+/////////////// stmt_exit_t //////////////
+////////////////////////////////////////////
+
+stmt_exit_t::stmt_exit_t( stmt_expr_t * exit_val, const int tok_ctr )
+	: stmt_base_t( GRAM_EXIT, tok_ctr ), m_exit_val( exit_val ) {}
+stmt_exit_t::~stmt_exit_t() { if( m_exit_val != nullptr ) delete m_exit_val; }
+
+void stmt_exit_t::disp( const bool has_next ) const
+{
+	IO::tab_add( has_next );
+	IO::print( has_next, "Exit at: %x\n", this );
+
+	if( m_exit_val ) m_exit_val->disp( false );
 
 	IO::tab_rem( 1 );
 }

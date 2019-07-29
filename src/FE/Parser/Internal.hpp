@@ -123,6 +123,7 @@ stmt_func_t * parse_func( src_t & src, parse_helper_t * ph );
 stmt_if_t * parse_if( src_t & src, parse_helper_t * ph, std::vector< GrammarTypes > & parents );
 stmt_for_t * parse_for( src_t & src, parse_helper_t * ph, std::vector< GrammarTypes > & parents );
 stmt_return_t * parse_return( src_t & src, parse_helper_t * ph );
+stmt_exit_t * parse_exit( src_t & src, parse_helper_t * ph );
 
 // precedence of a operator (lex type) in ascending order
 int oper_prec( const tok_t * tok );

@@ -213,6 +213,7 @@ int exec_internal( vm_state_t & vm, long begin, long end, var_base_t * ret )
 		case IC_MFN_CALL: {
 			int res = CallFunc( vm, i );
 			if( res != E_OK ) goto fail;
+			if( vm.exit_called ) return E_OK;
 			break;
 		}
 		case IC_ATTR: {
@@ -463,6 +464,13 @@ tmp_fail:
 			std::vector< void * > locs;
 			vm.vars->pop_scope( & locs, std::stoi( ins.oper.val ) );
 			for( auto & loc : locs ) VAR_DREF( loc );
+			return E_OK;
+		}
+		case IC_EXIT: {
+			VERIFY_STACK_MIN( 1 );
+			vm.exit_called = true;
+			vm.exit_status = vm.stack->back()->to_int().get_si();
+			vm.stack->pop_back();
 			return E_OK;
 		}
 		case _IC_LAST: {}

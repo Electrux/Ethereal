@@ -46,6 +46,8 @@ const char * InstrCodeStrs[ _IC_LAST ] = {
 
 	"RETURN",
 	"RETURN_EMPTY",
+
+	"EXIT",
 };
 
 const char * OperTypeStrs[ _OP_LAST ] = {

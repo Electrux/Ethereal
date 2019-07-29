@@ -53,6 +53,8 @@ enum InstrCode
 	IC_RETURN,		// args: count of scopes to remove
 	IC_RETURN_EMPTY,	// args: count of scopes to remove
 
+	IC_EXIT,
+
 	_IC_LAST,
 };
 

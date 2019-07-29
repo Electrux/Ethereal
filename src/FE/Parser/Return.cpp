@@ -43,7 +43,8 @@ bool stmt_return_t::bytecode( src_t & src ) const
 	if( m_ret_val && !m_ret_val->bytecode( src ) ) return false;
 	int line = src.toks[ m_tok_ctr ].line;
 	int col = src.toks[ m_tok_ctr ].col;
+	// assert src.block_depth().size() > 0
 	src.bcode.push_back( { m_tok_ctr, line, col, m_ret_val ? IC_RETURN : IC_RETURN_EMPTY,
-			       { OP_INT, std::to_string( src.block_depth.size() > 0 ? src.block_depth.back() : 0 ) } } );
+			       { OP_INT, std::to_string( src.block_depth.back() ) } } );
 	return true;
 }

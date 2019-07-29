@@ -124,12 +124,6 @@ var_base_t * type( vm_state_t & vm )
 	return new var_str_t( vm.args[ 0 ]->type_str(), vm.args[ 0 ]->parse_ctr() );
 }
 
-var_base_t * _exit( vm_state_t & vm )
-{
-	exit( vm.args[ 0 ]->to_int().get_si() );
-	return nullptr;
-}
-
 REGISTER_MODULE( core )
 {
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -140,7 +134,6 @@ REGISTER_MODULE( core )
 	vm.funcs.add( { "cprint",   1, -1, { "_whatever_" }, FnType::MODULE, { .modfn = cprint }, false } );
 	vm.funcs.add( { "cprintln", 0, -1, { "_whatever_" }, FnType::MODULE, { .modfn = cprintln }, false } );
 	vm.funcs.add( { "scan",     0,  1, { "_whatever_" }, FnType::MODULE, { .modfn = scan }, true } );
-	vm.funcs.add( { "exit",     1,  1, { "int" }, FnType::MODULE, { .modfn = _exit }, false } );
 
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////// INT ////////////////////////////////////////////////////////////////

@@ -34,7 +34,7 @@
 		"keywords": {
 			"patterns": [{
 				"name": "keyword.control.ethereal",
-				"match": "\\b(import|ldmod|struct|if|for|continue|break|return|fn|mfn|elif|else|_exit)\\b"
+				"match": "\\b(import|ldmod|struct|if|for|continue|break|return|fn|mfn|elif|else)\\b"
 			},
 			{
 				"name": "keyword.operator",

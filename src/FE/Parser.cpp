@@ -63,8 +63,6 @@ parse_tree_t * parse( src_t & src, parse_helper_t * pre_ph, std::vector< Grammar
 			}
 			res = new stmt_break_t( ph->tok_ctr() );
 			ph->next();
-		} else if( ph->peak()->type == TOK_EXIT ) {
-			res = parse_exit( src, ph );
 		} else if( ph->peak()->type == TOK_LBRACE ) {
 			// simple block
 			res = parse_block( src, ph, parent_stack );

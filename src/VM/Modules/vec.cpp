@@ -7,29 +7,28 @@
 	before using or altering the project.
 */
 
-#include "../Vars/Base.hpp"
 #include "../Core.hpp"
 
-var_base_t * append( std::vector< var_base_t * > & vars )
+var_base_t * append( vm_state_t & vm )
 {
-	std::vector< var_base_t * > & a = AS_VEC( vars[ 0 ] )->get();
-	std::vector< var_base_t * > & b = AS_VEC( vars[ 1 ] )->get();
+	std::vector< var_base_t * > & a = AS_VEC( vm.args[ 0 ] )->get();
+	std::vector< var_base_t * > & b = AS_VEC( vm.args[ 1 ] )->get();
 	for( auto & x : b ) {
-		a.push_back( x->copy( vars[ 0 ]->parse_ctr() ) );
+		a.push_back( x->copy( vm.args[ 0 ]->parse_ctr() ) );
 	}
 	return nullptr;
 }
 
-var_base_t * push( std::vector< var_base_t * > & vars )
+var_base_t * push( vm_state_t & vm )
 {
-	std::vector< var_base_t * > & v = AS_VEC( vars[ 0 ] )->get();
-	v.push_back( vars[ 1 ]->copy( vars[ 1 ]->parse_ctr() ) );
+	std::vector< var_base_t * > & v = AS_VEC( vm.args[ 0 ] )->get();
+	v.push_back( vm.args[ 1 ]->copy( vm.args[ 1 ]->parse_ctr() ) );
 	return nullptr;
 }
 
-var_base_t * pop( std::vector< var_base_t * > & vars )
+var_base_t * pop( vm_state_t & vm )
 {
-	std::vector< var_base_t * > & v = AS_VEC( vars[ 0 ] )->get();
+	std::vector< var_base_t * > & v = AS_VEC( vm.args[ 0 ] )->get();
 	if( v.size() > 0 ) {
 		VAR_DREF( v.back() );
 		v.pop_back();
@@ -37,9 +36,9 @@ var_base_t * pop( std::vector< var_base_t * > & vars )
 	return nullptr;
 }
 
-var_base_t * pop_front( std::vector< var_base_t * > & vars )
+var_base_t * pop_front( vm_state_t & vm )
 {
-	std::vector< var_base_t * > & v = AS_VEC( vars[ 0 ] )->get();
+	std::vector< var_base_t * > & v = AS_VEC( vm.args[ 0 ] )->get();
 	if( v.size() > 0 ) {
 		VAR_DREF( v.front() );
 		v.erase( v.begin() );
@@ -47,65 +46,65 @@ var_base_t * pop_front( std::vector< var_base_t * > & vars )
 	return nullptr;
 }
 
-var_base_t * front( std::vector< var_base_t * > & vars )
+var_base_t * front( vm_state_t & vm )
 {
-	std::vector< var_base_t * > & v = AS_VEC( vars[ 0 ] )->get();
+	std::vector< var_base_t * > & v = AS_VEC( vm.args[ 0 ] )->get();
 	return v.size() > 0 ? v.front() : nullptr;
 }
 
-var_base_t * back( std::vector< var_base_t * > & vars )
+var_base_t * back( vm_state_t & vm )
 {
-	std::vector< var_base_t * > & v = AS_VEC( vars[ 0 ] )->get();
+	std::vector< var_base_t * > & v = AS_VEC( vm.args[ 0 ] )->get();
 	return v.size() > 0 ? v.back() : nullptr;
 }
 
-var_base_t * len( std::vector< var_base_t * > & vars )
+var_base_t * len( vm_state_t & vm )
 {
-	return new var_int_t( ( int )AS_VEC( vars[ 0 ] )->get().size(), vars[ 0 ]->parse_ctr() );
+	return new var_int_t( ( int )AS_VEC( vm.args[ 0 ] )->get().size(), vm.args[ 0 ]->parse_ctr() );
 }
 
-var_base_t * clear( std::vector< var_base_t * > & vars )
+var_base_t * clear( vm_state_t & vm )
 {
-	AS_VEC( vars[ 0 ] )->clear();
+	AS_VEC( vm.args[ 0 ] )->clear();
 	return nullptr;
 }
 
-var_base_t * find( std::vector< var_base_t * > & vars )
+var_base_t * find( vm_state_t & vm )
 {
-	std::vector< var_base_t * > & v = AS_VEC( vars[ 0 ] )->get();
+	std::vector< var_base_t * > & v = AS_VEC( vm.args[ 0 ] )->get();
 	int loc = -1;
 	size_t sz = v.size();
 	for( size_t i = 0; i < sz; ++i ) {
-		if( v[ i ]->to_str() == vars[ 1 ]->to_str() ) {
+		if( v[ i ]->to_str() == vm.args[ 1 ]->to_str() ) {
 			loc = i;
 			break;
 		}
 	}
-	return new var_int_t( loc, vars[ 0 ]->parse_ctr() );
+	return new var_int_t( loc, vm.args[ 0 ]->parse_ctr() );
 }
 
-var_base_t * add( std::vector< var_base_t * > & vars )
+var_base_t * add( vm_state_t & vm )
 {
 	std::vector< var_base_t * > res;
-	std::vector< var_base_t * > & a = AS_VEC( vars[ 1 ] )->get();
-	std::vector< var_base_t * > & b = AS_VEC( vars[ 0 ] )->get();
+	std::vector< var_base_t * > & a = AS_VEC( vm.args[ 1 ] )->get();
+	std::vector< var_base_t * > & b = AS_VEC( vm.args[ 0 ] )->get();
 	for( auto & x : a ) {
-		res.push_back( x->copy( vars[ 1 ]->parse_ctr() ) );
+		res.push_back( x->copy( vm.args[ 1 ]->parse_ctr() ) );
 	}
 	for( auto & x : b ) {
-		res.push_back( x->copy( vars[ 1 ]->parse_ctr() ) );
+		res.push_back( x->copy( vm.args[ 1 ]->parse_ctr() ) );
 	}
-	return new var_vec_t( res, vars[ 1 ]->parse_ctr() );
+	return new var_vec_t( res, vm.args[ 1 ]->parse_ctr() );
 }
 
-var_base_t * add_assn( std::vector< var_base_t * > & vars )
+var_base_t * add_assn( vm_state_t & vm )
 {
-	std::vector< var_base_t * > & a = AS_VEC( vars[ 0 ] )->get();
-	std::vector< var_base_t * > & b = AS_VEC( vars[ 1 ] )->get();
+	std::vector< var_base_t * > & a = AS_VEC( vm.args[ 0 ] )->get();
+	std::vector< var_base_t * > & b = AS_VEC( vm.args[ 1 ] )->get();
 	for( auto & x : b ) {
-		a.push_back( x->copy( vars[ 0 ]->parse_ctr() ) );
+		a.push_back( x->copy( vm.args[ 0 ]->parse_ctr() ) );
 	}
-	return vars[ 0 ];
+	return vm.args[ 0 ];
 }
 
 REGISTER_MODULE( vec )

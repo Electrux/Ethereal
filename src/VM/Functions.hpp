@@ -17,7 +17,7 @@
 class var_base_t;
 struct vm_state_t;
 
-typedef var_base_t * ( * modfnptr_t )( std::vector< var_base_t * > & args );
+typedef var_base_t * ( * modfnptr_t )( vm_state_t & vm );
 struct langfn_t
 {
 	const char * src;

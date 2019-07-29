@@ -7,83 +7,82 @@
 	before using or altering the project.
 */
 
-#include "../Vars/Base.hpp"
 #include "../Core.hpp"
 
 std::vector< std::string > str_delimit( const std::string & str, const char ch );
 
-var_base_t * add( std::vector< var_base_t * > & vars )
+var_base_t * add( vm_state_t & vm )
 {
 	std::string res;
-	std::string & a = AS_STR( vars[ 1 ] )->get();
-	std::string & b = AS_STR( vars[ 0 ] )->get();
+	std::string & a = AS_STR( vm.args[ 1 ] )->get();
+	std::string & b = AS_STR( vm.args[ 0 ] )->get();
 	res = a + b;
-	return new var_str_t( res, vars[ 1 ]->parse_ctr() );
+	return new var_str_t( res, vm.args[ 1 ]->parse_ctr() );
 }
 
-var_base_t * add_assn( std::vector< var_base_t * > & vars )
+var_base_t * add_assn( vm_state_t & vm )
 {
-	std::string & a = AS_STR( vars[ 0 ] )->get();
-	std::string & b = AS_STR( vars[ 1 ] )->get();
+	std::string & a = AS_STR( vm.args[ 0 ] )->get();
+	std::string & b = AS_STR( vm.args[ 1 ] )->get();
 	a += b;
-	return vars[ 0 ];
+	return vm.args[ 0 ];
 }
 
-var_base_t * len( std::vector< var_base_t * > & vars )
+var_base_t * len( vm_state_t & vm )
 {
-	return new var_int_t( ( int )AS_STR( vars[ 0 ] )->get().size(), vars[ 0 ]->parse_ctr() );
+	return new var_int_t( ( int )AS_STR( vm.args[ 0 ] )->get().size(), vm.args[ 0 ]->parse_ctr() );
 }
 
-var_base_t * empty( std::vector< var_base_t * > & vars )
+var_base_t * empty( vm_state_t & vm )
 {
-	return new var_bool_t( AS_STR( vars[ 0 ] )->get().empty(), vars[ 0 ]->parse_ctr() );
+	return new var_bool_t( AS_STR( vm.args[ 0 ] )->get().empty(), vm.args[ 0 ]->parse_ctr() );
 }
 
-var_base_t * clear( std::vector< var_base_t * > & vars )
+var_base_t * clear( vm_state_t & vm )
 {
-	AS_STR( vars[ 0 ] )->get().clear();
+	AS_STR( vm.args[ 0 ] )->get().clear();
 	return nullptr;
 }
 
-var_base_t * is_int( std::vector< var_base_t * > & vars )
+var_base_t * is_int( vm_state_t & vm )
 {
 	char * p;
-	strtol( AS_STR( vars[ 0 ] )->get().c_str(), & p, 10 );
-	return new var_bool_t( * p == 0, vars[ 0 ]->parse_ctr() );
+	strtol( AS_STR( vm.args[ 0 ] )->get().c_str(), & p, 10 );
+	return new var_bool_t( * p == 0, vm.args[ 0 ]->parse_ctr() );
 }
 
-var_base_t * to_int( std::vector< var_base_t * > & vars )
+var_base_t * to_int( vm_state_t & vm )
 {
-	return new var_int_t( AS_STR( vars[ 0 ] )->get(), vars[ 0 ]->parse_ctr() );
+	return new var_int_t( AS_STR( vm.args[ 0 ] )->get(), vm.args[ 0 ]->parse_ctr() );
 }
 
-var_base_t * set_at( std::vector< var_base_t * > & vars )
+var_base_t * set_at( vm_state_t & vm )
 {
-	std::string & dat = AS_STR( vars[ 0 ] )->get();
-	int idx = vars[ 1 ]->to_int().get_si();
-	if( idx < 0 || idx >= ( int )dat.size() ) return vars[ 0 ];
-	if( vars[ 2 ]->to_str().size() > 0 ) dat[ idx ] = vars[ 2 ]->to_str()[ 0 ];
-	return vars[ 0 ];
+	std::string & dat = AS_STR( vm.args[ 0 ] )->get();
+	int idx = vm.args[ 1 ]->to_int().get_si();
+	if( idx < 0 || idx >= ( int )dat.size() ) return vm.args[ 0 ];
+	if( vm.args[ 2 ]->to_str().size() > 0 ) dat[ idx ] = vm.args[ 2 ]->to_str()[ 0 ];
+	return vm.args[ 0 ];
 }
 
-var_base_t * split( std::vector< var_base_t * > & vars )
+var_base_t * split( vm_state_t & vm )
 {
-	const std::string & dat = AS_STR( vars[ 0 ] )->get();
-	const char delim = vars.size() > 1 && AS_STR( vars[ 1 ] )->get().size() > 0 ? AS_STR( vars[ 1 ] )->get()[ 0 ] : ' ';
+	const std::string & dat = AS_STR( vm.args[ 0 ] )->get();
+	const char delim = vm.args.size() > 1 && AS_STR( vm.args[ 1 ] )->get().size() > 0 ? AS_STR( vm.args[ 1 ] )->get()[ 0 ] : ' ';
 	std::vector< std::string > res = str_delimit( dat, delim );
 	std::vector< var_base_t * > res_b;
 	for( auto & r : res ) {
-		res_b.push_back( new var_str_t( r, vars[ 0 ]->parse_ctr() ) );
+		res_b.push_back( new var_str_t( r, vm.args[ 0 ]->parse_ctr() ) );
 	}
-	return new var_vec_t( res_b, vars[ 0 ]->parse_ctr() );
+	return new var_vec_t( res_b, vm.args[ 0 ]->parse_ctr() );
 }
 
 #define DECL_FUNC_ALLOC__STR( name, oper, ret_type )				\
-	var_base_t * name( std::vector< var_base_t * > & vars )			\
+	var_base_t * name( vm_state_t & vm )			\
 	{									\
-		auto & lhs = AS_STR( vars[ 1 ] )->get();			\
-		auto & rhs = AS_STR( vars[ 0 ] )->get();			\
-		return new ret_type( lhs oper rhs, vars[ 1 ]->parse_ctr() );	\
+		auto & lhs = AS_STR( vm.args[ 1 ] )->get();			\
+		auto & rhs = AS_STR( vm.args[ 0 ] )->get();			\
+		return new ret_type( lhs oper rhs, vm.args[ 1 ]->parse_ctr() );	\
 	}
 
 DECL_FUNC_ALLOC__STR( eq, ==, var_bool_t )

@@ -10,43 +10,42 @@
 #include <chrono>
 #include <thread>
 
-#include "../Vars/Base.hpp"
 #include "../Core.hpp"
 
 int exec_internal( const std::string & file );
 std::string dir_part( const std::string & full_loc );
 
-var_base_t * sleep_custom( std::vector< var_base_t * > & vars )
+var_base_t * sleep_custom( vm_state_t & vm )
 {
 	std::this_thread::sleep_for(
-		std::chrono::milliseconds( vars[ 1 ]->to_int().get_ui() )
+		std::chrono::milliseconds( vm.args[ 1 ]->to_int().get_ui() )
 	);
 	return nullptr;
 }
 
-var_base_t * get_env( std::vector< var_base_t * > & vars )
+var_base_t * get_env( vm_state_t & vm )
 {
-	std::string var = vars[ 1 ]->to_str();
+	std::string var = vm.args[ 1 ]->to_str();
 	const char * env = getenv( var.c_str() );
-	return new var_str_t( env == NULL ? "" : env, vars[ 0 ]->parse_ctr() );
+	return new var_str_t( env == NULL ? "" : env, vm.args[ 0 ]->parse_ctr() );
 }
 
-var_base_t * set_env( std::vector< var_base_t * > & vars )
+var_base_t * set_env( vm_state_t & vm )
 {
-	std::string var = vars[ 1 ]->to_str();
-	std::string val = vars[ 2 ]->to_str();
+	std::string var = vm.args[ 1 ]->to_str();
+	std::string val = vm.args[ 2 ]->to_str();
 
 	bool overwrite = false;
-	if( vars.size() > 3 ) overwrite = vars[ 3 ]->to_bool();
-	return new var_int_t( setenv( var.c_str(), val.c_str(), overwrite ), vars[ 0 ]->parse_ctr() );
+	if( vm.args.size() > 3 ) overwrite = vm.args[ 3 ]->to_bool();
+	return new var_int_t( setenv( var.c_str(), val.c_str(), overwrite ), vm.args[ 0 ]->parse_ctr() );
 }
 
-var_base_t * exec_custom( std::vector< var_base_t * > & vars )
+var_base_t * exec_custom( vm_state_t & vm )
 {
-	std::string cmd = vars[ 1 ]->to_str();
+	std::string cmd = vm.args[ 1 ]->to_str();
 
 	FILE * pipe = popen( cmd.c_str(), "r" );
-	if( !pipe ) return new var_int_t( 1, vars[ 0 ]->parse_ctr() );
+	if( !pipe ) return new var_int_t( 1, vm.args[ 0 ]->parse_ctr() );
 	char * line = NULL;
 	size_t len = 0;
 	ssize_t nread;
@@ -58,20 +57,20 @@ var_base_t * exec_custom( std::vector< var_base_t * > & vars )
 	int res = pclose( pipe );
 
 	res = WEXITSTATUS( res );
-	return new var_int_t( res, vars[ 0 ]->parse_ctr() );
+	return new var_int_t( res, vm.args[ 0 ]->parse_ctr() );
 }
 
-var_base_t * install( std::vector< var_base_t * > & vars )
+var_base_t * install( vm_state_t & vm )
 {
-	std::string src = AS_STR( vars[ 1 ] )->get(),
-		    dest = AS_STR( vars[ 2 ] )->get();
+	std::string src = AS_STR( vm.args[ 1 ] )->get(),
+		    dest = AS_STR( vm.args[ 2 ] )->get();
 
 	if( src.empty() || dest.empty() ) {
-		return new var_int_t( 0, vars[ 0 ]->parse_ctr() );
+		return new var_int_t( 0, vm.args[ 0 ]->parse_ctr() );
 	}
 
 	if( exec_internal( "mkdir -p " + dest ) != 0 ) {
-		return new var_int_t( -1, vars[ 0 ]->parse_ctr() );
+		return new var_int_t( -1, vm.args[ 0 ]->parse_ctr() );
 	}
 	std::string cmd_str;
 #if __linux__ || __ANDROID__
@@ -79,10 +78,10 @@ var_base_t * install( std::vector< var_base_t * > & vars )
 #elif __APPLE__ || __FreeBSD__
 	cmd_str = "cp -rf " + src + " " + dest;
 #endif
-	return new var_int_t( exec_internal( cmd_str ), vars[ 0 ]->parse_ctr() );
+	return new var_int_t( exec_internal( cmd_str ), vm.args[ 0 ]->parse_ctr() );
 }
 
-var_base_t * os_get_name( std::vector< var_base_t * > & vars )
+var_base_t * os_get_name( vm_state_t & vm )
 {
 	std::string os_str;
 #if __linux__

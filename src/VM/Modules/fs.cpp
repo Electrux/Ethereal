@@ -10,7 +10,6 @@
 #include <cstdio>
 #include <dirent.h>
 
-#include "../Vars/Base.hpp"
 #include "../Core.hpp"
 
 class var_file_t : public var_base_t
@@ -47,31 +46,31 @@ var_base_t * var_file_t::copy( const int parse_ctr )
 
 FILE * & var_file_t::get() { return m_file; }
 
-var_base_t * file_open( std::vector< var_base_t * > & vars )
+var_base_t * file_open( vm_state_t & vm )
 {
-	const std::string & file = AS_STR( vars[ 0 ] )->get();
-	const std::string & mode = AS_STR( vars[ 1 ] )->get();
+	const std::string & file = AS_STR( vm.args[ 0 ] )->get();
+	const std::string & mode = AS_STR( vm.args[ 1 ] )->get();
 	return new var_file_t(
 		fopen( file.c_str(), mode.c_str() ),
-		vars[ 0 ]->parse_ctr()
+		vm.args[ 0 ]->parse_ctr()
 	);
 }
 
-var_base_t * file_write( std::vector< var_base_t * > & vars )
+var_base_t * file_write( vm_state_t & vm )
 {
-	FILE * & f = AS_FILE( vars[ 0 ] )->get();
-	if( f == nullptr ) return new var_bool_t( false, vars[ 0 ]->parse_ctr() );
-	size_t sz = vars.size();
+	FILE * & f = AS_FILE( vm.args[ 0 ] )->get();
+	if( f == nullptr ) return new var_bool_t( false, vm.args[ 0 ]->parse_ctr() );
+	size_t sz = vm.args.size();
 	for( size_t i = 1; i < sz; ++i ) {
-		fprintf( f, "%s", vars[ i ]->to_str().c_str() );
+		fprintf( f, "%s", vm.args[ i ]->to_str().c_str() );
 	}
-	return new var_bool_t( true, vars[ 0 ]->parse_ctr() );
+	return new var_bool_t( true, vm.args[ 0 ]->parse_ctr() );
 }
 
-var_base_t * file_read( std::vector< var_base_t * > & vars )
+var_base_t * file_read( vm_state_t & vm )
 {
-	FILE * & f = AS_FILE( vars[ 0 ] )->get();
-	if( f == nullptr ) return new var_bool_t( false, vars[ 0 ]->parse_ctr() );
+	FILE * & f = AS_FILE( vm.args[ 0 ] )->get();
+	if( f == nullptr ) return new var_bool_t( false, vm.args[ 0 ]->parse_ctr() );
 
 	char * line = NULL;
 	size_t len = 0;
@@ -80,7 +79,7 @@ var_base_t * file_read( std::vector< var_base_t * > & vars )
 
 	if( ( read = getline( & line, & len, f ) ) == -1 ) {
 		if( line ) free( line );
-		return new var_bool_t( false, vars[ 0 ]->parse_ctr() );
+		return new var_bool_t( false, vm.args[ 0 ]->parse_ctr() );
 	}
 
 	line_str = line;
@@ -89,15 +88,15 @@ var_base_t * file_read( std::vector< var_base_t * > & vars )
 	}
 	if( line ) free( line );
 
-	AS_STR( vars[ 1 ] )->get() = line_str;
+	AS_STR( vm.args[ 1 ] )->get() = line_str;
 
-	return new var_bool_t( true, vars[ 0 ]->parse_ctr() );
+	return new var_bool_t( true, vm.args[ 0 ]->parse_ctr() );
 }
 
-var_base_t * file_read_full( std::vector< var_base_t * > & vars )
+var_base_t * file_read_full( vm_state_t & vm )
 {
-	FILE * & f = AS_FILE( vars[ 0 ] )->get();
-	if( f == nullptr ) return new var_bool_t( false, vars[ 0 ]->parse_ctr() );
+	FILE * & f = AS_FILE( vm.args[ 0 ] )->get();
+	if( f == nullptr ) return new var_bool_t( false, vm.args[ 0 ]->parse_ctr() );
 
 	char * line = NULL;
 	size_t len = 0;
@@ -110,37 +109,37 @@ var_base_t * file_read_full( std::vector< var_base_t * > & vars )
 		if( line_str.size() > 0 && line_str.back() == '\n' ) {
 			line_str.erase( line_str.end() - 1 );
 		}
-		lines.push_back( new var_str_t( line_str, vars[ 0 ]->parse_ctr() ) );
+		lines.push_back( new var_str_t( line_str, vm.args[ 0 ]->parse_ctr() ) );
 	}
 
 	if( line ) free( line );
 
-	AS_VEC( vars[ 1 ] )->clear();
-	AS_VEC( vars[ 1 ] )->get() = lines;
+	AS_VEC( vm.args[ 1 ] )->clear();
+	AS_VEC( vm.args[ 1 ] )->get() = lines;
 
-	return new var_bool_t( true, vars[ 0 ]->parse_ctr() );
+	return new var_bool_t( true, vm.args[ 0 ]->parse_ctr() );
 }
 
-var_base_t * is_open( std::vector< var_base_t * > & vars )
+var_base_t * is_open( vm_state_t & vm )
 {
-	return new var_bool_t( AS_FILE( vars[ 0 ] )->get() != NULL, vars[ 0 ]->parse_ctr() );
+	return new var_bool_t( AS_FILE( vm.args[ 0 ] )->get() != NULL, vm.args[ 0 ]->parse_ctr() );
 }
 
-var_base_t * get_dir_entries( std::vector< var_base_t * > & vars )
+var_base_t * get_dir_entries( vm_state_t & vm )
 {
 	DIR * dir;
 	struct dirent * ent;
 	std::vector< var_base_t * > v;
-	std::string dir_str = vars[ 1 ]->to_str();
+	std::string dir_str = vm.args[ 1 ]->to_str();
 	if( dir_str.size() > 0 && dir_str.back() != '/' ) dir_str += "/";
 	if( ( dir = opendir( dir_str.c_str() ) ) != NULL ) {
 		while( ( ent = readdir( dir ) ) != NULL ) {
 			if( strcmp( ent->d_name, "." ) == 0 || strcmp( ent->d_name, ".." ) == 0 ) continue;
-			v.push_back( new var_str_t( dir_str + ent->d_name, vars[ 1 ]->parse_ctr() ) );
+			v.push_back( new var_str_t( dir_str + ent->d_name, vm.args[ 1 ]->parse_ctr() ) );
 		}
 		closedir( dir );
 	}
-	return new var_vec_t( v, vars[ 0 ]->parse_ctr() );
+	return new var_vec_t( v, vm.args[ 0 ]->parse_ctr() );
 }
 
 REGISTER_MODULE( fs )

@@ -28,6 +28,8 @@ struct vm_state_t
 	bool exit_called;
 	int exit_status;
 
+	std::vector< var_base_t * > args;
+
 	src_stack_t srcstack;
 	srcs_t srcs;
 

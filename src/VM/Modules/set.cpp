@@ -9,7 +9,6 @@
 
 #include <unordered_set>
 
-#include "../Vars/Base.hpp"
 #include "../Core.hpp"
 
 class var_set_t : public var_base_t
@@ -60,33 +59,33 @@ void var_set_t::assn( var_base_t * b )
 }
 std::unordered_set< std::string > & var_set_t::get() { return m_set; }
 
-var_base_t * set_create( std::vector< var_base_t * > & vars )
+var_base_t * set_create( vm_state_t & vm )
 {
 	return new var_set_t( {}, 0 );
 }
 
-var_base_t * set_insert( std::vector< var_base_t * > & vars )
+var_base_t * set_insert( vm_state_t & vm )
 {
-	std::unordered_set< std::string > & s = AS_SET( vars[ 0 ] )->get();
-	for( size_t i = 1; i < vars.size(); ++i ) {
-		s.insert( vars[ i ]->to_str() );
+	std::unordered_set< std::string > & s = AS_SET( vm.args[ 0 ] )->get();
+	for( size_t i = 1; i < vm.args.size(); ++i ) {
+		s.insert( vm.args[ i ]->to_str() );
 	}
 	return nullptr;
 }
 
-var_base_t * set_erase( std::vector< var_base_t * > & vars )
+var_base_t * set_erase( vm_state_t & vm )
 {
-	std::unordered_set< std::string > & s = AS_SET( vars[ 0 ] )->get();
-	for( size_t i = 1; i < vars.size(); ++i ) {
-		s.erase( vars[ i ]->to_str() );
+	std::unordered_set< std::string > & s = AS_SET( vm.args[ 0 ] )->get();
+	for( size_t i = 1; i < vm.args.size(); ++i ) {
+		s.erase( vm.args[ i ]->to_str() );
 	}
 	return nullptr;
 }
 
-var_base_t * set_contains( std::vector< var_base_t * > & vars )
+var_base_t * set_contains( vm_state_t & vm )
 {
-	std::unordered_set< std::string > & s = AS_SET( vars[ 0 ] )->get();
-	return new var_bool_t( s.find( vars[ 1 ]->to_str() ) != s.end(), vars[ 0 ]->parse_ctr() );
+	std::unordered_set< std::string > & s = AS_SET( vm.args[ 0 ] )->get();
+	return new var_bool_t( s.find( vm.args[ 1 ]->to_str() ) != s.end(), vm.args[ 0 ]->parse_ctr() );
 }
 
 REGISTER_MODULE( set )

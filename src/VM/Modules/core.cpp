@@ -7,7 +7,6 @@
 	before using or altering the project.
 */
 
-#include "../Vars/Base.hpp"
 #include "../Core.hpp"
 
 #include "Core/Int.hpp"
@@ -69,27 +68,27 @@ void apply_colors( std::string & str )
 	}
 }
 
-var_base_t * print( std::vector< var_base_t * > & vars )
+var_base_t * print( vm_state_t & vm )
 {
-	for( auto & v : vars ) {
+	for( auto & v : vm.args ) {
 		fprintf( stdout, "%s", v->to_str().c_str() );
 	}
 	fflush( stdout );
 	return nullptr;
 }
 
-var_base_t * println( std::vector< var_base_t * > & vars )
+var_base_t * println( vm_state_t & vm )
 {
-	for( auto & v : vars ) {
+	for( auto & v : vm.args ) {
 		fprintf( stdout, "%s", v->to_str().c_str() );
 	}
 	fprintf( stdout, "\n" );
 	return nullptr;
 }
 
-var_base_t * cprint( std::vector< var_base_t * > & vars )
+var_base_t * cprint( vm_state_t & vm )
 {
-	for( auto & v : vars ) {
+	for( auto & v : vm.args ) {
 		std::string data = v->to_str();
 		apply_colors( data );
 		fprintf( stdout, "%s", data.c_str() );
@@ -98,9 +97,9 @@ var_base_t * cprint( std::vector< var_base_t * > & vars )
 	return nullptr;
 }
 
-var_base_t * cprintln( std::vector< var_base_t * > & vars )
+var_base_t * cprintln( vm_state_t & vm )
 {
-	for( auto & v : vars ) {
+	for( auto & v : vm.args ) {
 		std::string data = v->to_str();
 		apply_colors( data );
 		fprintf( stdout, "%s", data.c_str() );
@@ -109,25 +108,25 @@ var_base_t * cprintln( std::vector< var_base_t * > & vars )
 	return nullptr;
 }
 
-var_base_t * scan( std::vector< var_base_t * > & vars )
+var_base_t * scan( vm_state_t & vm )
 {
-	if( vars.size() > 0 ) fprintf( stdout, "%s", vars[ 0 ]->to_str().c_str() );
+	if( vm.args.size() > 0 ) fprintf( stdout, "%s", vm.args[ 0 ]->to_str().c_str() );
 	char str[ MAX_C_STR_LEN ];
 	fgets( str, MAX_C_STR_LEN, stdin );
 	std::string res( str );
 	while( res.back() == '\n' ) res.pop_back();
 	while( res.back() == '\r' ) res.pop_back();
-	return new var_str_t( res, vars[ 0 ]->parse_ctr() );
+	return new var_str_t( res, vm.args[ 0 ]->parse_ctr() );
 }
 
-var_base_t * type( std::vector< var_base_t * > & vars )
+var_base_t * type( vm_state_t & vm )
 {
-	return new var_str_t( vars[ 0 ]->type_str(), vars[ 0 ]->parse_ctr() );
+	return new var_str_t( vm.args[ 0 ]->type_str(), vm.args[ 0 ]->parse_ctr() );
 }
 
-var_base_t * _exit( std::vector< var_base_t * > & vars )
+var_base_t * _exit( vm_state_t & vm )
 {
-	exit( vars[ 0 ]->to_int().get_si() );
+	exit( vm.args[ 0 ]->to_int().get_si() );
 	return nullptr;
 }
 

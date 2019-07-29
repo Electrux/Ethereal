@@ -10,23 +10,23 @@
 #ifndef VM_MODULES_CORE_FLT_HPP
 #define VM_MODULES_CORE_FLT_HPP
 
-#include "../../Vars/Base.hpp"
+#include "../../Core.hpp"
 
 #define DECL_FUNC_ALLOC__FLT( name, oper, ret_type )				\
-	var_base_t * name( std::vector< var_base_t * > & vars )			\
+	var_base_t * name( vm_state_t & vm )\
 	{									\
-		auto & lhs = AS_FLT( vars[ 1 ] )->get();			\
-		auto & rhs = AS_FLT( vars[ 0 ] )->get();			\
-		return new ret_type( lhs oper rhs, vars[ 1 ]->parse_ctr() );	\
+		auto & lhs = AS_FLT( vm.args[ 1 ] )->get();			\
+		auto & rhs = AS_FLT( vm.args[ 0 ] )->get();			\
+		return new ret_type( lhs oper rhs, vm.args[ 1 ]->parse_ctr() );	\
 	}
 
 #define DECL_FUNC_ASSN__FLT( name, oper )				\
-	var_base_t * name( std::vector< var_base_t * > & vars )		\
+	var_base_t * name( vm_state_t & vm )\
 	{	/* lhs = 0 because Right to Left associativity */	\
-		auto & lhs = AS_FLT( vars[ 0 ] )->get();		\
-		auto & rhs = AS_FLT( vars[ 1 ] )->get();		\
+		auto & lhs = AS_FLT( vm.args[ 0 ] )->get();		\
+		auto & rhs = AS_FLT( vm.args[ 1 ] )->get();		\
 		lhs oper rhs;						\
-		return vars[ 0 ];					\
+		return vm.args[ 0 ];					\
 	}
 
 DECL_FUNC_ALLOC__FLT( addf, +, var_flt_t )
@@ -46,31 +46,31 @@ DECL_FUNC_ALLOC__FLT( lef, <=, var_bool_t )
 DECL_FUNC_ALLOC__FLT( gtf, >, var_bool_t )
 DECL_FUNC_ALLOC__FLT( gef, >=, var_bool_t )
 
-var_base_t * powerf( std::vector< var_base_t * > & vars )
+var_base_t * powerf( vm_state_t & vm )
 {
-	mpf_class & lhs = AS_FLT( vars[ 1 ] )->get();
-	mpz_class & rhs = AS_INT( vars[ 0 ] )->get();
-	var_flt_t * res = new var_flt_t( "0", vars[ 1 ]->parse_ctr() );
+	mpf_class & lhs = AS_FLT( vm.args[ 1 ] )->get();
+	mpz_class & rhs = AS_INT( vm.args[ 0 ] )->get();
+	var_flt_t * res = new var_flt_t( "0", vm.args[ 1 ]->parse_ctr() );
 	mpf_pow_ui( res->get().get_mpf_t(), lhs.get_mpf_t(), rhs.get_ui() );
 	return res;
 }
 
-var_base_t * unary_subf( std::vector< var_base_t * > & vars )
+var_base_t * unary_subf( vm_state_t & vm )
 {
-	mpf_class & num = AS_FLT( vars[ 0 ] )->get();
-	return new var_flt_t( -num, vars[ 0 ]->parse_ctr() );
+	mpf_class & num = AS_FLT( vm.args[ 0 ] )->get();
+	return new var_flt_t( -num, vm.args[ 0 ]->parse_ctr() );
 }
 
-var_base_t * not_operf( std::vector< var_base_t * > & vars )
+var_base_t * not_operf( vm_state_t & vm )
 {
-	mpf_class & num = AS_FLT( vars[ 0 ] )->get();
-	return new var_bool_t( !num, vars[ 0 ]->parse_ctr() );
+	mpf_class & num = AS_FLT( vm.args[ 0 ] )->get();
+	return new var_bool_t( !num, vm.args[ 0 ]->parse_ctr() );
 }
 
-var_base_t * flt( std::vector< var_base_t * > & vars )
+var_base_t * flt( vm_state_t & vm )
 {
-	const std::string & flt_str = vars[ 0 ]->to_str();
-	return new var_flt_t( flt_str, vars[ 0 ]->parse_ctr() );
+	const std::string & flt_str = vm.args[ 0 ]->to_str();
+	return new var_flt_t( flt_str, vm.args[ 0 ]->parse_ctr() );
 }
 
 #endif // VM_MODULES_CORE_FLT_HPP

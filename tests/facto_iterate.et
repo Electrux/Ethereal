@@ -2,19 +2,11 @@ import str;
 import vec;
 # TODO: implement assert
 num = 5;
-if args.len() <= 1 {
-	num = scan( "Enter factorial of: " ).to_int();
-}
+num = scan( "Enter factorial of: " ).to_int();
 fact = 1;
 
 for x = num; x >= 2; x -= 1 {
 	fact *= x;
 }
 
-if args.len() > 1 {
-	if fact != 120 {
-		println( 'factorial invalid' );
-	}
-	return;
-}
 println( "Factorial of ", num, ": ", fact );

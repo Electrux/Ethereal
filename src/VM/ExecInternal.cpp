@@ -466,13 +466,6 @@ tmp_fail:
 			for( auto & loc : locs ) VAR_DREF( loc );
 			return E_OK;
 		}
-		case IC_EXIT: {
-			VERIFY_STACK_MIN( 1 );
-			vm.exit_called = true;
-			vm.exit_status = vm.stack->back()->to_int().get_si();
-			vm.stack->pop_back();
-			return E_OK;
-		}
 		case _IC_LAST: {}
 		}
 	}

@@ -14,7 +14,7 @@ sz = files.len();
 
 for i = 0; i < sz; i += 1 {
 	cprint( '{c}performing test{0}: {y}', files[ i ], '{0} ... ' );
-	if os.exec( args[ 1 ] + ' ' + files[ i ] + ' test 2>/dev/null' ) == 0 {
+	if os.exec( args[ 1 ] + ' ' + files[ i ] + ' test 1>/dev/null' ) == 0 {
 		cprintln( '{g}passed{0}' );
 	} else {
 		cprintln( '{r}failed{0}' );

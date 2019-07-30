@@ -17,24 +17,16 @@ if args.len() < 2 {
 
 for i = 0; i < count; i += 1 {
 	for j = 0; j < count - i - 1; j += 1 {
-		if args.len() < 2 {
-			print( ' ' );
-		}
+		print( ' ' );
 	}
 	for j = 0; j < count; j += 1 {
 		# print( i == 0 || i == count - 1 || j == 0 || j == count - 1 ? '*' : ' ' );
 		# TODO: optimize the multiple conditions
 		if i == 0 || i == count - 1 || j == 0 || j == count - 1 {
-			if args.len() < 2 {
-				print( '*' );
-			}
+			print( '*' );
 		} else {
-			if args.len() < 2 {
-				print( ' ' );
-			}
+			print( ' ' );
 		}
 	}
-	if args.len() < 2 {
-		println();
-	}
+	println();
 }

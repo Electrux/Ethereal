@@ -22,9 +22,7 @@ fn read() {
 	} else {
 		s = "";
 		for ; f.read( s ); {
-			if args.len() < 2 {
-				println( 'recvd: ', s );
-			}
+			println( 'recvd: ', s );
 		}
 	}
 }
@@ -39,9 +37,7 @@ fn read_all() {
 		if f.read_all( s ) {
 			sz = s.len();
 			for i = 0; i < sz; i += 1 {
-				if args.len() < 2 {
-					println( '--> ', s[ i ] );
-				}
+				println( '--> ', s[ i ] );
 			}
 		} else {
 			println( 'nothing to read :(' );

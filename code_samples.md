@@ -3,7 +3,7 @@
 1. Hello world
 
 ```
-println( "Hello world" );
+println( 'Hello world' );
 ```
 
 2. Variables
@@ -24,27 +24,27 @@ println( var[ 1 ] );
 
 ```
 var = {};
-var[ "str" ] = "test";
-println( var[ "str" ] );
+var[ 'str' ] = "test";
+println( var[ 'str' ] );
 ```
 
 5. Functions
 
 ```
 fn hello( to ) {
-	print( "Hello ", to );
+	println( 'Hello ', to );
 }
 
-hello( "world" );
+hello( 'world' );
 ```
 
 6. Conditionals
 
 ```
 if 1 == 1 {
-	print( "One" );
+	print( 'One' );
 } else {
-	print( "1 ain't 1" );
+	print( '1 ain\'t 1' );
 }
 ```
 
@@ -71,26 +71,18 @@ struct C {
 
 fn mult_by( c, x ) { return c.a * c.b * x; }
 
-c = @C();
+c = C{};
 print( mult_by( c, 5 ) );
 ```
 
-9. References
+9. Structure Member functions
 
 ```
-fn inc( & x ) {
-	++x;
-}
-```
-
-10. Structure Member functions
-
-```
-# first argument is implicitly the calling variable itself: as 'self'
-mfn< str > len() {
-	return len( self );
+# first argument is implicitly the calling variable itself: used as 'self'
+mfn< str > print() {
+	println( self );
 }
 
 str = "string";
-println( "str len: ", str.len() );
+str.print();
 ```

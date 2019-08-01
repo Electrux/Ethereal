@@ -28,8 +28,6 @@ else
 	PREFIX_DIR=${PREFIX}
 fi
 
-set -x
-
 # Library: et
 
 find src -name "*.cpp" | grep -v "Modules" | grep -v "Main.cpp" | while read -r src_file; do

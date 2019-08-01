@@ -1,0 +1,47 @@
+import os;
+import str;
+import cxxproj;
+
+# will set CC variable accordingly
+eth = cxx_new_proj();
+
+self_prefix = false;
+prefix = os.get_env( 'PREFIX' );
+if prefix.empty() {
+	prefix = os.get_env( 'PWD' );
+	self_prefix = true;
+}
+
+eth.add_flags( [ '-fPIC', '-Wall', '-Wextra', '-Wno-unused-parameter',
+		 '-DBUILD_PREFIX_DIR='  + prefix, '-Wl,-rpath,' + prefix + '/lib/ethereal/' ] );
+
+if os.get_env( 'CC' ) != 'g++' {
+	eth.add_flags( [ "-Wno-c99-extensions", "-Wno-unused-command-line-argument" ] );
+}
+
+eth.add_lib_dirs( [ '-L./buildfiles' ] );
+
+if args.len() > 1 && args.find( 'debug' ) >= 0 || args.find( 'memlog' ) >= 0 {
+	if os.exec( 'stat buildfiles 1>/dev/null 2>&1' ) == 0 && os.exec( 'stat buildfiles/.debug_mode 1>/dev/null 2>&1' ) != 0 {
+		#os.exec( 'rm -rf buildfiles && mkdir buildfiles && touch buildfiles/.debug_mode' );
+	}
+	if args.find( 'debug' ) >= 0 { eth.add_flags( [ '-DDEBUG_MODE', '-DMEM_LOGS' ] ); }
+	else { eth.add_flags( [ '-DMEM_LOGS' ] ); }
+} else {
+	if os.exec( 'stat buildfiles 1>/dev/null 2>&1' ) == 0 && os.exec( 'stat buildfiles/.debug_mode 1>/dev/null 2>&1' ) == 0 {
+		#os.exec( 'rm -rf buildfiles' );
+	}
+	eth.add_flags( [ '-march=native', '-O2', '-flto' ] );
+}
+
+
+if args.len() > 1 && argv.find( 'install' ) >= 0 || self_prefix == true {
+	if os.get_env( 'EUID' ) == 0 || os.base_name == 'osx' {
+		#os.install( 'buildfiles/et', os.get_env( 'PREFIX' ) + '/bin/' );
+	} else {
+		cprintln( '{r}Run as root to install the built files{0}' );
+	}
+}
+
+
+println( eth );

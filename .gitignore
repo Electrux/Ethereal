@@ -16,6 +16,7 @@ lib/
 build/
 buildfiles/
 CMakeFiles/
+flag_cache
 
 # Build file on BSD #
 #####################

@@ -1,0 +1,16 @@
+import str;
+import vec;
+import fs;
+
+struct _cxx_proj_t {
+	flags = [];
+	lib_dirs = [];
+	lib_flags = [];
+}
+
+fn cxx_new_proj() {
+	return _cxx_proj_t{};
+}
+
+import 'cxxproj/flags';
+import 'cxxproj/libs';

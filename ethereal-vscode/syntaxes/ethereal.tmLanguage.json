@@ -54,6 +54,16 @@
 				}
 			}]
 		},
+		"structures": {
+			"patterns": [{
+				"match": "[\\s\\.]*\\b((?!else)[_a-zA-Z]+[0-9]*[_a-zA-Z]*)\\b[\\s]*\\{",
+				"captures": {
+					"1": {
+						"name": "entity.name.tag"
+					}
+				}
+			}]
+		},
 		"strings": {
 			"name": "string.quoted.double.ethereal",
 			"begin": "\"",
@@ -88,16 +98,6 @@
 				"captures": {
 					"1": {
 						"name": "entity.name.function"
-					}
-				}
-			}]
-		},
-		"structures": {
-			"patterns": [{
-				"match": "[\\s\\.]*\\b((?!else)[_a-zA-Z]+[0-9]*[_a-zA-Z]*)\\b[\\s]*\\{",
-				"captures": {
-					"1": {
-						"name": "entity.name.tag"
 					}
 				}
 			}]

@@ -3,18 +3,13 @@ import str;
 import fs;
 import os;
 
-if args.len() < 2 {
-	println( 'usage: ', args[ 0 ], ' <location of ethereal\'s binary>' );
-	exit( 1 );
-}
-
 files = fs.dir_entries( 'tests' );
 
 sz = files.len();
 
 for i = 0; i < sz; i += 1 {
 	cprint( '{c}performing test{0}: {y}', files[ i ], '{0} ... ' );
-	if os.exec( args[ 1 ] + ' ' + files[ i ] + ' test 1>/dev/null' ) == 0 {
+	if os.exec( __prog__ + ' ' + files[ i ] + ' test 1>/dev/null' ) == 0 {
 		cprintln( '{g}passed{0}' );
 	} else {
 		cprintln( '{r}failed{0}' );

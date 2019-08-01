@@ -24,8 +24,6 @@ int load_src( vm_state_t & vm, const std::string & file, const std::string & ali
 		return E_VM_FAIL;
 	}
 	if( vm.srcs.find( mod_name ) != vm.srcs.end() ) {
-		VM_FAIL( "warning: import module '%s' already imported and won't be imported again",
-			 mod_name.c_str() );
 		return E_OK;
 	}
 

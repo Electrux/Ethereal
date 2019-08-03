@@ -125,7 +125,6 @@ static int get_operator( const std::string & src, const std::string & line, cons
 static inline bool is_valid_num_char( const char c );
 static void remove_back_slash( std::string & s );
 
-// TODO: The src stack and map shall be updated prior to this function
 int tokenize( src_t & src )
 {
 	int res = read_file( src );

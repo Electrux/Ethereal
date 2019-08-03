@@ -248,7 +248,6 @@ int exec_internal( vm_state_t & vm, long begin, long end, var_base_t * ret )
 		}
 		case IC_SUBSCR: {
 			VERIFY_STACK_MIN( 2 );
-			// TODO: move the pop back for subscript at the end (here and in IC_ATTR)
 			var_base_t * sub = vm.stack->back();
 			bool manual_del_sub = false;
 			if( sub->ref() == 1 ) { manual_del_sub = true; vm.stack->pop_back( false ); }

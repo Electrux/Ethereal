@@ -3,15 +3,34 @@ import str;
 import fs;
 import os;
 
-files = fs.dir_entries( 'tests' );
+fn test( dir ) {
+	files = fs.dir_files( dir );
 
-sz = files.len();
+	sz = files.len();
 
-for i = 0; i < sz; i += 1 {
-	cprint( '{c}performing test{0}: {y}', files[ i ], '{0} ... ' );
-	if os.exec( __prog__ + ' ' + files[ i ] + ' test 1>/dev/null' ) == 0 {
-		cprintln( '{g}passed{0}' );
-	} else {
-		cprintln( '{r}failed{0}' );
+	for i = 0; i < sz; i += 1 {
+		cprint( '{c}performing test{0}: {y}', files[ i ], '{0} ... ' );
+		if os.exec( __prog__ + ' ' + files[ i ] + ' test 1>/dev/null 2>&1' ) == 0 {
+			cprintln( '{g}passed{0}' );
+			p += 1;
+		} else {
+			cprintln( '{r}failed{0}' );
+			f += 1;
+		}
 	}
 }
+
+p = 0;
+f = 0;
+
+test( 'tests' );
+
+dirs = fs.dir_dirs( 'tests' );
+
+sz = dirs.len();
+
+for i = 0; i < sz; i += 1 {
+	test( dirs[ i ] );
+}
+
+cprintln( '{y}Passed{0}: {g}', p, '{0}, {y}Failed{0}: {r}', f, '{0}' );

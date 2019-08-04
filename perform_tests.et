@@ -1,4 +1,4 @@
-#!/et/buildfiles/et
+#!./buildfiles/et
 
 import vec;
 import str;

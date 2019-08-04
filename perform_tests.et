@@ -1,3 +1,5 @@
+#!/et/buildfiles/et
+
 import vec;
 import str;
 import fs;

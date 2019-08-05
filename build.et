@@ -43,5 +43,4 @@ if args.len() > 1 && argv.find( 'install' ) >= 0 || self_prefix == true {
 	}
 }
 
-
 println( eth );

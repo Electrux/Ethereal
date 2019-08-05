@@ -13,7 +13,7 @@
 #include "../../Core.hpp"
 
 #define DECL_FUNC_ALLOC__FLT( name, oper, ret_type )				\
-	var_base_t * name( vm_state_t & vm )\
+	var_base_t * name( vm_state_t & vm )					\
 	{									\
 		auto & lhs = AS_FLT( vm.args[ 1 ] )->get();			\
 		auto & rhs = AS_FLT( vm.args[ 0 ] )->get();			\
@@ -21,7 +21,7 @@
 	}
 
 #define DECL_FUNC_ASSN__FLT( name, oper )				\
-	var_base_t * name( vm_state_t & vm )\
+	var_base_t * name( vm_state_t & vm )				\
 	{	/* lhs = 0 because Right to Left associativity */	\
 		auto & lhs = AS_FLT( vm.args[ 0 ] )->get();		\
 		auto & rhs = AS_FLT( vm.args[ 1 ] )->get();		\

@@ -16,15 +16,17 @@ int CallFunc( vm_state_t & vm, const int ins_ctr )
 {
 	src_t & src = * vm.srcstack.back();
 	instr_t & ins = src.bcode[ ins_ctr ];
-	int args_count;
-	std::string fn_name;
+	static int args_count;
+	static std::string fn_name;
+	static std::vector< std::string > arg_types;
+	static std::vector< void * > rem_locs;
+	arg_types.clear();
+	rem_locs.clear();
 	var_base_t * member = nullptr;
-	std::vector< std::string > arg_types;
 	const function_t * fn;
 	modfnptr_t mfnptr = nullptr;
 	const langfn_t * lfnptr = nullptr;
 	res_t< var_base_t * > res = { 0, nullptr };
-	std::vector< void * > rem_locs;
 
 	VERIFY_STACK_MIN( 1 );
 	args_count = std::stoi( ins.oper.val );

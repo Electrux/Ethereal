@@ -12,28 +12,28 @@
 
 #include "../../Core.hpp"
 
-#define DECL_FUNC_ALLOC__BOOL( name, oper, ret_type )				\
-	var_base_t * name( vm_state_t & vm )					\
-	{									\
-		bool lhs = vm.args[ 1 ]->to_bool();				\
-		bool rhs = vm.args[ 0 ]->to_bool();				\
-		return new ret_type( lhs oper rhs, vm.args[ 1 ]->parse_ctr() );	\
+#define DECL_FUNC_ALLOC__BOOL( name, oper )						\
+	var_base_t * name( vm_state_t & vm )						\
+	{										\
+		bool lhs = vm.args[ 1 ]->to_bool();					\
+		bool rhs = vm.args[ 0 ]->to_bool();					\
+		return lhs oper rhs ? vm.vars->get( "true" ) : vm.vars->get( "false" );	\
 	}
 
-DECL_FUNC_ALLOC__BOOL( log_and, &&, var_bool_t )
-DECL_FUNC_ALLOC__BOOL( log_or, ||, var_bool_t )
-DECL_FUNC_ALLOC__BOOL( log_eq, ==, var_bool_t )
-DECL_FUNC_ALLOC__BOOL( log_ne, !=, var_bool_t )
+DECL_FUNC_ALLOC__BOOL( log_and, && )
+DECL_FUNC_ALLOC__BOOL( log_or, || )
+DECL_FUNC_ALLOC__BOOL( log_eq, == )
+DECL_FUNC_ALLOC__BOOL( log_ne, != )
 
 var_base_t * not_operb( vm_state_t & vm )
 {
 	bool val = AS_BOOL( vm.args[ 0 ] )->get();
-	return new var_bool_t( !val, vm.args[ 0 ]->parse_ctr() );
+	return !val ? vm.vars->get( "true" ) : vm.vars->get( "false" );
 }
 
 var_base_t * bool_create( vm_state_t & vm )
 {
-	return new var_bool_t( vm.args[ 0 ]->to_bool(), vm.args[ 0 ]->parse_ctr() );
+	return vm.args[ 0 ]->to_bool() ? vm.vars->get( "true" ) : vm.vars->get( "false" );
 }
 
 #endif // VM_MODULES_CORE_BOOL_HPP

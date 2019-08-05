@@ -20,6 +20,14 @@
 		return new ret_type( lhs oper rhs, vm.args[ 1 ]->parse_ctr() );	\
 	}
 
+#define DECL_FUNC_BOOL__FLT( name, oper )						\
+	var_base_t * name( vm_state_t & vm )						\
+	{										\
+		auto & lhs = AS_FLT( vm.args[ 1 ] )->get();				\
+		auto & rhs = AS_FLT( vm.args[ 0 ] )->get();				\
+		return lhs oper rhs ? vm.vars->get( "true" ) : vm.vars->get( "false" );	\
+	}
+
 #define DECL_FUNC_ASSN__FLT( name, oper )				\
 	var_base_t * name( vm_state_t & vm )				\
 	{	/* lhs = 0 because Right to Left associativity */	\
@@ -39,12 +47,12 @@ DECL_FUNC_ASSN__FLT( sub_assnf, -= )
 DECL_FUNC_ASSN__FLT( mul_assnf, *= )
 DECL_FUNC_ASSN__FLT( div_assnf, /= )
 
-DECL_FUNC_ALLOC__FLT( eqf, ==, var_bool_t )
-DECL_FUNC_ALLOC__FLT( nef, !=, var_bool_t )
-DECL_FUNC_ALLOC__FLT( ltf, <, var_bool_t )
-DECL_FUNC_ALLOC__FLT( lef, <=, var_bool_t )
-DECL_FUNC_ALLOC__FLT( gtf, >, var_bool_t )
-DECL_FUNC_ALLOC__FLT( gef, >=, var_bool_t )
+DECL_FUNC_BOOL__FLT( eqf, == )
+DECL_FUNC_BOOL__FLT( nef, != )
+DECL_FUNC_BOOL__FLT( ltf, < )
+DECL_FUNC_BOOL__FLT( lef, <= )
+DECL_FUNC_BOOL__FLT( gtf, > )
+DECL_FUNC_BOOL__FLT( gef, >= )
 
 var_base_t * powerf( vm_state_t & vm )
 {
@@ -64,7 +72,7 @@ var_base_t * unary_subf( vm_state_t & vm )
 var_base_t * not_operf( vm_state_t & vm )
 {
 	mpf_class & num = AS_FLT( vm.args[ 0 ] )->get();
-	return new var_bool_t( !num, vm.args[ 0 ]->parse_ctr() );
+	return !num ? vm.vars->get( "true" ) : vm.vars->get( "false" );
 }
 
 var_base_t * flt( vm_state_t & vm )

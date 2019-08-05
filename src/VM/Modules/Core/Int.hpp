@@ -20,6 +20,14 @@
 		return new ret_type( lhs oper rhs, vm.args[ 1 ]->parse_ctr() );	\
 	}
 
+#define DECL_FUNC_BOOL__INT( name, oper )						\
+	var_base_t * name( vm_state_t & vm )						\
+	{										\
+		auto & lhs = AS_INT( vm.args[ 1 ] )->get();				\
+		auto & rhs = AS_INT( vm.args[ 0 ] )->get();				\
+		return lhs oper rhs ? vm.vars->get( "true" ) : vm.vars->get( "false" );	\
+	}
+
 #define DECL_FUNC_ASSN__INT( name, oper )				\
 	var_base_t * name( vm_state_t & vm )				\
 	{	/* lhs = 0 because Right to Left associativity */	\
@@ -41,12 +49,12 @@ DECL_FUNC_ASSN__INT( mul_assn, *= )
 DECL_FUNC_ASSN__INT( div_assn, /= )
 DECL_FUNC_ASSN__INT( mod_assn, %= )
 
-DECL_FUNC_ALLOC__INT( eqi, ==, var_bool_t )
-DECL_FUNC_ALLOC__INT( nei, !=, var_bool_t )
-DECL_FUNC_ALLOC__INT( lti, <, var_bool_t )
-DECL_FUNC_ALLOC__INT( lei, <=, var_bool_t )
-DECL_FUNC_ALLOC__INT( gti, >, var_bool_t )
-DECL_FUNC_ALLOC__INT( gei, >=, var_bool_t )
+DECL_FUNC_BOOL__INT( eqi, == )
+DECL_FUNC_BOOL__INT( nei, != )
+DECL_FUNC_BOOL__INT( lti, < )
+DECL_FUNC_BOOL__INT( lei, <= )
+DECL_FUNC_BOOL__INT( gti, > )
+DECL_FUNC_BOOL__INT( gei, >= )
 
 var_base_t * power( vm_state_t & vm )
 {
@@ -66,7 +74,7 @@ var_base_t * unary_sub( vm_state_t & vm )
 var_base_t * not_oper( vm_state_t & vm )
 {
 	mpz_class & num = AS_INT( vm.args[ 0 ] )->get();
-	return new var_bool_t( !num, vm.args[ 0 ]->parse_ctr() );
+	return !num ? vm.vars->get( "true" ) : vm.vars->get( "false" );
 }
 
 var_base_t * num( vm_state_t & vm )

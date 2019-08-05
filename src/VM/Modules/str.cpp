@@ -77,20 +77,20 @@ var_base_t * split( vm_state_t & vm )
 	return new var_vec_t( res_b, vm.args[ 0 ]->parse_ctr() );
 }
 
-#define DECL_FUNC_ALLOC__STR( name, oper, ret_type )				\
-	var_base_t * name( vm_state_t & vm )			\
-	{									\
-		auto & lhs = AS_STR( vm.args[ 1 ] )->get();			\
-		auto & rhs = AS_STR( vm.args[ 0 ] )->get();			\
-		return new ret_type( lhs oper rhs, vm.args[ 1 ]->parse_ctr() );	\
+#define DECL_FUNC_BOOL__STR( name, oper )						\
+	var_base_t * name( vm_state_t & vm )						\
+	{										\
+		auto & lhs = AS_STR( vm.args[ 1 ] )->get();				\
+		auto & rhs = AS_STR( vm.args[ 0 ] )->get();				\
+		return lhs oper rhs ? vm.vars->get( "true" ) : vm.vars->get( "false" );	\
 	}
 
-DECL_FUNC_ALLOC__STR( eq, ==, var_bool_t )
-DECL_FUNC_ALLOC__STR( ne, !=, var_bool_t )
-DECL_FUNC_ALLOC__STR( lt, <, var_bool_t )
-DECL_FUNC_ALLOC__STR( le, <=, var_bool_t )
-DECL_FUNC_ALLOC__STR( gt, >, var_bool_t )
-DECL_FUNC_ALLOC__STR( ge, >=, var_bool_t )
+DECL_FUNC_BOOL__STR( eq, == )
+DECL_FUNC_BOOL__STR( ne, != )
+DECL_FUNC_BOOL__STR( lt, < )
+DECL_FUNC_BOOL__STR( le, <= )
+DECL_FUNC_BOOL__STR( gt, > )
+DECL_FUNC_BOOL__STR( ge, >= )
 
 REGISTER_MODULE( str )
 {
@@ -98,12 +98,12 @@ REGISTER_MODULE( str )
 	vm.funcs.add( { "+=", 2, 2, { "str", "str" }, FnType::MODULE, { .modfn = add_assn }, false } );
 
 	// comparisons
-	vm.funcs.add( { "==", 2, 2, { "str", "str" }, FnType::MODULE, { .modfn = eq }, true } );
-	vm.funcs.add( { "!=", 2, 2, { "str", "str" }, FnType::MODULE, { .modfn = ne }, true } );
-	vm.funcs.add( { "<",  2, 2, { "str", "str" }, FnType::MODULE, { .modfn = lt }, true } );
-	vm.funcs.add( { "<=", 2, 2, { "str", "str" }, FnType::MODULE, { .modfn = le }, true } );
-	vm.funcs.add( { ">",  2, 2, { "str", "str" }, FnType::MODULE, { .modfn = gt }, true } );
-	vm.funcs.add( { ">=", 2, 2, { "str", "str" }, FnType::MODULE, { .modfn = ge }, true } );
+	vm.funcs.add( { "==", 2, 2, { "str", "str" }, FnType::MODULE, { .modfn = eq }, false } );
+	vm.funcs.add( { "!=", 2, 2, { "str", "str" }, FnType::MODULE, { .modfn = ne }, false } );
+	vm.funcs.add( { "<",  2, 2, { "str", "str" }, FnType::MODULE, { .modfn = lt }, false } );
+	vm.funcs.add( { "<=", 2, 2, { "str", "str" }, FnType::MODULE, { .modfn = le }, false } );
+	vm.funcs.add( { ">",  2, 2, { "str", "str" }, FnType::MODULE, { .modfn = gt }, false } );
+	vm.funcs.add( { ">=", 2, 2, { "str", "str" }, FnType::MODULE, { .modfn = ge }, false } );
 
 	functions_t & strfns = vm.typefuncs[ "str" ];
 

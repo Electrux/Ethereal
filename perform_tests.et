@@ -6,7 +6,7 @@ import fs;
 import os;
 
 fn test( dir ) {
-	files = fs.dir_files( dir );
+	files = fs.dir_entries( dir, fs.ent.RECURSE );
 
 	sz = files.len();
 
@@ -26,13 +26,5 @@ p = 0;
 f = 0;
 
 test( 'tests' );
-
-dirs = fs.dir_dirs( 'tests' );
-
-sz = dirs.len();
-
-for i = 0; i < sz; i += 1 {
-	test( dirs[ i ] );
-}
 
 cprintln( '{y}Passed{0}: {g}', p, '{0}, {y}Failed{0}: {r}', f, '{0}' );

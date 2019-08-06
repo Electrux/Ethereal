@@ -12,6 +12,12 @@
 
 #include "../Core.hpp"
 
+enum FSEnt {
+	FILES = 1 << 0,
+	DIRS = 1 << 1,
+	RECURSE = 1 << 2,
+};
+
 class var_file_t : public var_base_t
 {
 	FILE * m_file;
@@ -125,39 +131,36 @@ var_base_t * is_open( vm_state_t & vm )
 	return new var_bool_t( AS_FILE( vm.args[ 0 ] )->get() != NULL, vm.args[ 0 ]->parse_ctr() );
 }
 
-var_base_t * get_dir_files( vm_state_t & vm )
+void get_entries_internal( const std::string & dir_str, std::vector< var_base_t * > & v, const size_t & flags, const int parse_ctr )
 {
 	DIR * dir;
 	struct dirent * ent;
-	std::vector< var_base_t * > v;
-	std::string dir_str = vm.args[ 1 ]->to_str();
-	if( dir_str.size() > 0 && dir_str.back() != '/' ) dir_str += "/";
-	if( ( dir = opendir( dir_str.c_str() ) ) != NULL ) {
-		while( ( ent = readdir( dir ) ) != NULL ) {
-			if( strcmp( ent->d_name, "." ) == 0 || strcmp( ent->d_name, ".." ) == 0 ) continue;
-			if( ent->d_type == DT_DIR ) continue;
-			v.push_back( new var_str_t( dir_str + ent->d_name, vm.args[ 1 ]->parse_ctr() ) );
+	if( ( dir = opendir( dir_str.c_str() ) ) == NULL ) return;
+
+	while( ( ent = readdir( dir ) ) != NULL ) {
+		if( strcmp( ent->d_name, "." ) == 0 || strcmp( ent->d_name, ".." ) == 0 ) continue;
+		if( ent->d_type == DT_DIR ) {
+			if( flags & FSEnt::RECURSE ) {
+				get_entries_internal( dir_str + ent->d_name + "/", v, flags, parse_ctr );
+			} else if( flags & FSEnt::DIRS ) {
+				v.push_back( new var_str_t( dir_str + ent->d_name, parse_ctr ) );
+			}
+			continue;
 		}
-		closedir( dir );
+		if( flags & FSEnt::FILES || flags & FSEnt::RECURSE ) {
+			v.push_back( new var_str_t( dir_str + ent->d_name, parse_ctr ) );
+		}
 	}
-	return new var_vec_t( v, vm.args[ 0 ]->parse_ctr() );
+	closedir( dir );
 }
 
-var_base_t * get_dir_dirs( vm_state_t & vm )
+var_base_t * get_entries( vm_state_t & vm )
 {
-	DIR * dir;
-	struct dirent * ent;
 	std::vector< var_base_t * > v;
-	std::string dir_str = vm.args[ 1 ]->to_str();
+	std::string dir_str = AS_STR( vm.args[ 1 ] )->get();
+	size_t flags = vm.args.size() <= 2 ? 1 : mpz_to_size_t( AS_INT( vm.args[ 2 ] )->get() );
 	if( dir_str.size() > 0 && dir_str.back() != '/' ) dir_str += "/";
-	if( ( dir = opendir( dir_str.c_str() ) ) != NULL ) {
-		while( ( ent = readdir( dir ) ) != NULL ) {
-			if( strcmp( ent->d_name, "." ) == 0 || strcmp( ent->d_name, ".." ) == 0 ) continue;
-			if( ent->d_type != DT_DIR ) continue;
-			v.push_back( new var_str_t( dir_str + ent->d_name, vm.args[ 1 ]->parse_ctr() ) );
-		}
-		closedir( dir );
-	}
+	get_entries_internal( dir_str, v, flags, vm.args[ 1 ]->parse_ctr() );
 	return new var_vec_t( v, vm.args[ 0 ]->parse_ctr() );
 }
 
@@ -172,6 +175,5 @@ REGISTER_MODULE( fs )
 	ft.add( { "is_open", 0, 0, {}, FnType::MODULE, { .modfn = is_open }, true } );
 
 	functions_t & fst = vm.typefuncs[ "_fs_t" ];
-	fst.add( { "dir_files", 1, 1, { "str" }, FnType::MODULE, { .modfn = get_dir_files }, true } );
-	fst.add( { "dir_dirs", 1, 1, { "str" }, FnType::MODULE, { .modfn = get_dir_dirs }, true } );
+	fst.add( { "dir_entries", 1, 2, { "str", "int" }, FnType::MODULE, { .modfn = get_entries }, true } );
 }

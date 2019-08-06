@@ -321,7 +321,7 @@ tmp_fail:
 			VERIFY_STACK_MIN( ( size_t )count );
 			std::unordered_map< std::string, var_int_t * > map;
 			for( int j = 0; j < count; ++j ) {
-				map[ vm.stack->back()->to_str() ] = new var_int_t( j, vm.stack->back()->parse_ctr() );
+				map[ vm.stack->back()->to_str() ] = new var_int_t( mpz_class( 1 ) << j, vm.stack->back()->parse_ctr() );
 				vm.stack->pop_back();
 			}
 			vm.vars->add( name, new var_enum_t( name, map, ins.parse_ctr ) );

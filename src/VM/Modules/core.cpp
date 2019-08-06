@@ -213,6 +213,11 @@ REGISTER_MODULE( core )
 	vm.funcs.add( { ">=", 2, 2, { "int", "int" }, FnType::MODULE, { .modfn = gei }, false } );
 	vm.funcs.add( { "!",  1, 1, { "int" }, FnType::MODULE, { .modfn = not_oper }, false } );
 
+	// bitwise
+	vm.funcs.add( { "&", 2, 2, { "int", "int" }, FnType::MODULE, { .modfn = andi }, true } );
+	vm.funcs.add( { "|", 2, 2, { "int", "int" }, FnType::MODULE, { .modfn = ori }, true } );
+	vm.funcs.add( { "~",  1, 1, { "int" }, FnType::MODULE, { .modfn = not_oper_bitwise }, true } );
+
 	// cool arithmetic
 	vm.funcs.add( { "**",  2, 2, { "int", "int" }, FnType::MODULE, { .modfn = power }, true } );
 

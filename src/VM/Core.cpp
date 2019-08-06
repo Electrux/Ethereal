@@ -51,3 +51,10 @@ bool set_init_mods( vm_state_t & vm )
 	}
 	return true;
 }
+
+size_t mpz_to_size_t( const mpz_class & n )
+{
+	size_t data;
+	mpz_export( & data, 0, -1, sizeof( data ), 0, 0, n.get_mpz_t() );
+	return data;
+}

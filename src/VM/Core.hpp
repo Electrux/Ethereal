@@ -60,6 +60,8 @@ struct vm_state_t
 
 bool set_init_mods( vm_state_t & vm );
 
+size_t mpz_to_size_t( const mpz_class & n );
+
 #define _STRINGIZE(x) #x
 #define STRINGIFY(x) _STRINGIZE(x)
 

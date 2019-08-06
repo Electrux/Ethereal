@@ -1,5 +1,13 @@
 ldmod fs;
 
-struct _fs_t {}
+enum _FSEnt {
+	FILES,
+	DIRS,
+	RECURSE,
+}
+
+struct _fs_t {
+	ent = _FSEnt;
+}
 
 fs = _fs_t{};

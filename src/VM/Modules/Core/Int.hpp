@@ -37,6 +37,14 @@
 		return vm.args[ 0 ];					\
 	}
 
+#define DECL_FUNC_BIT__INT( name, oper )					\
+	var_base_t * name( vm_state_t & vm )					\
+	{	/* lhs = 0 because Right to Left associativity */		\
+		auto & lhs = AS_INT( vm.args[ 0 ] )->get();			\
+		auto & rhs = AS_INT( vm.args[ 1 ] )->get();			\
+		return new var_int_t( lhs oper rhs, vm.args[ 0 ]->parse_ctr() );\
+	}
+
 DECL_FUNC_ALLOC__INT( add, +, var_int_t )
 DECL_FUNC_ALLOC__INT( sub, -, var_int_t )
 DECL_FUNC_ALLOC__INT( mul, *, var_int_t )
@@ -55,6 +63,9 @@ DECL_FUNC_BOOL__INT( lti, < )
 DECL_FUNC_BOOL__INT( lei, <= )
 DECL_FUNC_BOOL__INT( gti, > )
 DECL_FUNC_BOOL__INT( gei, >= )
+
+DECL_FUNC_BIT__INT( andi, & )
+DECL_FUNC_BIT__INT( ori, | )
 
 var_base_t * power( vm_state_t & vm )
 {
@@ -75,6 +86,12 @@ var_base_t * not_oper( vm_state_t & vm )
 {
 	mpz_class & num = AS_INT( vm.args[ 0 ] )->get();
 	return !num ? vm.vars->get( "true" ) : vm.vars->get( "false" );
+}
+
+var_base_t * not_oper_bitwise( vm_state_t & vm )
+{
+	mpz_class & num = AS_INT( vm.args[ 0 ] )->get();
+	return new var_int_t( ~num, vm.args[ 0 ]->parse_ctr() );
 }
 
 var_base_t * num( vm_state_t & vm )

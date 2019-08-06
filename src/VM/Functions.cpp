@@ -12,12 +12,12 @@
 #include "Vars/Base.hpp"
 #include "Functions.hpp"
 
-static bool compare_arg_types( const std::vector< std::string > & ats1, const std::vector< std::string > & ats2 );
+static bool compare_arg_types( const std::vector< std::string > & ats1, const std::vector< std::string > & ats2, const int min_args );
 
 bool operator ==( const function_t & func1, const function_t & func2 )
 {
 	return func1.name == func2.name && func1.arg_count_min == func2.arg_count_min &&
-	       func1.arg_count_max <= func2.arg_count_max && compare_arg_types( func1.arg_types, func2.arg_types );
+	       func1.arg_count_max <= func2.arg_count_max && compare_arg_types( func1.arg_types, func2.arg_types, func1.arg_count_min );
 }
 
 ////////////////////////////////// PRIVATE MEMBER FUNCTIONS ///////////////////////////////////
@@ -84,21 +84,21 @@ const function_t * functions_t::get( const std::string & name, const int arg_cou
 		if( func.name == name &&
 		    arg_count >= func.arg_count_min &&
 		    ( arg_count <= func.arg_count_max || func.arg_count_max == -1 ) &&
-		    ( func.type == LANG || compare_arg_types( func.arg_types, arg_types ) ) ) {
+		    ( func.type == LANG || compare_arg_types( func.arg_types, arg_types, func.arg_count_min ) ) ) {
 			return set_cached_func( mangled_name, & func );
 		}
 	}
 	return nullptr;
 }
 
-static bool compare_arg_types( const std::vector< std::string > & ats1, const std::vector< std::string > & ats2 )
+static bool compare_arg_types( const std::vector< std::string > & ats1, const std::vector< std::string > & ats2, const int min_args )
 {
 	if( ats2.empty() ) return true;
 	auto it = ats2.begin();
 	for( auto & at1 : ats1 ) {
 		if( at1 == "_whatever_" ) return true;
 		// only last argument can be optional (_any_) (more than one argument will be done by _whatever_)
-		if( it == ats2.end() ) return at1 == "_any_";
+		if( it == ats2.end() ) return at1 == "_any_" || ats2.size() >= ( size_t )min_args;
 		if( at1 != "_any_" && at1 != * it ) return false;
 		++it;
 	}

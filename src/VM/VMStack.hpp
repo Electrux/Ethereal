@@ -47,17 +47,17 @@ public:
 	inline bool has_none( const int range ) { return m_none_locs.size() > 0 && ( int )m_vec.size() - range <= m_none_locs.back(); }
 };
 
-#define VERIFY_STACK_MIN( sz )																	\
-	do {																			\
-		if( vm.stack->size() < sz ) {															\
-			VM_FAIL( "expected vm stack size to be %zu, but is %zu (verify that a function is returning what it should)",				\
-				 sz, vm.stack->size() );													\
-			goto fail;																\
-		}																		\
-		if( vm.stack->has_none( sz ) ) {														\
-			VM_FAIL( "Stack contains value of None which cannot be used" );										\
-			goto fail;																\
-		}																		\
+#define VERIFY_STACK_MIN( sz )														\
+	do {																\
+		if( vm.stack->size() < sz ) {												\
+			VM_FAIL( "expected vm stack size to be %zu, but is %zu (verify that a function is returning what it should)",	\
+				 sz, vm.stack->size() );										\
+			goto fail;													\
+		}															\
+		if( vm.stack->has_none( sz ) ) {											\
+			VM_FAIL( "Stack contains value of None which cannot be used" );							\
+			goto fail;													\
+		}															\
 	} while( 0 )
 
 #endif // VM_VM_STACK_HPP

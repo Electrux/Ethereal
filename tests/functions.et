@@ -1,0 +1,15 @@
+fn fn3() {
+	println( 'hi' );
+}
+
+fn fn2( v ) {
+	println( v );
+}
+
+fn fn1() {
+	v = [];
+	fn3();
+	fn2( v );
+}
+
+fn1();

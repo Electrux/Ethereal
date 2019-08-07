@@ -65,7 +65,7 @@ fi
 
 # Libraries
 for l in "core" "fs" "math" "os" "set" "str" "vec"; do
-	echo "Building libray: $l ..."
+	echo "Building library: $l ..."
 	install_name=""
 	if [[ "$os" == "Darwin" ]]; then
 		install_name="-Wl,-install_name -Wl,@rpath/lib$l.so"

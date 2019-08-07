@@ -17,6 +17,7 @@
 
 enum VarType
 {
+	VT_NONE,
 	VT_INT,
 	VT_STR,
 	VT_FLT,
@@ -71,6 +72,19 @@ public:
 			var = nullptr;				\
 		}						\
 	} while( 0 )
+
+class var_none_t : public var_base_t
+{
+public:
+	var_none_t( const int parse_ctr );
+
+	std::string to_str() const;
+	mpz_class to_int() const;
+	bool to_bool() const;
+	var_base_t * copy( const int parse_ctr );
+	void assn( var_base_t * b );
+};
+#define AS_NONE( x ) static_cast< var_none_t * >( x )
 
 class var_int_t : public var_base_t
 {

@@ -10,7 +10,8 @@
 #include "Base.hpp"
 
 var_struct_def_t::var_struct_def_t( const std::string & name, std::vector< std::string > & pos,
-				    std::unordered_map< std::string, var_base_t * > & val, const int parse_ctr )
+				    std::unordered_map< std::string, var_base_t * > & val,
+				    const int parse_ctr )
 	: var_base_t( VT_STRUCT, parse_ctr, false ), m_name( name ), m_pos( pos ), m_val( val ) {}
 var_struct_def_t::~var_struct_def_t()
 {

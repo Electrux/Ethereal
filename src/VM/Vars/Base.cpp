@@ -10,6 +10,7 @@
 #include "Base.hpp"
 
 const char * VarTypeStrs[ _VT_LAST ] = {
+	"none",
 	"int",
 	"str",
 	"flt",

@@ -26,7 +26,7 @@ stmt_block_t * parse_block( src_t & src, parse_helper_t * ph, std::vector< Gramm
 	ph->next();
 	block = parse( src, ph, parents, end_brace );
 	if( block == nullptr ) return nullptr;
-	return new stmt_block_t( block, tok_ctr );
+	return new stmt_block_t( block, tok_ctr, parents.size() > 0 && parents.back() == GRAM_FUNC );
 }
 
 bool stmt_block_t::bytecode( src_t & src ) const
@@ -36,6 +36,9 @@ bool stmt_block_t::bytecode( src_t & src ) const
 	INC_SCOPE();
 	for( auto & stmt : * m_stmts ) {
 		if( !stmt->bytecode( src ) ) return false;
+	}
+	if( m_in_func && src.bcode.back().opcode != IC_RETURN && src.bcode.back().opcode != IC_RETURN_EMPTY ) {
+		src.bcode.push_back( { m_tok_ctr, line, col, IC_PUSH, { OP_NONE, "" } } );
 	}
 	DEC_SCOPE();
 	return true;

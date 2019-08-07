@@ -52,31 +52,31 @@ var_base_t * var_file_t::copy( const int parse_ctr )
 
 FILE * & var_file_t::get() { return m_file; }
 
-var_base_t * file_open( vm_state_t & vm )
+var_base_t * file_open( vm_state_t & vm, func_call_data_t & fcd )
 {
-	const std::string & file = AS_STR( vm.args[ 0 ] )->get();
-	const std::string & mode = AS_STR( vm.args[ 1 ] )->get();
+	const std::string & file = AS_STR( fcd.args[ 0 ] )->get();
+	const std::string & mode = AS_STR( fcd.args[ 1 ] )->get();
 	return new var_file_t(
 		fopen( file.c_str(), mode.c_str() ),
-		vm.args[ 0 ]->parse_ctr()
+		fcd.args[ 0 ]->parse_ctr()
 	);
 }
 
-var_base_t * file_write( vm_state_t & vm )
+var_base_t * file_write( vm_state_t & vm, func_call_data_t & fcd )
 {
-	FILE * & f = AS_FILE( vm.args[ 0 ] )->get();
-	if( f == nullptr ) return new var_bool_t( false, vm.args[ 0 ]->parse_ctr() );
-	size_t sz = vm.args.size();
+	FILE * & f = AS_FILE( fcd.args[ 0 ] )->get();
+	if( f == nullptr ) return new var_bool_t( false, fcd.args[ 0 ]->parse_ctr() );
+	size_t sz = fcd.args.size();
 	for( size_t i = 1; i < sz; ++i ) {
-		fprintf( f, "%s", vm.args[ i ]->to_str().c_str() );
+		fprintf( f, "%s", fcd.args[ i ]->to_str().c_str() );
 	}
-	return new var_bool_t( true, vm.args[ 0 ]->parse_ctr() );
+	return new var_bool_t( true, fcd.args[ 0 ]->parse_ctr() );
 }
 
-var_base_t * file_read( vm_state_t & vm )
+var_base_t * file_read( vm_state_t & vm, func_call_data_t & fcd )
 {
-	FILE * & f = AS_FILE( vm.args[ 0 ] )->get();
-	if( f == nullptr ) return new var_bool_t( false, vm.args[ 0 ]->parse_ctr() );
+	FILE * & f = AS_FILE( fcd.args[ 0 ] )->get();
+	if( f == nullptr ) return new var_bool_t( false, fcd.args[ 0 ]->parse_ctr() );
 
 	char * line = NULL;
 	size_t len = 0;
@@ -85,7 +85,7 @@ var_base_t * file_read( vm_state_t & vm )
 
 	if( ( read = getline( & line, & len, f ) ) == -1 ) {
 		if( line ) free( line );
-		return new var_bool_t( false, vm.args[ 0 ]->parse_ctr() );
+		return new var_bool_t( false, fcd.args[ 0 ]->parse_ctr() );
 	}
 
 	line_str = line;
@@ -94,15 +94,15 @@ var_base_t * file_read( vm_state_t & vm )
 	}
 	if( line ) free( line );
 
-	AS_STR( vm.args[ 1 ] )->get() = line_str;
+	AS_STR( fcd.args[ 1 ] )->get() = line_str;
 
-	return new var_bool_t( true, vm.args[ 0 ]->parse_ctr() );
+	return new var_bool_t( true, fcd.args[ 0 ]->parse_ctr() );
 }
 
-var_base_t * file_read_full( vm_state_t & vm )
+var_base_t * file_read_full( vm_state_t & vm, func_call_data_t & fcd )
 {
-	FILE * & f = AS_FILE( vm.args[ 0 ] )->get();
-	if( f == nullptr ) return new var_bool_t( false, vm.args[ 0 ]->parse_ctr() );
+	FILE * & f = AS_FILE( fcd.args[ 0 ] )->get();
+	if( f == nullptr ) return new var_bool_t( false, fcd.args[ 0 ]->parse_ctr() );
 
 	char * line = NULL;
 	size_t len = 0;
@@ -115,20 +115,20 @@ var_base_t * file_read_full( vm_state_t & vm )
 		if( line_str.size() > 0 && line_str.back() == '\n' ) {
 			line_str.erase( line_str.end() - 1 );
 		}
-		lines.push_back( new var_str_t( line_str, vm.args[ 0 ]->parse_ctr() ) );
+		lines.push_back( new var_str_t( line_str, fcd.args[ 0 ]->parse_ctr() ) );
 	}
 
 	if( line ) free( line );
 
-	AS_VEC( vm.args[ 1 ] )->clear();
-	AS_VEC( vm.args[ 1 ] )->get() = lines;
+	AS_VEC( fcd.args[ 1 ] )->clear();
+	AS_VEC( fcd.args[ 1 ] )->get() = lines;
 
-	return new var_bool_t( true, vm.args[ 0 ]->parse_ctr() );
+	return new var_bool_t( true, fcd.args[ 0 ]->parse_ctr() );
 }
 
-var_base_t * is_open( vm_state_t & vm )
+var_base_t * is_open( vm_state_t & vm, func_call_data_t & fcd )
 {
-	return new var_bool_t( AS_FILE( vm.args[ 0 ] )->get() != NULL, vm.args[ 0 ]->parse_ctr() );
+	return new var_bool_t( AS_FILE( fcd.args[ 0 ] )->get() != NULL, fcd.args[ 0 ]->parse_ctr() );
 }
 
 void get_entries_internal( const std::string & dir_str, std::vector< var_base_t * > & v, const size_t & flags, const int parse_ctr )
@@ -154,14 +154,14 @@ void get_entries_internal( const std::string & dir_str, std::vector< var_base_t 
 	closedir( dir );
 }
 
-var_base_t * get_entries( vm_state_t & vm )
+var_base_t * get_entries( vm_state_t & vm, func_call_data_t & fcd )
 {
 	std::vector< var_base_t * > v;
-	std::string dir_str = AS_STR( vm.args[ 1 ] )->get();
-	size_t flags = vm.args.size() <= 2 ? 1 : mpz_to_size_t( AS_INT( vm.args[ 2 ] )->get() );
+	std::string dir_str = AS_STR( fcd.args[ 1 ] )->get();
+	size_t flags = fcd.args.size() <= 2 ? 1 : mpz_to_size_t( AS_INT( fcd.args[ 2 ] )->get() );
 	if( dir_str.size() > 0 && dir_str.back() != '/' ) dir_str += "/";
-	get_entries_internal( dir_str, v, flags, vm.args[ 1 ]->parse_ctr() );
-	return new var_vec_t( v, vm.args[ 0 ]->parse_ctr() );
+	get_entries_internal( dir_str, v, flags, fcd.args[ 1 ]->parse_ctr() );
+	return new var_vec_t( v, fcd.args[ 0 ]->parse_ctr() );
 }
 
 REGISTER_MODULE( fs )

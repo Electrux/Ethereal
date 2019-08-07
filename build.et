@@ -35,8 +35,8 @@ if args.len() > 1 && args.find( 'debug' ) >= 0 || args.find( 'memlog' ) >= 0 {
 }
 
 
-if args.len() > 1 && argv.find( 'install' ) >= 0 || self_prefix == true {
-	if os.get_env( 'EUID' ) == 0 || os.base_name == 'osx' {
+if args.len() > 1 && args.find( 'install' ) >= 0 || self_prefix == true {
+	if os.get_env( 'EUID' ).empty() || os.name == 'osx' {
 		#os.install( 'buildfiles/et', os.get_env( 'PREFIX' ) + '/bin/' );
 	} else {
 		cprintln( '{r}Run as root to install the built files{0}' );

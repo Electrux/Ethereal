@@ -33,6 +33,8 @@ int exec_internal( vm_state_t & vm, long begin, long end, var_base_t * ret )
 	std::vector< fn_blk_t > fn_blks;
 	std::vector< std::vector< std::string > > fn_args;
 
+	func_call_data_t func_call_data;
+
 #ifdef DEBUG_MODE
 	typedef std::chrono::high_resolution_clock clk_t;
 	std::chrono::time_point< clk_t > start = clk_t::now();
@@ -59,6 +61,8 @@ int exec_internal( vm_state_t & vm, long begin, long end, var_base_t * ret )
 			var_base_t * val = nullptr;
 			if( ins.oper.type == OP_STR ) {
 				val = vm.vars->get( ins.oper.val );
+			} else if( ins.oper.type == OP_NONE ) {
+				val = vm.none;
 			} else {
 				val = vm.consts->get( ins.oper.val, ins.oper.type, ins.parse_ctr );
 			}
@@ -72,8 +76,8 @@ int exec_internal( vm_state_t & vm, long begin, long end, var_base_t * ret )
 		}
 		case IC_POP: {
 			if( vm.stack->size() == 0 ) {
-				// just break, it's most likely a function which didn't return anything
-				break;
+				VM_FAIL( "cannot pop from vm stack since it is already empty" );
+				goto fail;
 			}
 			vm.stack->pop_back();
 			break;
@@ -212,7 +216,7 @@ int exec_internal( vm_state_t & vm, long begin, long end, var_base_t * ret )
 		}
 		case IC_FN_CALL: // fallthrough
 		case IC_MFN_CALL: {
-			int res = CallFunc( vm, i );
+			int res = CallFunc( vm, func_call_data, i );
 			if( res != E_OK ) goto fail;
 			if( vm.exit_called ) return E_OK;
 			break;
@@ -461,9 +465,14 @@ tmp_fail:
 		}
 		case IC_RETURN: // fallthrough
 		case IC_RETURN_EMPTY: {
-			std::vector< void * > locs;
-			vm.vars->pop_scope( & locs, std::stoi( ins.oper.val ) );
-			for( auto & loc : locs ) VAR_DREF( loc );
+			if( ins.oper.val != "0" ) {
+				std::vector< void * > locs;
+				vm.vars->pop_scope( & locs, std::stoi( ins.oper.val ) );
+				for( auto & loc : locs ) VAR_DREF( loc );
+			}
+			if( ins.opcode == IC_RETURN_EMPTY ) {
+				vm.stack->push_back( vm.none );
+			}
 			return E_OK;
 		}
 		case _IC_LAST: {}

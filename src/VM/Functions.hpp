@@ -16,8 +16,9 @@
 
 class var_base_t;
 struct vm_state_t;
+struct func_call_data_t;
 
-typedef var_base_t * ( * modfnptr_t )( vm_state_t & vm );
+typedef var_base_t * ( * modfnptr_t )( vm_state_t & vm, func_call_data_t & fcd );
 struct langfn_t
 {
 	const char * src;

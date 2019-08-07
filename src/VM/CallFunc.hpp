@@ -12,6 +12,6 @@
 
 #include "Core.hpp"
 
-int CallFunc( vm_state_t & vm, const int ins_ctr );
+int CallFunc( vm_state_t & vm, func_call_data_t & fd, const int ins_ctr );
 
 #endif // VM_CALL_FUNC_HPP

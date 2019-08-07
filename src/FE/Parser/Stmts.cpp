@@ -190,8 +190,9 @@ void stmt_struct_t::disp( const bool has_next ) const
 /////////////////////////////////////////// Block /////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 
-stmt_block_t::stmt_block_t( std::vector< stmt_base_t * > * stmts, const int tok_ctr )
-	: stmt_base_t( GRAM_BLOCK, tok_ctr ), m_stmts( stmts ) {}
+stmt_block_t::stmt_block_t( std::vector< stmt_base_t * > * stmts, const int tok_ctr,
+			    const bool in_func )
+	: stmt_base_t( GRAM_BLOCK, tok_ctr ), m_stmts( stmts ), m_in_func( in_func ) {}
 
 stmt_block_t::~stmt_block_t()
 {
@@ -202,7 +203,7 @@ stmt_block_t::~stmt_block_t()
 void stmt_block_t::disp( const bool has_next ) const
 {
 	IO::tab_add( has_next );
-	IO::print( has_next, "Block at: %x\n", this );
+	IO::print( has_next, "Block at: %x (in function: %s)\n", this, m_in_func ? "yes" : "no" );
 
 	for( size_t i = 0; i < m_stmts->size(); ++i ) {
 		( * m_stmts )[ i ]->disp( i != m_stmts->size() - 1 );

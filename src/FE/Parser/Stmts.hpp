@@ -142,8 +142,9 @@ public:
 class stmt_block_t : public stmt_base_t
 {
 	std::vector< stmt_base_t * > * m_stmts;
+	bool m_in_func;
 public:
-	stmt_block_t( std::vector< stmt_base_t * > * stmts, const int tok_ctr );
+	stmt_block_t( std::vector< stmt_base_t * > * stmts, const int tok_ctr, const bool in_func = false );
 	~stmt_block_t();
 	void disp( const bool has_next ) const;
 	bool bytecode( src_t & src ) const;

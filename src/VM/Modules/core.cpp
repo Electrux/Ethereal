@@ -68,56 +68,53 @@ void apply_colors( std::string & str )
 	}
 }
 
-var_base_t * print( vm_state_t & vm )
+var_base_t * print( vm_state_t & vm, func_call_data_t & fcd )
 {
-	for( auto & v : vm.args ) {
+	for( auto & v : fcd.args ) {
 		fprintf( stdout, "%s", v->to_str().c_str() );
 	}
-	fflush( stdout );
 	return nullptr;
 }
 
-var_base_t * println( vm_state_t & vm )
+var_base_t * println( vm_state_t & vm, func_call_data_t & fcd )
 {
-	for( auto & v : vm.args ) {
+	for( auto & v : fcd.args ) {
 		fprintf( stdout, "%s", v->to_str().c_str() );
 	}
 	fprintf( stdout, "\n" );
 	return nullptr;
 }
 
-var_base_t * dprint( vm_state_t & vm )
+var_base_t * dprint( vm_state_t & vm, func_call_data_t & fcd )
 {
-	for( auto & v : vm.args ) {
+	for( auto & v : fcd.args ) {
 		fprintf( stderr, "%s", v->to_str().c_str() );
 	}
-	fflush( stderr );
 	return nullptr;
 }
 
-var_base_t * dprintln( vm_state_t & vm )
+var_base_t * dprintln( vm_state_t & vm, func_call_data_t & fcd )
 {
-	for( auto & v : vm.args ) {
+	for( auto & v : fcd.args ) {
 		fprintf( stderr, "%s", v->to_str().c_str() );
 	}
 	fprintf( stderr, "\n" );
 	return nullptr;
 }
 
-var_base_t * cprint( vm_state_t & vm )
+var_base_t * cprint( vm_state_t & vm, func_call_data_t & fcd )
 {
-	for( auto & v : vm.args ) {
+	for( auto & v : fcd.args ) {
 		std::string data = v->to_str();
 		apply_colors( data );
 		fprintf( stdout, "%s", data.c_str() );
 	}
-	fflush( stdout );
 	return nullptr;
 }
 
-var_base_t * cprintln( vm_state_t & vm )
+var_base_t * cprintln( vm_state_t & vm, func_call_data_t & fcd )
 {
-	for( auto & v : vm.args ) {
+	for( auto & v : fcd.args ) {
 		std::string data = v->to_str();
 		apply_colors( data );
 		fprintf( stdout, "%s", data.c_str() );
@@ -126,39 +123,39 @@ var_base_t * cprintln( vm_state_t & vm )
 	return nullptr;
 }
 
-var_base_t * scan( vm_state_t & vm )
+var_base_t * scan( vm_state_t & vm, func_call_data_t & fcd )
 {
-	if( vm.args.size() > 0 ) fprintf( stdout, "%s", vm.args[ 0 ]->to_str().c_str() );
+	if( fcd.args.size() > 0 ) fprintf( stdout, "%s", fcd.args[ 0 ]->to_str().c_str() );
 	char str[ MAX_C_STR_LEN ];
 	fgets( str, MAX_C_STR_LEN, stdin );
 	std::string res( str );
 	while( res.back() == '\n' ) res.pop_back();
 	while( res.back() == '\r' ) res.pop_back();
-	return new var_str_t( res, vm.args[ 0 ]->parse_ctr() );
+	return new var_str_t( res, fcd.args[ 0 ]->parse_ctr() );
 }
 
-var_base_t * type( vm_state_t & vm )
+var_base_t * type( vm_state_t & vm, func_call_data_t & fcd )
 {
-	return new var_str_t( vm.args[ 0 ]->type_str(), vm.args[ 0 ]->parse_ctr() );
+	return new var_str_t( fcd.args[ 0 ]->type_str(), fcd.args[ 0 ]->parse_ctr() );
 }
 
-var_base_t * _exit( vm_state_t & vm )
+var_base_t * _exit( vm_state_t & vm, func_call_data_t & fcd )
 {
 	vm.exit_called = true;
-	vm.exit_status = vm.args.size() == 0 ? 0 : vm.args[ 0 ]->to_int().get_si();
+	vm.exit_status = fcd.args.size() == 0 ? 0 : fcd.args[ 0 ]->to_int().get_si();
 	return nullptr;
 }
 
-var_base_t * _assert( vm_state_t & vm )
+var_base_t * _assert( vm_state_t & vm, func_call_data_t & fcd )
 {
-	if( vm.args[ 0 ]->to_bool() ) { return nullptr; }
+	if( fcd.args[ 0 ]->to_bool() ) { return nullptr; }
 	src_t & src = * vm.srcstack.back();
 	int line = src.bcode[ vm.bcodectr.back() ].line;
 	int col = src.bcode[ vm.bcodectr.back() ].col;
 	std::string op;
-	int sz = vm.args.size();
+	int sz = fcd.args.size();
 	for( int i = 1; i < sz; ++i ) {
-		op += vm.args[ i ]->to_str();
+		op += fcd.args[ i ]->to_str();
 	}
 	src_fail( src.name, src.code[ line - 1 ], line, col, "assertion failed: %s", op.c_str() );
 	vm.exit_called = true;
@@ -166,15 +163,15 @@ var_base_t * _assert( vm_state_t & vm )
 	return nullptr;
 }
 
-var_base_t * var_exists( vm_state_t & vm )
+var_base_t * var_exists( vm_state_t & vm, func_call_data_t & fcd )
 {
-	return new var_bool_t( vm.vars->exists( vm.args[ 0 ]->to_str(), true ), vm.args[ 0 ]->parse_ctr() );
+	return new var_bool_t( vm.vars->exists( fcd.args[ 0 ]->to_str(), true ), fcd.args[ 0 ]->parse_ctr() );
 }
 
-var_base_t * var_ref_count( vm_state_t & vm )
+var_base_t * var_ref_count( vm_state_t & vm, func_call_data_t & fcd )
 {
-	if( !vm.vars->exists( vm.args[ 0 ]->to_str(), true ) ) return new var_int_t( -1, vm.args[ 0 ]->parse_ctr() );
-	return new var_int_t( vm.vars->get( vm.args[ 0 ]->to_str() )->ref(), vm.args[ 0 ]->parse_ctr() );
+	if( !vm.vars->exists( fcd.args[ 0 ]->to_str(), true ) ) return new var_int_t( -1, fcd.args[ 0 ]->parse_ctr() );
+	return new var_int_t( vm.vars->get( fcd.args[ 0 ]->to_str() )->ref(), fcd.args[ 0 ]->parse_ctr() );
 }
 
 REGISTER_MODULE( core )

@@ -32,7 +32,8 @@ struct vm_state_t
 
 	std::vector< int > bcodectr;
 
-	std::vector< var_base_t * > args;
+// TODO: add none, true, false here and in vm.vars
+	var_none_t * none;
 
 	src_stack_t srcstack;
 	srcs_t srcs;
@@ -49,6 +50,16 @@ struct vm_state_t
 
 	vm_state_t();
 	~vm_state_t();
+};
+
+// for CallFunc()
+struct func_call_data_t
+{
+	std::string fn_name;
+	int args_count;
+	std::vector< std::string > arg_types;
+	std::vector< var_base_t * > args;
+	std::vector< void * > rem_locs;
 };
 
 #define VM_FAIL( ... ) src_fail( src.name, src.code[ ins.line - 1 ], \

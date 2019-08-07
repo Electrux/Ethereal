@@ -1,3 +1,5 @@
+#!./buildfiles/et
+
 import os;
 import str;
 import cxxproj;

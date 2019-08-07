@@ -171,6 +171,12 @@ var_base_t * var_exists( vm_state_t & vm )
 	return new var_bool_t( vm.vars->exists( vm.args[ 0 ]->to_str(), true ), vm.args[ 0 ]->parse_ctr() );
 }
 
+var_base_t * var_ref_count( vm_state_t & vm )
+{
+	if( !vm.vars->exists( vm.args[ 0 ]->to_str(), true ) ) return new var_int_t( -1, vm.args[ 0 ]->parse_ctr() );
+	return new var_int_t( vm.vars->get( vm.args[ 0 ]->to_str() )->ref(), vm.args[ 0 ]->parse_ctr() );
+}
+
 REGISTER_MODULE( core )
 {
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -186,6 +192,7 @@ REGISTER_MODULE( core )
 	vm.funcs.add( { "exit",       0,  1, { "_any_" }, FnType::MODULE, { .modfn = _exit }, false } );
 	vm.funcs.add( { "assert",     2,  -1, { "_any_", "_whatever_" }, FnType::MODULE, { .modfn = _assert }, false } );
 	vm.funcs.add( { "var_exists", 1,  1, { "str" }, FnType::MODULE, { .modfn = var_exists }, true } );
+	vm.funcs.add( { "var_ref_count", 1,  1, { "_any_" }, FnType::MODULE, { .modfn = var_ref_count }, true } );
 
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////// INT ////////////////////////////////////////////////////////////////

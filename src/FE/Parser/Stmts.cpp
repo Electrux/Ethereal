@@ -62,14 +62,15 @@ void stmt_simple_t::disp( const bool has_next ) const
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 
 stmt_enum_t::stmt_enum_t( const tok_t * name, const std::vector< tok_t * > & vals,
-			  const int tok_ctr )
-	: stmt_base_t( GRAM_ENUM, tok_ctr ), m_name( name ), m_vals( vals ) {}
+			  const bool is_mask, const int tok_ctr )
+	: stmt_base_t( GRAM_ENUM, tok_ctr ), m_name( name ), m_vals( vals ),
+	  m_is_mask( is_mask ) {}
 stmt_enum_t::~stmt_enum_t() {}
 
 void stmt_enum_t::disp( const bool has_next ) const
 {
 	IO::tab_add( has_next );
-	IO::print( has_next, "Enum at: %x\n", this );
+	IO::print( has_next, "Enum at: %x (is mask: %s)\n", this, m_is_mask ? "yes" : "no" );
 
 	IO::tab_add( false );
 	IO::print( true, "Name: %s\n", m_name->data.c_str() );

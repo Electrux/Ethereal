@@ -29,7 +29,7 @@ parse_tree_t * parse( src_t & src, parse_helper_t * pre_ph, std::vector< Grammar
 			goto fail;
 		}
 		stmt_base_t * res = nullptr;
-		if( ph->peak()->type == TOK_ENUM ) {
+		if( ph->peak()->type == TOK_ENUM || ph->peak()->type == TOK_ENUM_MASK ) {
 			res = parse_enum( src, ph );
 		} else if( ph->peak()->type == TOK_LDMOD ) {
 			res = parse_ldmod( src, ph );

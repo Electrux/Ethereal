@@ -1,6 +1,6 @@
 ldmod fs;
 
-enum _FSEnt {
+enum_mask _FSEnt {
 	FILES,
 	DIRS,
 	RECURSE,

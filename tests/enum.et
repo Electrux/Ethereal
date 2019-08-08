@@ -7,4 +7,13 @@ enum SomeEnum
 	E5,
 }
 
+enum_mask SomeEnumMask
+{
+	E1,
+	E2,
+	E3,
+	E4,
+	E5,
+}
+
 enum SomeEnum2 { E6, E7, E8, E9 }

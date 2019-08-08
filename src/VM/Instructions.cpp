@@ -22,6 +22,7 @@ const char * InstrCodeStrs[ _IC_LAST ] = {
 	"JUMP_FALSE",
 
 	"BUILD_ENUM",
+	"BUILD_ENUM_MASK",
 	"BUILD_VEC",
 	"BUILD_MAP",
 	"BUILD_STRUCT",

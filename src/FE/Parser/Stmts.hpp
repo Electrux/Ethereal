@@ -78,9 +78,10 @@ class stmt_enum_t : public stmt_base_t
 {
 	const tok_t * m_name;
 	const std::vector< tok_t * > m_vals;
+	bool m_is_mask;
 public:
 	stmt_enum_t( const tok_t * name, const std::vector< tok_t * > & vals,
-		     const int tok_ctr );
+		     const bool is_mask, const int tok_ctr );
 	~stmt_enum_t();
 	void disp( const bool has_next ) const;
 	bool bytecode( src_t & src ) const;

@@ -14,6 +14,9 @@ stmt_enum_t * parse_enum( const src_t & src, parse_helper_t * ph )
 {
 	int tok_ctr = ph->tok_ctr();
 
+	bool is_mask = false;
+	if( ph->peak()->type == TOK_ENUM_MASK ) is_mask = true;
+
 	const tok_t * name = nullptr;
 
 	NEXT_VALID( TOK_IDEN );
@@ -36,7 +39,7 @@ val_begin:
 
 	NEXT_VALID( TOK_RBRACE );
 	// now at RBRACE
-	return new stmt_enum_t( name, vals, tok_ctr );
+	return new stmt_enum_t( name, vals, is_mask, tok_ctr );
 }
 
 bool stmt_enum_t::bytecode( src_t & src ) const
@@ -45,6 +48,7 @@ bool stmt_enum_t::bytecode( src_t & src ) const
 		src.bcode.push_back( { m_tok_ctr, ( * v )->line, ( * v )->col, IC_PUSH, { OP_CONST, ( * v )->data } } );
 	}
 	src.bcode.push_back( { m_tok_ctr, m_name->line, m_name->col, IC_PUSH, { OP_CONST, m_name->data } } );
-	src.bcode.push_back( { m_tok_ctr, m_name->line, m_name->col, IC_BUILD_ENUM, { OP_INT, std::to_string( m_vals.size() ) } } );
+	src.bcode.push_back( { m_tok_ctr, m_name->line, m_name->col, m_is_mask ? IC_BUILD_ENUM_MASK : IC_BUILD_ENUM,
+			       { OP_INT, std::to_string( m_vals.size() ) } } );
 	return true;
 }

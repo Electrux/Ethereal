@@ -312,7 +312,8 @@ tmp_fail:
 			if( manual_del_var ) VAR_DREF( var );
 			goto fail;
 		}
-		case IC_BUILD_ENUM: {
+		case IC_BUILD_ENUM: // fallthrough
+		case IC_BUILD_ENUM_MASK: {
 			std::string name = vm.stack->back()->to_str();
 			vm.stack->pop_back();
 			if( vm.vars->exists( name, true ) ) {
@@ -324,9 +325,18 @@ tmp_fail:
 			int count = std::stoi( ins.oper.val );
 			VERIFY_STACK_MIN( ( size_t )count );
 			std::unordered_map< std::string, var_int_t * > map;
-			for( int j = 0; j < count; ++j ) {
-				map[ vm.stack->back()->to_str() ] = new var_int_t( mpz_class( 1 ) << j, vm.stack->back()->parse_ctr() );
-				vm.stack->pop_back();
+			if( ins.opcode == IC_BUILD_ENUM_MASK ) {
+				mpz_class mask = 1;
+				while( count-- > 0 ) {
+					map[ vm.stack->back()->to_str() ] = new var_int_t( mask, vm.stack->back()->parse_ctr() );
+					vm.stack->pop_back();
+					mask <<= 1;
+				}
+			} else {
+				for( int j = 0; j < count; ++j ) {
+					map[ vm.stack->back()->to_str() ] = new var_int_t( j, vm.stack->back()->parse_ctr() );
+					vm.stack->pop_back();
+				}
 			}
 			vm.vars->add( name, new var_enum_t( name, map, ins.parse_ctr ) );
 			break;

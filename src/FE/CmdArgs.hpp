@@ -27,6 +27,7 @@ extern const size_t OPT_P; // show parse tree
 extern const size_t OPT_R; // recursively show everything (ex. FrontEnd->VM->Import->FrontEnd...)
 extern const size_t OPT_S;
 extern const size_t OPT_T; // show tokens
+extern const size_t OPT_V; // show version
 extern const size_t OPT_1;
 
 size_t cmd_get_args( const int argc, const char ** argv, std::vector< std::string > & args );

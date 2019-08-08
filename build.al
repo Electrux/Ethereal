@@ -12,6 +12,7 @@ if( "${PREFIX}" == "" ) {
 }
 
 builds.add_flags( "-fPIC", "-Wall", "-Wextra", "-Wno-unused-parameter",
+		  "-DVERSION_MAIN=0", "-DVERSION_SUB=0", "-DVERSION_PATCH=1",
 		  "-DBUILD_PREFIX_DIR=${PREFIX}", "-Wl,-rpath,${PREFIX}/lib/ethereal/" )
 if( "${CC}" != "g++" ) {
 	builds.add_flags( "-Wno-c99-extensions", "-Wno-unused-command-line-argument" )
@@ -38,9 +39,6 @@ if( "${ARGC}" > 0 && "${ARG_0}" == debug || "${ARG_0}" == memlog ) {
 builds( lib, dynamic ) {
 	builds.add_flags( "-DAS_LIB" )
 	sources( "src/(.*)\.cpp", "-src/VM/Main.cpp", "-src/FE/Main.cpp", "-src/VM/Modules/(.*)\.cpp" )
-	if( "${OS}" == OS_OSX ) {
-		builds.add_flags( "-Wl,-install_name -Wl,@rpath/libet.so" )
-	}
 	build( et, "src/VM/Main.cpp" )
 }
 
@@ -51,35 +49,18 @@ builds( bin ) {
 
 builds( lib, dynamic ) {
 	builds.add_lib_flags( "-let" )
-	if( "${OS}" == OS_OSX ) {
-		builds.add_flags( "-Wl,-install_name -Wl,@rpath/libcore.so" )
-	}
 	build( core, "src/VM/Modules/core.cpp" )
-	if( "${OS}" == OS_OSX ) {
-		builds.add_flags( "-Wl,-install_name -Wl,@rpath/libstr.so" )
-	}
 	build( str, "src/VM/Modules/str.cpp" )
-	if( "${OS}" == OS_OSX ) {
-		builds.add_flags( "-Wl,-install_name -Wl,@rpath/libos.so" )
-	}
 	build( os, "src/VM/Modules/os.cpp" )
-	if( "${OS}" == OS_OSX ) {
-		builds.add_flags( "-Wl,-install_name -Wl,@rpath/libvec.so" )
-	}
 	build( vec, "src/VM/Modules/vec.cpp" )
-	if( "${OS}" == OS_OSX ) {
-		builds.add_flags( "-Wl,-install_name -Wl,@rpath/libfs.so" )
-	}
 	build( fs, "src/VM/Modules/fs.cpp" )
-	if( "${OS}" == OS_OSX ) {
-		builds.add_flags( "-Wl,-install_name -Wl,@rpath/libset.so" )
-	}
 	build( set, "src/VM/Modules/set.cpp" )
 }
 
 if( "${ARGC}" > 0 && "${ARG_0}" == "install" || "${USE_SELF_PREFIX}" == "true" ) {
 	if( "${IS_ROOT}" == "true" || "${OS}" == OS_OSX ) {
 		install( "buildfiles/et", "${PREFIX}/bin/" )
+		install( "include/*", "${PREFIX}/include/" )
 		install( "buildfiles/lib*.so", "${PREFIX}/lib/ethereal/" )
 	} else {
 		print( "{r}Run as root to install the built files{0}\n" )

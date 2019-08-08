@@ -24,7 +24,8 @@ const size_t OPT_P = 1 << 9; // show parse tree
 const size_t OPT_R = 1 << 10; // recursively show everything (ex. FrontEnd->VM->Import->FrontEnd...)
 const size_t OPT_S = 1 << 11;
 const size_t OPT_T = 1 << 12; // show tokens
-const size_t OPT_1 = 1 << 13;
+const size_t OPT_V = 1 << 13; // show version
+const size_t OPT_1 = 1 << 14;
 
 size_t cmd_get_args( const int argc, const char ** argv, std::vector< std::string > & args )
 {
@@ -53,6 +54,7 @@ size_t cmd_get_args( const int argc, const char ** argv, std::vector< std::strin
 			else if( argv[ i ][ j ] == 'r' ) flags |= OPT_R;
 			else if( argv[ i ][ j ] == 's' ) flags |= OPT_S;
 			else if( argv[ i ][ j ] == 't' ) flags |= OPT_T;
+			else if( argv[ i ][ j ] == 'v' ) flags |= OPT_V;
 			else if( argv[ i ][ j ] == '1' ) flags |= OPT_1;
 		}
 	}

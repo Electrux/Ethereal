@@ -19,6 +19,16 @@
 #include "Parser.hpp"
 #include "../VM/VM.hpp"
 
+#ifndef VERSION_MAIN
+#error "VERSION_MAIN is not defined"
+#endif
+#ifndef VERSION_SUB
+#error "VERSION_SUB is not defined"
+#endif
+#ifndef VERSION_PATCH
+#error "VERSION_PATCH is not defined"
+#endif
+
 int main( int argc, char ** argv )
 {
 	std::vector< std::string > args;
@@ -26,6 +36,11 @@ int main( int argc, char ** argv )
 	if( args.size() < 1 ) {
 		fprintf( stdout, "usage: %s [flags] <source file>\n", argv[ 0 ] );
 		return E_FAIL;
+	}
+
+	if( flags & OPT_V ) {
+		fprintf( stdout, "Ethereal: %d.%d.%d\n", VERSION_MAIN, VERSION_SUB, VERSION_PATCH );
+		return E_OK;
 	}
 
 	auto last_slash_loc = args[ 0 ].find_last_of( '/' ) + 1;

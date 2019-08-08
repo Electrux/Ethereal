@@ -98,7 +98,7 @@ fi
 
 echo "Installing files ..."
 $cp_cmd buildfiles/et "$PREFIX_DIR/bin/"
+$cp_cmd buildfiles/lib*.so "$PREFIX_DIR/lib/ethereal/"
 if [[ "$(pwd)" != "$PREFIX_DIR" ]]; then
 	$cp_cmd include/ethereal/* "$PREFIX_DIR/include/ethereal/"
 fi
-$cp_cmd buildfiles/lib*.so "$PREFIX_DIR/lib/ethereal/"

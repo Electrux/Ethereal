@@ -1,0 +1,18 @@
+#!./buildfiles/et
+
+import str;
+
+mfn< int > add_one() {
+	self += 1;
+	return self;
+}
+
+mfn< str > append_( s ) {
+	self += s;
+	println( 'original length: ', self.len() );
+	println( 'length + 1: ', self.len().add_one() );
+	self += s;
+	println( self );
+}
+
+"hi".append_( "1" );

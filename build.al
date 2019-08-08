@@ -59,7 +59,7 @@ builds( lib, dynamic ) {
 
 if( "${ARGC}" > 0 && "${ARG_0}" == "install" || "${USE_SELF_PREFIX}" == "true" ) {
 	if( "${IS_ROOT}" == "true" || "${OS}" == OS_OSX ) {
-		install( "buildfiles/et", "${PREFIX}/bin/" )x
+		install( "buildfiles/et", "${PREFIX}/bin/" )
 		install( "buildfiles/lib*.so", "${PREFIX}/lib/ethereal/" )
 		if( "%{pwd}" != "${PREFIX}" ) {
 			install( "include/*", "${PREFIX}/include/" )

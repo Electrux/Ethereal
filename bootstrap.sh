@@ -32,7 +32,7 @@ fi
 
 find src -name "*.cpp" | grep -v "Modules" | grep -v "Main.cpp" | while read -r src_file; do
 	echo "Compiling: $src_file ..."
-	$compiler -O2 -fPIC -std=c++11 -c $src_file -o buildfiles/$src_file.o -DBUILD_PREFIX_DIR=${PREFIX_DIR}
+	$compiler -O2 -fPIC -std=c++11 -c $src_file -o buildfiles/$src_file.o -DBUILD_PREFIX_DIR=${PREFIX_DIR} -DVERSION_MAIN=0 -DVERSION_SUB=0 -DVERSION_PATCH=1
 	if [[ $? != 0 ]]; then
 		break
 	fi
@@ -51,14 +51,14 @@ if [[ "$os" == "Darwin" ]]; then
 fi
 echo "Building library: et ..."
 $compiler -O2 -fPIC -std=c++11 -shared -o buildfiles/libet.so src/VM/Main.cpp $buildfiles -Wl,-rpath,${PREFIX_DIR}/lib/ethereal \
-	$install_name -L./buildfiles/ -ldl -lgmpxx -lgmp -DBUILD_PREFIX_DIR=${PREFIX_DIR}
+	$install_name -L./buildfiles/ -ldl -lgmpxx -lgmp -DBUILD_PREFIX_DIR=${PREFIX_DIR} -DVERSION_MAIN=0 -DVERSION_SUB=0 -DVERSION_PATCH=1
 if [[ $? != 0 ]]; then
 	exit $?
 fi
 
 echo "Building binary: et ..."
 $compiler -O2 -fPIC -std=c++11 -g -o buildfiles/et src/FE/Main.cpp $buildfiles -Wl,-rpath,${PREFIX_DIR}/lib/ethereal \
-	-L./buildfiles/ -ldl -lgmpxx -lgmp -let -DBUILD_PREFIX_DIR=${PREFIX_DIR}
+	-L./buildfiles/ -ldl -lgmpxx -lgmp -let -DBUILD_PREFIX_DIR=${PREFIX_DIR} -DVERSION_MAIN=0 -DVERSION_SUB=0 -DVERSION_PATCH=1
 if [[ $? != 0 ]]; then
 	exit $?
 fi
@@ -71,7 +71,7 @@ for l in "core" "fs" "math" "os" "set" "str" "vec"; do
 		install_name="-Wl,-install_name -Wl,@rpath/lib$l.so"
 	fi
 	$compiler -O2 -fPIC -std=c++11 -shared -o buildfiles/lib$l.so src/VM/Modules/$l.cpp $buildfiles -Wl,-rpath,${PREFIX_DIR}/lib/ethereal \
-		$install_name -L./buildfiles/ -ldl -lgmpxx -lgmp -let -DBUILD_PREFIX_DIR=${PREFIX_DIR}
+		$install_name -L./buildfiles/ -ldl -lgmpxx -lgmp -let -DBUILD_PREFIX_DIR=${PREFIX_DIR} -DVERSION_MAIN=0 -DVERSION_SUB=0 -DVERSION_PATCH=1
 	if [[ $? != 0 ]]; then
 		exit $?
 	fi

@@ -1,3 +1,5 @@
+#!/.buildfiles/et
+
 fn fn3() {
 	println( 'hi' );
 }

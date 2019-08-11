@@ -1,3 +1,5 @@
+#!/.buildfiles/et
+
 import vec;
 
 fn facto( n ) {

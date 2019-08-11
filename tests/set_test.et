@@ -1,3 +1,5 @@
+#!/.buildfiles/et
+
 import set;
 import vec;
 

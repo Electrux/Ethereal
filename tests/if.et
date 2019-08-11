@@ -1,3 +1,5 @@
+#!/.buildfiles/et
+
 import vec;
 
 a = 5;

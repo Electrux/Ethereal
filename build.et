@@ -36,7 +36,7 @@ if args.len() > 1 && args.find( 'debug' ) >= 0 || args.find( 'memlog' ) >= 0 {
 	eth.add_flags( [ '-march=native', '-O2', '-flto' ] );
 }
 
-if !eth.use_lib( 'dl' ) {
+if !eth.use_lib( 'libdl' ) {
 	println( 'libdl (required) was not found, quitting' );
 	exit( 1 );
 }

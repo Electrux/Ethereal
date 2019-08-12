@@ -64,7 +64,7 @@ if [[ $? != 0 ]]; then
 fi
 
 # Libraries
-for l in "core" "fs" "math" "os" "set" "str" "vec"; do
+for l in "core" "fs" "math" "os" "set" "str" "vec" "map"; do
 	echo "Building library: $l ..."
 	install_name=""
 	if [[ "$os" == "Darwin" ]]; then

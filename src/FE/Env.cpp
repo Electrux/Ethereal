@@ -47,6 +47,6 @@ void DirFormat( std::string & dir )
 		std::string home = GetEnv( "HOME" );
 		dir.insert( dir.begin(), home.begin(), home.end() );
 	}
-	if( dir.back() == '/' ) dir.pop_back();
+	if( dir.size() > 1 && dir.back() == '/' ) dir.pop_back();
 	return;
 }

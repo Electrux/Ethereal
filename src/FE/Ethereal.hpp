@@ -21,6 +21,7 @@
 struct src_t
 {
 	std::string name;
+	std::string dir;
 	std::vector< std::string > code;
 	toks_t toks;
 	std::vector< int > block_depth;

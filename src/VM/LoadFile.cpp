@@ -28,13 +28,16 @@ int load_src( vm_state_t & vm, const std::string & file, const std::string & ali
 	}
 
 	std::string curr_dir = GetCWD();
-	SetCWD( file.substr( 0, last_slash_loc ) );
+	std::string src_dir = file.substr( 0, last_slash_loc );
+	DirFormat( src_dir );
+	SetCWD( src_dir );
 	int err = E_OK;
 	const std::string new_src_str = file.substr( last_slash_loc );
 
 	parse_tree_t * ptree = nullptr;
 	src_t * new_src = new src_t( false );
 	new_src->name = new_src_str;
+	new_src->dir = src_dir;
 	err = tokenize( * new_src );
 	if( err != E_OK ) goto cleanup;
 

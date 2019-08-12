@@ -115,8 +115,8 @@ const char * TokStrs[ _TOK_LAST ] = {
 
 #define SRC_FAIL( ... ) src_fail( src, line, line_num, i + 1, __VA_ARGS__ )
 
-static int tokenize_line( const std::string & src, const std::string & line, const int line_len,
-			  const int line_num, toks_t & toks, const bool is_main_src );
+static int tokenize_line( const std::string & src, const std::string & dir, const std::string & line,
+			  const int line_len, const int line_num, toks_t & toks, const bool is_main_src );
 
 static std::string get_name( const std::string & input, const int input_len, int & i );
 static int classify_str( const std::string & str );
@@ -145,15 +145,15 @@ int tokenize( src_t & src )
 		auto & line = lines[ i ];
 		const int line_len = line.size();
 		if( line_len < 1 || line[ 0 ] == '\n' ) continue;
-		int res = tokenize_line( src.name, line, line_len, i + 1, toks, src.is_main_src );
+		int res = tokenize_line( src.name, src.dir, line, line_len, i + 1, toks, src.is_main_src );
 		if( res != E_OK ) return res;
 	}
 
 	return E_OK;
 }
 
-static int tokenize_line( const std::string & src, const std::string & line, const int line_len,
-			  const int line_num, toks_t & toks, const bool is_main_src )
+static int tokenize_line( const std::string & src, const std::string & dir, const std::string & line,
+			  const int line_len, const int line_num, toks_t & toks, const bool is_main_src )
 {
 	int i = 0;
 	int err = E_OK;
@@ -201,6 +201,8 @@ static int tokenize_line( const std::string & src, const std::string & line, con
 			if( main_src_block ) continue;
 			// check if string is a keyword
 			int kw_or_iden = classify_str( str );
+			// some magic
+			if( str == "__DIR__" ) { str = dir; kw_or_iden = TOK_STR; }
 			toks.emplace_back( line_num, tmp_i, kw_or_iden, str );
 			continue;
 		}

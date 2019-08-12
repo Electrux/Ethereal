@@ -53,6 +53,7 @@ builds( lib, dynamic ) {
 	build( str, "src/VM/Modules/str.cpp" )
 	build( os, "src/VM/Modules/os.cpp" )
 	build( vec, "src/VM/Modules/vec.cpp" )
+	build( map, "src/VM/Modules/map.cpp" )
 	build( fs, "src/VM/Modules/fs.cpp" )
 	build( set, "src/VM/Modules/set.cpp" )
 }

@@ -32,7 +32,12 @@ std::string GetCWD()
 
 void SetCWD( std::string dir )
 {
-	if( dir.empty() ) return;
+	chdir( dir.c_str() );
+}
+
+void DirFormat( std::string & dir )
+{
+	if( dir.empty() ) { dir = "."; return; }
 	if( dir.front() != '/' && dir.front() != '.' && dir.front() != '~') {
 		dir.insert( dir.begin(), '/' );
 		dir.insert( dir.begin(), '.' );
@@ -42,5 +47,6 @@ void SetCWD( std::string dir )
 		std::string home = GetEnv( "HOME" );
 		dir.insert( dir.begin(), home.begin(), home.end() );
 	}
-	chdir( dir.c_str() );
+	if( dir.back() == '/' ) dir.pop_back();
+	return;
 }

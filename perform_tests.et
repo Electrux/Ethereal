@@ -13,7 +13,7 @@ f = 0;
 sz = files.len();
 for i = 0; i < sz; i += 1 {
 	cprint( '{c}performing test{0}: {y}', files[ i ], '{0} ... ' );
-	if os.exec( __prog__ + ' ' + files[ i ] + ' test 1>/dev/null 2>&1' ) == 0 {
+	if os.exec( __PROG__ + ' ' + files[ i ] + ' test 1>/dev/null 2>&1' ) == 0 {
 		cprintln( '{g}passed{0}' );
 		p += 1;
 	} else {

@@ -1,14 +1,23 @@
 import str;
 import vec;
 import fs;
+import os;
 
 struct _cxx_proj_t {
 	flags = [];
+	inc_dirs = [];
 	lib_dirs = [];
 	lib_flags = [];
 }
 
 fn cxx_new_proj() {
+	if os.get_env( 'CC' ).empty() {
+		if os.name == 'linux' {
+			os.set_env( 'CC', 'g++' );
+		} else {
+			os.set_env( 'CC', 'clang++' );
+		}
+	}
 	return _cxx_proj_t{};
 }
 

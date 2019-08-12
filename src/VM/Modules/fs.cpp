@@ -164,6 +164,11 @@ var_base_t * get_entries( vm_state_t & vm, func_call_data_t & fcd )
 	return new var_vec_t( v, fcd.args[ 0 ]->parse_ctr() );
 }
 
+var_base_t * _fexists( vm_state_t & vm, func_call_data_t & fcd )
+{
+	return new var_bool_t( access( fcd.args[ 1 ]->to_str().c_str(), F_OK ) != -1, fcd.args[ 1 ]->parse_ctr() );
+}
+
 REGISTER_MODULE( fs )
 {
 	vm.funcs.add( { "fopen", 2, 2, { "str", "str" }, FnType::MODULE, { .modfn = file_open }, true } );
@@ -176,4 +181,5 @@ REGISTER_MODULE( fs )
 
 	functions_t & fst = vm.typefuncs[ "_fs_t" ];
 	fst.add( { "dir_entries", 1, 2, { "str", "int" }, FnType::MODULE, { .modfn = get_entries }, true } );
+	fst.add( { "fexists", 1, 1, { "str" }, FnType::MODULE, { .modfn = _fexists }, true } );
 }

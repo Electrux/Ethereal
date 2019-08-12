@@ -17,4 +17,6 @@ std::string GetEnv( const std::string & key );
 std::string GetCWD();
 void SetCWD( std::string dir );
 
+void DirFormat( std::string & dir );
+
 #endif // ENV_HPP

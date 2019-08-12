@@ -68,6 +68,18 @@ void apply_colors( std::string & str )
 	}
 }
 
+var_base_t * flush_out( vm_state_t & vm, func_call_data_t & fcd )
+{
+	fflush( stdout );
+	return nullptr;
+}
+
+var_base_t * flush_err( vm_state_t & vm, func_call_data_t & fcd )
+{
+	fflush( stderr );
+	return nullptr;
+}
+
 var_base_t * print( vm_state_t & vm, func_call_data_t & fcd )
 {
 	for( auto & v : fcd.args ) {
@@ -179,6 +191,8 @@ REGISTER_MODULE( core )
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	///////////////////////////////////////////////////////////////// CORE ////////////////////////////////////////////////////////////////
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	vm.funcs.add( { "flush_out",  0,  0, {}, FnType::MODULE, { .modfn = flush_out }, false } );
+	vm.funcs.add( { "flush_err",  0,  0, {}, FnType::MODULE, { .modfn = flush_err }, false } );
 	vm.funcs.add( { "print",      1, -1, { "_whatever_" }, FnType::MODULE, { .modfn = print }, false } );
 	vm.funcs.add( { "println",    0, -1, { "_whatever_" }, FnType::MODULE, { .modfn = println }, false } );
 	vm.funcs.add( { "dprint",     1, -1, { "_whatever_" }, FnType::MODULE, { .modfn = dprint }, false } );

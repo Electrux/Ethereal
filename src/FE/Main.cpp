@@ -46,7 +46,9 @@ int main( int argc, char ** argv )
 	auto last_slash_loc = args[ 0 ].find_last_of( '/' ) + 1;
 	// change current dir to that of file
 	std::string curr_dir = GetCWD();
-	SetCWD( args[ 0 ].substr( 0, last_slash_loc ) );
+	std::string src_dir = args[ 0 ].substr( 0, last_slash_loc );
+	DirFormat( src_dir );
+	SetCWD( src_dir );
 
 	int err = E_OK;
 	const std::string main_src_str = args[ 0 ].substr( last_slash_loc );
@@ -54,6 +56,7 @@ int main( int argc, char ** argv )
 	parse_tree_t * ptree = nullptr;
 	src_t * main_src = new src_t( true );
 	main_src->name = main_src_str;
+	main_src->dir = src_dir;
 	err = tokenize( * main_src );
 	if( err != E_OK ) goto cleanup;
 
@@ -107,7 +110,7 @@ int main( int argc, char ** argv )
 		for( auto & v : args ) {
 			arg_vec.push_back( new var_str_t( v, 0 ) );
 		}
-		vm.vars->add( "__prog__", new var_str_t( argv[ 0 ], 0 ) );
+		vm.vars->add( "__PROG__", new var_str_t( argv[ 0 ], 0 ) );
 		vm.vars->add( "args", new var_vec_t( arg_vec, 0 ) );
 		vm.vars->add( "true", new var_bool_t( true, 0 ) );
 		vm.vars->add( "false", new var_bool_t( false, 0 ) );

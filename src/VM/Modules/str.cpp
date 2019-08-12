@@ -7,6 +7,8 @@
 	before using or altering the project.
 */
 
+#include <cctype>
+
 #include "../Core.hpp"
 
 std::vector< std::string > str_delimit( const std::string & str, const char ch );
@@ -77,6 +79,18 @@ var_base_t * split( vm_state_t & vm, func_call_data_t & fcd )
 	return new var_vec_t( res_b, fcd.args[ 0 ]->parse_ctr() );
 }
 
+var_base_t * trim( vm_state_t & vm, func_call_data_t & fcd )
+{
+	std::string & dat = AS_STR( fcd.args[ 0 ] )->get();
+	while( dat.size() > 0 && isspace( dat.front() ) ) {
+		dat.erase( dat.begin() );
+	}
+	while( dat.size() > 0 && isspace( dat.back() ) ) {
+		dat.pop_back();
+	}
+	return fcd.args[ 0 ];
+}
+
 #define DECL_FUNC_BOOL__STR( name, oper )						\
 	var_base_t * name( vm_state_t & vm, func_call_data_t & fcd )			\
 	{										\
@@ -114,6 +128,7 @@ REGISTER_MODULE( str )
 	strfns.add( { "to_int", 0, 0, {}, FnType::MODULE, { .modfn = to_int }, true } );
 	strfns.add( { "set_at", 2, 2, { "int", "str" }, FnType::MODULE, { .modfn = set_at }, false } );
 	strfns.add( { "split", 0, 1, { "str" }, FnType::MODULE, { .modfn = split }, true } );
+	strfns.add( { "trim", 0, 0, {}, FnType::MODULE, { .modfn = trim }, false } );
 }
 
 std::vector< std::string > str_delimit( const std::string & str, const char ch )

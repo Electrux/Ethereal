@@ -36,6 +36,17 @@ if args.len() > 1 && args.find( 'debug' ) >= 0 || args.find( 'memlog' ) >= 0 {
 	eth.add_flags( [ '-march=native', '-O2', '-flto' ] );
 }
 
+if !eth.use_lib( 'dl' ) {
+	println( 'libdl (required) was not found, quitting' );
+	exit( 1 );
+}
+
+if !eth.use_lib( 'gmpxx' ) {
+	println( 'libgmpxx (required) was not found, quitting' );
+	exit( 1 );
+}
+
+println( eth );
 
 if args.len() > 1 && args.find( 'install' ) >= 0 || self_prefix == true {
 	if os.get_env( 'EUID' ).empty() || os.name == 'osx' {
@@ -44,5 +55,3 @@ if args.len() > 1 && args.find( 'install' ) >= 0 || self_prefix == true {
 		cprintln( '{r}Run as root to install the built files{0}' );
 	}
 }
-
-println( eth );

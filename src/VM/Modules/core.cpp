@@ -151,6 +151,11 @@ var_base_t * type( vm_state_t & vm, func_call_data_t & fcd )
 	return new var_str_t( fcd.args[ 0 ]->type_str(), fcd.args[ 0 ]->parse_ctr() );
 }
 
+var_base_t * to_str( vm_state_t & vm, func_call_data_t & fcd )
+{
+	return new var_str_t( fcd.args[ 0 ]->to_str(), fcd.args[ 0 ]->parse_ctr() );
+}
+
 var_base_t * _exit( vm_state_t & vm, func_call_data_t & fcd )
 {
 	vm.exit_called = true;
@@ -294,4 +299,5 @@ REGISTER_MODULE( core )
 	// global object functions
 	functions_t & anyfns = vm.typefuncs[ "_any_" ];
 	anyfns.add( { "type", 0, 0, {}, FnType::MODULE, { .modfn = type }, true } );
+	anyfns.add( { "to_str", 0, 0, {}, FnType::MODULE, { .modfn = to_str }, true } );
 }

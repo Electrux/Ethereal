@@ -1,0 +1,22 @@
+#!./buildfiles/et
+
+import vec;
+import str;
+
+num = 12;
+
+if args.len() > 1 {
+	num = scan( 'Enter number for integer to binary: ' ).to_int();
+}
+
+bin = '';
+for ; num > 0; {
+	bin = ( num % 2 ).to_str() + bin;
+	num /= 2;
+}
+
+if args.len() > 1 {
+	assert( bin == '1100' );
+} else {
+	println( 'Binary is: ', bin );
+}

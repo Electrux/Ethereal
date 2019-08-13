@@ -65,18 +65,18 @@ var_base_t * file_open( vm_state_t & vm, func_call_data_t & fcd )
 var_base_t * file_write( vm_state_t & vm, func_call_data_t & fcd )
 {
 	FILE * & f = AS_FILE( fcd.args[ 0 ] )->get();
-	if( f == nullptr ) return new var_bool_t( false, fcd.args[ 0 ]->parse_ctr() );
+	if( f == nullptr ) return vm.vars->get( "false" );
 	size_t sz = fcd.args.size();
 	for( size_t i = 1; i < sz; ++i ) {
 		fprintf( f, "%s", fcd.args[ i ]->to_str().c_str() );
 	}
-	return new var_bool_t( true, fcd.args[ 0 ]->parse_ctr() );
+	return vm.vars->get( "true" );
 }
 
 var_base_t * file_read( vm_state_t & vm, func_call_data_t & fcd )
 {
 	FILE * & f = AS_FILE( fcd.args[ 0 ] )->get();
-	if( f == nullptr ) return new var_bool_t( false, fcd.args[ 0 ]->parse_ctr() );
+	if( f == nullptr ) return vm.vars->get( "false" );
 
 	char * line = NULL;
 	size_t len = 0;
@@ -85,7 +85,7 @@ var_base_t * file_read( vm_state_t & vm, func_call_data_t & fcd )
 
 	if( ( read = getline( & line, & len, f ) ) == -1 ) {
 		if( line ) free( line );
-		return new var_bool_t( false, fcd.args[ 0 ]->parse_ctr() );
+		return vm.vars->get( "false" );
 	}
 
 	line_str = line;
@@ -96,13 +96,13 @@ var_base_t * file_read( vm_state_t & vm, func_call_data_t & fcd )
 
 	AS_STR( fcd.args[ 1 ] )->get() = line_str;
 
-	return new var_bool_t( true, fcd.args[ 0 ]->parse_ctr() );
+	return vm.vars->get( "true" );
 }
 
 var_base_t * file_read_full( vm_state_t & vm, func_call_data_t & fcd )
 {
 	FILE * & f = AS_FILE( fcd.args[ 0 ] )->get();
-	if( f == nullptr ) return new var_bool_t( false, fcd.args[ 0 ]->parse_ctr() );
+	if( f == nullptr ) return vm.vars->get( "false" );
 
 	char * line = NULL;
 	size_t len = 0;
@@ -123,12 +123,12 @@ var_base_t * file_read_full( vm_state_t & vm, func_call_data_t & fcd )
 	AS_VEC( fcd.args[ 1 ] )->clear();
 	AS_VEC( fcd.args[ 1 ] )->get() = lines;
 
-	return new var_bool_t( true, fcd.args[ 0 ]->parse_ctr() );
+	return vm.vars->get( "true" );
 }
 
 var_base_t * is_open( vm_state_t & vm, func_call_data_t & fcd )
 {
-	return new var_bool_t( AS_FILE( fcd.args[ 0 ] )->get() != NULL, fcd.args[ 0 ]->parse_ctr() );
+	return AS_FILE( fcd.args[ 0 ] )->get() != NULL ? vm.vars->get( "true" ) : vm.vars->get( "false" );
 }
 
 void get_entries_internal( const std::string & dir_str, std::vector< var_base_t * > & v, const size_t & flags, const int parse_ctr )
@@ -166,7 +166,7 @@ var_base_t * get_entries( vm_state_t & vm, func_call_data_t & fcd )
 
 var_base_t * _fexists( vm_state_t & vm, func_call_data_t & fcd )
 {
-	return new var_bool_t( access( fcd.args[ 1 ]->to_str().c_str(), F_OK ) != -1, fcd.args[ 1 ]->parse_ctr() );
+	return access( fcd.args[ 1 ]->to_str().c_str(), F_OK ) != -1 ? vm.vars->get( "true" ) : vm.vars->get( "false" );
 }
 
 REGISTER_MODULE( fs )
@@ -174,12 +174,12 @@ REGISTER_MODULE( fs )
 	vm.funcs.add( { "fopen", 2, 2, { "str", "str" }, FnType::MODULE, { .modfn = file_open }, true } );
 
 	functions_t & ft = vm.typefuncs[ "_file_t" ];
-	ft.add( { "write", 1, -1, { "_whatever_" }, FnType::MODULE, { .modfn = file_write }, true } );
-	ft.add( { "read", 1, 1, { "str" }, FnType::MODULE, { .modfn = file_read }, true } );
-	ft.add( { "read_all", 1, 1, { "vec" }, FnType::MODULE, { .modfn = file_read_full }, true } );
-	ft.add( { "is_open", 0, 0, {}, FnType::MODULE, { .modfn = is_open }, true } );
+	ft.add( { "write", 1, -1, { "_whatever_" }, FnType::MODULE, { .modfn = file_write }, false } );
+	ft.add( { "read", 1, 1, { "str" }, FnType::MODULE, { .modfn = file_read }, false } );
+	ft.add( { "read_all", 1, 1, { "vec" }, FnType::MODULE, { .modfn = file_read_full }, false } );
+	ft.add( { "is_open", 0, 0, {}, FnType::MODULE, { .modfn = is_open }, false } );
 
 	functions_t & fst = vm.typefuncs[ "_fs_t" ];
 	fst.add( { "dir_entries", 1, 2, { "str", "int" }, FnType::MODULE, { .modfn = get_entries }, true } );
-	fst.add( { "fexists", 1, 1, { "str" }, FnType::MODULE, { .modfn = _fexists }, true } );
+	fst.add( { "fexists", 1, 1, { "str" }, FnType::MODULE, { .modfn = _fexists }, false } );
 }

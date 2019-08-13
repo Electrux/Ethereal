@@ -15,8 +15,22 @@ for ; num > 0; {
 	num /= 2;
 }
 
-if args.len() < 2 {
-	assert( bin == '1100' );
+if args.len() > 1 {
+	assert( bin == '1100', 'bin string should be 1100, but is: ', bin );
 } else {
 	println( 'Binary is: ', bin );
+}
+
+sz = bin.len();
+pow = 2 ** sz;
+num = 0;
+
+for i = 0; i < sz; i += 1 {
+	num += bin[ i ].to_int() * ( pow >>= 1 );
+}
+
+if args.len() > 1 {
+	assert( num == '12', 'num should be 12, but is: ', num );
+} else {
+	println( 'Original number is: ', num );
 }

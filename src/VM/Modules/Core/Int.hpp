@@ -17,7 +17,7 @@
 	{									\
 		auto & lhs = AS_INT( fcd.args[ 1 ] )->get();			\
 		auto & rhs = AS_INT( fcd.args[ 0 ] )->get();			\
-		return new ret_type( lhs oper rhs, fcd.args[ 1 ]->parse_ctr() );	\
+		return new ret_type( lhs oper rhs, fcd.args[ 1 ]->parse_ctr() );\
 	}
 
 #define DECL_FUNC_BOOL__INT( name, oper )						\
@@ -74,6 +74,40 @@ var_base_t * power( vm_state_t & vm, func_call_data_t & fcd )
 	var_int_t * res = new var_int_t( "0", fcd.args[ 1 ]->parse_ctr() );
 	mpz_pow_ui( res->get().get_mpz_t(), lhs.get_mpz_t(), rhs.get_ui() );
 	return res;
+}
+
+var_base_t * lshift( vm_state_t & vm, func_call_data_t & fcd )
+{
+	mpz_class & lhs = AS_INT( fcd.args[ 1 ] )->get();
+	mpz_class & rhs = AS_INT( fcd.args[ 0 ] )->get();
+	var_int_t * res = new var_int_t( "0", fcd.args[ 1 ]->parse_ctr() );
+	mpz_mul_2exp( res->get().get_mpz_t(), lhs.get_mpz_t(), rhs.get_ui() );
+	return res;
+}
+
+var_base_t * rshift( vm_state_t & vm, func_call_data_t & fcd )
+{
+	mpz_class & lhs = AS_INT( fcd.args[ 1 ] )->get();
+	mpz_class & rhs = AS_INT( fcd.args[ 0 ] )->get();
+	var_int_t * res = new var_int_t( "0", fcd.args[ 1 ]->parse_ctr() );
+	mpz_div_2exp( res->get().get_mpz_t(), lhs.get_mpz_t(), rhs.get_ui() );
+	return res;
+}
+
+var_base_t * lshift_assn( vm_state_t & vm, func_call_data_t & fcd )
+{
+	mpz_class & lhs = AS_INT( fcd.args[ 0 ] )->get();
+	mpz_class & rhs = AS_INT( fcd.args[ 1 ] )->get();
+	mpz_mul_2exp( lhs.get_mpz_t(), lhs.get_mpz_t(), rhs.get_ui() );
+	return fcd.args[ 0 ];
+}
+
+var_base_t * rshift_assn( vm_state_t & vm, func_call_data_t & fcd )
+{
+	mpz_class & lhs = AS_INT( fcd.args[ 0 ] )->get();
+	mpz_class & rhs = AS_INT( fcd.args[ 1 ] )->get();
+	mpz_div_2exp( lhs.get_mpz_t(), lhs.get_mpz_t(), rhs.get_ui() );
+	return fcd.args[ 0 ];
 }
 
 var_base_t * unary_sub( vm_state_t & vm, func_call_data_t & fcd )

@@ -37,7 +37,7 @@ var_base_t * len( vm_state_t & vm, func_call_data_t & fcd )
 
 var_base_t * empty( vm_state_t & vm, func_call_data_t & fcd )
 {
-	return new var_bool_t( AS_STR( fcd.args[ 0 ] )->get().empty(), fcd.args[ 0 ]->parse_ctr() );
+	return AS_STR( fcd.args[ 0 ] )->get().empty() ? vm.vars->get( "true" ) : vm.vars->get( "false" );
 }
 
 var_base_t * clear( vm_state_t & vm, func_call_data_t & fcd )
@@ -50,7 +50,7 @@ var_base_t * is_int( vm_state_t & vm, func_call_data_t & fcd )
 {
 	char * p;
 	strtol( AS_STR( fcd.args[ 0 ] )->get().c_str(), & p, 10 );
-	return new var_bool_t( * p == 0, fcd.args[ 0 ]->parse_ctr() );
+	return * p != 0 ? vm.vars->get( "true" ) : vm.vars->get( "false" );
 }
 
 var_base_t * to_int( vm_state_t & vm, func_call_data_t & fcd )
@@ -124,7 +124,7 @@ REGISTER_MODULE( str )
 	strfns.add( { "len", 0, 0, {}, FnType::MODULE, { .modfn = len }, true } );
 	strfns.add( { "empty", 0, 0, {}, FnType::MODULE, { .modfn = empty }, true } );
 	strfns.add( { "clear", 0, 0, {}, FnType::MODULE, { .modfn = clear }, false } );
-	strfns.add( { "is_int", 0, 0, {}, FnType::MODULE, { .modfn = is_int }, true } );
+	strfns.add( { "is_int", 0, 0, {}, FnType::MODULE, { .modfn = is_int }, false } );
 	strfns.add( { "to_int", 0, 0, {}, FnType::MODULE, { .modfn = to_int }, true } );
 	strfns.add( { "set_at", 2, 2, { "int", "str" }, FnType::MODULE, { .modfn = set_at }, false } );
 	strfns.add( { "split", 0, 1, { "str" }, FnType::MODULE, { .modfn = split }, true } );

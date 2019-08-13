@@ -182,7 +182,7 @@ var_base_t * _assert( vm_state_t & vm, func_call_data_t & fcd )
 
 var_base_t * var_exists( vm_state_t & vm, func_call_data_t & fcd )
 {
-	return new var_bool_t( vm.vars->exists( fcd.args[ 0 ]->to_str(), true ), fcd.args[ 0 ]->parse_ctr() );
+	return vm.vars->exists( fcd.args[ 0 ]->to_str(), true ) ? vm.vars->get( "true" ) : vm.vars->get( "false" );
 }
 
 var_base_t * var_ref_count( vm_state_t & vm, func_call_data_t & fcd )
@@ -207,7 +207,7 @@ REGISTER_MODULE( core )
 	vm.funcs.add( { "scan",       0,  1, { "_whatever_" }, FnType::MODULE, { .modfn = scan }, true } );
 	vm.funcs.add( { "exit",       0,  1, { "_any_" }, FnType::MODULE, { .modfn = _exit }, false } );
 	vm.funcs.add( { "assert",     2,  -1, { "_any_", "_whatever_" }, FnType::MODULE, { .modfn = _assert }, false } );
-	vm.funcs.add( { "var_exists", 1,  1, { "str" }, FnType::MODULE, { .modfn = var_exists }, true } );
+	vm.funcs.add( { "var_exists", 1,  1, { "str" }, FnType::MODULE, { .modfn = var_exists }, false } );
 	vm.funcs.add( { "var_ref_count", 1,  1, { "_any_" }, FnType::MODULE, { .modfn = var_ref_count }, true } );
 
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -235,6 +235,14 @@ REGISTER_MODULE( core )
 	vm.funcs.add( { ">",  2, 2, { "int", "int" }, FnType::MODULE, { .modfn = gti }, false } );
 	vm.funcs.add( { ">=", 2, 2, { "int", "int" }, FnType::MODULE, { .modfn = gei }, false } );
 	vm.funcs.add( { "!",  1, 1, { "int" }, FnType::MODULE, { .modfn = not_oper }, false } );
+
+	// bitshift
+	vm.funcs.add( { "<<", 2, 2, { "int", "int" }, FnType::MODULE, { .modfn = lshift }, true } );
+	vm.funcs.add( { ">>", 2, 2, { "int", "int" }, FnType::MODULE, { .modfn = rshift }, true } );
+
+	// bitwise assignments
+	vm.funcs.add( { "<<=", 2, 2, { "int", "int" }, FnType::MODULE, { .modfn = lshift_assn }, false } );
+	vm.funcs.add( { ">>=", 2, 2, { "int", "int" }, FnType::MODULE, { .modfn = rshift_assn }, false } );
 
 	// bitwise
 	vm.funcs.add( { "&", 2, 2, { "int", "int" }, FnType::MODULE, { .modfn = andi }, true } );

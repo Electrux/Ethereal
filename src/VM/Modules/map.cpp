@@ -27,9 +27,9 @@ var_base_t * _delete( vm_state_t & vm, func_call_data_t & fcd )
 	if( map.find( key ) != map.end() ) {
 		VAR_DREF( map[ key ] );
 		map.erase( key );
-		return new var_bool_t( true, fcd.args[ 0 ]->parse_ctr() );
+		return vm.vars->get( "true" );
 	}
-	return new var_bool_t( false, fcd.args[ 0 ]->parse_ctr() );
+	return vm.vars->get( "false" );
 }
 
 var_base_t * len( vm_state_t & vm, func_call_data_t & fcd )
@@ -47,7 +47,7 @@ var_base_t * find( vm_state_t & vm, func_call_data_t & fcd )
 {
 	std::unordered_map< std::string, var_base_t * > & map = AS_MAP( fcd.args[ 0 ] )->get();
 	std::string key = fcd.args[ 1 ]->to_str();
-	return new var_bool_t( map.find( key ) != map.end(), fcd.args[ 0 ]->parse_ctr() );
+	return map.find( key ) != map.end() ? vm.vars->get( "true" ) : vm.vars->get( "false" );
 }
 
 REGISTER_MODULE( map )
@@ -55,8 +55,8 @@ REGISTER_MODULE( map )
 	functions_t & mapfns = vm.typefuncs[ "map" ];
 
 	mapfns.add( { "insert", 2, 2, { "str", "_any_" }, FnType::MODULE, { .modfn = insert }, false } );
-	mapfns.add( { "delete", 1, 1, { "str" }, FnType::MODULE, { .modfn = _delete }, true } );
+	mapfns.add( { "delete", 1, 1, { "str" }, FnType::MODULE, { .modfn = _delete }, false } );
 	mapfns.add( { "len", 0, 0, {}, FnType::MODULE, { .modfn = len }, true } );
 	mapfns.add( { "clear", 0, 0, {}, FnType::MODULE, { .modfn = clear }, false } );
-	mapfns.add( { "find", 1, 1, { "str" }, FnType::MODULE, { .modfn = find }, true } );
+	mapfns.add( { "find", 1, 1, { "str" }, FnType::MODULE, { .modfn = find }, false } );
 }

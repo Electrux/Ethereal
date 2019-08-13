@@ -85,7 +85,7 @@ var_base_t * set_erase( vm_state_t & vm, func_call_data_t & fcd )
 var_base_t * set_contains( vm_state_t & vm, func_call_data_t & fcd )
 {
 	std::unordered_set< std::string > & s = AS_SET( fcd.args[ 0 ] )->get();
-	return new var_bool_t( s.find( fcd.args[ 1 ]->to_str() ) != s.end(), fcd.args[ 0 ]->parse_ctr() );
+	return s.find( fcd.args[ 1 ]->to_str() ) != s.end() ? vm.vars->get( "true" ) : vm.vars->get( "false" );
 }
 
 REGISTER_MODULE( set )
@@ -95,5 +95,5 @@ REGISTER_MODULE( set )
 	functions_t & st = vm.typefuncs[ "_set_t" ];
 	st.add( { "insert", 1, -1, { "_whatever_" }, FnType::MODULE, { .modfn = set_insert }, false } );
 	st.add( { "erase", 1, -1, { "_whatever_" }, FnType::MODULE, { .modfn = set_erase }, false } );
-	st.add( { "contains", 1, 1, { "_any_" }, FnType::MODULE, { .modfn = set_contains }, true } );
+	st.add( { "contains", 1, 1, { "_any_" }, FnType::MODULE, { .modfn = set_contains }, false } );
 }

@@ -48,9 +48,9 @@ var_base_t * clear( vm_state_t & vm, func_call_data_t & fcd )
 
 var_base_t * is_int( vm_state_t & vm, func_call_data_t & fcd )
 {
-	char * p;
+	char * p = 0;
 	strtol( AS_STR( fcd.args[ 0 ] )->get().c_str(), & p, 10 );
-	return * p != 0 ? vm.vars->get( "true" ) : vm.vars->get( "false" );
+	return * p == 0 ? vm.vars->get( "true" ) : vm.vars->get( "false" );
 }
 
 var_base_t * to_int( vm_state_t & vm, func_call_data_t & fcd )

@@ -5,7 +5,7 @@ import str;
 
 num = 12;
 
-if args.len() > 1 {
+if args.len() < 2 {
 	num = scan( 'Enter number for integer to binary: ' ).to_int();
 }
 
@@ -15,7 +15,7 @@ for ; num > 0; {
 	num /= 2;
 }
 
-if args.len() > 1 {
+if args.len() < 2 {
 	assert( bin == '1100' );
 } else {
 	println( 'Binary is: ', bin );

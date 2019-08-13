@@ -46,6 +46,8 @@ if !eth.use_lib( 'gmpxx' ) {
 	exit( 1 );
 }
 
+eth.add_build( 'et', 'dynamic' );
+
 println( eth );
 
 if args.len() > 1 && args.find( 'install' ) >= 0 || self_prefix == true {

@@ -22,7 +22,7 @@ fn check_compiler_flag( flag ) {
 	return res;
 }
 
-mfn< _cxx_proj_t > add_flags( flags ) {
+mfn< _cxx_proj_t, _cxx_build_t > add_flags( flags ) {
 	avail_flags = [];
 	not_avail_flags = [];
 	read_flag_file( 'flag_cache', avail_flags );

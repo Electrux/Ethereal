@@ -1,13 +1,13 @@
 import map;
 
-mfn< _cxx_proj_t > add_lib_dirs( dirs ) {
+mfn< _cxx_proj_t, _cxx_build_t > add_lib_dirs( dirs ) {
 	sz = dirs.len();
 	for i = 0; i < sz; i += 1 {
 		self.lib_dirs.push( dirs[ i ] );
 	}
 }
 
-mfn< _cxx_proj_t > use_lib( lib ) {
+mfn< _cxx_proj_t, _cxx_build_t > use_lib( lib ) {
 	cprint( '{y}checking support for library {c}', lib, ' {0}... ' );
 	flush_out();
 	file = __DIR__ + '/tests/' + lib + '.cfg';

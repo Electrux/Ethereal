@@ -449,25 +449,33 @@ tmp_fail:
 			fn_blks.pop_back();
 			std::vector< std::string > args = fn_args.back();
 			fn_args.pop_back();
-			std::string member_of;
+			std::vector< std::string > member_ofs; 
 			if( ins.opcode == IC_BUILD_MFN ) {
-				VERIFY_STACK_MIN( 1 );
-				member_of = vm.stack->back()->to_str();
+				VERIFY_STACK_MIN( 2 );
+				int count = vm.stack->back()->to_int().get_si();
 				vm.stack->pop_back();
+				while( count-- > 0 ) {
+					member_ofs.push_back( vm.stack->back()->to_str() );
+					vm.stack->pop_back();
+				}
 			}
 			std::string name = ins.oper.val;
 			int args_count = args.size();
-			const function_t * fn = member_of == "" ? vm.funcs.get( name, args_count, {} ) : vm.typefuncs[ member_of ].get( name, args_count, {} );
-			if( fn != nullptr ) {
-				VM_FAIL( "function '%s%s' already exists",
-					 member_of == "" ? "" : ( member_of + "::" ).c_str(),
-					 name.c_str() );
-				goto fail;
-			}
-			if( ins.opcode == IC_BUILD_MFN ) {
+			for( auto & member_of : member_ofs ) {
+				const function_t * fn = vm.typefuncs[ member_of ].get( name, args_count, {} );
+				if( fn != nullptr ) {
+					VM_FAIL( "function '%s::%s' already exists", member_of.c_str(), name.c_str() );
+					goto fail;
+				}
 				vm.typefuncs[ member_of ].add( { name, args_count, args_count, args, FnType::LANG,
-							         { .langfn = { src.name.c_str(), blk.beg, blk.end } }, false } );
-			} else {
+								 { .langfn = { src.name.c_str(), blk.beg, blk.end } }, false } );
+			}
+			if( member_ofs.size() == 0 ) {
+				const function_t * fn = vm.funcs.get( name, args_count, {} );
+				if( fn != nullptr ) {
+					VM_FAIL( "function '%s' already exists", name.c_str() );
+					goto fail;
+				}
 				vm.funcs.add( { name, args_count, args_count, args, FnType::LANG,
 						{ .langfn = { src.name.c_str(), blk.beg, blk.end } }, false } );
 			}

@@ -31,8 +31,8 @@ enum InstrCode
 	IC_BUILD_VEC,		// args: count of elements to take from stack
 	IC_BUILD_MAP,		// args: count of elements to take from stack
 	IC_BUILD_STRUCT,	// args: count of fields
-	IC_BUILD_FN,		// args: none
-	IC_BUILD_MFN,		// args: none
+	IC_BUILD_FN,		// args: func name
+	IC_BUILD_MFN,		// args: func name
 
 	IC_ADD_SCOPE,		// args: count of scopes to add
 	IC_REM_SCOPE,		// args: count of scopes to remove

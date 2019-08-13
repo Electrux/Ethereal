@@ -217,17 +217,17 @@ void stmt_block_t::disp( const bool has_next ) const
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 
 stmt_func_t::stmt_func_t( const stmt_simple_t * name, const stmt_expr_t * args,
-			  const stmt_block_t * block, const stmt_simple_t * mem_type,
+			  const stmt_block_t * block, const std::vector< stmt_simple_t * > & mem_types,
 			  const int tok_ctr )
 	: stmt_base_t( GRAM_FUNC, tok_ctr ), m_name( name ), m_args( args ), m_block( block ),
-	  m_mem_type( mem_type ) {}
+	  m_mem_types( mem_types ) {}
 
 stmt_func_t::~stmt_func_t()
 {
 	delete m_name;
 	if( m_args ) delete m_args;
 	delete m_block;
-	if( m_mem_type ) delete m_mem_type;
+	for( auto & mt : m_mem_types ) delete mt;
 }
 
 void stmt_func_t::disp( const bool has_next ) const
@@ -235,11 +235,14 @@ void stmt_func_t::disp( const bool has_next ) const
 	IO::tab_add( has_next );
 	IO::print( has_next, "Function %s at: %x\n", m_name->m_val->data.c_str(), this );
 
-	if( m_mem_type ) {
+	if( m_mem_types.size() > 0 ) {
 		IO::tab_add( true );
-		IO::print( true, "Member type:\n" );
-		m_mem_type->disp( false );
-		IO::tab_rem();
+		IO::print( true, "Member types:\n" );
+		IO::tab_add( true );
+		for( auto mt = m_mem_types.begin(); mt != m_mem_types.end(); ++mt ) {
+			( * mt )->disp(  mt != m_mem_types.end() - 1 );
+		}
+		IO::tab_rem( 2 );
 	}
 
 	if( m_args ) {

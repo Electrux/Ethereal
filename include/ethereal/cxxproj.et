@@ -3,11 +3,21 @@ import vec;
 import fs;
 import os;
 
+struct _cxx_build_t {
+	name = 'tmp';
+	type = 'bin';
+	flags = [];
+	inc_dirs = [];
+	lib_dirs = [];
+	lib_flags = [];
+}
+
 struct _cxx_proj_t {
 	flags = [];
 	inc_dirs = [];
 	lib_dirs = [];
 	lib_flags = [];
+	builds = [];
 }
 
 fn cxx_new_proj() {
@@ -19,6 +29,13 @@ fn cxx_new_proj() {
 		}
 	}
 	return _cxx_proj_t{};
+}
+
+mfn< _cxx_proj_t > add_build( name, type ) {
+	b = _cxx_build_t{};
+	b.name = name;
+	b.type = type;
+	self.builds.push( b );
 }
 
 import 'cxxproj/flags';

@@ -1,4 +1,4 @@
-#!/.buildfiles/et
+#!./buildfiles/et
 
 #!./buildfiles/et
 
@@ -18,3 +18,11 @@ mfn< str > append_( s ) {
 }
 
 "hi".append_( "1" );
+
+mfn< str, int, flt > print2() {
+	println( '2' );
+}
+
+1.print2();
+'some'.print2();
+( 1.2 ).print2();

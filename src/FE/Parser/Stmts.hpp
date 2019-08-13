@@ -156,10 +156,10 @@ class stmt_func_t : public stmt_base_t
 	const stmt_simple_t * m_name;
 	const stmt_expr_t * m_args;
 	const stmt_block_t * m_block;
-	const stmt_simple_t * m_mem_type;
+	const std::vector< stmt_simple_t * > m_mem_types;
 public:
 	stmt_func_t( const stmt_simple_t * name, const stmt_expr_t * args,
-		     const stmt_block_t * block, const stmt_simple_t * mem_type,
+		     const stmt_block_t * block, const std::vector< stmt_simple_t * > & mem_types,
 		     const int tok_ctr );
 	~stmt_func_t();
 	void disp( const bool has_next ) const;

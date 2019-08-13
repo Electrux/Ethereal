@@ -19,12 +19,14 @@ stmt_func_t * parse_func( src_t & src, parse_helper_t * ph )
 
 	std::vector< GrammarTypes > parents;
 
-	stmt_simple_t * mem_type = nullptr;
+	std::vector< stmt_simple_t * > mem_types;
 	if( is_member_func ) {
 		NEXT_VALID( TOK_LT );
+begin_mfn_type:
 		NEXT_VALID2( TOK_IDEN, TOK_STR );
-		mem_type = new stmt_simple_t( SIMPLE_TOKEN, ph->peak(), ph->tok_ctr() );
-		NEXT_VALID( TOK_GT );
+		mem_types.push_back( new stmt_simple_t( SIMPLE_TOKEN, ph->peak(), ph->tok_ctr() ) );
+		NEXT_VALID2( TOK_GT, TOK_COMMA );
+		if( ph->peak()->type == TOK_COMMA ) goto begin_mfn_type;
 	}
 
 	const tok_t * name = nullptr;
@@ -62,11 +64,11 @@ end_args:
 	parents.pop_back();
 	if( block == nullptr ) goto fail;
 	return new stmt_func_t( new stmt_simple_t( SIMPLE_TOKEN, name, tok_ctr + 1 ),
-				arg_expr.expr, block, mem_type, tok_ctr );
+				arg_expr.expr, block, mem_types, tok_ctr );
 fail:
 	if( arg_expr.expr ) delete arg_expr.expr;
 	if( block ) delete block;
-	if( mem_type ) delete mem_type;
+	for( auto & mem_type : mem_types ) delete mem_type;
 	return nullptr;
 }
 
@@ -89,9 +91,12 @@ bool stmt_func_t::bytecode( src_t & src ) const
 		src.bcode[ args_till_loc ].oper.val = std::to_string( src.bcode.size() - 1 );
 	}
 
-	if( m_mem_type ) {
-		src.bcode.push_back( { m_tok_ctr, m_mem_type->m_val->line, m_mem_type->m_val->col, IC_PUSH, { OP_CONST, m_mem_type->m_val->data } } );
-		src.bcode.push_back( { m_tok_ctr, m_mem_type->m_val->line, m_mem_type->m_val->col, IC_BUILD_MFN, { OP_CONST, m_name->m_val->data } } );
+	if( m_mem_types.size() > 0 ) {
+		for( auto & mem_type : m_mem_types ) {
+			src.bcode.push_back( { m_tok_ctr, mem_type->m_val->line, mem_type->m_val->col, IC_PUSH, { OP_CONST, mem_type->m_val->data } } );
+		}
+		src.bcode.push_back( { m_tok_ctr, m_mem_types.front()->m_val->line, m_mem_types.front()->m_val->col, IC_PUSH, { OP_INT, std::to_string( m_mem_types.size() ) } } );
+		src.bcode.push_back( { m_tok_ctr, m_mem_types.front()->m_val->line, m_mem_types.front()->m_val->col, IC_BUILD_MFN, { OP_CONST, m_name->m_val->data } } );
 	} else {
 		src.bcode.push_back( { m_tok_ctr, m_name->m_val->line, m_name->m_val->col, IC_BUILD_FN, { OP_CONST, m_name->m_val->data } } );
 	}

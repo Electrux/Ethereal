@@ -1,4 +1,4 @@
-#!/.buildfiles/et
+#!./buildfiles/et
 
 import vec;
 import fs;

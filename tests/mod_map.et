@@ -1,0 +1,21 @@
+#!./buildfiles/et
+
+import map;
+
+m = {};
+
+m.insert( 'k', 'v' );
+
+assert( m.delete( 'v' ) == false, 'shouldn\'t be able to delete key: v' );
+assert( m.delete( 'k' ), 'shouldn\'t be able to delete key: v' );
+assert( m.len() == 0, 'len should be 0, but is: ', m.len() );
+
+m.insert( 'k', 'v' );
+m.insert( 'l', 'w' );
+m.clear();
+
+assert( m.len() == 0, 'len should be 0 post clear, but is: ', m.len() );
+
+m.insert( 'k', 'v' );
+
+assert( m.find( 'k' ) == true, 'key k should have existed in map' );

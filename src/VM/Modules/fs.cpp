@@ -128,7 +128,7 @@ var_base_t * file_read_full( vm_state_t & vm, func_call_data_t & fcd )
 
 var_base_t * is_open( vm_state_t & vm, func_call_data_t & fcd )
 {
-	return AS_FILE( fcd.args[ 0 ] )->get() != NULL ? vm.vars->get( "true" ) : vm.vars->get( "false" );
+	return TRUE_FALSE( AS_FILE( fcd.args[ 0 ] )->get() != NULL );
 }
 
 void get_entries_internal( const std::string & dir_str, std::vector< var_base_t * > & v, const size_t & flags, const int parse_ctr )
@@ -166,7 +166,7 @@ var_base_t * get_entries( vm_state_t & vm, func_call_data_t & fcd )
 
 var_base_t * _fexists( vm_state_t & vm, func_call_data_t & fcd )
 {
-	return access( fcd.args[ 1 ]->to_str().c_str(), F_OK ) != -1 ? vm.vars->get( "true" ) : vm.vars->get( "false" );
+	return TRUE_FALSE( access( fcd.args[ 1 ]->to_str().c_str(), F_OK ) != -1 );
 }
 
 REGISTER_MODULE( fs )

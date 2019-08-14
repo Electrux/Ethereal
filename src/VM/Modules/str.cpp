@@ -37,7 +37,7 @@ var_base_t * len( vm_state_t & vm, func_call_data_t & fcd )
 
 var_base_t * empty( vm_state_t & vm, func_call_data_t & fcd )
 {
-	return AS_STR( fcd.args[ 0 ] )->get().empty() ? vm.vars->get( "true" ) : vm.vars->get( "false" );
+	return TRUE_FALSE( AS_STR( fcd.args[ 0 ] )->get().empty() );
 }
 
 var_base_t * clear( vm_state_t & vm, func_call_data_t & fcd )
@@ -50,7 +50,7 @@ var_base_t * is_int( vm_state_t & vm, func_call_data_t & fcd )
 {
 	char * p = 0;
 	strtol( AS_STR( fcd.args[ 0 ] )->get().c_str(), & p, 10 );
-	return * p == 0 ? vm.vars->get( "true" ) : vm.vars->get( "false" );
+	return TRUE_FALSE( * p == 0 );
 }
 
 var_base_t * to_int( vm_state_t & vm, func_call_data_t & fcd )
@@ -96,7 +96,7 @@ var_base_t * trim( vm_state_t & vm, func_call_data_t & fcd )
 	{										\
 		auto & lhs = AS_STR( fcd.args[ 1 ] )->get();				\
 		auto & rhs = AS_STR( fcd.args[ 0 ] )->get();				\
-		return lhs oper rhs ? vm.vars->get( "true" ) : vm.vars->get( "false" );	\
+		return TRUE_FALSE( lhs oper rhs );	\
 	}
 
 DECL_FUNC_BOOL__STR( eq, == )

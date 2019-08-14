@@ -20,12 +20,12 @@
 		return new ret_type( lhs oper rhs, fcd.args[ 1 ]->parse_ctr() );	\
 	}
 
-#define DECL_FUNC_BOOL__FLT( name, oper )						\
-	var_base_t * name( vm_state_t & vm, func_call_data_t & fcd )			\
-	{										\
-		auto & lhs = AS_FLT( fcd.args[ 1 ] )->get();				\
-		auto & rhs = AS_FLT( fcd.args[ 0 ] )->get();				\
-		return lhs oper rhs ? vm.vars->get( "true" ) : vm.vars->get( "false" );	\
+#define DECL_FUNC_BOOL__FLT( name, oper )				\
+	var_base_t * name( vm_state_t & vm, func_call_data_t & fcd )	\
+	{								\
+		auto & lhs = AS_FLT( fcd.args[ 1 ] )->get();		\
+		auto & rhs = AS_FLT( fcd.args[ 0 ] )->get();		\
+		return TRUE_FALSE( lhs oper rhs );			\
 	}
 
 #define DECL_FUNC_ASSN__FLT( name, oper )				\
@@ -72,7 +72,7 @@ var_base_t * unary_subf( vm_state_t & vm, func_call_data_t & fcd )
 var_base_t * not_operf( vm_state_t & vm, func_call_data_t & fcd )
 {
 	mpf_class & num = AS_FLT( fcd.args[ 0 ] )->get();
-	return !num ? vm.vars->get( "true" ) : vm.vars->get( "false" );
+	return TRUE_FALSE( !num );
 }
 
 var_base_t * flt( vm_state_t & vm, func_call_data_t & fcd )

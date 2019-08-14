@@ -85,7 +85,7 @@ var_base_t * set_erase( vm_state_t & vm, func_call_data_t & fcd )
 var_base_t * set_contains( vm_state_t & vm, func_call_data_t & fcd )
 {
 	std::unordered_set< std::string > & s = AS_SET( fcd.args[ 0 ] )->get();
-	return s.find( fcd.args[ 1 ]->to_str() ) != s.end() ? vm.vars->get( "true" ) : vm.vars->get( "false" );
+	return TRUE_FALSE( s.find( fcd.args[ 1 ]->to_str() ) != s.end() );
 }
 
 REGISTER_MODULE( set )

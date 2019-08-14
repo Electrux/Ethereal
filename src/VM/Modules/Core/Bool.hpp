@@ -12,12 +12,12 @@
 
 #include "../../Core.hpp"
 
-#define DECL_FUNC_ALLOC__BOOL( name, oper )							\
-	var_base_t * name( vm_state_t & vm, func_call_data_t & fcd )				\
-	{											\
-		bool lhs = fcd.args[ 1 ]->to_bool();						\
-		bool rhs = fcd.args[ 0 ]->to_bool();						\
-		return lhs oper rhs ? vm.vars->get( "true" ) : vm.vars->get( "false" );	\
+#define DECL_FUNC_ALLOC__BOOL( name, oper )				\
+	var_base_t * name( vm_state_t & vm, func_call_data_t & fcd )	\
+	{								\
+		bool lhs = fcd.args[ 1 ]->to_bool();			\
+		bool rhs = fcd.args[ 0 ]->to_bool();			\
+		return TRUE_FALSE( lhs oper rhs );			\
 	}
 
 DECL_FUNC_ALLOC__BOOL( log_and, && )
@@ -28,12 +28,12 @@ DECL_FUNC_ALLOC__BOOL( log_ne, != )
 var_base_t * not_operb( vm_state_t & vm, func_call_data_t & fcd )
 {
 	bool val = AS_BOOL( fcd.args[ 0 ] )->get();
-	return !val ? vm.vars->get( "true" ) : vm.vars->get( "false" );
+	return TRUE_FALSE( !val );
 }
 
 var_base_t * bool_create( vm_state_t & vm, func_call_data_t & fcd )
 {
-	return fcd.args[ 0 ]->to_bool() ? vm.vars->get( "true" ) : vm.vars->get( "false" );
+	return TRUE_FALSE( fcd.args[ 0 ]->to_bool() );
 }
 
 #endif // VM_MODULES_CORE_BOOL_HPP

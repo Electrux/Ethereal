@@ -182,7 +182,7 @@ var_base_t * _assert( vm_state_t & vm, func_call_data_t & fcd )
 
 var_base_t * var_exists( vm_state_t & vm, func_call_data_t & fcd )
 {
-	return vm.vars->exists( fcd.args[ 0 ]->to_str(), true ) ? vm.vars->get( "true" ) : vm.vars->get( "false" );
+	return TRUE_FALSE( vm.vars->exists( fcd.args[ 0 ]->to_str(), true ) );
 }
 
 var_base_t * var_ref_count( vm_state_t & vm, func_call_data_t & fcd )

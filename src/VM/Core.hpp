@@ -73,6 +73,8 @@ bool set_init_mods( vm_state_t & vm );
 
 size_t mpz_to_size_t( const mpz_class & n );
 
+#define TRUE_FALSE( condition ) ( condition ) ? vm.vars->get( "true" ) : vm.vars->get( "false" )
+
 #define _STRINGIZE(x) #x
 #define STRINGIFY(x) _STRINGIZE(x)
 

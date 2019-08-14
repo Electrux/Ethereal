@@ -47,7 +47,7 @@ var_base_t * find( vm_state_t & vm, func_call_data_t & fcd )
 {
 	std::unordered_map< std::string, var_base_t * > & map = AS_MAP( fcd.args[ 0 ] )->get();
 	std::string key = fcd.args[ 1 ]->to_str();
-	return map.find( key ) != map.end() ? vm.vars->get( "true" ) : vm.vars->get( "false" );
+	return TRUE_FALSE( map.find( key ) != map.end() );
 }
 
 REGISTER_MODULE( map )

@@ -20,12 +20,12 @@
 		return new ret_type( lhs oper rhs, fcd.args[ 1 ]->parse_ctr() );\
 	}
 
-#define DECL_FUNC_BOOL__INT( name, oper )						\
-	var_base_t * name( vm_state_t & vm, func_call_data_t & fcd )			\
-	{										\
-		auto & lhs = AS_INT( fcd.args[ 1 ] )->get();				\
-		auto & rhs = AS_INT( fcd.args[ 0 ] )->get();				\
-		return lhs oper rhs ? vm.vars->get( "true" ) : vm.vars->get( "false" );	\
+#define DECL_FUNC_BOOL__INT( name, oper )				\
+	var_base_t * name( vm_state_t & vm, func_call_data_t & fcd )	\
+	{								\
+		auto & lhs = AS_INT( fcd.args[ 1 ] )->get();		\
+		auto & rhs = AS_INT( fcd.args[ 0 ] )->get();		\
+		return TRUE_FALSE( lhs oper rhs );			\
 	}
 
 #define DECL_FUNC_ASSN__INT( name, oper )				\
@@ -119,7 +119,7 @@ var_base_t * unary_sub( vm_state_t & vm, func_call_data_t & fcd )
 var_base_t * not_oper( vm_state_t & vm, func_call_data_t & fcd )
 {
 	mpz_class & num = AS_INT( fcd.args[ 0 ] )->get();
-	return !num ? vm.vars->get( "true" ) : vm.vars->get( "false" );
+	return TRUE_FALSE( !num );
 }
 
 var_base_t * not_oper_bitwise( vm_state_t & vm, func_call_data_t & fcd )

@@ -1,0 +1,5 @@
+#!./buildfiles/et
+
+dprint( 'hi ' );
+flush_err();
+dprintln( 'there' );

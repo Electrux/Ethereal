@@ -1,0 +1,5 @@
+#!./buildfiles/et
+
+print( 'hi ' );
+flush_out();
+println( 'there' );

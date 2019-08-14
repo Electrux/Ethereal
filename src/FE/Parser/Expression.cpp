@@ -194,7 +194,7 @@ expr_res_t parse_expr( const src_t & src, parse_helper_t * ph, const int end, co
 			}
 			// handle unary +/-
 			if( ( ph->peak()->type == TOK_ADD || ph->peak()->type == TOK_SUB ) &&
-			    ( ph->tok_ctr() == 0 || ( ph->tok_ctr() > start && token_is_oper( ph->peak( -1 ) ) &&
+			    ( ph->tok_ctr() == start || ( ph->tok_ctr() > start && token_is_oper( ph->peak( -1 ) ) &&
 			      ph->peak( -1 )->type != TOK_RPAREN && ph->peak( -1 )->type != TOK_RBRACE && ph->peak( -1 )->type != TOK_RBRACK ) ) ) {
 				if( ph->peak()->type == TOK_SUB ) {
 					ph->peak()->type = TOK_USUB;

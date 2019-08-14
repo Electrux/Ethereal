@@ -122,7 +122,7 @@ REGISTER_MODULE( str )
 	functions_t & strfns = vm.typefuncs[ "str" ];
 
 	strfns.add( { "len", 0, 0, {}, FnType::MODULE, { .modfn = len }, true } );
-	strfns.add( { "empty", 0, 0, {}, FnType::MODULE, { .modfn = empty }, true } );
+	strfns.add( { "empty", 0, 0, {}, FnType::MODULE, { .modfn = empty }, false } );
 	strfns.add( { "clear", 0, 0, {}, FnType::MODULE, { .modfn = clear }, false } );
 	strfns.add( { "is_int", 0, 0, {}, FnType::MODULE, { .modfn = is_int }, false } );
 	strfns.add( { "to_int", 0, 0, {}, FnType::MODULE, { .modfn = to_int }, true } );

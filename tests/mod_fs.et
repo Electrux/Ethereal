@@ -1,0 +1,50 @@
+#!./buildfiles/et
+
+import str;
+import vec;
+import fs;
+
+assert( fs.exists( 'mod_core' ), 'mod_core should exist (directory)' );
+assert( fs.exists( 'block.et' ), 'block.et should exist (file)' );
+
+# read non existing file
+{
+	f = fopen( 'some_file', 'r' );
+	assert( !f.is_open(), 'some_file should not exist, therefore can\'t be opened in read mode' );
+}
+
+# write file
+{
+	f = fopen( 'some_file', 'w' );
+	assert( f.is_open(), 'some_file should be created' );
+	f.write( 'some data\n' );
+}
+
+# append file
+{
+	f = fopen( 'some_file', 'a' );
+	assert( f.is_open(), 'some_file should be opened for append' );
+	f.write( 'some data 2\n' );
+}
+
+# read each line
+{
+	f = fopen( 'some_file', 'r' );
+	assert( f.is_open(), 'some_file should be opened for read' );
+	s = "";
+	f.read( s );
+	assert( s == 'some data', 'first line in file should have been \'some data\'' );
+	f.read( s );
+	assert( s == 'some data 2', 'first line in file should have been \'some data 2\'' );
+}
+
+# read entire file in vector
+{
+	f = fopen( 'some_file', 'r' );
+	assert( f.is_open(), 'some_file should be opened for read' );
+	v = [];
+	f.read_all( v );
+	assert( v == [ 'some data', 'some data 2' ], 'first line in file should have been [ \'some data\', \'some data 2\' ]' );
+}
+
+assert( fs.remove( 'some_file' ), 'some_file should have been deleted' );

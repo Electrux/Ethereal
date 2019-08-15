@@ -12,6 +12,8 @@
 
 #include "../Core.hpp"
 
+int exec_internal( const std::string & cmd );
+
 enum FSEnt {
 	FILES = 1 << 0,
 	DIRS = 1 << 1,
@@ -169,6 +171,11 @@ var_base_t * _exists( vm_state_t & vm, func_call_data_t & fcd )
 	return TRUE_FALSE( access( fcd.args[ 1 ]->to_str().c_str(), F_OK ) != -1 );
 }
 
+var_base_t * _remove( vm_state_t & vm, func_call_data_t & fcd )
+{
+	return TRUE_FALSE( exec_internal( "rm -rf " + fcd.args[ 1 ]->to_str() ) == 0 );
+}
+
 REGISTER_MODULE( fs )
 {
 	vm.funcs.add( { "fopen", 2, 2, { "str", "str" }, FnType::MODULE, { .modfn = file_open }, true } );
@@ -182,4 +189,19 @@ REGISTER_MODULE( fs )
 	functions_t & fst = vm.typefuncs[ "_fs_t" ];
 	fst.add( { "dir_entries", 1, 2, { "str", "int" }, FnType::MODULE, { .modfn = get_entries }, true } );
 	fst.add( { "exists", 1, 1, { "str" }, FnType::MODULE, { .modfn = _exists }, false } );
+	fst.add( { "remove", 1, 1, { "str" }, FnType::MODULE, { .modfn = _remove }, false } );
+}
+
+int exec_internal( const std::string & cmd )
+{
+	FILE * pipe = popen( cmd.c_str(), "r" );
+	if( !pipe ) return false;
+	char * line = NULL;
+	size_t len = 0;
+	ssize_t nread;
+
+	while( ( nread = getline( & line, & len, pipe ) ) != -1 );
+	free( line );
+	int res = pclose( pipe );
+	return WEXITSTATUS( res );
 }

@@ -107,6 +107,28 @@ var_base_t * add_assn( vm_state_t & vm, func_call_data_t & fcd )
 	return fcd.args[ 0 ];
 }
 
+var_base_t * eqv( vm_state_t & vm, func_call_data_t & fcd )
+{
+	std::vector< var_base_t * > & a = AS_VEC( fcd.args[ 1 ] )->get();
+	std::vector< var_base_t * > & b = AS_VEC( fcd.args[ 0 ] )->get();
+	if( a.size() != b.size() ) return vm.vars->get( "false" );
+	for( auto i1 = a.begin(), i2 = b.begin(); i1 != a.end() && i2 != b.end(); ++i1, ++i2 ) {
+		if( ( * i1 )->to_str() != ( * i2 )->to_str() ) return vm.vars->get( "false" );
+	}
+	return vm.vars->get( "true" );
+}
+
+var_base_t * nev( vm_state_t & vm, func_call_data_t & fcd )
+{
+	std::vector< var_base_t * > & a = AS_VEC( fcd.args[ 1 ] )->get();
+	std::vector< var_base_t * > & b = AS_VEC( fcd.args[ 0 ] )->get();
+	if( a.size() != b.size() ) return vm.vars->get( "true" );
+	for( auto i1 = a.begin(), i2 = b.begin(); i1 != a.end() && i2 != b.end(); ++i1, ++i2 ) {
+		if( ( * i1 )->to_str() != ( * i2 )->to_str() ) return vm.vars->get( "true" );
+	}
+	return vm.vars->get( "false" );
+}
+
 REGISTER_MODULE( vec )
 {
 	functions_t & vecfns = vm.typefuncs[ "vec" ];
@@ -123,4 +145,7 @@ REGISTER_MODULE( vec )
 
 	vm.funcs.add( { "+", 2, 2, { "vec", "vec" }, FnType::MODULE, { .modfn = add }, true } );
 	vm.funcs.add( { "+=", 2, 2, { "vec", "vec" }, FnType::MODULE, { .modfn = add_assn }, false } );
+
+	vm.funcs.add( { "==", 2, 2, { "vec", "vec" }, FnType::MODULE, { .modfn = eqv }, false } );
+	vm.funcs.add( { "!=", 2, 2, { "vec", "vec" }, FnType::MODULE, { .modfn = nev }, false } );
 }

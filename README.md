@@ -2,6 +2,13 @@
 
 A simple, dynamically typed, interpreted, generic programming language.
 
+# Prerequisites
+
+* GCC/Clang with full C++ 11 support
+* GMP library with CXX support (will be almost always built with support for CXX in your official distribution package)
+
+# About
+
 The language syntax is inspired from Python and C. It contains sufficient features to enjoy working with it, but avoids complex features like OOP.
 
 Ethereal does use a concept of member functions which are actually nothing but plain functions bound to a particular struct/type. And they allow the use of `self` to use the calling variable inside the function itself.

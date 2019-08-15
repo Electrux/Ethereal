@@ -12,9 +12,9 @@ mfn< _cxx_proj_t, _cxx_build_t > use_lib( lib ) {
 	flush_out();
 	file = __DIR__ + '/tests/' + lib + '.cfg';
 
-	if !fs.fexists( file ) {
+	if !fs.exists( file ) {
 		file = __DIR__ + '/tests/' + lib + '_cpp.cfg';
-		if !fs.fexists( file ) {
+		if !fs.exists( file ) {
 			cprintln( '{r}no (library does not exist){0}' );
 			return false;
 		}

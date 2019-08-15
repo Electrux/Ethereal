@@ -16,7 +16,7 @@ int CallFunc( vm_state_t & vm, func_call_data_t & fcd, const int ins_ctr )
 {
 	src_t & src = * vm.srcstack.back();
 	instr_t & ins = src.bcode[ ins_ctr ];
-	
+
 	fcd.arg_types.clear();
 	fcd.rem_locs.clear();
 	var_base_t * member = nullptr;

@@ -326,7 +326,7 @@ static std::string get_num( const std::string & src, const std::string & line, c
 			} else {
 				return buf;
 			}
-			
+
 		}
 		if( success == false ) {
 			return "";

@@ -96,7 +96,7 @@ int exec_internal( vm_state_t & vm, long begin, long end, var_base_t * ret )
 					VM_FAIL_TOK_CTR( val->parse_ctr(), "original declared here" );
 					goto fail;
 				}
-				
+
 				if( !copy_data( val, newval ) ) {
 					VM_FAIL( "copy symantics not implemented for variable type '%s'", val->type_str().c_str() );
 					goto fail;

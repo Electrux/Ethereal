@@ -1,0 +1,11 @@
+#!./buildfiles/et
+
+a = true;
+b = false;
+
+assert( true && true, 'true && true should be true' );
+assert( true || false, 'true || false should be true' );
+assert( true == true, 'true == true should be true' );
+assert( true != false, 'true != false should be true' );
+assert( !false, '!false should be true' );
+assert( bool( '1' ), 'bool( \'1\' ) should be true' );

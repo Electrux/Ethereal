@@ -50,12 +50,13 @@ builds( bin ) {
 builds( lib, dynamic ) {
 	builds.add_lib_flags( "-let" )
 	build( core, "src/VM/Modules/core.cpp" )
-	build( str, "src/VM/Modules/str.cpp" )
-	build( os, "src/VM/Modules/os.cpp" )
-	build( vec, "src/VM/Modules/vec.cpp" )
-	build( map, "src/VM/Modules/map.cpp" )
-	build( fs, "src/VM/Modules/fs.cpp" )
-	build( set, "src/VM/Modules/set.cpp" )
+	build( fs,   "src/VM/Modules/fs.cpp" )
+	build( map,  "src/VM/Modules/map.cpp" )
+	build( math, "src/VM/Modules/math.cpp" )
+	build( os,   "src/VM/Modules/os.cpp" )
+	build( set,  "src/VM/Modules/set.cpp" )
+	build( str,  "src/VM/Modules/str.cpp" )
+	build( vec,  "src/VM/Modules/vec.cpp" )
 }
 
 if( "${ARGC}" > 0 && "${ARG_0}" == "install" || "${USE_SELF_PREFIX}" == "true" ) {

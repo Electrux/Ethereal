@@ -1,0 +1,10 @@
+#!./buildfiles/et
+
+import math;
+
+assert( abs( -131 ) == 131, 'abs( -131 ) should be 131' );
+assert( abs( 131 ) == 131, 'abs( 131 ) should be 131' );
+
+assert( sqrt( 25 ) == 5.0, 'sqrt( 25 ) should be 5.0' );
+# TODO: the following case does not work (possibly because of precision)
+#assert( sqrt( 5 ) == 2.23606797749978969636, 'sqrt( 5 ) should be ', 2.23606797749978969636, ', but is: ', sqrt( 5 ) );

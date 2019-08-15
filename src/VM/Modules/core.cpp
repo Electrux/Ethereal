@@ -206,7 +206,7 @@ REGISTER_MODULE( core )
 	vm.funcs.add( { "cprintln",   0, -1, { "_whatever_" }, FnType::MODULE, { .modfn = cprintln }, false } );
 	vm.funcs.add( { "scan",       0,  1, { "_whatever_" }, FnType::MODULE, { .modfn = scan }, true } );
 	vm.funcs.add( { "exit",       0,  1, { "_any_" }, FnType::MODULE, { .modfn = _exit }, false } );
-	vm.funcs.add( { "assert",     2,  -1, { "_any_", "_whatever_" }, FnType::MODULE, { .modfn = _assert }, false } );
+	vm.funcs.add( { "assert",     2, -1, { "_any_", "_whatever_" }, FnType::MODULE, { .modfn = _assert }, false } );
 	vm.funcs.add( { "var_exists", 1,  1, { "str" }, FnType::MODULE, { .modfn = var_exists }, false } );
 	vm.funcs.add( { "var_ref_count", 1,  1, { "_any_" }, FnType::MODULE, { .modfn = var_ref_count }, true } );
 
@@ -247,7 +247,7 @@ REGISTER_MODULE( core )
 	// bitwise
 	vm.funcs.add( { "&", 2, 2, { "int", "int" }, FnType::MODULE, { .modfn = andi }, true } );
 	vm.funcs.add( { "|", 2, 2, { "int", "int" }, FnType::MODULE, { .modfn = ori }, true } );
-	vm.funcs.add( { "~",  1, 1, { "int" }, FnType::MODULE, { .modfn = not_oper_bitwise }, true } );
+	vm.funcs.add( { "~", 1, 1, { "int" }, FnType::MODULE, { .modfn = not_oper_bitwise }, true } );
 
 	// cool arithmetic
 	vm.funcs.add( { "**",  2, 2, { "int", "int" }, FnType::MODULE, { .modfn = power }, true } );
@@ -306,6 +306,6 @@ REGISTER_MODULE( core )
 
 	// global object functions
 	functions_t & anyfns = vm.typefuncs[ "_any_" ];
-	anyfns.add( { "type", 0, 0, {}, FnType::MODULE, { .modfn = type }, true } );
+	anyfns.add( { "type",   0, 0, {}, FnType::MODULE, { .modfn = type }, true } );
 	anyfns.add( { "to_str", 0, 0, {}, FnType::MODULE, { .modfn = to_str }, true } );
 }

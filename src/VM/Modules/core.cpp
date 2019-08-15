@@ -283,7 +283,7 @@ REGISTER_MODULE( core )
 	vm.funcs.add( { "!",  1, 1, { "flt" }, FnType::MODULE, { .modfn = not_operf }, false } );
 
 	// cool arithmetic
-	vm.funcs.add( { "**",  2, 2, { "flt", "int" }, FnType::MODULE, { .modfn = powerf }, true } );
+	vm.funcs.add( { "**",  2, 2, { "int", "flt" }, FnType::MODULE, { .modfn = powerf }, true } );
 
 	// unary
 	vm.funcs.add( { "u-",  1, 1, { "flt" }, FnType::MODULE, { .modfn = unary_subf }, true } );

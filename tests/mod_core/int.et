@@ -4,12 +4,12 @@ a = 5;
 b = 10;
 
 assert( 1 == 1, '1 should be 1' );
-assert( 0 != 1, '0 should be 1' );
+assert( 0 != 1, '0 should not be 1' );
 assert( 1 < 2, '1 should be < 2' );
 assert( 1 <= 1, '1 should be <= 1' );
 assert( 2 > 1, '2 should be > 1' );
 assert( 1 >= 1, '1 should be >= 1' );
-assert( !0, '!0 should be 1' );
+assert( !0, '!0 should be true' );
 
 assert( 5 + 10 == 15, '5 + 10 should be: 15' );
 assert( 5 - 10 == -5, '5 - 10 should be: -5' );
@@ -20,7 +20,7 @@ assert( 5 % 10 == 5, '5 % 10 should be: 5' );
 assert( ( a += 10 ) == 15, '5 += 10 should be: 15' );
 assert( ( a -= 10 ) == 5, '15 -= 10 should be: 5' );
 assert( ( a *= 10 ) == 50, '5 *= 10 should be: 50' );
-assert( ( a /= 10 ) == 5, '50 /= 10 should be: 50' );
+assert( ( a /= 10 ) == 5, '50 /= 10 should be: 5' );
 assert( ( a %= 10 ) == 5, '5 %= 10 should be: 5' );
 
 assert( 2 << 2 == 8, '2 << 2 should be 8' );

@@ -91,12 +91,12 @@ var_base_t * trim( vm_state_t & vm, func_call_data_t & fcd )
 	return fcd.args[ 0 ];
 }
 
-#define DECL_FUNC_BOOL__STR( name, oper )						\
-	var_base_t * name( vm_state_t & vm, func_call_data_t & fcd )			\
-	{										\
-		auto & lhs = AS_STR( fcd.args[ 1 ] )->get();				\
-		auto & rhs = AS_STR( fcd.args[ 0 ] )->get();				\
-		return TRUE_FALSE( lhs oper rhs );	\
+#define DECL_FUNC_BOOL__STR( name, oper )				\
+	var_base_t * name( vm_state_t & vm, func_call_data_t & fcd )	\
+	{								\
+		auto & lhs = AS_STR( fcd.args[ 1 ] )->get();		\
+		auto & rhs = AS_STR( fcd.args[ 0 ] )->get();		\
+		return TRUE_FALSE( lhs oper rhs );			\
 	}
 
 DECL_FUNC_BOOL__STR( eq, == )

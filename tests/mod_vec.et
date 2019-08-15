@@ -1,0 +1,38 @@
+#!./buildfiles/et
+
+import vec;
+
+v = [];
+v += [ 1, 2 ];
+
+assert( [] == [], '2 empty vectors should have been equal' );
+assert( [ 1, 2 ] == [ 1, 2 ], '2 vectors containing [ 1, 2 ] should have been equal' );
+assert( [ 1, 3 ] != [ 1, 2 ], '[ 1, 3 ] & [ 1, 2 ] should not have been equal' );
+
+assert( v == [ 1, 2 ], 'vector should have been [ 1, 2 ]' );
+
+v.push( 3 );
+assert( v == [ 1, 2, 3 ], 'vector should have been [ 1, 2, 3 ] after push' );
+
+v.pop();
+assert( v == [ 1, 2 ], 'vector should have been [ 1, 2 ] after pop' );
+
+v.pop_front();
+assert( v == [ 2 ], 'vector should have been [ 2 ] after pop_front' );
+
+v.push_front( 1 );
+assert( v == [ 1, 2 ], 'vector should have been [ 1, 2 ] after push_front' );
+
+v.push( 3 );
+assert( v.front() == 1, 'front element of vector should have been 1' );
+assert( v.back() == 3, 'back element of vector should have been 3' );
+assert( v.len() == 3, 'lengh of vector should have been 3' );
+
+v.clear();
+assert( v.len() == 0, 'length of vector should have been 0 after clear' );
+
+v.push_front( 1 );
+assert( v == [ 1 ], 'push_front 1 in empty vector should have been [ 1 ]' );
+
+assert( v.find( 1 ) == 0, 'index of 1 in vector should have been 0' );
+assert( v.find( 2 ) == -1, 'index of 2 in vector should have been -1 (not found)' );

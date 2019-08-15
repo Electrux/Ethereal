@@ -88,6 +88,18 @@ var_base_t * set_contains( vm_state_t & vm, func_call_data_t & fcd )
 	return TRUE_FALSE( s.find( fcd.args[ 1 ]->to_str() ) != s.end() );
 }
 
+var_base_t * set_len( vm_state_t & vm, func_call_data_t & fcd )
+{
+	return new var_int_t( ( int )AS_SET( fcd.args[ 0 ] )->get().size(), fcd.args[ 0 ]->parse_ctr() );
+}
+
+var_base_t * set_clear( vm_state_t & vm, func_call_data_t & fcd )
+{
+	std::unordered_set< std::string > & s = AS_SET( fcd.args[ 0 ] )->get();
+	s.clear();
+	return nullptr;
+}
+
 REGISTER_MODULE( set )
 {
 	vm.funcs.add( { "set_create", 0, 0, {}, FnType::MODULE, { .modfn = set_create }, true } );
@@ -96,4 +108,6 @@ REGISTER_MODULE( set )
 	st.add( { "insert", 1, -1, { "_whatever_" }, FnType::MODULE, { .modfn = set_insert }, false } );
 	st.add( { "erase", 1, -1, { "_whatever_" }, FnType::MODULE, { .modfn = set_erase }, false } );
 	st.add( { "contains", 1, 1, { "_any_" }, FnType::MODULE, { .modfn = set_contains }, false } );
+	st.add( { "len", 0, 0, {}, FnType::MODULE, { .modfn = set_len }, true } );
+	st.add( { "clear", 0, 0, {}, FnType::MODULE, { .modfn = set_clear }, false } );
 }

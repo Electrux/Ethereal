@@ -48,3 +48,4 @@ assert( fs.exists( 'block.et' ), 'block.et should exist (file)' );
 }
 
 assert( fs.remove( 'some_file' ), 'some_file should have been deleted' );
+assert( !fs.exists( 'some_file' ), 'some_file should no longer exist' );

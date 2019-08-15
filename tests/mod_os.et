@@ -1,0 +1,12 @@
+#!./buildfiles/et
+
+import os;
+import str;
+
+assert( os.name, 'os name cannot be empty' );
+
+assert( os.set_env( 'RANDOM_ENV_VAR', 'temp' ) == 0, 'RANDOM_ENV_VAR not set' );
+assert( os.get_env( 'RANDOM_ENV_VAR' ) == 'temp', 'RANDOM_ENV_VAR should have been set' );
+
+assert( os.set_env( 'RANDOM_ENV_VAR', 'temp', false ) == 0, 'RANDOM_ENV_VAR should not be set because overwrite is disabled' );
+assert( os.set_env( 'RANDOM_ENV_VAR', 'temp' ) == 0, 'RANDOM_ENV_VAR should be set because overwrite is enabled' );

@@ -26,6 +26,13 @@ var_base_t * push( vm_state_t & vm, func_call_data_t & fcd )
 	return nullptr;
 }
 
+var_base_t * push_front( vm_state_t & vm, func_call_data_t & fcd )
+{
+	std::vector< var_base_t * > & v = AS_VEC( fcd.args[ 0 ] )->get();
+	v.insert( v.begin(), fcd.args[ 1 ]->copy( fcd.args[ 1 ]->parse_ctr() ) );
+	return nullptr;
+}
+
 var_base_t * pop( vm_state_t & vm, func_call_data_t & fcd )
 {
 	std::vector< var_base_t * > & v = AS_VEC( fcd.args[ 0 ] )->get();
@@ -135,6 +142,7 @@ REGISTER_MODULE( vec )
 
 	vecfns.add( { "append", 1, 1, { "vec" }, FnType::MODULE, { .modfn = append }, false } );
 	vecfns.add( { "push", 1, 1, { "_any_" }, FnType::MODULE, { .modfn = push }, false } );
+	vecfns.add( { "push_front", 1, 1, { "_any_" }, FnType::MODULE, { .modfn = push_front }, false } );
 	vecfns.add( { "pop", 0, 0, {}, FnType::MODULE, { .modfn = pop }, false } );
 	vecfns.add( { "pop_front", 0, 0, {}, FnType::MODULE, { .modfn = pop_front }, false } );
 	vecfns.add( { "front", 0, 0, {}, FnType::MODULE, { .modfn = front }, false } );

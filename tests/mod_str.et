@@ -1,0 +1,32 @@
+#!./buildfiles/et
+
+import vec;
+import str;
+
+s1 = 'str1';
+s2 = ' str2 ';
+
+assert( s1 + s2 == 'str1 str2 ', "'str1' + ' str2 ' should have been 'str1 str2 '" );
+assert( ( s1 += s2 ) == 'str1 str2 ', "'str1' += ' str2 ' should have been 'str1 str2 '" );
+
+assert( 'str1' == 'str1', "'str1' should have been equal to 'str1'" );
+assert( 'str1' != 'str2', "'str1' should not have been equal to 'str2'" );
+assert( 'str'  <  'str1', "'str' should have been less than 'str1'" );
+assert( 'str1' <= 'str1', "'str1' should have been less or equal to 'str1'" );
+assert( 'str1' >  'str',  "'str1' should have been greater than 'str'" );
+assert( 'str1' >= 'str1', "'str1' should have been greater or equal to 'str1'" );
+
+s1 = 'str1';
+
+assert( s1.len() == 4, 'length of \'str1\' should be 4 but is: ', s1.len() );
+assert( !s1.empty(), '\'str1\' should empty' );
+s1.clear();
+assert( s1.empty(), 's1 should have been empty but is: ', s1 );
+
+s1 = '52';
+
+assert( s1.is_int(), '\'52\' should be have been considered an int' );
+assert( s1.to_int() == 52, '\'52\' should have been converted to 52' );
+assert( s1.set_at( 1, '5' ) == '55', '52 should have been 55 now' );
+assert( 'a,b'.split( ',' ) == [ 'a', 'b' ], '\'a,b\' should have been split to [ \'a\', \'b\']' );
+assert( s2.trim() == 'str2', '\' str2 \' should have been trimmed to \'str2\'' );

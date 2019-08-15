@@ -1,0 +1,17 @@
+#!./buildfiles/et
+
+import set;
+
+s = set_create();
+
+s.insert( 'hi' );
+assert( s.contains( 'hi' ), 'set should have contained \'hi\'' );
+
+s.insert( 'yo' );
+assert( s.len() == 2, 'set should have been of length 2' );
+
+s.erase( 'hi' );
+assert( !s.contains( 'hi' ), 'set should not have contained \'hi\'' );
+
+s.clear();
+assert( s.len() == 0, 'set should have been empty' );

@@ -20,8 +20,6 @@
 		return TRUE_FALSE( lhs oper rhs );			\
 	}
 
-DECL_FUNC_ALLOC__BOOL( log_and, && )
-DECL_FUNC_ALLOC__BOOL( log_or, || )
 DECL_FUNC_ALLOC__BOOL( log_eq, == )
 DECL_FUNC_ALLOC__BOOL( log_ne, != )
 

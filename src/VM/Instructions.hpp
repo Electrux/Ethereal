@@ -25,6 +25,8 @@ enum InstrCode
 	IC_JUMP,		// args: bcode index (int) on which to jump to
 	IC_JUMP_TRUE,		// args: bcode index (int) on which to jump to
 	IC_JUMP_FALSE,		// args: bcode index (int) on which to jump to
+	IC_JUMP_TRUE_NO_POP,	// args: bcode index (int) on which to jump to
+	IC_JUMP_FALSE_NO_POP,	// args: bcode index (int) on which to jump to
 
 	IC_BUILD_ENUM,		// args: count of elements to take from stack
 	IC_BUILD_ENUM_MASK,	// args: same as IC_BUILD_ENUM

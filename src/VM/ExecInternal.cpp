@@ -156,8 +156,10 @@ int exec_internal( vm_state_t & vm, long begin, long end, var_base_t * ret )
 			for( auto & loc : locs ) VAR_DREF( loc );
 			break;
 		}
-		case IC_JUMP_FALSE: // fallthrough
 		case IC_JUMP_TRUE: // fallthrough
+		case IC_JUMP_FALSE: // fallthrough
+		case IC_JUMP_TRUE_NO_POP: // fallthrough
+		case IC_JUMP_FALSE_NO_POP: // fallthrough
 		case IC_JUMP: {
 			bool res = true;
 			const int idx = std::stoi( ins.oper.val );
@@ -169,8 +171,9 @@ int exec_internal( vm_state_t & vm, long begin, long end, var_base_t * ret )
 			if( ins.opcode != IC_JUMP ) {
 				VERIFY_STACK_MIN( 1 );
 				res = vm.stack->back()->to_bool();
-				vm.stack->pop_back();
-				if( ( res && ins.opcode == IC_JUMP_TRUE ) || ( !res && ins.opcode == IC_JUMP_FALSE ) ) res = true;
+				if( ins.opcode != IC_JUMP_TRUE_NO_POP && ins.opcode != IC_JUMP_FALSE_NO_POP ) vm.stack->pop_back();
+				if( ( res  && ( ins.opcode == IC_JUMP_TRUE || ins.opcode == IC_JUMP_TRUE_NO_POP ) ) ||
+				    ( !res && ( ins.opcode == IC_JUMP_FALSE || ins.opcode == IC_JUMP_FALSE_NO_POP ) ) ) res = true;
 				else res = false;
 			}
 			if( res ) i = idx - 1;

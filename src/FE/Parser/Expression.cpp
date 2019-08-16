@@ -370,20 +370,33 @@ bool stmt_expr_t::bytecode( src_t & src ) const
 
 		if( oper_assoc( oper ) == LTR ) {
 			int ques_col_loc = -1;
+			int and_or_jump = -1;
 
 			if( m_lhs ) m_lhs->bytecode( src );
 
+			if( oper->type == TOK_AND || oper->type == TOK_OR ) {
+				and_or_jump = src.bcode.size();
+				src.bcode.push_back( { m_oper->m_tok_ctr, oper->line, oper->col,
+						       oper->type == TOK_AND ? IC_JUMP_FALSE_NO_POP : IC_JUMP_TRUE_NO_POP,
+						       { OP_INT, "<and-or-placeholder>" } } );
+				src.bcode.push_back( { m_oper->m_tok_ctr, oper->line, oper->col, IC_POP, { OP_NONE, "" } } );
+			}
+
 			if( oper->type == TOK_QUEST ) {
+				ques_col_loc = src.bcode.size();
 				src.bcode.push_back( { m_oper->m_tok_ctr, oper->line, oper->col, IC_JUMP_FALSE, { OP_INT, "<placeholder>" } } );
-				ques_col_loc = src.bcode.size() - 1;
 			}
 			if( oper->type == TOK_COL ) {
+				ques_col_loc = src.bcode.size();
 				src.bcode.push_back( { m_oper->m_tok_ctr, oper->line, oper->col, IC_JUMP, { OP_INT, "<placeholder>" } } );
-				ques_col_loc = src.bcode.size() - 1;
 			}
 
 			int curr_bcode_size = src.bcode.size();
 			if( m_rhs ) m_rhs->bytecode( src );
+
+			if( oper->type == TOK_AND || oper->type == TOK_OR ) {
+				src.bcode[ and_or_jump ].oper.val = std::to_string( src.bcode.size() );
+			}
 
 			if( oper->type == TOK_QUEST || oper->type == TOK_COL ) {
 				int rhs_bcode_size = src.bcode.size() - curr_bcode_size + ( oper->type == TOK_QUEST );
@@ -403,7 +416,7 @@ bool stmt_expr_t::bytecode( src_t & src ) const
 		}
 		const TokType ttype = m_oper ? m_oper->m_val->type : TOK_INVALID;
 
-		if( ttype == TOK_COMMA || ttype == TOK_QUEST || ttype == TOK_COL ) return true;
+		if( ttype == TOK_COMMA || ttype == TOK_QUEST || ttype == TOK_COL || ttype == TOK_AND || ttype == TOK_OR ) return true;
 
 		if( ttype == TOK_DOT ) {
 			if( m_rhs != nullptr ) {

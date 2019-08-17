@@ -11,7 +11,7 @@
 #include <dirent.h>
 #include <sys/wait.h>
 
-#include "../Core.hpp"
+#include "../src/VM/Core.hpp"
 
 int exec_internal( const std::string & cmd );
 

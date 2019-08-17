@@ -19,7 +19,6 @@ rm -rf bin lib buildfiles 2>/dev/null
 echo "Creating directories ..."
 
 mkdir -p "buildfiles/src/FE/Parser"
-mkdir -p "buildfiles/src/VM/Modules"
 mkdir -p "buildfiles/src/VM/Vars"
 
 if [[ -z "${PREFIX}" ]]; then
@@ -38,7 +37,7 @@ fi
 
 # Library: et
 
-find src -name "*.cpp" | grep -v "Modules" | grep -v "Main.cpp" | while read -r src_file; do
+find src -name "*.cpp" | grep -v "Main.cpp" | while read -r src_file; do
 	echo "Compiling: $src_file ..."
 	$compiler -O2 -fPIC -std=c++11 -c $src_file -o buildfiles/$src_file.o ${EXTRA_FLAGS} -DBUILD_PREFIX_DIR=${PREFIX_DIR} ${VERSION_STRING}
 	if [[ $? != 0 ]]; then
@@ -78,7 +77,7 @@ for l in "core" "fs" "math" "os" "set" "str" "vec" "map"; do
 	if [[ "$os" == "Darwin" ]]; then
 		install_name="-Wl,-install_name -Wl,@rpath/lib$l.so"
 	fi
-	$compiler -O2 -fPIC -std=c++11 -shared -o buildfiles/lib$l.so src/VM/Modules/$l.cpp $buildfiles -Wl,-rpath,${PREFIX_DIR}/lib/ethereal \
+	$compiler -O2 -fPIC -std=c++11 -shared -o buildfiles/lib$l.so stdlib/$l.cpp $buildfiles -Wl,-rpath,${PREFIX_DIR}/lib/ethereal \
 		$install_name ${EXTRA_FLAGS} -L./buildfiles/ -ldl -lgmpxx -lgmp -let -DBUILD_PREFIX_DIR=${PREFIX_DIR} ${VERSION_STRING}
 	if [[ $? != 0 ]]; then
 		exit $?

@@ -9,7 +9,7 @@
 
 #include <cctype>
 
-#include "../Core.hpp"
+#include "../src/VM/Core.hpp"
 
 std::vector< std::string > str_delimit( const std::string & str, const char ch );
 

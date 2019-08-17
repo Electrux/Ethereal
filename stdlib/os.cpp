@@ -11,7 +11,7 @@
 #include <thread>
 #include <sys/wait.h>
 
-#include "../Core.hpp"
+#include "../src/VM/Core.hpp"
 
 int exec_internal( const std::string & file );
 std::string dir_part( const std::string & full_loc );

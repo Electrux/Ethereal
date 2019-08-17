@@ -10,7 +10,7 @@
 #ifndef VM_MODULES_CORE_FLT_HPP
 #define VM_MODULES_CORE_FLT_HPP
 
-#include "../../Core.hpp"
+#include "../../src/VM/Core.hpp"
 
 #define DECL_FUNC_ALLOC__FLT( name, oper, ret_type )					\
 	var_base_t * name( vm_state_t & vm, func_call_data_t & fcd )			\

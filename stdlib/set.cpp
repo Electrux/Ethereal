@@ -9,7 +9,7 @@
 
 #include <unordered_set>
 
-#include "../Core.hpp"
+#include "../src/VM/Core.hpp"
 
 class var_set_t : public var_base_t
 {

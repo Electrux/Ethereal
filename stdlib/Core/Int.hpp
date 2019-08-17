@@ -10,7 +10,7 @@
 #ifndef VM_MODULES_CORE_INT_HPP
 #define VM_MODULES_CORE_INT_HPP
 
-#include "../../Core.hpp"
+#include "../../src/VM/Core.hpp"
 
 #define DECL_FUNC_ALLOC__INT( name, oper, ret_type )				\
 	var_base_t * name( vm_state_t & vm, func_call_data_t & fcd )		\

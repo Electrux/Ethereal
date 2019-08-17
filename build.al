@@ -43,25 +43,25 @@ if( "${ARGC}" > 0 && "${ARG_0}" == debug || "${ARG_0}" == memlog ) {
 
 builds( lib, dynamic ) {
 	builds.add_flags( "-DAS_LIB" )
-	sources( "src/(.*)\.cpp", "-src/VM/Main.cpp", "-src/FE/Main.cpp", "-src/VM/Modules/(.*)\.cpp" )
+	sources( "src/(.*)\.cpp", "-src/VM/Main.cpp", "-src/FE/Main.cpp" )
 	build( et, "src/VM/Main.cpp" )
 }
 
 builds( bin ) {
-	sources( "src/(.*)\.cpp", "-src/VM/Modules/(.*)\.cpp", "-src/VM/Main.cpp" )
+	sources( "src/(.*)\.cpp", "-src/VM/Main.cpp" )
 	build( et, "src/FE/Main.cpp" )
 }
 
 builds( lib, dynamic ) {
 	builds.add_lib_flags( "-let" )
-	build( core, "src/VM/Modules/core.cpp" )
-	build( fs,   "src/VM/Modules/fs.cpp" )
-	build( map,  "src/VM/Modules/map.cpp" )
-	build( math, "src/VM/Modules/math.cpp" )
-	build( os,   "src/VM/Modules/os.cpp" )
-	build( set,  "src/VM/Modules/set.cpp" )
-	build( str,  "src/VM/Modules/str.cpp" )
-	build( vec,  "src/VM/Modules/vec.cpp" )
+	build( core, "stdlib/core.cpp" )
+	build( fs,   "stdlib/fs.cpp" )
+	build( map,  "stdlib/map.cpp" )
+	build( math, "stdlib/math.cpp" )
+	build( os,   "stdlib/os.cpp" )
+	build( set,  "stdlib/set.cpp" )
+	build( str,  "stdlib/str.cpp" )
+	build( vec,  "stdlib/vec.cpp" )
 }
 
 if( "${ARGC}" > 0 && "${ARG_0}" == "install" || "${USE_SELF_PREFIX}" == "true" ) {

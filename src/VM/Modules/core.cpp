@@ -156,14 +156,14 @@ var_base_t * to_str( vm_state_t & vm, func_call_data_t & fcd )
 	return new var_str_t( fcd.args[ 0 ]->to_str(), fcd.args[ 0 ]->parse_ctr() );
 }
 
-var_base_t * _exit( vm_state_t & vm, func_call_data_t & fcd )
+var_base_t * exit_eth( vm_state_t & vm, func_call_data_t & fcd )
 {
 	vm.exit_called = true;
 	vm.exit_status = fcd.args.size() == 0 ? 0 : fcd.args[ 0 ]->to_int().get_si();
 	return nullptr;
 }
 
-var_base_t * _assert( vm_state_t & vm, func_call_data_t & fcd )
+var_base_t * assert_eth( vm_state_t & vm, func_call_data_t & fcd )
 {
 	if( fcd.args[ 0 ]->to_bool() ) { return nullptr; }
 	src_t & src = * vm.srcstack.back();
@@ -205,8 +205,8 @@ REGISTER_MODULE( core )
 	vm.funcs.add( { "cprint",     1, -1, { "_whatever_" }, FnType::MODULE, { .modfn = cprint }, false } );
 	vm.funcs.add( { "cprintln",   0, -1, { "_whatever_" }, FnType::MODULE, { .modfn = cprintln }, false } );
 	vm.funcs.add( { "scan",       0,  1, { "_whatever_" }, FnType::MODULE, { .modfn = scan }, true } );
-	vm.funcs.add( { "exit",       0,  1, { "_any_" }, FnType::MODULE, { .modfn = _exit }, false } );
-	vm.funcs.add( { "assert",     2, -1, { "_any_", "_whatever_" }, FnType::MODULE, { .modfn = _assert }, false } );
+	vm.funcs.add( { "exit",       0,  1, { "_any_" }, FnType::MODULE, { .modfn = exit_eth }, false } );
+	vm.funcs.add( { "assert",     2, -1, { "_any_", "_whatever_" }, FnType::MODULE, { .modfn = assert_eth }, false } );
 	vm.funcs.add( { "var_exists", 1,  1, { "str" }, FnType::MODULE, { .modfn = var_exists }, false } );
 	vm.funcs.add( { "var_ref_count", 1,  1, { "_any_" }, FnType::MODULE, { .modfn = var_ref_count }, true } );
 

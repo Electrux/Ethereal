@@ -1,0 +1,51 @@
+#!./buildfiles/et
+
+import opt;
+
+struct btree {
+	data = opt_new();
+	lhs = opt_new();
+	rhs = opt_new();
+}
+
+fn create_tree( d ) {
+	t = btree{};
+	t.data.set( d );
+	return t;
+}
+
+mfn< btree > add_node( data ) {
+	if data <= self.data.get() {
+		if self.lhs.empty() {
+			self.lhs.set( create_tree( data ) );
+		} else {
+			self.lhs.get().add_node( data );
+		}
+	} else {
+		if self.rhs.empty() {
+			self.rhs.set( create_tree( data ) );
+		} else {
+			self.rhs.get().add_node( data );
+		}
+	}
+}
+
+fn show( tree ) {
+	if !tree.lhs.empty() {
+		show( tree.lhs.get() );
+	}
+	println( tree.data.get() );
+	if !tree.rhs.empty() {
+		show( tree.rhs.get() );
+	}
+}
+
+tree = create_tree( 5 );
+tree.add_node( 3 );
+tree.add_node( 2 );
+tree.add_node( 4 );
+tree.add_node( 7 );
+tree.add_node( 6 );
+tree.add_node( 8 );
+
+show( tree );

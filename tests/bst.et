@@ -9,9 +9,7 @@ struct btree {
 }
 
 fn create_tree( d ) {
-	t = btree{};
-	t.data = d;
-	return t;
+	return btree{ d };
 }
 
 mfn< btree > add_node( data ) {
@@ -40,12 +38,12 @@ fn show( tree ) {
 	}
 }
 
-tree = create_tree( 5 );
-tree.add_node( 3 );
+tree = create_tree( 4 );
 tree.add_node( 2 );
-tree.add_node( 4 );
-tree.add_node( 7 );
+tree.add_node( 1 );
+tree.add_node( 3 );
 tree.add_node( 6 );
-tree.add_node( 8 );
+tree.add_node( 5 );
+tree.add_node( 7 );
 
 show( tree );

@@ -404,8 +404,8 @@ tmp_fail:
 				goto fail;
 			}
 			var_struct_def_t * stdef = vm.structs[ name ];
-			if( count != 0 && stdef->get_pos().size() != ( size_t )count ) {
-				VM_FAIL( "struct '%s' expects %zu arguments (or none at all) (provided %d args)",
+			if( count < 0 || ( size_t )count > stdef->get_pos().size() ) {
+				VM_FAIL( "struct '%s' expects at most %zu arguments (provided %d args)",
 					 name.c_str(), stdef->get_pos().size(), count );
 				goto fail;
 			}

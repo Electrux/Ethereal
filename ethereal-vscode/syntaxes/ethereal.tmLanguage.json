@@ -18,7 +18,7 @@
 			"include": "#functions"
 		},
 		{
-			"include": "#structures"
+			"include": "#structure_calls"
 		},
 		{
 			"include": "#assignments"
@@ -34,7 +34,7 @@
 		"keywords": {
 			"patterns": [{
 				"name": "keyword.control.ethereal",
-				"match": "\\b(import|ldmod|enum|enum_mask|struct|if|for|continue|break|return|fn|mfn|elif|else)\\b"
+				"match": "\\b(import|ldmod|enum|enum_mask|if|for|continue|break|return|fn|mfn|elif|else)\\b"
 			},
 			{
 				"name": "keyword.other",
@@ -43,6 +43,18 @@
 			{
 				"name": "keyword.operator",
 				"match": "\\b(self)\\b"
+			},
+			{
+				"comment": "structures",
+				"match": "\\b(struct)\\b[\\s]+\\b(.*)\\b",
+				"captures": {
+					"1": {
+						"name": "keyword.control.ethereal"
+					},
+					"2": {
+						"name": "entity.name.tag"
+					}
+				}
 			},
 			{
 				"comment": "data types for member functions",
@@ -54,9 +66,9 @@
 				}
 			}]
 		},
-		"structures": {
+		"structure_calls": {
 			"patterns": [{
-				"match": "[\\s\\.]*\\b((?!else)[_a-zA-Z]+[0-9]*[_a-zA-Z]*)\\b[\\s]*\\{",
+				"match": "\\b([_a-zA-Z0-9]+)\\b{",
 				"captures": {
 					"1": {
 						"name": "entity.name.tag"

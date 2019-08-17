@@ -131,12 +131,11 @@ int exec_internal( vm_state_t & vm, long begin, long end, var_base_t * ret )
 						var->type_str().c_str(), newval->type_str().c_str() );
 				goto fail;
 			}
-			VarType type = var->type();
 
-			if( type == VT_INT ) AS_INT( var )->get() = AS_INT( newval )->get();
-			else if( type == VT_FLT ) AS_FLT( var )->get() = AS_FLT( newval )->get();
-			else if( type == VT_STR ) AS_STR( var )->get() = AS_STR( newval )->get();
-			else if( type == VT_BOOL ) AS_BOOL( var )->get() = AS_BOOL( newval )->get();
+			if( !copy_data( var, newval ) ) {
+				VM_FAIL( "copy symantics not implemented for variable type '%s'", var->type_str().c_str() );
+				goto fail;
+			}
 
 			vm.stack->pop_back();
 			if( ins.opcode == IC_STORE_LOAD_STACK ) {

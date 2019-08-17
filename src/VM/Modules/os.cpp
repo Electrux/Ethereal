@@ -9,6 +9,7 @@
 
 #include <chrono>
 #include <thread>
+#include <sys/wait.h>
 
 #include "../Core.hpp"
 

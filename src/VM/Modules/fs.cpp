@@ -9,6 +9,7 @@
 
 #include <cstdio>
 #include <dirent.h>
+#include <sys/wait.h>
 
 #include "../Core.hpp"
 

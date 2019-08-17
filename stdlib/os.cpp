@@ -76,7 +76,7 @@ var_base_t * install( vm_state_t & vm, func_call_data_t & fcd )
 	std::string cmd_str;
 #if __linux__ || __ANDROID__
 	cmd_str = "cp -r --remove-destination " + src + " " + dest;
-#elif __APPLE__ || __FreeBSD__
+#elif __APPLE__ || __FreeBSD__ || __NetBSD__ || __OpenBSD__ || __bsdi__ || __DragonFly__
 	cmd_str = "cp -rf " + src + " " + dest;
 #endif
 	return new var_int_t( exec_internal( cmd_str ), fcd.args[ 0 ]->parse_ctr() );
@@ -91,7 +91,7 @@ var_base_t * os_get_name( vm_state_t & vm, func_call_data_t & fcd )
 	os_str = "macos";
 #elif __ANDROID__
 	os_str = "android";
-#elif __FreeBSD__
+#elif __FreeBSD__ || __NetBSD__ || __OpenBSD__ || __bsdi__ || __DragonFly__
 	os_str = "bsd";
 #endif
 	return new var_str_t( os_str, 0 );

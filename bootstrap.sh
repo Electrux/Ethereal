@@ -31,7 +31,7 @@ VERSION_STRING="-DVERSION_MAIN=0 -DVERSION_SUB=0 -DVERSION_PATCH=1"
 
 EXTRA_FLAGS=""
 
-if [[ "$os" == "FreeBSD" ]]; then
+if [[ "$os" =~ .*BSD.* ]]; then
 	EXTRA_FLAGS="-I/usr/local/include -L/usr/local/lib -Wno-unused-command-line-argument"
 fi
 

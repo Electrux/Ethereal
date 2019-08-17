@@ -33,7 +33,7 @@ VERSION_STRING="-DVERSION_MAIN=0 -DVERSION_SUB=0 -DVERSION_PATCH=1"
 EXTRA_FLAGS=""
 
 if [[ "$os" == "FreeBSD" ]]; then
-	EXTRA_FLAGS = "-I/usr/local/include -L/usr/local/lib"
+	EXTRA_FLAGS="-I/usr/local/include -L/usr/local/lib"
 fi
 
 # Library: et

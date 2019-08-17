@@ -3,19 +3,19 @@
 import opt;
 
 struct btree {
-	data = opt_new();
+	data = 0;
 	lhs = opt_new();
 	rhs = opt_new();
 }
 
 fn create_tree( d ) {
 	t = btree{};
-	t.data.set( d );
+	t.data = d;
 	return t;
 }
 
 mfn< btree > add_node( data ) {
-	if data <= self.data.get() {
+	if data <= self.data {
 		if self.lhs.empty() {
 			self.lhs.set( create_tree( data ) );
 		} else {
@@ -34,7 +34,7 @@ fn show( tree ) {
 	if !tree.lhs.empty() {
 		show( tree.lhs.get() );
 	}
-	println( tree.data.get() );
+	println( tree.data );
 	if !tree.rhs.empty() {
 		show( tree.rhs.get() );
 	}

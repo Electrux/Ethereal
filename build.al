@@ -19,6 +19,11 @@ if( "${CC}" != "g++" ) {
 }
 builds.add_lib_dirs( "-L./buildfiles/" )
 
+if( "${OS}" == "OS_BSD" ) {
+	builds.add_inc_dirs( "-I/usr/local/include" )
+	builds.add_lib_dirs( "-I/usr/local/lib" )
+}
+
 use_lib( dl )
 use_lib( gmpxx )
 

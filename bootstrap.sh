@@ -33,6 +33,8 @@ EXTRA_FLAGS=""
 
 if [[ "$os" =~ .*BSD.* ]]; then
 	EXTRA_FLAGS="-I/usr/local/include -L/usr/local/lib -Wno-unused-command-line-argument"
+else
+	EXTRA_FLAGS="-ldl"
 fi
 
 # Library: et
@@ -58,14 +60,14 @@ if [[ "$os" == "Darwin" ]]; then
 fi
 echo "Building library: et ..."
 $compiler -O2 -fPIC -std=c++11 -shared -o buildfiles/libet.so src/VM/Main.cpp $buildfiles -Wl,-rpath,${PREFIX_DIR}/lib/ethereal \
-	$install_name ${EXTRA_FLAGS} -L./buildfiles/ -ldl -lgmpxx -lgmp -DBUILD_PREFIX_DIR=${PREFIX_DIR} ${VERSION_STRING}
+	$install_name -L./buildfiles/ ${EXTRA_FLAGS} -lgmpxx -lgmp -DBUILD_PREFIX_DIR=${PREFIX_DIR} ${VERSION_STRING}
 if [[ $? != 0 ]]; then
 	exit $?
 fi
 
 echo "Building binary: et ..."
 $compiler -O2 -fPIC -std=c++11 -g -o buildfiles/et src/FE/Main.cpp $buildfiles -Wl,-rpath,${PREFIX_DIR}/lib/ethereal \
-	${EXTRA_FLAGS} -L./buildfiles/ -ldl -lgmpxx -lgmp -let -DBUILD_PREFIX_DIR=${PREFIX_DIR} ${VERSION_STRING}
+	-L./buildfiles/ ${EXTRA_FLAGS} -lgmpxx -lgmp -let -DBUILD_PREFIX_DIR=${PREFIX_DIR} ${VERSION_STRING}
 if [[ $? != 0 ]]; then
 	exit $?
 fi
@@ -78,7 +80,7 @@ for l in "core" "fs" "math" "os" "set" "str" "vec" "map"; do
 		install_name="-Wl,-install_name -Wl,@rpath/lib$l.so"
 	fi
 	$compiler -O2 -fPIC -std=c++11 -shared -o buildfiles/lib$l.so stdlib/$l.cpp $buildfiles -Wl,-rpath,${PREFIX_DIR}/lib/ethereal \
-		$install_name ${EXTRA_FLAGS} -L./buildfiles/ -ldl -lgmpxx -lgmp -let -DBUILD_PREFIX_DIR=${PREFIX_DIR} ${VERSION_STRING}
+		$install_name -L./buildfiles/ ${EXTRA_FLAGS} -lgmpxx -lgmp -let -DBUILD_PREFIX_DIR=${PREFIX_DIR} ${VERSION_STRING}
 	if [[ $? != 0 ]]; then
 		exit $?
 	fi

@@ -1,0 +1,21 @@
+#!./buildfiles/et
+
+import opt;
+
+struct rec {
+	a = opt_new();
+}
+
+s = rec{};
+
+s.a.set( rec{} );
+
+s.a.get().a.set( 'hi' );
+
+println( s );
+
+s.a.clear();
+
+println( s );
+
+assert( s.a.empty(), 's.a should have been empty' );

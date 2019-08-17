@@ -58,6 +58,7 @@ builds( lib, dynamic ) {
 	build( fs,   "stdlib/fs.cpp" )
 	build( map,  "stdlib/map.cpp" )
 	build( math, "stdlib/math.cpp" )
+	build( opt,  "stdlib/opt.cpp" )
 	build( os,   "stdlib/os.cpp" )
 	build( set,  "stdlib/set.cpp" )
 	build( str,  "stdlib/str.cpp" )

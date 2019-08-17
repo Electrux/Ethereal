@@ -19,8 +19,6 @@ Documentation is under development and will take some time to build, but till th
 
 # Roadmap
 
-* Implement short circuiting for AND/OR logical operations
-* Think and implement a solution for using a struct (pointer) within the struct definition (for writing recursive structs)
 * Write primary language documentation
 
 Contributions are definitely accepted and greatly appreciated. ❤️

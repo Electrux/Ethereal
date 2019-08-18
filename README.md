@@ -17,6 +17,20 @@ One can easily make extensions for the language in the form of language modules 
 
 Documentation is under development and will take some time to build, but till then, feel free to go through the [Code Samples](https://github.com/Electrux/Ethereal/blob/master/code_samples.md) and hack around with the programs in the `tests` directory.
 
+# Installation
+
+Once the prerequisites are met, just execute the `bootstrap.sh` script. It will build the language interpreter along with the stdlib modules, and install them to your `PREFIX` directory if it is set, or to the repository directory itself.
+
+Note that if you use PREFIX, you may need root access depending on the directory you chose.
+
+The following items will be installed:
+
+* buildfiles/et -> PREFIX_DIR/bin/
+* buildfiles/lib*.so PREFIX_DIR/lib/ethereal/
+* include/ethereal/* PREFIX_DIR/include/ethereal/
+
+Also, the interpreter code internally uses `PREFIX` to locate the `lib` and `include` directories, so you will have to rebuild the codebase if you change `PREFIX` and then install.
+
 # Roadmap
 
 * Add terminal related functions (like term width, height) in libterm

@@ -13,8 +13,6 @@
 #include "Core/Flt.hpp"
 #include "Core/Bool.hpp"
 
-const int MAX_C_STR_LEN = 1025;
-
 static std::unordered_map< std::string, const char * > COL = {
 	{ "0", "\033[0m" },
 

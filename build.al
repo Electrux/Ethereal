@@ -14,9 +14,14 @@ if( "${PREFIX}" == "" ) {
 builds.add_flags( "-fPIC", "-Wall", "-Wextra", "-Wno-unused-parameter",
 		  "-DVERSION_MAIN=0", "-DVERSION_SUB=0", "-DVERSION_PATCH=1",
 		  "-DBUILD_PREFIX_DIR=${PREFIX}", "-Wl,-rpath,${PREFIX}/lib/ethereal/" )
+
 if( "${CC}" != "g++" ) {
 	builds.add_flags( "-Wno-c99-extensions", "-Wno-unused-command-line-argument" )
 }
+if( "%{uname -o 2>/dev/null}" == "Android" ) {
+	builds.add_flags( "-Wno-unused-command-line-argument" )
+}
+
 builds.add_lib_dirs( "-L./buildfiles/" )
 
 if( "${OS}" == "OS_BSD" ) {

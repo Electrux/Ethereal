@@ -1,3 +1,4 @@
 #!./buildfiles/et
 
 ldmod fs;
+ldmod '../lib/ethereal/libstr';

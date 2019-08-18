@@ -180,17 +180,24 @@ int exec_internal( vm_state_t & vm, long begin, long end, var_base_t * ret )
 		}
 		case IC_LDMOD: {
 			std::string module_name = ins.oper.val + ".so";
-			if( ins.oper.val.front() != '~' && ins.oper.val.front() != '/' && ins.oper.val.front() != '.' ) {
+			std::string init_fn_str = ins.oper.val;
+			if( ins.oper.val.front() != '~' && ins.oper.val.find( '/' ) == std::string::npos && ins.oper.val.front() != '.' ) {
 				module_name = STRINGIFY( BUILD_PREFIX_DIR ) "/lib/ethereal/lib" + ins.oper.val + ".so";
+			} else {
+				size_t loc = ins.oper.val.find_last_of( '/' );
+				if( loc != std::string::npos ) {
+					init_fn_str = init_fn_str.substr( loc + 1 );
+				}
+				if( init_fn_str.substr( 0, 3 ) == "lib" ) init_fn_str = init_fn_str.substr( 3 );
 			}
 			if( !fexists( module_name ) ) {
 				VM_FAIL( "failed to locate module file '%s'", module_name.c_str() );
 				goto fail;
 			}
 			if( vm.dlib->load( module_name ) == nullptr ) goto fail;
-			init_fnptr_t init_fn = ( init_fnptr_t ) vm.dlib->get( module_name, "init_" + ins.oper.val );
+			init_fnptr_t init_fn = ( init_fnptr_t ) vm.dlib->get( module_name, "init_" + init_fn_str );
 			if( init_fn == nullptr ) {
-				VM_FAIL( "failed to find init function in module '%s'\n", module_name.c_str() );
+				VM_FAIL( "failed to find init function '%s' in module '%s'\n", init_fn_str.c_str(), module_name.c_str() );
 				goto fail;
 			}
 			init_fn( vm );

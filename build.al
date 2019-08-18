@@ -17,8 +17,7 @@ builds.add_flags( "-fPIC", "-Wall", "-Wextra", "-Wno-unused-parameter",
 
 if( "${CC}" != "g++" ) {
 	builds.add_flags( "-Wno-c99-extensions", "-Wno-unused-command-line-argument" )
-}
-if( "%{uname -o 2>/dev/null}" == "Android" ) {
+} elif( "${OS}" == "OS_ANDROID" ) {
 	builds.add_flags( "-Wno-unused-command-line-argument" )
 }
 

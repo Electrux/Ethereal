@@ -85,12 +85,12 @@ var_base_t * install( vm_state_t & vm, func_call_data_t & fcd )
 var_base_t * os_get_name( vm_state_t & vm, func_call_data_t & fcd )
 {
 	std::string os_str;
-#if __linux__
+#if __ANDROID__
+	os_str = "android";
+#elif __linux__
 	os_str = "linux";
 #elif __APPLE__
 	os_str = "macos";
-#elif __ANDROID__
-	os_str = "android";
 #elif __FreeBSD__ || __NetBSD__ || __OpenBSD__ || __bsdi__ || __DragonFly__
 	os_str = "bsd";
 #endif

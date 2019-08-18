@@ -15,59 +15,6 @@
 
 const int MAX_C_STR_LEN = 1025;
 
-static std::unordered_map< std::string, const char * > COL = {
-	{ "0", "\033[0m" },
-
-	{ "r", "\033[0;31m" },
-	{ "g", "\033[0;32m" },
-	{ "y", "\033[0;33m" },
-	{ "b", "\033[0;34m" },
-	{ "m", "\033[0;35m" },
-	{ "c", "\033[0;36m" },
-	{ "w", "\033[0;37m" },
-
-	{ "br", "\033[1;31m" },
-	{ "bg", "\033[1;32m" },
-	{ "by", "\033[1;33m" },
-	{ "bb", "\033[1;34m" },
-	{ "bm", "\033[1;35m" },
-	{ "bc", "\033[1;36m" },
-	{ "bw", "\033[1;37m" },
-};
-
-void apply_colors( std::string & str )
-{
-	for( auto it = str.begin(); it != str.end(); ) {
-		if( * it == '{' && ( it == str.begin() || ( * ( it - 1 ) != '$' && * ( it - 1 ) != '%' && * ( it - 1 ) != '#' && * ( it - 1 ) != '\\' ) ) ) {
-			it = str.erase( it );
-			if( it != str.end() && * it == '{' ) {
-				++it;
-				continue;
-			}
-
-			std::string var;
-
-			while( it != str.end() && * it != '}' ) {
-				var += * it;
-				it = str.erase( it );
-			}
-
-			// Remove the ending brace
-			if( it != str.end() ) it = str.erase( it );
-
-			if( var.empty() ) continue;
-
-			std::string val = COL[ var ];
-
-			it = str.insert( it, val.begin(), val.end() );
-			it += val.size();
-		}
-		else {
-			++it;
-		}
-	}
-}
-
 var_base_t * flush_out( vm_state_t & vm, func_call_data_t & fcd )
 {
 	fflush( stdout );
@@ -111,27 +58,6 @@ var_base_t * dprintln( vm_state_t & vm, func_call_data_t & fcd )
 		fprintf( stderr, "%s", v->to_str().c_str() );
 	}
 	fprintf( stderr, "\n" );
-	return nullptr;
-}
-
-var_base_t * cprint( vm_state_t & vm, func_call_data_t & fcd )
-{
-	for( auto & v : fcd.args ) {
-		std::string data = v->to_str();
-		apply_colors( data );
-		fprintf( stdout, "%s", data.c_str() );
-	}
-	return nullptr;
-}
-
-var_base_t * cprintln( vm_state_t & vm, func_call_data_t & fcd )
-{
-	for( auto & v : fcd.args ) {
-		std::string data = v->to_str();
-		apply_colors( data );
-		fprintf( stdout, "%s", data.c_str() );
-	}
-	fprintf( stdout, "\n" );
 	return nullptr;
 }
 
@@ -196,18 +122,16 @@ REGISTER_MODULE( core )
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	///////////////////////////////////////////////////////////////// CORE ////////////////////////////////////////////////////////////////
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	vm.funcs.add( { "flush_out",  0,  0, {}, FnType::MODULE, { .modfn = flush_out }, false } );
-	vm.funcs.add( { "flush_err",  0,  0, {}, FnType::MODULE, { .modfn = flush_err }, false } );
-	vm.funcs.add( { "print",      1, -1, { "_whatever_" }, FnType::MODULE, { .modfn = print }, false } );
-	vm.funcs.add( { "println",    0, -1, { "_whatever_" }, FnType::MODULE, { .modfn = println }, false } );
-	vm.funcs.add( { "dprint",     1, -1, { "_whatever_" }, FnType::MODULE, { .modfn = dprint }, false } );
-	vm.funcs.add( { "dprintln",   0, -1, { "_whatever_" }, FnType::MODULE, { .modfn = dprintln }, false } );
-	vm.funcs.add( { "cprint",     1, -1, { "_whatever_" }, FnType::MODULE, { .modfn = cprint }, false } );
-	vm.funcs.add( { "cprintln",   0, -1, { "_whatever_" }, FnType::MODULE, { .modfn = cprintln }, false } );
-	vm.funcs.add( { "scan",       0,  1, { "_whatever_" }, FnType::MODULE, { .modfn = scan }, true } );
-	vm.funcs.add( { "exit",       0,  1, { "_any_" }, FnType::MODULE, { .modfn = exit_eth }, false } );
-	vm.funcs.add( { "assert",     2, -1, { "_any_", "_whatever_" }, FnType::MODULE, { .modfn = assert_eth }, false } );
-	vm.funcs.add( { "var_exists", 1,  1, { "str" }, FnType::MODULE, { .modfn = var_exists }, false } );
+	vm.funcs.add( { "flush_out",     0,  0, {}, FnType::MODULE, { .modfn = flush_out }, false } );
+	vm.funcs.add( { "flush_err",     0,  0, {}, FnType::MODULE, { .modfn = flush_err }, false } );
+	vm.funcs.add( { "print",         1, -1, { "_whatever_" }, FnType::MODULE, { .modfn = print }, false } );
+	vm.funcs.add( { "println",       0, -1, { "_whatever_" }, FnType::MODULE, { .modfn = println }, false } );
+	vm.funcs.add( { "dprint",        1, -1, { "_whatever_" }, FnType::MODULE, { .modfn = dprint }, false } );
+	vm.funcs.add( { "dprintln",      0, -1, { "_whatever_" }, FnType::MODULE, { .modfn = dprintln }, false } );
+	vm.funcs.add( { "scan",          0,  1, { "_whatever_" }, FnType::MODULE, { .modfn = scan }, true } );
+	vm.funcs.add( { "exit",          0,  1, { "_any_" }, FnType::MODULE, { .modfn = exit_eth }, false } );
+	vm.funcs.add( { "assert",        2, -1, { "_any_", "_whatever_" }, FnType::MODULE, { .modfn = assert_eth }, false } );
+	vm.funcs.add( { "var_exists",    1,  1, { "str" }, FnType::MODULE, { .modfn = var_exists }, false } );
 	vm.funcs.add( { "var_ref_count", 1,  1, { "_any_" }, FnType::MODULE, { .modfn = var_ref_count }, true } );
 
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

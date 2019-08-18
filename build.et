@@ -2,6 +2,7 @@
 
 import os;
 import str;
+import term;
 import cxxproj;
 
 # will set CC variable accordingly

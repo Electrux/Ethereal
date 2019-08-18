@@ -1,5 +1,5 @@
 project( "Ethereal-Lang" ) {
-	version( 0.1 )
+	version( 0.0.1 )
 	language( cpp, 11 )
 	license( bsd3 )
 	author( Electrux, "ElectruxRedsworth@gmail.com" )
@@ -62,6 +62,7 @@ builds( lib, dynamic ) {
 	build( os,   "stdlib/os.cpp" )
 	build( set,  "stdlib/set.cpp" )
 	build( str,  "stdlib/str.cpp" )
+	build( term, "stdlib/term.cpp" )
 	build( vec,  "stdlib/vec.cpp" )
 }
 

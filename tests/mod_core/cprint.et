@@ -1,3 +1,0 @@
-#!./buildfiles/et
-
-cprint( '{r}red{0}' );

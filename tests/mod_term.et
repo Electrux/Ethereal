@@ -1,0 +1,9 @@
+#!./buildfiles/et
+
+import term;
+
+println( colorize( '{r}red{0}' ) );
+
+cprint( '{r}red{0}' );
+
+cprintln( '{r}red{0}' );

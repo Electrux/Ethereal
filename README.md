@@ -19,7 +19,8 @@ Documentation is under development and will take some time to build, but till th
 
 # Roadmap
 
-* Write primary language documentation
+* Add terminal related functions (like term width, height) in libterm
+* Write primary language and standard library documentation
 * Perhaps use `union` type for operand value of `instr_code_t` to avoid using conversions like `std::stoi` in ExecInternal
 
 Contributions are definitely accepted and greatly appreciated. ❤️

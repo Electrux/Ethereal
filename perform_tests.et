@@ -1,9 +1,10 @@
 #!./buildfiles/et
 
-import vec;
-import str;
 import fs;
 import os;
+import str;
+import term;
+import vec;
 
 files = fs.dir_entries( "tests", fs.ent.RECURSE );
 

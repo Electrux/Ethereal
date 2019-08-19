@@ -22,9 +22,10 @@ flag_cache
 #####################
 *.core
 
-# Intermediate source #
+# Extra data #
 #######################
 tmp.et
+tests/*.json
 
 # Compiled source #
 ###################

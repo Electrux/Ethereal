@@ -61,7 +61,7 @@ class functions_t
 	// uses mangled names and used for getting functions quickly
 	// mangled style:
 	// fnname_argtypes
-	std::unordered_map< std::string, const function_t * > m_cached_funcs;
+	std::unordered_map< std::string, int > m_cached_funcs;
 
 	inline bool exists( const function_t & func )
 	{
@@ -70,13 +70,13 @@ class functions_t
 
 	inline const function_t * get_cached_func( const std::string & mangled_name )
 	{
-		return m_cached_funcs.find( mangled_name ) != m_cached_funcs.end() ? m_cached_funcs[ mangled_name ] : nullptr;
+		return m_cached_funcs.find( mangled_name ) != m_cached_funcs.end() ? & m_funcs[ m_cached_funcs[ mangled_name ] ] : nullptr;
 	}
 
-	inline const function_t * set_cached_func( const std::string & mangled_name, const function_t * func )
+	inline const function_t * set_cached_func( const std::string & mangled_name, const int fid )
 	{
-		m_cached_funcs[ mangled_name ] = func;
-		return func;
+		m_cached_funcs[ mangled_name ] = fid;
+		return & m_funcs[ fid ];
 	}
 
 public:
@@ -87,6 +87,8 @@ public:
 
 	bool del( const function_t & func );
 	bool del_vec( const std::vector< function_t > & funcs );
+
+	bool exists_name( const std::string & name );
 
 	const function_t * get( const std::string & name, const int arg_count,
 				const std::vector< std::string > & arg_types );

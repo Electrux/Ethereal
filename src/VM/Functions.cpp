@@ -70,6 +70,14 @@ bool functions_t::del_vec( const std::vector< function_t > & funcs )
 	return true;
 }
 
+bool functions_t::exists_name( const std::string & name )
+{
+	for( auto & fn : m_funcs ) {
+		if( fn.name == name ) return true;
+	}
+	return false;
+}
+
 const function_t * functions_t::get( const std::string & name, const int arg_count,
 				     const std::vector< std::string > & arg_types )
 {
@@ -80,12 +88,14 @@ const function_t * functions_t::get( const std::string & name, const int arg_cou
 	const function_t * fnptr = get_cached_func( mangled_name );
 	if( fnptr != nullptr ) return fnptr;
 
-	for( auto & func : m_funcs ) {
+	size_t sz = m_funcs.size();
+	for( size_t i = 0; i < sz; ++i ) {
+		function_t & func = m_funcs[ i ];
 		if( func.name == name &&
 		    arg_count >= func.arg_count_min &&
 		    ( arg_count <= func.arg_count_max || func.arg_count_max == -1 ) &&
 		    ( func.type == LANG || compare_arg_types( func.arg_types, arg_types, func.arg_count_min ) ) ) {
-			return set_cached_func( mangled_name, & func );
+			return set_cached_func( mangled_name, i );
 		}
 	}
 	return nullptr;

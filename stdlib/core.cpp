@@ -111,6 +111,12 @@ var_base_t * var_exists( vm_state_t & vm, func_call_data_t & fcd )
 	return TRUE_FALSE( vm.vars->exists( fcd.args[ 0 ]->to_str(), true ) );
 }
 
+var_base_t * var_mfn_exists( vm_state_t & vm, func_call_data_t & fcd )
+{
+	if( vm.typefuncs.find( fcd.args[ 0 ]->type_str() ) == vm.typefuncs.end() ) return vm.vars->get( "false" );
+	return TRUE_FALSE( vm.typefuncs[ fcd.args[ 0 ]->type_str() ].exists_name( fcd.args[ 1 ]->to_str() ) );
+}
+
 var_base_t * var_ref_count( vm_state_t & vm, func_call_data_t & fcd )
 {
 	if( !vm.vars->exists( fcd.args[ 0 ]->to_str(), true ) ) return new var_int_t( -1, fcd.args[ 0 ]->parse_ctr() );
@@ -132,6 +138,7 @@ REGISTER_MODULE( core )
 	vm.funcs.add( { "exit",          0,  1, { "_any_" }, FnType::MODULE, { .modfn = exit_eth }, false } );
 	vm.funcs.add( { "assert",        2, -1, { "_any_", "_whatever_" }, FnType::MODULE, { .modfn = assert_eth }, false } );
 	vm.funcs.add( { "var_exists",    1,  1, { "str" }, FnType::MODULE, { .modfn = var_exists }, false } );
+	vm.funcs.add( { "var_mfn_exists",2,  2, { "_any_", "str" }, FnType::MODULE, { .modfn = var_mfn_exists }, false } );
 	vm.funcs.add( { "var_ref_count", 1,  1, { "_any_" }, FnType::MODULE, { .modfn = var_ref_count }, true } );
 
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

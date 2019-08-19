@@ -32,7 +32,6 @@ struct vm_state_t
 
 	std::vector< int > bcodectr;
 
-// TODO: add none, true, false here and in vm.vars
 	var_none_t * none;
 
 	src_stack_t srcstack;

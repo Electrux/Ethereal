@@ -1,0 +1,56 @@
+#!./buildfiles/et
+
+import str;
+import fs;
+
+r = fopen( 'data/test1_json_flat.json', 'r' );
+if !r.is_open() {
+	println( 'failed to open file \'data/test1_json_flat.json\'' );
+	exit( 1 );
+}
+w = fopen( 'op.json', 'w' );
+if !w.is_open() {
+	println( 'failed to open file \'op.json\'' );
+	exit( 1 );
+}
+
+line = '';
+
+c = 0;
+for ; r.read( line ); {
+	sz = line.len();
+	for i = 0; i < sz; i += 1 {
+		if line[ i ] == '{' { c += 1; }
+		elif line[ i ] == '}' { c -= 1; }
+
+		if line[ i ] == '\t' || ( c == 0 && line[ i ] == ',' ) {
+			line.erase_at( i );
+			sz -= 1;
+			i -=1;
+		}
+	}
+	if( c == 0 ) { line += '\n'; }
+	w.write( line );
+}
+
+expected = '';
+r.reopen( 'data/expected1_json_flat.json', 'r' );
+if !r.is_open() {
+	println( 'failed to open file \'data/expected1_json_flat.json\'' );
+	exit( 1 );
+}
+for ; r.read( line ); {
+	expected += line;
+}
+
+actual = '';
+w.reopen( 'op.json', 'r' );
+if !w.is_open() {
+	println( 'failed to open file \'op.json\'' );
+	exit( 1 );
+}
+for ; w.read( line ); {
+	actual += line;
+}
+
+assert( expected == actual, 'json data does not match the expected:\nExpected:\n', expected, '\nActual:\n', actual );

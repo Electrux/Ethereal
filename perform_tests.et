@@ -6,7 +6,7 @@ import str;
 import term;
 import vec;
 
-files = fs.dir_entries( "tests", fs.ent.RECURSE );
+files = fs.dir_entries( "tests", fs.ent.RECURSE, '(.*)\\.et' );
 
 p = 0;
 f = 0;

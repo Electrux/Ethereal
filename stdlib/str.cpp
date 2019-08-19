@@ -67,6 +67,15 @@ var_base_t * set_at( vm_state_t & vm, func_call_data_t & fcd )
 	return fcd.args[ 0 ];
 }
 
+var_base_t * erase_at( vm_state_t & vm, func_call_data_t & fcd )
+{
+	std::string & dat = AS_STR( fcd.args[ 0 ] )->get();
+	int idx = fcd.args[ 1 ]->to_int().get_si();
+	if( idx < 0 || idx >= ( int )dat.size() ) return fcd.args[ 0 ];
+	dat.erase( dat.begin() + idx );
+	return fcd.args[ 0 ];
+}
+
 var_base_t * split( vm_state_t & vm, func_call_data_t & fcd )
 {
 	const std::string & dat = AS_STR( fcd.args[ 0 ] )->get();
@@ -127,6 +136,7 @@ REGISTER_MODULE( str )
 	strfns.add( { "is_int", 0, 0, {}, FnType::MODULE, { .modfn = is_int }, false } );
 	strfns.add( { "to_int", 0, 0, {}, FnType::MODULE, { .modfn = to_int }, true } );
 	strfns.add( { "set_at", 2, 2, { "int", "str" }, FnType::MODULE, { .modfn = set_at }, false } );
+	strfns.add( { "erase_at", 1, 1, { "int" }, FnType::MODULE, { .modfn = erase_at }, false } );
 	strfns.add( { "split", 0, 1, { "str" }, FnType::MODULE, { .modfn = split }, true } );
 	strfns.add( { "trim", 0, 0, {}, FnType::MODULE, { .modfn = trim }, false } );
 }

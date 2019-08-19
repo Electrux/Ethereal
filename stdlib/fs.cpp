@@ -7,6 +7,8 @@
 	before using or altering the project.
 */
 
+#include <regex>
+
 #include <cstdio>
 #include <dirent.h>
 #include <sys/wait.h>
@@ -33,6 +35,7 @@ public:
 	std::string to_str() const;
 	mpz_class to_int() const;
 	bool to_bool() const;
+	bool is_copied() const;
 	var_base_t * copy( const int parse_ctr );
 	FILE * & get();
 };
@@ -54,6 +57,7 @@ var_base_t * var_file_t::copy( const int parse_ctr )
 }
 
 FILE * & var_file_t::get() { return m_file; }
+bool var_file_t::is_copied() const { return m_copied; }
 
 var_base_t * file_open( vm_state_t & vm, func_call_data_t & fcd )
 {
@@ -63,6 +67,28 @@ var_base_t * file_open( vm_state_t & vm, func_call_data_t & fcd )
 		fopen( file.c_str(), mode.c_str() ),
 		fcd.args[ 0 ]->parse_ctr()
 	);
+}
+
+var_base_t * file_open_existing( vm_state_t & vm, func_call_data_t & fcd )
+{
+	var_file_t * file = AS_FILE( fcd.args[ 0 ] );
+	const std::string & fname = AS_STR( fcd.args[ 1 ] )->get();
+	const std::string & fmode = AS_STR( fcd.args[ 2 ] )->get();
+	if( file->get() != NULL && !file->is_copied() ) {
+		fclose( file->get() );
+	}
+	file->get() = fopen( fname.c_str(), fmode.c_str() );
+	return TRUE_FALSE( file->get() != NULL );
+}
+
+var_base_t * file_close_existing( vm_state_t & vm, func_call_data_t & fcd )
+{
+	var_file_t * file = AS_FILE( fcd.args[ 0 ] );
+	if( file->get() != NULL && !file->is_copied() ) {
+		fclose( file->get() );
+		file->get() = NULL;
+	}
+	return nullptr;
 }
 
 var_base_t * file_write( vm_state_t & vm, func_call_data_t & fcd )
@@ -134,7 +160,8 @@ var_base_t * is_open( vm_state_t & vm, func_call_data_t & fcd )
 	return TRUE_FALSE( AS_FILE( fcd.args[ 0 ] )->get() != NULL );
 }
 
-void get_entries_internal( const std::string & dir_str, std::vector< var_base_t * > & v, const size_t & flags, const int parse_ctr )
+void get_entries_internal( const std::string & dir_str, std::vector< var_base_t * > & v,
+			   const size_t & flags, const int parse_ctr, const std::regex & regex )
 {
 	DIR * dir;
 	struct dirent * ent;
@@ -142,16 +169,20 @@ void get_entries_internal( const std::string & dir_str, std::vector< var_base_t 
 
 	while( ( ent = readdir( dir ) ) != NULL ) {
 		if( strcmp( ent->d_name, "." ) == 0 || strcmp( ent->d_name, ".." ) == 0 ) continue;
+		std::string entry = dir_str + ent->d_name;
+		if( ( !( flags & FSEnt::RECURSE ) || ent->d_type != DT_DIR ) && !std::regex_match( entry, regex ) ) {
+			continue;
+		}
 		if( ent->d_type == DT_DIR ) {
 			if( flags & FSEnt::RECURSE ) {
-				get_entries_internal( dir_str + ent->d_name + "/", v, flags, parse_ctr );
+				get_entries_internal( entry + "/", v, flags, parse_ctr, regex );
 			} else if( flags & FSEnt::DIRS ) {
-				v.push_back( new var_str_t( dir_str + ent->d_name, parse_ctr ) );
+				v.push_back( new var_str_t( entry, parse_ctr ) );
 			}
 			continue;
 		}
 		if( flags & FSEnt::FILES || flags & FSEnt::RECURSE ) {
-			v.push_back( new var_str_t( dir_str + ent->d_name, parse_ctr ) );
+			v.push_back( new var_str_t( entry, parse_ctr ) );
 		}
 	}
 	closedir( dir );
@@ -162,8 +193,10 @@ var_base_t * get_entries( vm_state_t & vm, func_call_data_t & fcd )
 	std::vector< var_base_t * > v;
 	std::string dir_str = AS_STR( fcd.args[ 1 ] )->get();
 	size_t flags = fcd.args.size() <= 2 ? 1 : mpz_to_size_t( AS_INT( fcd.args[ 2 ] )->get() );
+	std::string regex_str = fcd.args.size() <= 3 ? "(.*)" : fcd.args[ 3 ]->to_str();
+	std::regex regex( regex_str );
 	if( dir_str.size() > 0 && dir_str.back() != '/' ) dir_str += "/";
-	get_entries_internal( dir_str, v, flags, fcd.args[ 1 ]->parse_ctr() );
+	get_entries_internal( dir_str, v, flags, fcd.args[ 1 ]->parse_ctr(), regex );
 	return new var_vec_t( v, fcd.args[ 0 ]->parse_ctr() );
 }
 
@@ -182,13 +215,15 @@ REGISTER_MODULE( fs )
 	vm.funcs.add( { "fopen", 2, 2, { "str", "str" }, FnType::MODULE, { .modfn = file_open }, true } );
 
 	functions_t & ft = vm.typefuncs[ "_file_t" ];
+	ft.add( { "reopen", 2, 2, { "str", "str" }, FnType::MODULE, { .modfn = file_open_existing }, false } );
+	ft.add( { "close", 0, 0, {}, FnType::MODULE, { .modfn = file_close_existing }, false } );
 	ft.add( { "write", 1, -1, { "_whatever_" }, FnType::MODULE, { .modfn = file_write }, false } );
 	ft.add( { "read", 1, 1, { "str" }, FnType::MODULE, { .modfn = file_read }, false } );
 	ft.add( { "read_all", 1, 1, { "vec" }, FnType::MODULE, { .modfn = file_read_full }, false } );
 	ft.add( { "is_open", 0, 0, {}, FnType::MODULE, { .modfn = is_open }, false } );
 
 	functions_t & fst = vm.typefuncs[ "_fs_t" ];
-	fst.add( { "dir_entries", 1, 2, { "str", "int" }, FnType::MODULE, { .modfn = get_entries }, true } );
+	fst.add( { "dir_entries", 1, 3, { "str", "int", "str" }, FnType::MODULE, { .modfn = get_entries }, true } );
 	fst.add( { "exists", 1, 1, { "str" }, FnType::MODULE, { .modfn = _exists }, false } );
 	fst.add( { "remove", 1, 1, { "str" }, FnType::MODULE, { .modfn = _remove }, false } );
 }

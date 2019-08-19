@@ -1,0 +1,10 @@
+#!./buildfiles/et
+
+struct s {}
+a = s{};
+
+assert( var_mfn_exists( a, 'len' ) == false, 'there should not be a member function \'len\' for struct \'s\'' );
+
+import str;
+
+assert( var_mfn_exists( 'string', 'len' ), 'there should be a member function \'len\' for type \'str\'' );

@@ -53,7 +53,6 @@ int main( int argc, char ** argv )
 	int err = E_OK;
 	const std::string main_src_str = args[ 0 ].substr( last_slash_loc );
 
-	parse_tree_t * ptree = nullptr;
 	src_t * main_src = new src_t( true );
 	main_src->name = main_src_str;
 	main_src->dir = src_dir;
@@ -71,20 +70,19 @@ int main( int argc, char ** argv )
 	}
 
 	err = E_OK;
-	ptree = parse( * main_src );
+	main_src->ptree = parse( * main_src );
 
-	if( ptree == nullptr ) { err = E_PARSE_FAIL; goto cleanup; }
-	main_src->ptree = ptree;
+	if( main_src->ptree == nullptr ) { err = E_PARSE_FAIL; goto cleanup; }
 
 	if( flags & OPT_P ) {
 		fprintf( stdout, "Parse Tree:\n" );
-		for( auto it = ptree->begin(); it != ptree->end(); ++it ) {
-			( * it )->disp( it != ptree->end() - 1 );
+		for( auto it = main_src->ptree->begin(); it != main_src->ptree->end(); ++it ) {
+			( * it )->disp( it != main_src->ptree->end() - 1 );
 		}
 	}
 
 	err = E_OK;
-	for( auto & it : * ptree ) {
+	for( auto & it : * main_src->ptree ) {
 		if( !it->bytecode( * main_src ) ) { err = E_BYTECODE_FAIL; goto cleanup; }
 	}
 
@@ -114,6 +112,8 @@ int main( int argc, char ** argv )
 		vm.vars->add( "args", new var_vec_t( arg_vec, 0 ) );
 		vm.vars->add( "true", new var_bool_t( true, 0 ) );
 		vm.vars->add( "false", new var_bool_t( false, 0 ) );
+		VAR_IREF( vm.nil );
+		vm.vars->add( "nil", vm.nil );
 		err = vm_exec( vm );
 		vm.srcstack.pop_back();
 		// reset working dir

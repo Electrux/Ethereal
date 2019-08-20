@@ -28,7 +28,6 @@ const char * TokStrs[ _TOK_LAST ] = {
 	"enum_mask",
 	"import",
 	"as",
-	"nil",
 	"struct",
 	"fn",
 	"mfn",
@@ -128,7 +127,8 @@ static void remove_back_slash( std::string & s );
 
 int tokenize( src_t & src )
 {
-	int res = read_file( src );
+	// var_interpreter_t manually inserts code itself so read_file is useless there
+	int res = src.code.empty() ? read_file( src ) : E_OK;
 	if( res == E_FILE_IO_ERR ) {
 		return res;
 	}
@@ -144,7 +144,6 @@ int tokenize( src_t & src )
 	for( int i = 0; i < line_count; ++i ) {
 		auto & line = lines[ i ];
 		const int line_len = line.size();
-		if( line_len < 1 || line[ 0 ] == '\n' ) continue;
 		int res = tokenize_line( src.name, src.dir, line, line_len, i + 1, toks, src.is_main_src );
 		if( res != E_OK ) return res;
 	}
@@ -161,8 +160,19 @@ static int tokenize_line( const std::string & src, const std::string & dir, cons
 	static bool comment_block = false;
 	static bool main_src_block = false;
 
+	static bool back_tick_block = false;
+	static std::string back_tick_data = "";
+	static int back_tick_begin_line = -1;
+	static int back_tick_begin_col = -1;
+
 	while( i < line_len ) {
-		if( isspace( line[ i ] ) ){ ++i; continue; }
+		if( back_tick_block && CURR( line ) != '`' ) {
+			back_tick_data += CURR( line );
+			++i;
+			continue;
+		}
+
+		if( isspace( line[ i ] ) ) { ++i; continue; }
 
 		if( CURR( line ) == '*' && NEXT( line ) == '/' ) {
 			if( !comment_block ) {
@@ -188,6 +198,22 @@ static int tokenize_line( const std::string & src, const std::string & dir, cons
 
 		// for storing correct columns in tokens (+1 for zero indexing)
 		int tmp_i = i + 1;
+
+		if( CURR( line ) == '`' ) {
+			if( back_tick_block ) {
+				toks.emplace_back( back_tick_begin_line, back_tick_begin_col, TOK_STR, back_tick_data );
+				back_tick_data.clear();
+				back_tick_block = false;
+				++i;
+				continue;
+			}
+			back_tick_block = true;
+			back_tick_begin_line = line_num;
+			back_tick_begin_col = tmp_i;
+			++i;
+			continue;
+		}
+
 		// strings
 		if( isalpha( CURR( line ) ) || CURR( line ) == '_' ) {
 			std::string str = get_name( line, line_len, i );
@@ -262,7 +288,6 @@ static int classify_str( const std::string & str )
 	else if( str == TokStrs[ TOK_ENUM_MASK ] ) return TOK_ENUM_MASK;
 	else if( str == TokStrs[ TOK_IMPORT ] ) return TOK_IMPORT;
 	else if( str == TokStrs[ TOK_AS ] ) return TOK_AS;
-	else if( str == TokStrs[ TOK_NIL ] ) return TOK_NIL;
 	else if( str == TokStrs[ TOK_STRUCT ] ) return TOK_STRUCT;
 	else if( str == TokStrs[ TOK_FN ] ) return TOK_FN;
 	else if( str == TokStrs[ TOK_MFN ] ) return TOK_MFN;

@@ -28,7 +28,6 @@ enum TokType
 	TOK_ENUM_MASK,
 	TOK_IMPORT,
 	TOK_AS,
-	TOK_NIL,
 	TOK_STRUCT,
 	TOK_FN,
 	TOK_MFN,
@@ -131,7 +130,7 @@ int tokenize( src_t & src );
 
 inline bool token_type_is_data( const int type )
 {
-	return type == TOK_INT || type == TOK_FLT || type == TOK_STR || type == TOK_IDEN || type == TOK_NIL;
+	return type == TOK_INT || type == TOK_FLT || type == TOK_STR || type == TOK_IDEN;
 }
 
 inline bool token_type_is_oper( const int type )

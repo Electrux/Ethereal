@@ -33,6 +33,7 @@ struct vm_state_t
 	std::vector< int > bcodectr;
 
 	var_none_t * none;
+	var_nil_t * nil;
 
 	src_stack_t srcstack;
 	srcs_t srcs;
@@ -71,6 +72,8 @@ struct func_call_data_t
 bool set_init_mods( vm_state_t & vm );
 
 size_t mpz_to_size_t( const mpz_class & n );
+
+std::vector< std::string > str_delimit( const std::string & str, const char ch );
 
 #define TRUE_FALSE( condition ) ( condition ) ? vm.vars->get( "true" ) : vm.vars->get( "false" )
 

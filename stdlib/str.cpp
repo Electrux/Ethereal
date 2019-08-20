@@ -11,8 +11,6 @@
 
 #include "../src/VM/Core.hpp"
 
-std::vector< std::string > str_delimit( const std::string & str, const char ch );
-
 var_base_t * add( vm_state_t & vm, func_call_data_t & fcd )
 {
 	std::string res;
@@ -139,24 +137,4 @@ REGISTER_MODULE( str )
 	strfns.add( { "erase_at", 1, 1, { "int" }, FnType::MODULE, { .modfn = erase_at }, false } );
 	strfns.add( { "split", 0, 1, { "str" }, FnType::MODULE, { .modfn = split }, true } );
 	strfns.add( { "trim", 0, 0, {}, FnType::MODULE, { .modfn = trim }, false } );
-}
-
-std::vector< std::string > str_delimit( const std::string & str, const char ch )
-{
-	std::string temp;
-	std::vector< std::string > vec;
-
-	for( auto c : str ) {
-		if( c == ch ) {
-			if( temp.empty() ) continue;
-			vec.push_back( temp );
-			temp.clear();
-			continue;
-		}
-
-		temp += c;
-	}
-
-	if( !temp.empty() ) vec.push_back( temp );
-	return vec;
 }

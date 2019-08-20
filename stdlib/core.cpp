@@ -123,6 +123,16 @@ var_base_t * var_ref_count( vm_state_t & vm, func_call_data_t & fcd )
 	return new var_int_t( vm.vars->get( fcd.args[ 0 ]->to_str() )->ref(), fcd.args[ 0 ]->parse_ctr() );
 }
 
+var_base_t * nil_eq( vm_state_t & vm, func_call_data_t & fcd )
+{
+	return TRUE_FALSE( fcd.args[ 1 ]->type() == fcd.args[ 0 ]->type() );
+}
+
+var_base_t * nil_ne( vm_state_t & vm, func_call_data_t & fcd )
+{
+	return TRUE_FALSE( fcd.args[ 1 ]->type() != fcd.args[ 0 ]->type() );
+}
+
 REGISTER_MODULE( core )
 {
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -232,6 +242,14 @@ REGISTER_MODULE( core )
 
 	// other types to bool
 	vm.funcs.add( { "bool", 1, 1, { "_any_" }, FnType::MODULE, { .modfn = bool_create }, false } );
+
+	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////// NIL ////////////////////////////////////////////////////////////////
+	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	vm.funcs.add( { "==", 2, 2, { "nil", "_any_" }, FnType::MODULE, { .modfn = nil_eq }, false } );
+	vm.funcs.add( { "==", 2, 2, { "_any_", "nil" }, FnType::MODULE, { .modfn = nil_eq }, false } );
+	vm.funcs.add( { "!=", 2, 2, { "nil", "_any_" }, FnType::MODULE, { .modfn = nil_ne }, false } );
+	vm.funcs.add( { "!=", 2, 2, { "_any_", "nil" }, FnType::MODULE, { .modfn = nil_ne }, false } );
 
 	// global object functions
 	functions_t & anyfns = vm.typefuncs[ "_any_" ];

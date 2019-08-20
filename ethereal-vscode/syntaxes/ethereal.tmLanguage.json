@@ -12,6 +12,9 @@
 			"include": "#strings_single"
 		},
 		{
+			"include": "#strings_back"
+		},
+		{
 			"include": "#numerics"
 		},
 		{
@@ -38,7 +41,7 @@
 			},
 			{
 				"name": "keyword.other",
-				"match": "\\b(true|false)\\b"
+				"match": "\\b(true|false|nil)\\b"
 			},
 			{
 				"name": "keyword.operator",
@@ -89,6 +92,15 @@
 			"name": "string.quoted.single.ethereal",
 			"begin": "'",
 			"end": "'",
+			"patterns": [{
+				"name": "constant.character.escape.ethereal",
+				"match": "\\\\."
+			}]
+		},
+		"strings_back": {
+			"name": "string.quoted.single.ethereal",
+			"begin": "`",
+			"end": "`",
 			"patterns": [{
 				"name": "constant.character.escape.ethereal",
 				"match": "\\\\."

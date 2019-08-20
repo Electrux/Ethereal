@@ -11,6 +11,7 @@
 
 const char * VarTypeStrs[ _VT_LAST ] = {
 	"none",
+	"nil",
 	"int",
 	"str",
 	"flt",

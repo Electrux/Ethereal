@@ -36,9 +36,6 @@ int read_file( src_t & src )
 
 	while( ( read = getline( & line, & len, fp ) ) != -1 ) {
 		lines.push_back( line );
-		if( lines.back().size() > 0 && lines.back().back() == '\n' ) {
-			lines.back().erase( lines.back().end() - 1 );
-		}
 	}
 
 	fclose( fp );

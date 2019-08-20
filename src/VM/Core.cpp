@@ -14,7 +14,8 @@
 // bcodectr reserved by default because it can't go to more depth
 // if it does, it will cause reallocation and invalidate the reference (i) used in exec_internal()
 vm_state_t::vm_state_t() : exit_called( false ), exit_status( 0 ),
-	none( new var_none_t( 0 ) ), vars( new vars_t ), dlib( new dyn_lib_t() ),
+	none( new var_none_t( 0 ) ), nil( new var_nil_t( 0 ) ),
+	vars( new vars_t ), dlib( new dyn_lib_t() ),
 	consts( new consts_t() ), stack( new vm_stack_t() )
 { bcodectr.reserve( MAX_BCODE_CTR_SRCS ); }
 
@@ -23,6 +24,7 @@ vm_state_t::~vm_state_t()
 	delete stack;
 	delete consts;
 	delete vars;
+	VAR_DREF( nil );
 	VAR_DREF( none );
 	for( auto & struct_ : structs ) delete struct_.second;
 	delete dlib;
@@ -58,4 +60,24 @@ size_t mpz_to_size_t( const mpz_class & n )
 	size_t data;
 	mpz_export( & data, 0, -1, sizeof( data ), 0, 0, n.get_mpz_t() );
 	return data;
+}
+
+std::vector< std::string > str_delimit( const std::string & str, const char ch )
+{
+	std::string temp;
+	std::vector< std::string > vec;
+
+	for( auto c : str ) {
+		if( c == ch ) {
+			if( temp.empty() ) continue;
+			vec.push_back( temp );
+			temp.clear();
+			continue;
+		}
+
+		temp += c;
+	}
+
+	if( !temp.empty() ) vec.push_back( temp );
+	return vec;
 }

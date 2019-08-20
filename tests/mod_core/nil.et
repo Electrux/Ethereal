@@ -1,0 +1,4 @@
+#!./buildfiles/et
+
+assert( nil == nil, 'nil should be equal to nil' );
+assert( nil != 'str', 'nil should not be equal to str' );

@@ -1,5 +1,3 @@
 #!./buildfiles/et
 
 assert( true, 'you shouldn\'t be seeing this' );
-assert( nil == nil, 'nil should be equal to nil' );
-assert( nil != 'str', 'nil should not be equal to str' );

@@ -1,3 +1,4 @@
+# TODO: add helper functions for working with ini, implement ini_write
 import str;
 import vec;
 import map;
@@ -17,7 +18,7 @@ fn ini_read( fname ) {
 	ini = ini_t{};
 	curr_blk = '';
 	line = '';
-	for i = 0; f.read( line ); i += 1 {
+	for ; f.read( line ); {
 		line.trim();
 		if line.empty() { continue; }
 		# comments

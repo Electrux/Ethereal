@@ -28,7 +28,6 @@ fn ini_read( fname ) {
 			line.erase_at( line.len() - 1 );
 			curr_blk = line;
 			ini.blks.insert( curr_blk, iniblk_t{} );
-			println( 'taking block name: ', curr_blk );
 			continue;
 		}
 		if !line.find( '=' ) { continue; }

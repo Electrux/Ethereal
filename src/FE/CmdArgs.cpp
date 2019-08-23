@@ -15,17 +15,18 @@ const size_t OPT_A = 1 << 0;
 const size_t OPT_B = 1 << 1; // show byte code
 const size_t OPT_C = 1 << 2; // (byte) compile
 const size_t OPT_D = 1 << 3; // dry run (no execute)
-const size_t OPT_F = 1 << 4;
-const size_t OPT_G = 1 << 5;
-const size_t OPT_H = 1 << 6;
-const size_t OPT_I = 1 << 7;
-const size_t OPT_L = 1 << 8;
-const size_t OPT_P = 1 << 9; // show parse tree
-const size_t OPT_R = 1 << 10; // recursively show everything (ex. FrontEnd->VM->Import->FrontEnd...)
-const size_t OPT_S = 1 << 11;
-const size_t OPT_T = 1 << 12; // show tokens
-const size_t OPT_V = 1 << 13; // show version
-const size_t OPT_1 = 1 << 14;
+const size_t OPT_E = 1 << 4; // REPL (eval)
+const size_t OPT_F = 1 << 5;
+const size_t OPT_G = 1 << 6;
+const size_t OPT_H = 1 << 7;
+const size_t OPT_I = 1 << 8;
+const size_t OPT_L = 1 << 9;
+const size_t OPT_P = 1 << 10; // show parse tree
+const size_t OPT_R = 1 << 11; // recursively show everything (ex. FrontEnd->VM->Import->FrontEnd...)
+const size_t OPT_S = 1 << 12;
+const size_t OPT_T = 1 << 13; // show tokens
+const size_t OPT_V = 1 << 14; // show version
+const size_t OPT_1 = 1 << 15;
 
 size_t cmd_get_args( const int argc, const char ** argv, std::vector< std::string > & args )
 {
@@ -45,6 +46,7 @@ size_t cmd_get_args( const int argc, const char ** argv, std::vector< std::strin
 			else if( argv[ i ][ j ] == 'b' ) flags |= OPT_B;
 			else if( argv[ i ][ j ] == 'c' ) flags |= OPT_C;
 			else if( argv[ i ][ j ] == 'd' ) flags |= OPT_D;
+			else if( argv[ i ][ j ] == 'e' ) flags |= OPT_E;
 			else if( argv[ i ][ j ] == 'f' ) flags |= OPT_F;
 			else if( argv[ i ][ j ] == 'g' ) flags |= OPT_G;
 			else if( argv[ i ][ j ] == 'h' ) flags |= OPT_H;

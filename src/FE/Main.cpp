@@ -33,14 +33,15 @@ int main( int argc, char ** argv )
 {
 	std::vector< std::string > args;
 	size_t flags = cmd_get_args( argc, ( const char ** )argv, args );
-	if( args.size() < 1 ) {
-		fprintf( stdout, "usage: %s [flags] <source file>\n", argv[ 0 ] );
-		return E_FAIL;
-	}
 
 	if( flags & OPT_V ) {
 		fprintf( stdout, "Ethereal: %d.%d.%d\n", VERSION_MAIN, VERSION_SUB, VERSION_PATCH );
 		return E_OK;
+	}
+
+	if( args.size() < 1 ) {
+		fprintf( stdout, "usage: %s [flags] <source file>\n", argv[ 0 ] );
+		return E_FAIL;
 	}
 
 	auto last_slash_loc = args[ 0 ].find_last_of( '/' ) + 1;

@@ -18,6 +18,7 @@ extern const size_t OPT_A;
 extern const size_t OPT_B; // show byte code
 extern const size_t OPT_C; // (byte) compile
 extern const size_t OPT_D; // dry run (no execute)
+extern const size_t OPT_E; // REPL (eval)
 extern const size_t OPT_F;
 extern const size_t OPT_G;
 extern const size_t OPT_H;

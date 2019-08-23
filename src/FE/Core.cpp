@@ -20,7 +20,8 @@ void src_fail( const std::string & src, const std::string & line_str, const int 
 	vfprintf( stderr, msg, vargs );
 	fprintf( stderr, "\n" );
 	va_end( vargs );
-	fprintf( stderr, "%s\n", line_str.c_str() );
+	if( line_str.size() > 0 && line_str.back() == '\n' ) fprintf( stderr, "%s", line_str.c_str() );
+	else fprintf( stderr, "%s\n", line_str.c_str() );
 	std::string spcs;
 	int tab_count = 0;
 	for( auto & ch : line_str ) {

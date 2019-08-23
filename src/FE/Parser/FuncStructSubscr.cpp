@@ -18,7 +18,14 @@ bool stmt_func_struct_subscr_call_t::bytecode( src_t & src ) const
 	if( m_ctype == CT_SUBSCR ) {
 		bool bcodeasconst = src.bcode_as_const;
 		src.bcode_as_const = false;
-		if( m_name ) m_name->bytecode( src );
+		if( m_name ) {
+			if( m_post_dot ) src.bcode_as_const = true;
+			m_name->bytecode( src );
+			if( m_post_dot ) {
+				src.bcode_as_const = false;
+				src.bcode.push_back( { m_name->m_tok_ctr, line, col, IC_ATTR, { OP_NONE, "" } } );
+			}
+		}
 		for( auto & arg : m_args ) {
 			if( arg == nullptr ) continue;
 			arg->bytecode( src );

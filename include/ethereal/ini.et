@@ -1,0 +1,51 @@
+import str;
+import vec;
+import map;
+import fs;
+
+struct iniblk_t {
+	pairs = {};
+}
+
+struct ini_t {
+	blks = {};
+}
+
+fn ini_read( fname ) {
+	f = fopen( fname, 'r' );
+	if !f.is_open() { return INIRet.FNOP; }
+	ini = ini_t{};
+	curr_blk = '';
+	line = '';
+	for i = 0; f.read( line ); i += 1 {
+		line.trim();
+		if line.empty() { continue; }
+		# comments
+		if line.front() == ';' { continue; }
+		# make block
+		if line.front() == '[' && line.back() == ']' {
+			line.erase_at( 0 );
+			line.erase_at( line.len() - 1 );
+			curr_blk = line;
+			ini.blks.insert( curr_blk, iniblk_t{} );
+			println( 'taking block name: ', curr_blk );
+			continue;
+		}
+		if !line.find( '=' ) { continue; }
+		if curr_blk.empty() { ini.blks.insert( '', iniblk_t{} ); }
+		# make key value pairs
+		kvp = line.split( '=' );
+		kvp[ 0 ].trim();
+		key = kvp[ 0 ];
+		val = '';
+		if kvp.len() > 1 {
+			kvp[ 1 ].trim();
+			sz = kvp.len();
+			for i = 1; i < sz; i += 1 {
+				val += kvp[ i ];
+			}
+		}
+		ini.blks[ curr_blk ].pairs.insert( key, val );
+	}
+	return ini;
+}

@@ -98,7 +98,7 @@ int exec_internal( vm_state_t & vm, long begin, long end, var_base_t * ret )
 				}
 
 				if( !copy_data( val, newval ) ) {
-					VM_FAIL( "copy symantics not implemented for variable type '%s'", val->type_str().c_str() );
+					VM_FAIL( "copy semantics not implemented for variable type '%s'", val->type_str().c_str() );
 					goto fail;
 				}
 
@@ -133,7 +133,7 @@ int exec_internal( vm_state_t & vm, long begin, long end, var_base_t * ret )
 			}
 
 			if( !copy_data( var, newval ) ) {
-				VM_FAIL( "copy symantics not implemented for variable type '%s'", var->type_str().c_str() );
+				VM_FAIL( "copy semantics not implemented for variable type '%s'", var->type_str().c_str() );
 				goto fail;
 			}
 
@@ -427,7 +427,7 @@ tmp_fail:
 					goto fail;
 				}
 				if( !copy_data( map[ pos[ j ] ], vm.stack->back() ) ) {
-					VM_FAIL( "copy symantics not implemented for variable type '%s'", map[ pos[ j ] ]->type_str().c_str() );
+					VM_FAIL( "copy semantics not implemented for variable type '%s'", map[ pos[ j ] ]->type_str().c_str() );
 					goto fail;
 				}
 				vm.stack->pop_back();

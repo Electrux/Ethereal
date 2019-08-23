@@ -100,7 +100,7 @@ int CallFunc( vm_state_t & vm, func_call_data_t & fcd, const int ins_ctr )
 		if( res.data == nullptr ) {
 			vm.stack->push_back( vm.none );
 		} else {
-			vm.stack->push_back( res.data, !fn->manual_res_free );
+			vm.stack->push_back( res.data, !fn->manual_res_free || res.data->type() == VT_NIL );
 		}
 	}
 

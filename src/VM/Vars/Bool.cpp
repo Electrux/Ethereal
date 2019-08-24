@@ -17,8 +17,6 @@ var_bool_t::var_bool_t( const std::string & val, const int parse_ctr )
 	: var_base_t( VT_BOOL, parse_ctr, true ), m_val( val != "0" && val != "" ) {}
 var_bool_t::var_bool_t( const bool val, const int parse_ctr )
 	: var_base_t( VT_BOOL, parse_ctr, true ), m_val( val ) {}
-var_bool_t::var_bool_t( const mpf_class & val, const int parse_ctr )
-	: var_base_t( VT_BOOL, parse_ctr, true ), m_val( val ) {}
 
 std::string var_bool_t::to_str() const { return m_val ? "true" : "false"; }
 mpz_class var_bool_t::to_int() const { return mpz_class( m_val ); }

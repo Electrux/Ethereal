@@ -161,7 +161,6 @@ public:
 	var_bool_t( const float val, const int parse_ctr );
 	var_bool_t( const std::string & val, const int parse_ctr );
 	var_bool_t( const bool val, const int parse_ctr );
-	var_bool_t( const mpf_class & val, const int parse_ctr );
 
 	std::string to_str() const;
 	mpz_class to_int() const;

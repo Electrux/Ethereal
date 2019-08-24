@@ -39,7 +39,9 @@ else
 fi
 
 # Library: et
-shopt -s lastpipe
+if [[ "$os" != "Darwin" ]]; then
+	shopt -s lastpipe
+fi
 find src -name "*.cpp" | grep -v "Main.cpp" | while read -r src_file; do
 	if [[ -z "$COMPILE_COMMAND" ]]; then
 		echo "Compiling: $src_file ..."
@@ -52,7 +54,9 @@ find src -name "*.cpp" | grep -v "Main.cpp" | while read -r src_file; do
 		break
 	fi
 done
-shopt -u lastpipe
+if [[ "$os" != "Darwin" ]]; then
+	shopt -u lastpipe
+fi
 
 if [[ "$SRC_FAILED" == "true" ]]; then
 	echo "Error in compiling sources, will not continue"

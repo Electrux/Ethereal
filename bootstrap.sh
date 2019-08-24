@@ -38,8 +38,9 @@ else
 	EXTRA_FLAGS="-ldl"
 fi
 
-# Library: et
+SRC_FAILED=""
 
+# Library: et
 find src -name "*.cpp" | grep -v "Main.cpp" | while read -r src_file; do
 	if [[ -z "$COMPILE_COMMAND" ]]; then
 		echo "Compiling: $src_file ..."

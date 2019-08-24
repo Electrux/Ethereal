@@ -25,3 +25,4 @@ for i = 0; i < sz; i += 1 {
 }
 
 cprintln( '{y}OS{0}: {m}', os.name, '{0}, {y}Passed{0}: {g}', p, '{0}, {y}Failed{0}: {r}', f, '{0}' );
+exit( f );

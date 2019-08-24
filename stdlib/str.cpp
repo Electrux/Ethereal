@@ -119,6 +119,18 @@ var_base_t * split( vm_state_t & vm, func_call_data_t & fcd )
 	return new var_vec_t( res_b, fcd.args[ 0 ]->parse_ctr() );
 }
 
+var_base_t * split_first( vm_state_t & vm, func_call_data_t & fcd )
+{
+	const std::string & dat = AS_STR( fcd.args[ 0 ] )->get();
+	const char delim = fcd.args.size() > 1 && AS_STR( fcd.args[ 1 ] )->get().size() > 0 ? AS_STR( fcd.args[ 1 ] )->get()[ 0 ] : ' ';
+	std::vector< std::string > res = str_delimit( dat, delim, true );
+	std::vector< var_base_t * > res_b;
+	for( auto & r : res ) {
+		res_b.push_back( new var_str_t( r, fcd.args[ 0 ]->parse_ctr() ) );
+	}
+	return new var_vec_t( res_b, fcd.args[ 0 ]->parse_ctr() );
+}
+
 var_base_t * trim( vm_state_t & vm, func_call_data_t & fcd )
 {
 	std::string & dat = AS_STR( fcd.args[ 0 ] )->get();
@@ -173,5 +185,6 @@ REGISTER_MODULE( str )
 	strfns.add( { "back", 0, 0, {}, FnType::MODULE, { .modfn = back }, true } );
 	strfns.add( { "substr", 1, 2, { "int", "int" }, FnType::MODULE, { .modfn = substr }, true } );
 	strfns.add( { "split", 0, 1, { "str" }, FnType::MODULE, { .modfn = split }, true } );
+	strfns.add( { "split_first", 0, 1, { "str" }, FnType::MODULE, { .modfn = split_first }, true } );
 	strfns.add( { "trim", 0, 0, {}, FnType::MODULE, { .modfn = trim }, false } );
 }

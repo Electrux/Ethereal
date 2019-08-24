@@ -3,4 +3,4 @@
 import ini;
 
 ini = ini_read( 'data/test1_ini_parser.ini' );
-assert( ini.blks[ 'owner' ].pairs[ 'name' ] == 'John Doe', 'in tag \'owner\', in pair key \'name\', the value should have been \'John Doe\'' );
+assert( ini[ 'owner' ][ 'name' ] == 'John Doe', 'in tag \'owner\', in pair key \'name\', the value should have been \'John Doe\'' );

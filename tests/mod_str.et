@@ -47,4 +47,6 @@ assert( 'ab'.substr( 0, 1 ) == 'a', 'substr of \'ab\' (0, 1) should have been \'
 assert( 'abc'.substr( 1, 2 ) == 'bc', 'substr of \'abc\' (1, 2) should have been \'bc\'' );
 
 assert( 'a,b'.split( ',' ) == [ 'a', 'b' ], '\'a,b\' should have been split to [ \'a\', \'b\']' );
+assert( 'a,b,c'.split_first( ',' ) == [ 'a', 'b,c' ], '\'a,b,c\' should have been split_first to [ \'a\', \'b,c\']' );
+
 assert( s2.trim() == 'str2', '\' str2 \' should have been trimmed to \'str2\'' );

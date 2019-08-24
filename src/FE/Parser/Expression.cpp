@@ -258,6 +258,7 @@ expr_res_t parse_expr( const src_t & src, parse_helper_t * ph, const int end, co
 
 	return { 0, res };
 fail:
+	for( auto & s : stack ) delete s;
 	for( auto & d : data ) {
 		delete d;
 	}

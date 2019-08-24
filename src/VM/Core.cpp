@@ -62,13 +62,15 @@ size_t mpz_to_size_t( const mpz_class & n )
 	return data;
 }
 
-std::vector< std::string > str_delimit( const std::string & str, const char ch )
+std::vector< std::string > str_delimit( const std::string & str, const char ch, const bool first_only )
 {
 	std::string temp;
 	std::vector< std::string > vec;
+	bool done = false;
 
 	for( auto c : str ) {
-		if( c == ch ) {
+		if( c == ch && ( !first_only || !done ) ) {
+			done = true;
 			if( temp.empty() ) continue;
 			vec.push_back( temp );
 			temp.clear();

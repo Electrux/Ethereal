@@ -73,7 +73,7 @@ bool set_init_mods( vm_state_t & vm );
 
 size_t mpz_to_size_t( const mpz_class & n );
 
-std::vector< std::string > str_delimit( const std::string & str, const char ch );
+std::vector< std::string > str_delimit( const std::string & str, const char ch, const bool first_only = false );
 
 #define TRUE_FALSE( condition ) ( condition ) ? vm.vars->get( "true" ) : vm.vars->get( "false" )
 

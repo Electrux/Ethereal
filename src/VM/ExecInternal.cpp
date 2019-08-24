@@ -477,7 +477,8 @@ tmp_fail:
 					goto fail;
 				}
 				vm.typefuncs[ member_of ].add( function_t{ name, args_count, args_count, args, FnType::LANG,
-								 { .langfn = { src.name.c_str(), blk.beg, blk.end } }, false } );
+								           { .langfn = { src.name.c_str(), blk.beg, blk.end } },
+									   false } );
 			}
 			if( member_ofs.size() == 0 ) {
 				const function_t * fn = vm.funcs.get( name, args_count, {} );
@@ -486,7 +487,8 @@ tmp_fail:
 					goto fail;
 				}
 				vm.funcs.add( function_t{ name, args_count, args_count, args, FnType::LANG,
-						{ .langfn = { src.name.c_str(), blk.beg, blk.end } }, false } );
+					                  { .langfn = { src.name.c_str(), blk.beg, blk.end } },
+							  false } );
 			}
 			break;
 		}

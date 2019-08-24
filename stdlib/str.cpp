@@ -77,7 +77,8 @@ var_base_t * erase_at( vm_state_t & vm, func_call_data_t & fcd )
 var_base_t * find( vm_state_t & vm, func_call_data_t & fcd )
 {
 	const std::string & dat = AS_STR( fcd.args[ 0 ] )->get();
-	char to_find = fcd.args.size() < 1 || fcd.args[ 1 ]->to_str().size() < 1 ? ',' : fcd.args[ 1 ]->to_str()[ 0 ];
+	if( fcd.args[ 1 ]->to_str().size() < 1 ) return vm.vars->get( "false" );
+	char to_find = fcd.args[ 1 ]->to_str()[ 0 ];
 	return TRUE_FALSE( dat.find( to_find ) != std::string::npos );
 }
 
@@ -167,7 +168,7 @@ REGISTER_MODULE( str )
 	strfns.add( { "to_int", 0, 0, {}, FnType::MODULE, { .modfn = to_int }, true } );
 	strfns.add( { "set_at", 2, 2, { "int", "str" }, FnType::MODULE, { .modfn = set_at }, false } );
 	strfns.add( { "erase_at", 1, 1, { "int" }, FnType::MODULE, { .modfn = erase_at }, false } );
-	strfns.add( { "find", 0, 1, { "str" }, FnType::MODULE, { .modfn = find }, false } );
+	strfns.add( { "find", 1, 1, { "str" }, FnType::MODULE, { .modfn = find }, false } );
 	strfns.add( { "front", 0, 0, {}, FnType::MODULE, { .modfn = front }, true } );
 	strfns.add( { "back", 0, 0, {}, FnType::MODULE, { .modfn = back }, true } );
 	strfns.add( { "substr", 1, 2, { "int", "int" }, FnType::MODULE, { .modfn = substr }, true } );

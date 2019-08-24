@@ -28,5 +28,23 @@ s1 = '52';
 assert( s1.is_int(), '\'52\' should be have been considered an int' );
 assert( s1.to_int() == 52, '\'52\' should have been converted to 52' );
 assert( s1.set_at( 1, '5' ) == '55', '52 should have been 55 now' );
+
+assert( ''.erase_at( 1 ) == '', 'erasing from \'\' at position 1 should have been \'\'' );
+assert( 'NASA'.erase_at( 1 ) == 'NSA', 'erasing from \'NASA\' at position 1 should have been \'NSA\'' );
+assert( 'NASA'.erase_at( 4 ) == 'NASA', 'erasing from \'NASA\' at position 4 should have been \'NASA\'' );
+
+assert( ''.find( 'a' ) == false, 'find \'a\' in \'\' should have been false' );
+assert( 'abc'.find( 'a' ) == true, 'find \'a\' in \'abc\' should have been true' );
+assert( 'abc'.find( '' ) == false, 'find \'\' in \'abc\' should have been false' );
+
+assert( ''.front() == nil, 'empty string\'s front() should have been nil' );
+assert( 'ab'.front() == 'a', 'front of \'ab\' should have been \'a\'' );
+assert( ''.back() == nil, 'empty string\'s back() should have been nil' );
+assert( 'ab'.back() == 'b', 'back of \'ab\' should have been \'b\'' );
+
+assert( ''.substr( 0, 2 ) == '', 'substr of \'\' (0, 2) should have been \'\'' );
+assert( 'ab'.substr( 0, 1 ) == 'a', 'substr of \'ab\' (0, 1) should have been \'a\'' );
+assert( 'abc'.substr( 1, 2 ) == 'bc', 'substr of \'abc\' (1, 2) should have been \'bc\'' );
+
 assert( 'a,b'.split( ',' ) == [ 'a', 'b' ], '\'a,b\' should have been split to [ \'a\', \'b\']' );
 assert( s2.trim() == 'str2', '\' str2 \' should have been trimmed to \'str2\'' );

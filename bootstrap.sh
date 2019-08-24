@@ -54,6 +54,8 @@ find src -name "*.cpp" | grep -v "Main.cpp" | while read -r src_file; do
 	fi
 done
 
+echo "Is source failed: $SRC_FAILED"
+
 if [[ "$SRC_FAILED" == "true" ]]; then
 	echo "Error in compiling sources, will not continue"
 	exit $?

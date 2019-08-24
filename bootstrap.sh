@@ -7,8 +7,8 @@ if [[ "$os" == 'Linux' ]]; then
 	compiler="g++"
 fi
 
-if ! [[ -z "${COMPILER}" ]]; then
-	compiler="${COMPILER}"
+if ! [[ -z "${CXX}" ]]; then
+	compiler="${CXX}"
 fi
 
 compiler_version=$($compiler --version)
@@ -41,7 +41,11 @@ fi
 # Library: et
 
 find src -name "*.cpp" | grep -v "Main.cpp" | while read -r src_file; do
-	echo "Compiling: $src_file ..."
+	if [[ -z "COMPILE_COMMAND" ]]; then
+		echo "Compiling: $src_file ..."
+	else
+		echo "$compiler -O2 -fPIC -std=c++11 -c $src_file -o buildfiles/$src_file.o ${EXTRA_INCLUDES} -DBUILD_PREFIX_DIR=${PREFIX_DIR} ${VERSION_STRING}"
+	fi
 	$compiler -O2 -fPIC -std=c++11 -c $src_file -o buildfiles/$src_file.o ${EXTRA_INCLUDES} -DBUILD_PREFIX_DIR=${PREFIX_DIR} ${VERSION_STRING}
 	if [[ $? != 0 ]]; then
 		break
@@ -59,14 +63,25 @@ install_name=""
 if [[ "$os" == "Darwin" ]]; then
 	install_name="-Wl,-install_name -Wl,@rpath/libcore.so"
 fi
-echo "Building library: et ..."
+
+if [[ -z "COMPILE_COMMAND" ]]; then
+	echo "Building library: et ..."
+else
+	echo "$compiler -O2 -fPIC -std=c++11 -shared -o buildfiles/libet.so src/VM/Main.cpp $buildfiles -Wl,-rpath,${PREFIX_DIR}/lib/ethereal \
+	$install_name -L./buildfiles/ ${EXTRA_INCLUDES} ${EXTRA_FLAGS} -lgmpxx -lgmp -DBUILD_PREFIX_DIR=${PREFIX_DIR} ${VERSION_STRING}"
+fi
 $compiler -O2 -fPIC -std=c++11 -shared -o buildfiles/libet.so src/VM/Main.cpp $buildfiles -Wl,-rpath,${PREFIX_DIR}/lib/ethereal \
 	$install_name -L./buildfiles/ ${EXTRA_INCLUDES} ${EXTRA_FLAGS} -lgmpxx -lgmp -DBUILD_PREFIX_DIR=${PREFIX_DIR} ${VERSION_STRING}
 if [[ $? != 0 ]]; then
 	exit $?
 fi
 
-echo "Building binary: et ..."
+if [[ -z "COMPILE_COMMAND" ]]; then
+	echo "Building binary: et ..."
+else
+	echo "$compiler -O2 -fPIC -std=c++11 -g -o buildfiles/et src/FE/Main.cpp $buildfiles -Wl,-rpath,${PREFIX_DIR}/lib/ethereal \
+	-L./buildfiles/ ${EXTRA_INCLUDES} ${EXTRA_FLAGS} -lgmpxx -lgmp -let -DBUILD_PREFIX_DIR=${PREFIX_DIR} ${VERSION_STRING}"
+fi
 $compiler -O2 -fPIC -std=c++11 -g -o buildfiles/et src/FE/Main.cpp $buildfiles -Wl,-rpath,${PREFIX_DIR}/lib/ethereal \
 	-L./buildfiles/ ${EXTRA_INCLUDES} ${EXTRA_FLAGS} -lgmpxx -lgmp -let -DBUILD_PREFIX_DIR=${PREFIX_DIR} ${VERSION_STRING}
 if [[ $? != 0 ]]; then
@@ -75,10 +90,16 @@ fi
 
 # Libraries
 for l in "core" "fs" "map" "math" "opt" "os" "set" "str" "term" "vec"; do
-	echo "Building library: $l ..."
 	install_name=""
 	if [[ "$os" == "Darwin" ]]; then
 		install_name="-Wl,-install_name -Wl,@rpath/lib$l.so"
+	fi
+
+	if [[ -z "COMPILE_COMMAND" ]]; then
+		echo "Building library: $l ..."
+	else
+		echo "$compiler -O2 -fPIC -std=c++11 -shared -o buildfiles/lib$l.so stdlib/$l.cpp $buildfiles -Wl,-rpath,${PREFIX_DIR}/lib/ethereal \
+		$install_name -L./buildfiles/ ${EXTRA_INCLUDES} ${EXTRA_FLAGS} -lgmpxx -lgmp -let -DBUILD_PREFIX_DIR=${PREFIX_DIR} ${VERSION_STRING}"
 	fi
 	$compiler -O2 -fPIC -std=c++11 -shared -o buildfiles/lib$l.so stdlib/$l.cpp $buildfiles -Wl,-rpath,${PREFIX_DIR}/lib/ethereal \
 		$install_name -L./buildfiles/ ${EXTRA_INCLUDES} ${EXTRA_FLAGS} -lgmpxx -lgmp -let -DBUILD_PREFIX_DIR=${PREFIX_DIR} ${VERSION_STRING}

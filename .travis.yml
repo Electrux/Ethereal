@@ -1,0 +1,19 @@
+language: cpp
+
+matrix:
+  include:
+  - os: linux
+    dist: bionic
+    compiler:
+    - gcc
+    - clang
+  - os: osx
+    osx_image: xcode9.4
+    compiler: clang
+
+install:
+- if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew install gmp; fi
+- if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then sudo apt install libgmp-dev; fi
+script:
+- COMPILER_COMMAND=true ./bootstrap.sh
+- ./perform_tests.et

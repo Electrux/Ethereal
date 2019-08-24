@@ -11,3 +11,6 @@ for i = 1; i < 10; i += 1 {
 		println( 'i: ', i, ' j: ', j );
 	}
 }
+
+assert( var_exists( 'i' ) == false, 'i should not exist here' );
+assert( var_exists( 'j' ) == false, 'j should not exist here' );

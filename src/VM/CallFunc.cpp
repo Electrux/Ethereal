@@ -56,8 +56,9 @@ int CallFunc( vm_state_t & vm, func_call_data_t & fcd, const int ins_ctr )
 		fn = vm.funcs.get( fcd.fn_name, fcd.args_count, fcd.arg_types );
 	}
 	if( fn == nullptr ) {
-		VM_FAIL( "%sfunction with name '%s' and arg count %d (%s) does not exist",
-			 ins.opcode == IC_MFN_CALL ? "member " : "", fcd.fn_name.c_str(),
+		VM_FAIL( "%sfunction with name '%s' %sand arg count %d (%s) does not exist",
+			 ins.opcode == IC_MFN_CALL ? "member " : "",fcd.fn_name.c_str(),
+			 ins.opcode == IC_MFN_CALL ? ( "for type '" + member->type_str() + "' " ).c_str() : "",
 			 fcd.args_count, args_types_to_string( fcd.args, member ).c_str() );
 		goto fail;
 	}

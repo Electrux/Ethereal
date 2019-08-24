@@ -17,6 +17,7 @@ fn ini_read( fname ) {
 	if !f.is_open() { return INIRet.FNOP; }
 	ini = ini_t{};
 	curr_blk = '';
+	ini.blks.insert( '', iniblk_t{} );
 	line = '';
 	for ; f.read( line ); {
 		line.trim();
@@ -32,7 +33,6 @@ fn ini_read( fname ) {
 			continue;
 		}
 		if !line.find( '=' ) { continue; }
-		if curr_blk.empty() { ini.blks.insert( '', iniblk_t{} ); }
 		# make key value pairs
 		kvp = line.split( '=' );
 		kvp[ 0 ].trim();
@@ -46,6 +46,9 @@ fn ini_read( fname ) {
 			}
 		}
 		ini.blks[ curr_blk ].pairs.insert( key, val );
+	}
+	if ini.blks[ '' ].pairs.len() == 0 {
+		ini.blks.delete( '' );
 	}
 	return ini;
 }

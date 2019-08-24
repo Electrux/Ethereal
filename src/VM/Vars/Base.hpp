@@ -11,6 +11,7 @@
 #define VM_VARS_BASE_HPP
 
 #include <string>
+#include <cstddef>
 #include <gmpxx.h>
 
 #include "../Functions.hpp"

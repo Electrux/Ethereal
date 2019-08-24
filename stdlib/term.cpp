@@ -35,33 +35,33 @@ static std::unordered_map< std::string, const char * > COL = {
 
 void apply_colors( std::string & str )
 {
-	for( auto it = str.begin(); it != str.end(); ) {
-		if( * it == '{' && ( it == str.begin() || ( * ( it - 1 ) != '$' && * ( it - 1 ) != '%' && * ( it - 1 ) != '#' && * ( it - 1 ) != '\\' ) ) ) {
-			it = str.erase( it );
-			if( it != str.end() && * it == '{' ) {
-				++it;
+	for( size_t i = 0; i < str.size(); ) {
+		if( str[ i ] == '{' && ( i == 0 || ( str[ i - 1 ] != '$' && str[ i - 1 ] != '%' && str[ i - 1 ] != '#' && str[ i - 1 ] != '\\' ) ) ) {
+			str.erase( str.begin() + i );
+			if( i < str.size() && str[ i ] == '{' ) {
+				++i;
 				continue;
 			}
 
 			std::string var;
 
-			while( it != str.end() && * it != '}' ) {
-				var += * it;
-				it = str.erase( it );
+			while( i < str.size() && str[ i ] != '}' ) {
+				var += str[ i ];
+				str.erase( str.begin() + i );
 			}
 
 			// Remove the ending brace
-			if( it != str.end() ) it = str.erase( it );
+			if( i < str.size() ) str.erase( str.begin() + i );
 
 			if( var.empty() ) continue;
 
 			std::string val = COL[ var ];
 
-			it = str.insert( it, val.begin(), val.end() );
-			it += val.size();
+			str.insert( str.begin() + i, val.begin(), val.end() );
+			i += val.size();
 		}
 		else {
-			++it;
+			++i;
 		}
 	}
 }

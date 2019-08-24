@@ -41,18 +41,19 @@ fi
 # Library: et
 
 find src -name "*.cpp" | grep -v "Main.cpp" | while read -r src_file; do
-	if [[ -z "COMPILE_COMMAND" ]]; then
+	if [[ -z "$COMPILE_COMMAND" ]]; then
 		echo "Compiling: $src_file ..."
 	else
 		echo "$compiler -O2 -fPIC -std=c++11 -c $src_file -o buildfiles/$src_file.o ${EXTRA_INCLUDES} -DBUILD_PREFIX_DIR=${PREFIX_DIR} ${VERSION_STRING}"
 	fi
 	$compiler -O2 -fPIC -std=c++11 -c $src_file -o buildfiles/$src_file.o ${EXTRA_INCLUDES} -DBUILD_PREFIX_DIR=${PREFIX_DIR} ${VERSION_STRING}
 	if [[ $? != 0 ]]; then
+		SRC_FAILED="true"
 		break
 	fi
 done
 
-if [[ $? != 0 ]]; then
+if [[ "$SRC_FAILED" == "true" ]]; then
 	echo "Error in compiling sources, will not continue"
 	exit $?
 fi
@@ -64,7 +65,7 @@ if [[ "$os" == "Darwin" ]]; then
 	install_name="-Wl,-install_name -Wl,@rpath/libcore.so"
 fi
 
-if [[ -z "COMPILE_COMMAND" ]]; then
+if [[ -z "$COMPILE_COMMAND" ]]; then
 	echo "Building library: et ..."
 else
 	echo "$compiler -O2 -fPIC -std=c++11 -shared -o buildfiles/libet.so src/VM/Main.cpp $buildfiles -Wl,-rpath,${PREFIX_DIR}/lib/ethereal \
@@ -76,7 +77,7 @@ if [[ $? != 0 ]]; then
 	exit $?
 fi
 
-if [[ -z "COMPILE_COMMAND" ]]; then
+if [[ -z "$COMPILE_COMMAND" ]]; then
 	echo "Building binary: et ..."
 else
 	echo "$compiler -O2 -fPIC -std=c++11 -g -o buildfiles/et src/FE/Main.cpp $buildfiles -Wl,-rpath,${PREFIX_DIR}/lib/ethereal \
@@ -95,7 +96,7 @@ for l in "core" "fs" "map" "math" "opt" "os" "set" "str" "term" "vec"; do
 		install_name="-Wl,-install_name -Wl,@rpath/lib$l.so"
 	fi
 
-	if [[ -z "COMPILE_COMMAND" ]]; then
+	if [[ -z "$COMPILE_COMMAND" ]]; then
 		echo "Building library: $l ..."
 	else
 		echo "$compiler -O2 -fPIC -std=c++11 -shared -o buildfiles/lib$l.so stdlib/$l.cpp $buildfiles -Wl,-rpath,${PREFIX_DIR}/lib/ethereal \

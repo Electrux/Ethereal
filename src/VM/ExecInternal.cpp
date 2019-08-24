@@ -476,7 +476,7 @@ tmp_fail:
 					VM_FAIL( "function '%s::%s' already exists", member_of.c_str(), name.c_str() );
 					goto fail;
 				}
-				vm.typefuncs[ member_of ].add( { name, args_count, args_count, args, FnType::LANG,
+				vm.typefuncs[ member_of ].add( function_t{ name, args_count, args_count, args, FnType::LANG,
 								 { .langfn = { src.name.c_str(), blk.beg, blk.end } }, false } );
 			}
 			if( member_ofs.size() == 0 ) {
@@ -485,7 +485,7 @@ tmp_fail:
 					VM_FAIL( "function '%s' already exists", name.c_str() );
 					goto fail;
 				}
-				vm.funcs.add( { name, args_count, args_count, args, FnType::LANG,
+				vm.funcs.add( function_t{ name, args_count, args_count, args, FnType::LANG,
 						{ .langfn = { src.name.c_str(), blk.beg, blk.end } }, false } );
 			}
 			break;

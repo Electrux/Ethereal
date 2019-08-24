@@ -38,9 +38,8 @@ else
 	EXTRA_FLAGS="-ldl"
 fi
 
-SRC_FAILED=""
-
 # Library: et
+shopt -s lastpipe
 find src -name "*.cpp" | grep -v "Main.cpp" | while read -r src_file; do
 	if [[ -z "$COMPILE_COMMAND" ]]; then
 		echo "Compiling: $src_file ..."
@@ -49,13 +48,11 @@ find src -name "*.cpp" | grep -v "Main.cpp" | while read -r src_file; do
 	fi
 	$compiler -O2 -fPIC -std=c++11 -c $src_file -o buildfiles/$src_file.o ${EXTRA_INCLUDES} -DBUILD_PREFIX_DIR=${PREFIX_DIR} ${VERSION_STRING}
 	if [[ $? != 0 ]]; then
-		echo "Is source failed first: $SRC_FAILED"
 		SRC_FAILED="true"
 		break
 	fi
 done
-
-echo "Is source failed: $SRC_FAILED"
+shopt -u lastpipe
 
 if [[ "$SRC_FAILED" == "true" ]]; then
 	echo "Error in compiling sources, will not continue"

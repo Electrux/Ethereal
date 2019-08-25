@@ -31,7 +31,7 @@ Documentation is under development and will take some time to build, but till th
 
 Once the prerequisites are met, just execute the `bootstrap.sh` script. It will build the language interpreter along with the stdlib modules, and install them to your `PREFIX` directory if it is set, or to the repository directory itself.
 
-Note that if you use PREFIX, you may need root access depending on the directory you chose.
+Note that if you use PREFIX, you may need root access depending on the directory you choose.
 
 The following items will be installed:
 

@@ -77,7 +77,7 @@ else
 	$install_name -L./buildfiles/ ${EXTRA_INCLUDES} ${EXTRA_FLAGS} -lgmpxx -lgmp -DBUILD_PREFIX_DIR=${PREFIX_DIR} ${VERSION_STRING}"
 fi
 $compiler -O2 -fPIC -std=c++11 -shared -o buildfiles/libet.so src/VM/Main.cpp $buildfiles -Wl,-rpath,${PREFIX_DIR}/lib/ethereal \
-	$install_name -L./buildfiles/ ${EXTRA_INCLUDES} ${EXTRA_FLAGS} -lgmpxx -lgmp -DBUILD_PREFIX_DIR=${PREFIX_DIR} ${VERSION_STRING}
+	$install_name -L./buildfiles/ ${EXTRA_INCLUDES} ${EXTRA_FLAGS} -lgmpxx -lgmp -DAS_LIB -DBUILD_PREFIX_DIR=${PREFIX_DIR} ${VERSION_STRING}
 if [[ $? != 0 ]]; then
 	exit $?
 fi

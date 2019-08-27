@@ -7,8 +7,6 @@
 	before using or altering the project.
 */
 
-#ifndef AS_LIB
-
 #include <cstdio>
 #include <vector>
 #include <string>
@@ -127,5 +125,3 @@ cleanup:
 	SetCWD( curr_dir );
 	return err;
 }
-
-#endif // AS_LIB

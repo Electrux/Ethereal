@@ -7,4 +7,8 @@
 	before using or altering the project.
 */
 
+#ifndef AS_LIB
+
 // PLACEHOLDER
+
+#endif // AS_LIB

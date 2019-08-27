@@ -18,8 +18,10 @@ fn ini_read( fname ) {
 		if line.front() == ';' { continue; }
 		# make block
 		if line.front() == '[' && line.back() == ']' {
-			line.erase_at( 0 );
-			line.erase_at( line.len() - 1 );
+			#line.erase_at( 0 );
+			#line.erase_at( line.len() - 1 );
+			line.pop_front();
+			line.pop_back();
 			curr_blk = line;
 			ini.insert( curr_blk, {} );
 			continue;

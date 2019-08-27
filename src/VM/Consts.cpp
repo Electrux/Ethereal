@@ -22,7 +22,10 @@ consts_t::~consts_t()
 var_base_t * consts_t::get( const std::string & name, const OperTypes type, const int tok_ctr )
 {
 	if( m_consts[ type ].find( name ) != m_consts[ type ].end() ) {
-		return m_consts[ type ][ name ];
+		if( name == m_consts[ type ][ name ]->to_str() ) {
+			return m_consts[ type ][ name ];
+		}
+		VAR_DREF( m_consts[ type ][ name ] );
 	}
 
 	if( type == OP_INT ) return m_consts[ type ][ name ] = new var_int_t( name, tok_ctr );

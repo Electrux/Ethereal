@@ -96,6 +96,20 @@ var_base_t * back( vm_state_t & vm, func_call_data_t & fcd )
 	return new var_str_t( std::string( 1, dat.back() ), fcd.args[ 0 ]->parse_ctr() );
 }
 
+var_base_t * pop_front( vm_state_t & vm, func_call_data_t & fcd )
+{
+	std::string & dat = AS_STR( fcd.args[ 0 ] )->get();
+	if( !dat.empty() ) dat.erase( dat.begin() );
+	return fcd.args[ 0 ];
+}
+
+var_base_t * pop_back( vm_state_t & vm, func_call_data_t & fcd )
+{
+	std::string & dat = AS_STR( fcd.args[ 0 ] )->get();
+	if( !dat.empty() ) dat.pop_back();
+	return fcd.args[ 0 ];
+}
+
 var_base_t * substr( vm_state_t & vm, func_call_data_t & fcd )
 {
 	const std::string & dat = AS_STR( fcd.args[ 0 ] )->get();
@@ -183,6 +197,8 @@ REGISTER_MODULE( str )
 	strfns.add( { "find", 1, 1, { "str" }, FnType::MODULE, { .modfn = find }, false } );
 	strfns.add( { "front", 0, 0, {}, FnType::MODULE, { .modfn = front }, true } );
 	strfns.add( { "back", 0, 0, {}, FnType::MODULE, { .modfn = back }, true } );
+	strfns.add( { "pop_front", 0, 0, {}, FnType::MODULE, { .modfn = pop_front }, false } );
+	strfns.add( { "pop_back", 0, 0, {}, FnType::MODULE, { .modfn = pop_back }, false } );
 	strfns.add( { "substr", 1, 2, { "int", "int" }, FnType::MODULE, { .modfn = substr }, true } );
 	strfns.add( { "split", 0, 1, { "str" }, FnType::MODULE, { .modfn = split }, true } );
 	strfns.add( { "split_first", 0, 1, { "str" }, FnType::MODULE, { .modfn = split_first }, true } );

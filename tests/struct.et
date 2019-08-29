@@ -4,14 +4,17 @@ import vec;
 import str;
 
 struct s {
-	t = "hi";
+	t = 'hi';
 	u = 5;
 }
 
-a = s{ "hi", 7 };
-a.t = "true";
+a = s{ 'hi', 7 };
+b = s{ 'hello', 14 };
+b = a;
+a.t = 'true';
 if args.len() < 2 {
 	println( a.t );
 } else {
 	assert( a.t == 'true', 'a.t should have been a string: \'true\'' );
+	assert( b.t == 'hi', 'b.t should have been a string: \'hi\'' );
 }

@@ -91,8 +91,10 @@ int exec_internal( vm_state_t & vm, long begin, long end, var_base_t * ret )
 			var_base_t * newval = vm.stack->back();
 			if( vm.vars->exists( var, true ) ) {
 				var_base_t * val = vm.vars->get( var );
-				if( val->type() != newval->type() ) {
-					VM_FAIL( "variable '%s' already declared at previous location, but with different data type" );
+				if( val->type() != newval->type() || ( ( val->type() == VT_STRUCT || val->type() == VT_CUSTOM ) &&
+				    val->type_str() != newval->type_str() ) ) {
+					VM_FAIL( "variable '%s' already declared at previous location, but with different data type (original: %s, new: %s)",
+						 var.c_str(), val->type_str().c_str(), newval->type_str().c_str() );
 					VM_FAIL_TOK_CTR( val->parse_ctr(), "original declared here" );
 					goto fail;
 				}
@@ -126,7 +128,8 @@ int exec_internal( vm_state_t & vm, long begin, long end, var_base_t * ret )
 			var = vm.stack->back();
 			vm.stack->pop_back();
 			var_base_t * newval = vm.stack->back();
-			if( var->type() != newval->type() ) {
+			if( var->type() != newval->type() || ( ( var->type() == VT_STRUCT || var->type() == VT_CUSTOM ) &&
+			    var->type_str() != newval->type_str() ) ) {
 				VM_FAIL( "assignment of an existing value expects same type, found lhs: %s and rhs: %s",
 						var->type_str().c_str(), newval->type_str().c_str() );
 				goto fail;
@@ -236,8 +239,8 @@ int exec_internal( vm_state_t & vm, long begin, long end, var_base_t * ret )
 			vm.stack->pop_back();
 			var_base_t * base = vm.stack->back();
 			vm.stack->pop_back();
-			if( base->type() != VT_ENUM && base->type() != VT_STRUCT ) {
-				VM_FAIL( "expected one of 'enum' or 'struct' but found: %s", base->type_str().c_str() );
+			if( base->type() != VT_ENUM && base->type() != VT_STRUCT && base->type() != VT_TUPLE ) {
+				VM_FAIL( "expected one of 'enum', 'struct', or 'tuple' but found: %s", base->type_str().c_str() );
 				goto fail;
 			}
 			if( base->type() == VT_ENUM ) {
@@ -256,6 +259,15 @@ int exec_internal( vm_state_t & vm, long begin, long end, var_base_t * ret )
 					goto fail;
 				}
 				vm.stack->push_back( val[ attr ] );
+			} else if( base->type() == VT_TUPLE ) {
+				std::vector< var_base_t * > & val = AS_TUPLE( base )->get();
+				int idx = std::stoi( attr );
+				if( idx < 0 || ( size_t )idx >= val.size() ) {
+					VM_FAIL( "the tuple does not contain '%d' index, possible indices are: [0, %zu)",
+						 idx, val.size() );
+					goto fail;
+				}
+				vm.stack->push_back( val[ idx ] );
 			}
 			break;
 		}

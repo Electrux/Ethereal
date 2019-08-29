@@ -27,6 +27,7 @@ enum VarType
 	VT_ENUM,
 	VT_VEC,
 	VT_MAP,
+	VT_TUPLE,
 
 	VT_STRUCT,
 
@@ -200,6 +201,7 @@ public:
 	var_base_t * copy( const int parse_ctr );
 	void clear();
 	std::vector< var_base_t * > & get();
+	void assn( var_base_t * b );
 };
 #define AS_VEC( x ) static_cast< var_vec_t * >( x )
 
@@ -215,8 +217,25 @@ public:
 	var_base_t * copy( const int parse_ctr );
 	void clear();
 	std::unordered_map< std::string, var_base_t * > & get();
+	void assn( var_base_t * b );
 };
 #define AS_MAP( x ) static_cast< var_map_t * >( x )
+
+class var_tuple_t : public var_base_t
+{
+	std::vector< var_base_t * > m_val;
+public:
+	var_tuple_t( std::vector< var_base_t * > & val, const int parse_ctr );
+	~var_tuple_t();
+	std::string to_str() const;
+	mpz_class to_int() const;
+	bool to_bool() const;
+	var_base_t * copy( const int parse_ctr );
+	void clear();
+	std::vector< var_base_t * > & get();
+	void assn( var_base_t * b );
+};
+#define AS_TUPLE( x ) static_cast< var_tuple_t * >( x )
 
 class var_struct_def_t : public var_base_t
 {
@@ -249,8 +268,10 @@ public:
 	mpz_class to_int() const;
 	bool to_bool() const;
 	var_base_t * copy( const int parse_ctr );
+	void clear();
 	std::string & get_name();
 	std::unordered_map< std::string, var_base_t * > & get_val();
+	void assn( var_base_t * b );
 };
 #define AS_STRUCT( x ) static_cast< var_struct_t * >( x )
 

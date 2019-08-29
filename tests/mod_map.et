@@ -1,10 +1,9 @@
 #!./buildfiles/et
 
+import str;
 import map;
 
-m = {};
-
-m.insert( 'k', 'v' );
+m = { 'k', 'v' };
 
 assert( m.delete( 'v' ) == false, 'shouldn\'t be able to delete key: v' );
 assert( m.delete( 'k' ), 'shouldn\'t be able to delete key: v' );
@@ -19,3 +18,18 @@ assert( m.len() == 0, 'len should be 0 post clear, but is: ', m.len() );
 m.insert( 'k', 'v' );
 
 assert( m.find( 'k' ) == true, 'key k should have existed in map' );
+
+n = { 'l', 'm' };
+m = n;
+m[ 'l' ] = 'b';
+assert( n[ 'l' ] == 'm', 'key \'l\' in map \'n\' should have been \'m\'' );
+
+# nested map
+nm = {
+	'solar system', {
+		'first', 'mercury',
+		'second', 'venus'
+	}
+};
+
+assert( nm[ 'solar system' ][ 'second' ] == 'venus', 'nm[ \'solar system\' ][ \'second\' ] should have been \'venus\'' );

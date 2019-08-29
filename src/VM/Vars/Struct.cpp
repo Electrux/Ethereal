@@ -10,7 +10,7 @@
 #include "Base.hpp"
 
 var_struct_t::var_struct_t( const std::string & name, std::unordered_map< std::string, var_base_t * > & val, const int parse_ctr )
-	: var_base_t( VT_STRUCT, parse_ctr, false ), m_name( name ), m_val( val ) {}
+	: var_base_t( VT_STRUCT, parse_ctr, true ), m_name( name ), m_val( val ) {}
 var_struct_t::~var_struct_t()
 {
 	for( auto & v : m_val ) {
@@ -44,5 +44,22 @@ var_base_t * var_struct_t::copy( const int parse_ctr )
 	return new var_struct_t( m_name, newmap, parse_ctr );
 }
 
+void var_struct_t::clear()
+{
+	for( auto & v : m_val ) {
+		VAR_DREF( v.second );
+	}
+	m_val.clear();
+}
+
 std::string & var_struct_t::get_name() { return m_name; }
 std::unordered_map< std::string, var_base_t * > & var_struct_t::get_val() { return m_val; }
+
+void var_struct_t::assn( var_base_t * b )
+{
+	this->clear();
+	var_struct_t * bt = static_cast< var_struct_t * >( b );
+	for( auto & x : bt->m_val ) {
+		this->m_val[ x.first ] = x.second->copy( b->parse_ctr() );
+	}
+}

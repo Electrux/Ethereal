@@ -9,37 +9,37 @@
 
 #include "Base.hpp"
 
-var_vec_t::var_vec_t( std::vector< var_base_t * > & val, const int parse_ctr )
-	: var_base_t( VT_VEC, parse_ctr, true ), m_val( val ) {}
-var_vec_t::~var_vec_t()
+var_tuple_t::var_tuple_t( std::vector< var_base_t * > & val, const int parse_ctr )
+	: var_base_t( VT_TUPLE, parse_ctr, true ), m_val( val ) {}
+var_tuple_t::~var_tuple_t()
 {
 	for( auto & v : m_val ) {
 		VAR_DREF( v );
 	}
 }
-std::string var_vec_t::to_str() const
+std::string var_tuple_t::to_str() const
 {
-	std::string str = "[";
+	std::string str = "(";
 	for( auto it = m_val.begin(); it != m_val.end(); ++it ) {
 		if( it == m_val.end() - 1 ) str += ( * it )->to_str();
 		else str += ( * it )->to_str() + ", ";
 	}
-	str += "]";
+	str += ")";
 	return str;
 }
-mpz_class var_vec_t::to_int() const { return mpz_class( m_val.size() ); }
-bool var_vec_t::to_bool() const { return m_val.size() > 0; }
+mpz_class var_tuple_t::to_int() const { return mpz_class( m_val.size() ); }
+bool var_tuple_t::to_bool() const { return m_val.size() > 0; }
 
-var_base_t * var_vec_t::copy( const int parse_ctr )
+var_base_t * var_tuple_t::copy( const int parse_ctr )
 {
 	std::vector< var_base_t * > newvec;
 	for( auto & v : m_val ) {
 		newvec.push_back( v->copy( parse_ctr ) );
 	}
-	return new var_vec_t( newvec, parse_ctr );
+	return new var_tuple_t( newvec, parse_ctr );
 }
 
-void var_vec_t::clear()
+void var_tuple_t::clear()
 {
 	for( auto & v : m_val ) {
 		VAR_DREF( v );
@@ -47,12 +47,12 @@ void var_vec_t::clear()
 	m_val.clear();
 }
 
-std::vector< var_base_t * > & var_vec_t::get() { return m_val; }
+std::vector< var_base_t * > & var_tuple_t::get() { return m_val; }
 
-void var_vec_t::assn( var_base_t * b )
+void var_tuple_t::assn( var_base_t * b )
 {
 	this->clear();
-	var_vec_t * bt = static_cast< var_vec_t * >( b );
+	var_tuple_t * bt = static_cast< var_tuple_t * >( b );
 	for( auto & x : bt->m_val ) {
 		this->m_val.push_back( x->copy( b->parse_ctr() ) );
 	}

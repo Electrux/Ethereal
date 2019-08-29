@@ -163,7 +163,12 @@ expr_res_t parse_expr( const src_t & src, parse_helper_t * ph, const int end, co
 				continue;
 			}
 			if( !token_is_oper( ph->peak() ) ) {
-				PARSE_FAIL( "invalid token '%s' while parsing expression", ph->peak()->data.c_str() );
+				if( ph->peak()->type == TOK_INVALID ) {
+					ph->set_tok_ctr( ph->tok_ctr() - 1 );
+					PARSE_FAIL( "failed parsing expression, possibly missing semicolon here" );
+				} else {
+					PARSE_FAIL( "invalid token '%s' while parsing expression", ph->peak()->data.c_str() );
+				}
 				goto fail;
 			}
 			// handle parentheses
@@ -299,7 +304,8 @@ stmt_expr_t * gen_tree( const src_t & src, parse_helper_t * ph, std::vector< stm
 				++available;
 			}
 			ph->set_tok_ctr( ( * it )->m_tok_ctr );
-			PARSE_FAIL( "not enough arguments for operator '%s' (expected: %d, available: %d)", TokStrs[ op->type ], arg_count, available );
+			PARSE_FAIL( "not enough arguments for operator '%s' (expected: %d, available: %d) (possibly an extra comma)",
+				    TokStrs[ op->type ], arg_count, available );
 			goto fail;
 		}
 

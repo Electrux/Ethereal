@@ -20,6 +20,7 @@ const char * VarTypeStrs[ _VT_LAST ] = {
 	"enum",
 	"vec",
 	"map",
+	"tuple",
 
 	"struct",
 

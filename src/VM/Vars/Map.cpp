@@ -10,7 +10,7 @@
 #include "Base.hpp"
 
 var_map_t::var_map_t( std::unordered_map< std::string, var_base_t * > & val, const int parse_ctr )
-	: var_base_t( VT_MAP, parse_ctr, false ), m_val( val ) {}
+	: var_base_t( VT_MAP, parse_ctr, true ), m_val( val ) {}
 var_map_t::~var_map_t()
 {
 	for( auto & v : m_val ) {
@@ -52,3 +52,12 @@ void var_map_t::clear()
 }
 
 std::unordered_map< std::string, var_base_t * > & var_map_t::get() { return m_val; }
+
+void var_map_t::assn( var_base_t * b )
+{
+	this->clear();
+	var_map_t * bt = static_cast< var_map_t * >( b );
+	for( auto & x : bt->m_val ) {
+		this->m_val[ x.first ] = x.second->copy( b->parse_ctr() );
+	}
+}

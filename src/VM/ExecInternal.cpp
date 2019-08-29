@@ -261,6 +261,12 @@ int exec_internal( vm_state_t & vm, long begin, long end, var_base_t * ret )
 				vm.stack->push_back( val[ attr ] );
 			} else if( base->type() == VT_TUPLE ) {
 				std::vector< var_base_t * > & val = AS_TUPLE( base )->get();
+				char * p = 0;
+				strtol( attr.c_str(), & p, 10 );
+				if( * p != 0 ) {
+					VM_FAIL( "attribute for tuple must be a positive integer, found: %s", attr.c_str() );
+					goto fail;
+				}
 				int idx = std::stoi( attr );
 				if( idx < 0 || ( size_t )idx >= val.size() ) {
 					VM_FAIL( "the tuple does not contain '%d' index, possible indices are: [0, %zu)",

@@ -1,0 +1,16 @@
+#!./buildfiles/et
+
+import str;
+import tuple;
+
+t1 = make_tuple( 'a', 5, 1.1 );
+t2 = make_tuple( 'b', 5, 1.1 );
+t3 = t2;
+t3.0 = 'a';
+
+assert( t1.0 == 'a', 'first element of t1 should have been \'a\'' );
+assert( t1.1 == 5, 'second element of t1 should have been \'5\'' );
+assert( t1.2 == 1.1, 'third element of t1 should have been \'1.1\'' );
+
+assert( t1 == t3, 't1 should have been equal to t3' );
+assert( t1 != t2, 't1 should not have been equal to t2' );

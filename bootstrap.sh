@@ -95,7 +95,7 @@ if [[ $? != 0 ]]; then
 fi
 
 # Libraries
-for l in "core" "fs" "map" "math" "opt" "os" "set" "str" "term" "vec"; do
+for l in "core" "fs" "map" "math" "opt" "os" "set" "str" "term" "tuple" "vec"; do
 	install_name=""
 	if [[ "$os" == "Darwin" ]]; then
 		install_name="-Wl,-install_name -Wl,@rpath/lib$l.so"

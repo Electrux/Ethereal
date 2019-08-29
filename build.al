@@ -67,6 +67,7 @@ builds( lib, dynamic ) {
 	build( set,  "stdlib/set.cpp" )
 	build( str,  "stdlib/str.cpp" )
 	build( term, "stdlib/term.cpp" )
+	build( tuple, "stdlib/tuple.cpp" )
 	build( vec,  "stdlib/vec.cpp" )
 }
 

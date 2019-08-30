@@ -14,7 +14,7 @@ var_base_t * append( vm_state_t & vm, func_call_data_t & fcd )
 	std::vector< var_base_t * > & a = AS_VEC( fcd.args[ 0 ] )->get();
 	std::vector< var_base_t * > & b = AS_VEC( fcd.args[ 1 ] )->get();
 	for( auto & x : b ) {
-		a.push_back( x->copy( fcd.args[ 0 ]->parse_ctr() ) );
+		a.push_back( x->copy( fcd.parse_ctr ) );
 	}
 	return nullptr;
 }
@@ -22,14 +22,14 @@ var_base_t * append( vm_state_t & vm, func_call_data_t & fcd )
 var_base_t * push( vm_state_t & vm, func_call_data_t & fcd )
 {
 	std::vector< var_base_t * > & v = AS_VEC( fcd.args[ 0 ] )->get();
-	v.push_back( fcd.args[ 1 ]->copy( fcd.args[ 1 ]->parse_ctr() ) );
+	v.push_back( fcd.args[ 1 ]->copy( fcd.parse_ctr ) );
 	return nullptr;
 }
 
 var_base_t * push_front( vm_state_t & vm, func_call_data_t & fcd )
 {
 	std::vector< var_base_t * > & v = AS_VEC( fcd.args[ 0 ] )->get();
-	v.insert( v.begin(), fcd.args[ 1 ]->copy( fcd.args[ 1 ]->parse_ctr() ) );
+	v.insert( v.begin(), fcd.args[ 1 ]->copy( fcd.parse_ctr ) );
 	return nullptr;
 }
 
@@ -96,10 +96,10 @@ var_base_t * add( vm_state_t & vm, func_call_data_t & fcd )
 	std::vector< var_base_t * > & a = AS_VEC( fcd.args[ 1 ] )->get();
 	std::vector< var_base_t * > & b = AS_VEC( fcd.args[ 0 ] )->get();
 	for( auto & x : a ) {
-		res.push_back( x->copy( fcd.args[ 1 ]->parse_ctr() ) );
+		res.push_back( x->copy( fcd.parse_ctr ) );
 	}
 	for( auto & x : b ) {
-		res.push_back( x->copy( fcd.args[ 1 ]->parse_ctr() ) );
+		res.push_back( x->copy( fcd.parse_ctr ) );
 	}
 	return new var_vec_t( res );
 }
@@ -109,7 +109,7 @@ var_base_t * add_assn( vm_state_t & vm, func_call_data_t & fcd )
 	std::vector< var_base_t * > & a = AS_VEC( fcd.args[ 0 ] )->get();
 	std::vector< var_base_t * > & b = AS_VEC( fcd.args[ 1 ] )->get();
 	for( auto & x : b ) {
-		a.push_back( x->copy( fcd.args[ 0 ]->parse_ctr() ) );
+		a.push_back( x->copy( fcd.parse_ctr ) );
 	}
 	return fcd.args[ 0 ];
 }

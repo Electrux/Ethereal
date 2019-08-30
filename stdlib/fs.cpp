@@ -63,10 +63,7 @@ var_base_t * file_open( vm_state_t & vm, func_call_data_t & fcd )
 {
 	const std::string & file = AS_STR( fcd.args[ 0 ] )->get();
 	const std::string & mode = AS_STR( fcd.args[ 1 ] )->get();
-	return new var_file_t(
-		fopen( file.c_str(), mode.c_str() ),
-		fcd.args[ 0 ]->parse_ctr()
-	);
+	return new var_file_t( fopen( file.c_str(), mode.c_str() ) );
 }
 
 var_base_t * file_open_existing( vm_state_t & vm, func_call_data_t & fcd )
@@ -196,7 +193,7 @@ var_base_t * get_entries( vm_state_t & vm, func_call_data_t & fcd )
 	std::string regex_str = fcd.args.size() <= 3 ? "(.*)" : fcd.args[ 3 ]->to_str();
 	std::regex regex( regex_str );
 	if( dir_str.size() > 0 && dir_str.back() != '/' ) dir_str += "/";
-	get_entries_internal( dir_str, v, flags, fcd.args[ 1 ]->parse_ctr(), regex );
+	get_entries_internal( dir_str, v, flags, fcd.parse_ctr, regex );
 	return new var_vec_t( v );
 }
 

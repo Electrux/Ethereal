@@ -60,6 +60,7 @@ struct func_call_data_t
 	std::vector< std::string > arg_types;
 	std::vector< var_base_t * > args;
 	std::vector< void * > rem_locs;
+	int parse_ctr;
 };
 
 #define VM_FAIL( ... ) src_fail( src.name, src.code[ ins.line - 1 ], \

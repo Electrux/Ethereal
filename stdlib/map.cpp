@@ -16,7 +16,7 @@ var_base_t * insert( vm_state_t & vm, func_call_data_t & fcd )
 	if( map.find( key ) != map.end() ) {
 		VAR_DREF( map[ key ] );
 	}
-	map[ key ] = fcd.args[ 2 ]->copy( fcd.args[ 0 ]->parse_ctr() );
+	map[ key ] = fcd.args[ 2 ]->copy( fcd.parse_ctr );
 	return nullptr;
 }
 

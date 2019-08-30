@@ -19,6 +19,7 @@ int CallFunc( vm_state_t & vm, func_call_data_t & fcd, const int ins_ctr )
 
 	fcd.arg_types.clear();
 	fcd.rem_locs.clear();
+	fcd.parse_ctr = ins.parse_ctr;
 	var_base_t * member = nullptr;
 	const function_t * fn;
 	modfnptr_t mfnptr = nullptr;

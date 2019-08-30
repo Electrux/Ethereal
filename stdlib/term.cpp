@@ -66,6 +66,25 @@ void apply_colors( std::string & str )
 	}
 }
 
+std::tuple<int, int> _term_size() {
+	int cols = 80;
+  int rows = 24;
+
+#ifdef TIOCGSIZE
+	struct ttysize ts;
+  ioctl(STDIN_FILENO, TIOCGSIZE, &ts);
+  cols = ts.ts_cols;
+  rows = ts.ts_lines;
+#elif defined(TIOCGWINSZ)
+  struct winsize ts;
+  ioctl(STDIN_FILENO, TIOCGWINSZ, &ts);
+  cols = ts.ws_col;
+  rows = ts.ws_row;
+#endif /* TIOCGSIZE */
+
+  return std::make_tuple(rows, cols);
+}
+
 var_base_t * colorize( vm_state_t & vm, func_call_data_t & fcd )
 {
 	std::string data = fcd.args[ 0 ]->to_str();
@@ -94,9 +113,30 @@ var_base_t * col_println( vm_state_t & vm, func_call_data_t & fcd )
 	return nullptr;
 }
 
+var_base_t * term_width( vm_state_t & vm, func_call_data_t & fcd )
+{
+	int rows, cols;
+
+  std::tie(rows, cols) = _term_size();
+
+	return new var_int_t( cols, 0 );
+}
+
+var_base_t * term_height( vm_state_t & vm, func_call_data_t & fcd )
+{
+	int rows, cols;
+
+  std::tie(rows, cols) = _term_size();
+
+	return new var_int_t( rows, 0 );
+}
+
 REGISTER_MODULE( term )
 {
 	vm.funcs.add( { "colorize", 1,  1, { "str" }, FnType::MODULE, { .modfn = colorize }, true } );
 	vm.funcs.add( { "cprint",   1, -1, { "_whatever_" }, FnType::MODULE, { .modfn = col_print }, false } );
 	vm.funcs.add( { "cprintln", 0, -1, { "_whatever_" }, FnType::MODULE, { .modfn = col_println }, false } );
+
+	vm.funcs.add( { "term_width", 0, 0, {}, FnType::MODULE, { .modfn = term_width }, true } );
+	vm.funcs.add( { "term_height", 0, 0, {}, FnType::MODULE, { .modfn = term_height }, true } );
 }

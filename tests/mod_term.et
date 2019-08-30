@@ -7,3 +7,6 @@ println( colorize( '{r}red{0}' ) );
 cprint( '{r}red{0}' );
 
 cprintln( '{r}red{0}' );
+
+println( 'width: ', term.width.to_str() );
+println( 'height: ', term.height.to_str() );

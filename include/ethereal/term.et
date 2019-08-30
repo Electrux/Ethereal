@@ -1,1 +1,8 @@
 ldmod term;
+
+struct _term_t {
+	width = term_width();
+	height = term_height();
+}
+
+term = _term_t{};

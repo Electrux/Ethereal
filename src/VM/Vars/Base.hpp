@@ -42,14 +42,15 @@ class var_base_t
 {
 	VarType m_type;
 	int m_ref_ctr;
-	const int m_parse_ctr;
+	int m_parse_ctr;
 	bool m_implements_assign;
 public:
-	var_base_t( const VarType type, const int parse_ctr, const bool implements_assign );
+	var_base_t( const VarType type, const bool implements_assign, const int parse_ctr = 0 );
 	virtual ~var_base_t();
 
 	VarType type() const;
 	int ref() const;
+	void set_parse_ctr( const int parse_ctr );
 	int parse_ctr() const;
 
 	inline void inc_ref() { ++m_ref_ctr; }
@@ -105,11 +106,11 @@ class var_int_t : public var_base_t
 {
 	mpz_class m_val;
 public:
-	var_int_t( const int val, const int parse_ctr );
-	var_int_t( const std::string & val, const int parse_ctr );
-	var_int_t( const bool val, const int parse_ctr );
-	var_int_t( const float val, const int parse_ctr );
-	var_int_t( const mpz_class & val, const int parse_ctr );
+	var_int_t( const int val, const int parse_ctr = 0 );
+	var_int_t( const std::string & val, const int parse_ctr = 0 );
+	var_int_t( const bool val, const int parse_ctr = 0 );
+	var_int_t( const float val, const int parse_ctr = 0 );
+	var_int_t( const mpz_class & val, const int parse_ctr = 0 );
 
 	std::string to_str() const;
 	mpz_class to_int() const;
@@ -124,7 +125,7 @@ class var_str_t : public var_base_t
 {
 	std::string m_val;
 public:
-	var_str_t( const std::string & val, const int parse_ctr );
+	var_str_t( const std::string & val, const int parse_ctr = 0 );
 
 	std::string to_str() const;
 	mpz_class to_int() const;
@@ -139,11 +140,11 @@ class var_flt_t : public var_base_t
 {
 	mpf_class m_val;
 public:
-	var_flt_t( const float val, const int parse_ctr );
-	var_flt_t( const int val, const int parse_ctr );
-	var_flt_t( const std::string & val, const int parse_ctr );
-	var_flt_t( const bool val, const int parse_ctr );
-	var_flt_t( const mpf_class & val, const int parse_ctr );
+	var_flt_t( const float val, const int parse_ctr = 0 );
+	var_flt_t( const int val, const int parse_ctr = 0 );
+	var_flt_t( const std::string & val, const int parse_ctr = 0 );
+	var_flt_t( const bool val, const int parse_ctr = 0 );
+	var_flt_t( const mpf_class & val, const int parse_ctr = 0 );
 
 	std::string to_str() const;
 	mpz_class to_int() const;
@@ -158,10 +159,10 @@ class var_bool_t : public var_base_t
 {
 	bool m_val;
 public:
-	var_bool_t( const int val, const int parse_ctr );
-	var_bool_t( const float val, const int parse_ctr );
-	var_bool_t( const std::string & val, const int parse_ctr );
-	var_bool_t( const bool val, const int parse_ctr );
+	var_bool_t( const int val, const int parse_ctr = 0 );
+	var_bool_t( const float val, const int parse_ctr = 0 );
+	var_bool_t( const std::string & val, const int parse_ctr = 0 );
+	var_bool_t( const bool val, const int parse_ctr = 0 );
 
 	std::string to_str() const;
 	mpz_class to_int() const;
@@ -193,7 +194,7 @@ class var_vec_t : public var_base_t
 {
 	std::vector< var_base_t * > m_val;
 public:
-	var_vec_t( std::vector< var_base_t * > & val, const int parse_ctr );
+	var_vec_t( std::vector< var_base_t * > & val, const int parse_ctr = 0 );
 	~var_vec_t();
 	std::string to_str() const;
 	mpz_class to_int() const;
@@ -209,7 +210,7 @@ class var_map_t : public var_base_t
 {
 	std::unordered_map< std::string, var_base_t * > m_val;
 public:
-	var_map_t( std::unordered_map< std::string, var_base_t * > & val, const int parse_ctr );
+	var_map_t( std::unordered_map< std::string, var_base_t * > & val, const int parse_ctr = 0 );
 	~var_map_t();
 	std::string to_str() const;
 	mpz_class to_int() const;
@@ -225,7 +226,7 @@ class var_tuple_t : public var_base_t
 {
 	std::vector< var_base_t * > m_val;
 public:
-	var_tuple_t( std::vector< var_base_t * > & val, const int parse_ctr );
+	var_tuple_t( std::vector< var_base_t * > & val, const int parse_ctr = 0 );
 	~var_tuple_t();
 	std::string to_str() const;
 	mpz_class to_int() const;
@@ -244,7 +245,7 @@ class var_struct_def_t : public var_base_t
 	std::unordered_map< std::string, var_base_t * > m_val;
 public:
 	var_struct_def_t( const std::string & name, std::vector< std::string > & pos,
-			  std::unordered_map< std::string, var_base_t * > & val, const int parse_ctr );
+			  std::unordered_map< std::string, var_base_t * > & val, const int parse_ctr = 0 );
 	~var_struct_def_t();
 	std::string type_str() const;
 	std::string to_str() const;
@@ -261,7 +262,7 @@ class var_struct_t : public var_base_t
 	std::string m_name;
 	std::unordered_map< std::string, var_base_t * > m_val;
 public:
-	var_struct_t( const std::string & name, std::unordered_map< std::string, var_base_t * > & val, const int parse_ctr );
+	var_struct_t( const std::string & name, std::unordered_map< std::string, var_base_t * > & val, const int parse_ctr = 0 );
 	~var_struct_t();
 	std::string type_str() const;
 	std::string to_str() const;

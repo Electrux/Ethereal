@@ -34,7 +34,7 @@ var_base_t * _delete( vm_state_t & vm, func_call_data_t & fcd )
 
 var_base_t * len( vm_state_t & vm, func_call_data_t & fcd )
 {
-	return new var_int_t( ( int )AS_MAP( fcd.args[ 0 ] )->get().size(), fcd.args[ 0 ]->parse_ctr() );
+	return new var_int_t( ( int )AS_MAP( fcd.args[ 0 ] )->get().size() );
 }
 
 var_base_t * clear( vm_state_t & vm, func_call_data_t & fcd )

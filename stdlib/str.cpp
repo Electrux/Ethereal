@@ -17,7 +17,7 @@ var_base_t * add( vm_state_t & vm, func_call_data_t & fcd )
 	std::string & a = AS_STR( fcd.args[ 1 ] )->get();
 	std::string & b = AS_STR( fcd.args[ 0 ] )->get();
 	res = a + b;
-	return new var_str_t( res, fcd.args[ 1 ]->parse_ctr() );
+	return new var_str_t( res );
 }
 
 var_base_t * add_assn( vm_state_t & vm, func_call_data_t & fcd )
@@ -30,7 +30,7 @@ var_base_t * add_assn( vm_state_t & vm, func_call_data_t & fcd )
 
 var_base_t * len( vm_state_t & vm, func_call_data_t & fcd )
 {
-	return new var_int_t( ( int )AS_STR( fcd.args[ 0 ] )->get().size(), fcd.args[ 0 ]->parse_ctr() );
+	return new var_int_t( ( int )AS_STR( fcd.args[ 0 ] )->get().size() );
 }
 
 var_base_t * empty( vm_state_t & vm, func_call_data_t & fcd )
@@ -53,7 +53,7 @@ var_base_t * is_int( vm_state_t & vm, func_call_data_t & fcd )
 
 var_base_t * to_int( vm_state_t & vm, func_call_data_t & fcd )
 {
-	return new var_int_t( AS_STR( fcd.args[ 0 ] )->get(), fcd.args[ 0 ]->parse_ctr() );
+	return new var_int_t( AS_STR( fcd.args[ 0 ] )->get() );
 }
 
 var_base_t * set_at( vm_state_t & vm, func_call_data_t & fcd )
@@ -86,14 +86,14 @@ var_base_t * front( vm_state_t & vm, func_call_data_t & fcd )
 {
 	const std::string & dat = AS_STR( fcd.args[ 0 ] )->get();
 	if( dat.empty() ) return vm.nil;
-	return new var_str_t( std::string( 1, dat.front() ), fcd.args[ 0 ]->parse_ctr() );
+	return new var_str_t( std::string( 1, dat.front() ) );
 }
 
 var_base_t * back( vm_state_t & vm, func_call_data_t & fcd )
 {
 	const std::string & dat = AS_STR( fcd.args[ 0 ] )->get();
 	if( dat.empty() ) return vm.nil;
-	return new var_str_t( std::string( 1, dat.back() ), fcd.args[ 0 ]->parse_ctr() );
+	return new var_str_t( std::string( 1, dat.back() ) );
 }
 
 var_base_t * pop_front( vm_state_t & vm, func_call_data_t & fcd )
@@ -113,12 +113,12 @@ var_base_t * pop_back( vm_state_t & vm, func_call_data_t & fcd )
 var_base_t * substr( vm_state_t & vm, func_call_data_t & fcd )
 {
 	const std::string & dat = AS_STR( fcd.args[ 0 ] )->get();
-	if( dat.empty() ) return new var_str_t( "", fcd.args[ 0 ]->parse_ctr() );
+	if( dat.empty() ) return new var_str_t( "" );
 	const size_t start = fcd.args[ 1 ]->to_int().get_ui();
 	const size_t count = fcd.args.size() > 2 ? fcd.args[ 2 ]->to_int().get_ui() : std::string::npos;
-	if( start >= dat.size() ) return new var_str_t( "", fcd.args[ 0 ]->parse_ctr() );
+	if( start >= dat.size() ) return new var_str_t( "" );
 	std::string sub = dat.substr( start, count );
-	return new var_str_t( sub, fcd.args[ 0 ]->parse_ctr() );
+	return new var_str_t( sub );
 }
 
 var_base_t * split( vm_state_t & vm, func_call_data_t & fcd )
@@ -128,9 +128,9 @@ var_base_t * split( vm_state_t & vm, func_call_data_t & fcd )
 	std::vector< std::string > res = str_delimit( dat, delim );
 	std::vector< var_base_t * > res_b;
 	for( auto & r : res ) {
-		res_b.push_back( new var_str_t( r, fcd.args[ 0 ]->parse_ctr() ) );
+		res_b.push_back( new var_str_t( r ) );
 	}
-	return new var_vec_t( res_b, fcd.args[ 0 ]->parse_ctr() );
+	return new var_vec_t( res_b );
 }
 
 var_base_t * split_first( vm_state_t & vm, func_call_data_t & fcd )
@@ -140,9 +140,9 @@ var_base_t * split_first( vm_state_t & vm, func_call_data_t & fcd )
 	std::vector< std::string > res = str_delimit( dat, delim, true );
 	std::vector< var_base_t * > res_b;
 	for( auto & r : res ) {
-		res_b.push_back( new var_str_t( r, fcd.args[ 0 ]->parse_ctr() ) );
+		res_b.push_back( new var_str_t( r ) );
 	}
-	return new var_vec_t( res_b, fcd.args[ 0 ]->parse_ctr() );
+	return new var_vec_t( res_b );
 }
 
 var_base_t * trim( vm_state_t & vm, func_call_data_t & fcd )

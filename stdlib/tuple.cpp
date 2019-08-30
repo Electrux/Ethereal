@@ -15,7 +15,7 @@ var_base_t * make_tuple( vm_state_t & vm, func_call_data_t & fcd )
 	for( auto & x : fcd.args ) {
 		v.push_back( x->copy( fcd.args[ 0 ]->parse_ctr() ) );
 	}
-	return new var_tuple_t( v, fcd.args[ 0 ]->parse_ctr() );
+	return new var_tuple_t( v );
 }
 
 var_base_t * eqt( vm_state_t & vm, func_call_data_t & fcd )

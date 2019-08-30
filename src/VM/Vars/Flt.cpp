@@ -10,15 +10,15 @@
 #include "Base.hpp"
 
 var_flt_t::var_flt_t( const float val, const int parse_ctr )
-	: var_base_t( VT_FLT, parse_ctr, true ), m_val( val ) {}
+	: var_base_t( VT_FLT, true, parse_ctr ), m_val( val ) {}
 var_flt_t::var_flt_t( const int val, const int parse_ctr )
-	: var_base_t( VT_FLT, parse_ctr, true ), m_val( val ) {}
+	: var_base_t( VT_FLT, true, parse_ctr ), m_val( val ) {}
 var_flt_t::var_flt_t( const std::string & val, const int parse_ctr )
-	: var_base_t( VT_FLT, parse_ctr, true ), m_val( val ) {}
+	: var_base_t( VT_FLT, true, parse_ctr ), m_val( val ) {}
 var_flt_t::var_flt_t( const bool val, const int parse_ctr )
-	: var_base_t( VT_FLT, parse_ctr, true ), m_val( val ) {}
+	: var_base_t( VT_FLT, true, parse_ctr ), m_val( val ) {}
 var_flt_t::var_flt_t( const mpf_class & val, const int parse_ctr )
-	: var_base_t( VT_FLT, parse_ctr, true ), m_val( val ) {}
+	: var_base_t( VT_FLT, true, parse_ctr ), m_val( val ) {}
 
 std::string var_flt_t::to_str() const
 {

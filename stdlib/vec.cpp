@@ -67,7 +67,7 @@ var_base_t * back( vm_state_t & vm, func_call_data_t & fcd )
 
 var_base_t * len( vm_state_t & vm, func_call_data_t & fcd )
 {
-	return new var_int_t( ( int )AS_VEC( fcd.args[ 0 ] )->get().size(), fcd.args[ 0 ]->parse_ctr() );
+	return new var_int_t( ( int )AS_VEC( fcd.args[ 0 ] )->get().size() );
 }
 
 var_base_t * clear( vm_state_t & vm, func_call_data_t & fcd )
@@ -87,7 +87,7 @@ var_base_t * find( vm_state_t & vm, func_call_data_t & fcd )
 			break;
 		}
 	}
-	return new var_int_t( loc, fcd.args[ 0 ]->parse_ctr() );
+	return new var_int_t( loc );
 }
 
 var_base_t * add( vm_state_t & vm, func_call_data_t & fcd )
@@ -101,7 +101,7 @@ var_base_t * add( vm_state_t & vm, func_call_data_t & fcd )
 	for( auto & x : b ) {
 		res.push_back( x->copy( fcd.args[ 1 ]->parse_ctr() ) );
 	}
-	return new var_vec_t( res, fcd.args[ 1 ]->parse_ctr() );
+	return new var_vec_t( res );
 }
 
 var_base_t * add_assn( vm_state_t & vm, func_call_data_t & fcd )

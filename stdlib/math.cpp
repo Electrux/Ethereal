@@ -14,13 +14,13 @@
 var_base_t * _abs( vm_state_t & vm, func_call_data_t & fcd )
 {
 	mpz_class & a = AS_INT( fcd.args[ 0 ] )->get();
-	return new var_int_t( a >= 0 ? a : -a, fcd.args[ 0 ]->parse_ctr() );
+	return new var_int_t( a >= 0 ? a : -a );
 }
 
 var_base_t * _sqrt( vm_state_t & vm, func_call_data_t & fcd )
 {
 	mpz_class & a = AS_INT( fcd.args[ 0 ] )->get();
-	return new var_flt_t( sqrt( mpf_class( a ) ), fcd.args[ 0 ]->parse_ctr() );
+	return new var_flt_t( sqrt( mpf_class( a ) ) );
 }
 
 REGISTER_MODULE( math )

@@ -10,7 +10,7 @@
 #include "Base.hpp"
 
 var_struct_t::var_struct_t( const std::string & name, std::unordered_map< std::string, var_base_t * > & val, const int parse_ctr )
-	: var_base_t( VT_STRUCT, parse_ctr, true ), m_name( name ), m_val( val ) {}
+	: var_base_t( VT_STRUCT, true, parse_ctr ), m_name( name ), m_val( val ) {}
 var_struct_t::~var_struct_t()
 {
 	for( auto & v : m_val ) {

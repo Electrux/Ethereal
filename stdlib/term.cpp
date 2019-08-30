@@ -70,7 +70,7 @@ var_base_t * colorize( vm_state_t & vm, func_call_data_t & fcd )
 {
 	std::string data = fcd.args[ 0 ]->to_str();
 	apply_colors( data );
-	return new var_str_t( data, fcd.args[ 0 ]->parse_ctr() );
+	return new var_str_t( data );
 }
 
 var_base_t * col_print( vm_state_t & vm, func_call_data_t & fcd )

@@ -13,7 +13,7 @@ class var_opt_t : public var_base_t
 {
 	var_base_t * m_val;
 public:
-	var_opt_t( var_base_t * val, const int parse_ctr );
+	var_opt_t( var_base_t * val, const int parse_ctr = 0 );
 	~var_opt_t();
 
 	std::string type_str() const;
@@ -28,7 +28,7 @@ public:
 #define AS_OPT( x ) static_cast< var_opt_t * >( x )
 
 var_opt_t::var_opt_t( var_base_t * val, const int parse_ctr )
-	: var_base_t( VT_CUSTOM, parse_ctr, true ), m_val( val )
+	: var_base_t( VT_CUSTOM, true, parse_ctr ), m_val( val )
 { if( m_val ) VAR_IREF( m_val ); }
 var_opt_t::~var_opt_t() { if( m_val ) VAR_DREF( m_val ); }
 

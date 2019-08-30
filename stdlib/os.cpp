@@ -28,7 +28,7 @@ var_base_t * get_env( vm_state_t & vm, func_call_data_t & fcd )
 {
 	std::string var = fcd.args[ 1 ]->to_str();
 	const char * env = getenv( var.c_str() );
-	return new var_str_t( env == NULL ? "" : env, fcd.args[ 0 ]->parse_ctr() );
+	return new var_str_t( env == NULL ? "" : env );
 }
 
 var_base_t * set_env( vm_state_t & vm, func_call_data_t & fcd )
@@ -38,7 +38,7 @@ var_base_t * set_env( vm_state_t & vm, func_call_data_t & fcd )
 
 	bool overwrite = false;
 	if( fcd.args.size() > 3 ) overwrite = fcd.args[ 3 ]->to_bool();
-	return new var_int_t( setenv( var.c_str(), val.c_str(), overwrite ), fcd.args[ 0 ]->parse_ctr() );
+	return new var_int_t( setenv( var.c_str(), val.c_str(), overwrite ) );
 }
 
 var_base_t * exec_custom( vm_state_t & vm, func_call_data_t & fcd )
@@ -46,7 +46,7 @@ var_base_t * exec_custom( vm_state_t & vm, func_call_data_t & fcd )
 	std::string cmd = fcd.args[ 1 ]->to_str();
 
 	FILE * pipe = popen( cmd.c_str(), "r" );
-	if( !pipe ) return new var_int_t( 1, fcd.args[ 0 ]->parse_ctr() );
+	if( !pipe ) return new var_int_t( 1 );
 	char * line = NULL;
 	size_t len = 0;
 	ssize_t nread;
@@ -58,7 +58,7 @@ var_base_t * exec_custom( vm_state_t & vm, func_call_data_t & fcd )
 	int res = pclose( pipe );
 
 	res = WEXITSTATUS( res );
-	return new var_int_t( res, fcd.args[ 0 ]->parse_ctr() );
+	return new var_int_t( res );
 }
 
 var_base_t * install( vm_state_t & vm, func_call_data_t & fcd )
@@ -67,11 +67,11 @@ var_base_t * install( vm_state_t & vm, func_call_data_t & fcd )
 		    dest = AS_STR( fcd.args[ 2 ] )->get();
 
 	if( src.empty() || dest.empty() ) {
-		return new var_int_t( 0, fcd.args[ 0 ]->parse_ctr() );
+		return new var_int_t( 0 );
 	}
 
 	if( exec_internal( "mkdir -p " + dest ) != 0 ) {
-		return new var_int_t( -1, fcd.args[ 0 ]->parse_ctr() );
+		return new var_int_t( -1 );
 	}
 	std::string cmd_str;
 #if __linux__ || __ANDROID__
@@ -79,7 +79,7 @@ var_base_t * install( vm_state_t & vm, func_call_data_t & fcd )
 #elif __APPLE__ || __FreeBSD__ || __NetBSD__ || __OpenBSD__ || __bsdi__ || __DragonFly__
 	cmd_str = "cp -rf " + src + " " + dest;
 #endif
-	return new var_int_t( exec_internal( cmd_str ), fcd.args[ 0 ]->parse_ctr() );
+	return new var_int_t( exec_internal( cmd_str ) );
 }
 
 var_base_t * os_get_name( vm_state_t & vm, func_call_data_t & fcd )

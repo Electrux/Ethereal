@@ -10,7 +10,7 @@
 #include "Base.hpp"
 
 var_vec_t::var_vec_t( std::vector< var_base_t * > & val, const int parse_ctr )
-	: var_base_t( VT_VEC, parse_ctr, true ), m_val( val ) {}
+	: var_base_t( VT_VEC, true, parse_ctr ), m_val( val ) {}
 var_vec_t::~var_vec_t()
 {
 	for( auto & v : m_val ) {

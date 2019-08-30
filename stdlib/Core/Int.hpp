@@ -12,12 +12,12 @@
 
 #include "../../src/VM/Core.hpp"
 
-#define DECL_FUNC_ALLOC__INT( name, oper, ret_type )				\
-	var_base_t * name( vm_state_t & vm, func_call_data_t & fcd )		\
-	{									\
-		auto & lhs = AS_INT( fcd.args[ 1 ] )->get();			\
-		auto & rhs = AS_INT( fcd.args[ 0 ] )->get();			\
-		return new ret_type( lhs oper rhs, fcd.args[ 1 ]->parse_ctr() );\
+#define DECL_FUNC_ALLOC__INT( name, oper, ret_type )			\
+	var_base_t * name( vm_state_t & vm, func_call_data_t & fcd )	\
+	{								\
+		auto & lhs = AS_INT( fcd.args[ 1 ] )->get();		\
+		auto & rhs = AS_INT( fcd.args[ 0 ] )->get();		\
+		return new ret_type( lhs oper rhs );			\
 	}
 
 #define DECL_FUNC_BOOL__INT( name, oper )				\
@@ -37,12 +37,12 @@
 		return fcd.args[ 0 ];					\
 	}
 
-#define DECL_FUNC_BIT__INT( name, oper )					\
-	var_base_t * name( vm_state_t & vm, func_call_data_t & fcd )		\
-	{	/* lhs = 0 because Right to Left associativity */		\
-		auto & lhs = AS_INT( fcd.args[ 0 ] )->get();			\
-		auto & rhs = AS_INT( fcd.args[ 1 ] )->get();			\
-		return new var_int_t( lhs oper rhs, fcd.args[ 0 ]->parse_ctr() );\
+#define DECL_FUNC_BIT__INT( name, oper )				\
+	var_base_t * name( vm_state_t & vm, func_call_data_t & fcd )	\
+	{	/* lhs = 0 because Right to Left associativity */	\
+		auto & lhs = AS_INT( fcd.args[ 0 ] )->get();		\
+		auto & rhs = AS_INT( fcd.args[ 1 ] )->get();		\
+		return new var_int_t( lhs oper rhs );			\
 	}
 
 DECL_FUNC_ALLOC__INT( add, +, var_int_t )
@@ -71,7 +71,7 @@ var_base_t * power( vm_state_t & vm, func_call_data_t & fcd )
 {
 	mpz_class & lhs = AS_INT( fcd.args[ 1 ] )->get();
 	mpz_class & rhs = AS_INT( fcd.args[ 0 ] )->get();
-	var_int_t * res = new var_int_t( "0", fcd.args[ 1 ]->parse_ctr() );
+	var_int_t * res = new var_int_t( "0" );
 	mpz_pow_ui( res->get().get_mpz_t(), lhs.get_mpz_t(), rhs.get_ui() );
 	return res;
 }
@@ -80,7 +80,7 @@ var_base_t * lshift( vm_state_t & vm, func_call_data_t & fcd )
 {
 	mpz_class & lhs = AS_INT( fcd.args[ 1 ] )->get();
 	mpz_class & rhs = AS_INT( fcd.args[ 0 ] )->get();
-	var_int_t * res = new var_int_t( "0", fcd.args[ 1 ]->parse_ctr() );
+	var_int_t * res = new var_int_t( "0" );
 	mpz_mul_2exp( res->get().get_mpz_t(), lhs.get_mpz_t(), rhs.get_ui() );
 	return res;
 }
@@ -89,7 +89,7 @@ var_base_t * rshift( vm_state_t & vm, func_call_data_t & fcd )
 {
 	mpz_class & lhs = AS_INT( fcd.args[ 1 ] )->get();
 	mpz_class & rhs = AS_INT( fcd.args[ 0 ] )->get();
-	var_int_t * res = new var_int_t( "0", fcd.args[ 1 ]->parse_ctr() );
+	var_int_t * res = new var_int_t( "0" );
 	mpz_div_2exp( res->get().get_mpz_t(), lhs.get_mpz_t(), rhs.get_ui() );
 	return res;
 }
@@ -113,7 +113,7 @@ var_base_t * rshift_assn( vm_state_t & vm, func_call_data_t & fcd )
 var_base_t * unary_sub( vm_state_t & vm, func_call_data_t & fcd )
 {
 	mpz_class & num = AS_INT( fcd.args[ 0 ] )->get();
-	return new var_int_t( -num, fcd.args[ 0 ]->parse_ctr() );
+	return new var_int_t( -num );
 }
 
 var_base_t * not_oper( vm_state_t & vm, func_call_data_t & fcd )
@@ -125,12 +125,12 @@ var_base_t * not_oper( vm_state_t & vm, func_call_data_t & fcd )
 var_base_t * not_oper_bitwise( vm_state_t & vm, func_call_data_t & fcd )
 {
 	mpz_class & num = AS_INT( fcd.args[ 0 ] )->get();
-	return new var_int_t( ~num, fcd.args[ 0 ]->parse_ctr() );
+	return new var_int_t( ~num );
 }
 
 var_base_t * num( vm_state_t & vm, func_call_data_t & fcd )
 {
-	return new var_int_t( fcd.args[ 0 ]->to_int(), fcd.args[ 0 ]->parse_ctr() );
+	return new var_int_t( fcd.args[ 0 ]->to_int() );
 }
 
 #endif // VM_MODULES_CORE_INT_HPP

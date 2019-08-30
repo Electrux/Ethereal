@@ -10,7 +10,7 @@
 #include "Base.hpp"
 
 var_str_t::var_str_t( const std::string & val, const int parse_ctr )
-	: var_base_t( VT_STR, parse_ctr, true ), m_val( val ) {}
+	: var_base_t( VT_STR, true, parse_ctr ), m_val( val ) {}
 
 std::string var_str_t::to_str() const { return m_val; }
 mpz_class var_str_t::to_int() const { return mpz_class( m_val ); }

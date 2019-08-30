@@ -10,7 +10,7 @@
 #include "Base.hpp"
 
 var_none_t::var_none_t( const int parse_ctr )
-	: var_base_t( VT_NONE, parse_ctr, true ) {}
+	: var_base_t( VT_NONE, true, parse_ctr ) {}
 
 std::string var_none_t::to_str() const { return VarTypeStrs[ VT_NONE ]; }
 mpz_class var_none_t::to_int() const { return 0; }

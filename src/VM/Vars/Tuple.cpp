@@ -10,7 +10,7 @@
 #include "Base.hpp"
 
 var_tuple_t::var_tuple_t( std::vector< var_base_t * > & val, const int parse_ctr )
-	: var_base_t( VT_TUPLE, parse_ctr, true ), m_val( val ) {}
+	: var_base_t( VT_TUPLE, true, parse_ctr ), m_val( val ) {}
 var_tuple_t::~var_tuple_t()
 {
 	for( auto & v : m_val ) {

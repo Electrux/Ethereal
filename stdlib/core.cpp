@@ -69,17 +69,17 @@ var_base_t * scan( vm_state_t & vm, func_call_data_t & fcd )
 	std::string res( str );
 	while( res.back() == '\n' ) res.pop_back();
 	while( res.back() == '\r' ) res.pop_back();
-	return new var_str_t( res, fcd.args[ 0 ]->parse_ctr() );
+	return new var_str_t( res );
 }
 
 var_base_t * type( vm_state_t & vm, func_call_data_t & fcd )
 {
-	return new var_str_t( fcd.args[ 0 ]->type_str(), fcd.args[ 0 ]->parse_ctr() );
+	return new var_str_t( fcd.args[ 0 ]->type_str() );
 }
 
 var_base_t * to_str( vm_state_t & vm, func_call_data_t & fcd )
 {
-	return new var_str_t( fcd.args[ 0 ]->to_str(), fcd.args[ 0 ]->parse_ctr() );
+	return new var_str_t( fcd.args[ 0 ]->to_str() );
 }
 
 var_base_t * exit_eth( vm_state_t & vm, func_call_data_t & fcd )
@@ -119,8 +119,8 @@ var_base_t * var_mfn_exists( vm_state_t & vm, func_call_data_t & fcd )
 
 var_base_t * var_ref_count( vm_state_t & vm, func_call_data_t & fcd )
 {
-	if( !vm.vars->exists( fcd.args[ 0 ]->to_str(), true ) ) return new var_int_t( -1, fcd.args[ 0 ]->parse_ctr() );
-	return new var_int_t( vm.vars->get( fcd.args[ 0 ]->to_str() )->ref(), fcd.args[ 0 ]->parse_ctr() );
+	if( !vm.vars->exists( fcd.args[ 0 ]->to_str(), true ) ) return new var_int_t( -1 );
+	return new var_int_t( vm.vars->get( fcd.args[ 0 ]->to_str() )->ref() );
 }
 
 var_base_t * nil_eq( vm_state_t & vm, func_call_data_t & fcd )

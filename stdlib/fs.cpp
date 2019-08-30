@@ -28,7 +28,7 @@ class var_file_t : public var_base_t
 	FILE * m_file;
 	bool m_copied;
 public:
-	var_file_t( FILE * file, const int parse_ctr );
+	var_file_t( FILE * file, const int parse_ctr = 0 );
 	~var_file_t();
 
 	std::string type_str() const;
@@ -42,7 +42,7 @@ public:
 #define AS_FILE( x ) static_cast< var_file_t * >( x )
 
 var_file_t::var_file_t( FILE * file, const int parse_ctr )
-	: var_base_t( VT_CUSTOM, parse_ctr, false ), m_file( file ),
+	: var_base_t( VT_CUSTOM, false, parse_ctr ), m_file( file ),
 	  m_copied( false ) {}
 var_file_t::~var_file_t() { if( m_file != nullptr && !m_copied ) { fclose( m_file ); } }
 
@@ -144,7 +144,7 @@ var_base_t * file_read_full( vm_state_t & vm, func_call_data_t & fcd )
 		if( line_str.size() > 0 && line_str.back() == '\n' ) {
 			line_str.erase( line_str.end() - 1 );
 		}
-		lines.push_back( new var_str_t( line_str, fcd.args[ 0 ]->parse_ctr() ) );
+		lines.push_back( new var_str_t( line_str ) );
 	}
 
 	if( line ) free( line );
@@ -197,7 +197,7 @@ var_base_t * get_entries( vm_state_t & vm, func_call_data_t & fcd )
 	std::regex regex( regex_str );
 	if( dir_str.size() > 0 && dir_str.back() != '/' ) dir_str += "/";
 	get_entries_internal( dir_str, v, flags, fcd.args[ 1 ]->parse_ctr(), regex );
-	return new var_vec_t( v, fcd.args[ 0 ]->parse_ctr() );
+	return new var_vec_t( v );
 }
 
 var_base_t * _exists( vm_state_t & vm, func_call_data_t & fcd )

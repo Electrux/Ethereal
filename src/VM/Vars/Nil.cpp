@@ -10,7 +10,7 @@
 #include "Base.hpp"
 
 var_nil_t::var_nil_t( const int parse_ctr )
-	: var_base_t( VT_NIL, parse_ctr, true ) {}
+	: var_base_t( VT_NIL, true, parse_ctr ) {}
 
 std::string var_nil_t::to_str() const { return VarTypeStrs[ VT_NIL ]; }
 mpz_class var_nil_t::to_int() const { return 0; }

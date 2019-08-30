@@ -12,12 +12,12 @@
 
 #include "../../src/VM/Core.hpp"
 
-#define DECL_FUNC_ALLOC__FLT( name, oper, ret_type )					\
-	var_base_t * name( vm_state_t & vm, func_call_data_t & fcd )			\
-	{										\
-		auto & lhs = AS_FLT( fcd.args[ 1 ] )->get();				\
-		auto & rhs = AS_FLT( fcd.args[ 0 ] )->get();				\
-		return new ret_type( lhs oper rhs, fcd.args[ 1 ]->parse_ctr() );	\
+#define DECL_FUNC_ALLOC__FLT( name, oper, ret_type )			\
+	var_base_t * name( vm_state_t & vm, func_call_data_t & fcd )	\
+	{								\
+		auto & lhs = AS_FLT( fcd.args[ 1 ] )->get();		\
+		auto & rhs = AS_FLT( fcd.args[ 0 ] )->get();		\
+		return new ret_type( lhs oper rhs );			\
 	}
 
 #define DECL_FUNC_BOOL__FLT( name, oper )				\
@@ -58,7 +58,7 @@ var_base_t * powerf( vm_state_t & vm, func_call_data_t & fcd )
 {
 	mpf_class & lhs = AS_FLT( fcd.args[ 1 ] )->get();
 	mpz_class & rhs = AS_INT( fcd.args[ 0 ] )->get();
-	var_flt_t * res = new var_flt_t( "0", fcd.args[ 1 ]->parse_ctr() );
+	var_flt_t * res = new var_flt_t( "0" );
 	mpf_pow_ui( res->get().get_mpf_t(), lhs.get_mpf_t(), rhs.get_ui() );
 	return res;
 }
@@ -66,7 +66,7 @@ var_base_t * powerf( vm_state_t & vm, func_call_data_t & fcd )
 var_base_t * unary_subf( vm_state_t & vm, func_call_data_t & fcd )
 {
 	mpf_class & num = AS_FLT( fcd.args[ 0 ] )->get();
-	return new var_flt_t( -num, fcd.args[ 0 ]->parse_ctr() );
+	return new var_flt_t( -num );
 }
 
 var_base_t * not_operf( vm_state_t & vm, func_call_data_t & fcd )
@@ -78,7 +78,7 @@ var_base_t * not_operf( vm_state_t & vm, func_call_data_t & fcd )
 var_base_t * flt( vm_state_t & vm, func_call_data_t & fcd )
 {
 	const std::string & flt_str = fcd.args[ 0 ]->to_str();
-	return new var_flt_t( flt_str, fcd.args[ 0 ]->parse_ctr() );
+	return new var_flt_t( flt_str );
 }
 
 #endif // VM_MODULES_CORE_FLT_HPP

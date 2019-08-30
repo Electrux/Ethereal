@@ -15,7 +15,7 @@ class var_set_t : public var_base_t
 {
 	std::unordered_set< std::string > m_set;
 public:
-	var_set_t( std::unordered_set< std::string > set, const int parse_ctr );
+	var_set_t( std::unordered_set< std::string > set, const int parse_ctr = 0 );
 	~var_set_t();
 
 	std::string type_str() const;
@@ -29,7 +29,7 @@ public:
 #define AS_SET( x ) static_cast< var_set_t * >( x )
 
 var_set_t::var_set_t( std::unordered_set< std::string > set, const int parse_ctr )
-	: var_base_t( VT_CUSTOM, parse_ctr, true ), m_set( set ) {}
+	: var_base_t( VT_CUSTOM, true, parse_ctr ), m_set( set ) {}
 var_set_t::~var_set_t() {}
 
 std::string var_set_t::type_str() const { return "_set_t"; }
@@ -90,7 +90,7 @@ var_base_t * set_contains( vm_state_t & vm, func_call_data_t & fcd )
 
 var_base_t * set_len( vm_state_t & vm, func_call_data_t & fcd )
 {
-	return new var_int_t( ( int )AS_SET( fcd.args[ 0 ] )->get().size(), fcd.args[ 0 ]->parse_ctr() );
+	return new var_int_t( ( int )AS_SET( fcd.args[ 0 ] )->get().size() );
 }
 
 var_base_t * set_clear( vm_state_t & vm, func_call_data_t & fcd )

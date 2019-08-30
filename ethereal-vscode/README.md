@@ -1,4 +1,4 @@
-# Ethereal README
+# Ethereal Extension - Visual Studio Code
 
 This extension provides a basic syntax highlighting for the Ethereal language.
 

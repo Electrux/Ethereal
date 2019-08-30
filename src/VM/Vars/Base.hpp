@@ -45,7 +45,7 @@ class var_base_t
 	int m_parse_ctr;
 	bool m_implements_assign;
 public:
-	var_base_t( const VarType type, const bool implements_assign, const int parse_ctr = 0 );
+	var_base_t( const VarType type, const bool implements_assign, const int parse_ctr );
 	virtual ~var_base_t();
 
 	VarType type() const;

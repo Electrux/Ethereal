@@ -1,1 +1,10 @@
 ldmod term;
+
+struct _term_t {}
+
+term = _term_t{};
+
+struct _term_size_t {
+	rows = 24;
+	cols = 80;
+}

@@ -7,3 +7,6 @@ println( colorize( '{r}red{0}' ) );
 cprint( '{r}red{0}' );
 
 cprintln( '{r}red{0}' );
+
+tsz = term.size();
+println( 'Rows: ', tsz.rows, '\tCols: ', tsz.cols );

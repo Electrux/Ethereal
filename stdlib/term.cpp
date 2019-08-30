@@ -7,6 +7,8 @@
 	before using or altering the project.
 */
 
+#include <sys/ioctl.h>
+
 #include "../src/VM/Core.hpp"
 
 #include "Core/Int.hpp"
@@ -94,9 +96,36 @@ var_base_t * col_println( vm_state_t & vm, func_call_data_t & fcd )
 	return nullptr;
 }
 
+var_base_t * term_size( vm_state_t & vm, func_call_data_t & fcd )
+{
+	int rows = 80, cols = 24;
+
+#ifdef TIOCGSIZE
+	struct ttysize ts;
+	ioctl( 0, TIOCGSIZE, & ts );
+	cols = ts.ts_cols;
+	rows = ts.ts_lines;
+#elif defined TIOCGWINSZ
+	struct winsize ws;
+	ioctl( 0, TIOCGWINSZ, & ws );
+	cols = ws.ws_col;
+	rows = ws.ws_row;
+#endif /* TIOCGSIZE */
+
+	std::unordered_map< std::string, var_base_t * > term_sz = {
+		{ "rows", new var_int_t( rows, fcd.parse_ctr ) },
+		{ "cols", new var_int_t( cols, fcd.parse_ctr ) }
+	};
+	// _term_size_t struct is defined in include/ethereal/term.et
+	return new var_struct_t( "_term_size_t", term_sz );
+}
+
 REGISTER_MODULE( term )
 {
 	vm.funcs.add( { "colorize", 1,  1, { "str" }, FnType::MODULE, { .modfn = colorize }, true } );
 	vm.funcs.add( { "cprint",   1, -1, { "_whatever_" }, FnType::MODULE, { .modfn = col_print }, false } );
 	vm.funcs.add( { "cprintln", 0, -1, { "_whatever_" }, FnType::MODULE, { .modfn = col_println }, false } );
+
+	functions_t & termfns = vm.typefuncs[ "_term_t" ];
+	termfns.add( { "size", 0,  0, {}, FnType::MODULE, { .modfn = term_size }, true } );
 }

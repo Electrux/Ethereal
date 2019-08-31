@@ -35,4 +35,4 @@ c = tmp2{};
 a.b.set( c );
 c.d.set( a );
 
-#println( a, '\n', c );
+println( a, '\n', c );

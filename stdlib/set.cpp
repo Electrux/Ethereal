@@ -32,7 +32,7 @@ var_set_t::var_set_t( std::unordered_set< std::string > set, const int parse_ctr
 	: var_base_t( VT_CUSTOM, true, parse_ctr ), m_set( set ) {}
 var_set_t::~var_set_t() {}
 
-std::string var_set_t::type_str() const { return "_set_t"; }
+std::string var_set_t::type_str() const { return "set_t"; }
 std::string var_set_t::to_str() const
 {
 	std::string str = "set_t{";
@@ -104,7 +104,7 @@ REGISTER_MODULE( set )
 {
 	vm.funcs.add( { "set_create", 0, 0, {}, FnType::MODULE, { .modfn = set_create }, true } );
 
-	functions_t & st = vm.typefuncs[ "_set_t" ];
+	functions_t & st = vm.typefuncs[ "set_t" ];
 	st.add( { "insert", 1, -1, { "_whatever_" }, FnType::MODULE, { .modfn = set_insert }, false } );
 	st.add( { "erase", 1, -1, { "_whatever_" }, FnType::MODULE, { .modfn = set_erase }, false } );
 	st.add( { "contains", 1, 1, { "_any_" }, FnType::MODULE, { .modfn = set_contains }, false } );

@@ -11,10 +11,6 @@
 
 #include "../src/VM/Core.hpp"
 
-#include "Core/Int.hpp"
-#include "Core/Flt.hpp"
-#include "Core/Bool.hpp"
-
 static std::unordered_map< std::string, const char * > COL = {
 	{ "0", "\033[0m" },
 

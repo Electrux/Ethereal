@@ -58,17 +58,18 @@ builds( bin ) {
 
 builds( lib, dynamic ) {
 	builds.add_lib_flags( "-let" )
-	build( core, "stdlib/core.cpp" )
-	build( fs,   "stdlib/fs.cpp" )
-	build( map,  "stdlib/map.cpp" )
-	build( math, "stdlib/math.cpp" )
-	build( opt,  "stdlib/opt.cpp" )
-	build( os,   "stdlib/os.cpp" )
-	build( set,  "stdlib/set.cpp" )
-	build( str,  "stdlib/str.cpp" )
-	build( term, "stdlib/term.cpp" )
+	build( core,  "stdlib/core.cpp" )
+	build( fs,    "stdlib/fs.cpp" )
+	build( map,   "stdlib/map.cpp" )
+	build( math,  "stdlib/math.cpp" )
+	build( opt,   "stdlib/opt.cpp" )
+	build( os,    "stdlib/os.cpp" )
+	build( set,   "stdlib/set.cpp" )
+	build( str,   "stdlib/str.cpp" )
+	build( term,  "stdlib/term.cpp" )
+	build( time,  "stdlib/time.cpp" )
 	build( tuple, "stdlib/tuple.cpp" )
-	build( vec,  "stdlib/vec.cpp" )
+	build( vec,   "stdlib/vec.cpp" )
 }
 
 if( "${ARGC}" > 0 && "${ARG_0}" == "install" || "${USE_SELF_PREFIX}" == "true" ) {

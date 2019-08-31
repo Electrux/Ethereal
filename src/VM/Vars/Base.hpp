@@ -107,6 +107,7 @@ class var_int_t : public var_base_t
 	mpz_class m_val;
 public:
 	var_int_t( const int val, const int parse_ctr = 0 );
+	var_int_t( const size_t val, const int parse_ctr = 0 );
 	var_int_t( const std::string & val, const int parse_ctr = 0 );
 	var_int_t( const bool val, const int parse_ctr = 0 );
 	var_int_t( const float val, const int parse_ctr = 0 );

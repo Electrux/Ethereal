@@ -11,6 +11,8 @@
 
 var_int_t::var_int_t( const int val, const int parse_ctr )
 	: var_base_t( VT_INT, true, parse_ctr ), m_val( val ) {}
+var_int_t::var_int_t( const size_t val, const int parse_ctr )
+	: var_base_t( VT_INT, true, parse_ctr ), m_val( val ) {}
 var_int_t::var_int_t( const std::string & val, const int parse_ctr )
 	: var_base_t( VT_INT, true, parse_ctr ), m_val( val ) {}
 var_int_t::var_int_t( const bool val, const int parse_ctr )

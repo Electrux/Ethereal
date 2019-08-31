@@ -1,0 +1,11 @@
+#!./buildfiles/et
+
+import time;
+
+start = time.now();
+
+println( 'current time from epoch: ', start );
+
+end = time.now();
+
+println( ( end - start ).usecs() );

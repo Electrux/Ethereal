@@ -4,6 +4,7 @@ import fs;
 import os;
 import str;
 import term;
+import time;
 import vec;
 
 files = fs.dir_entries( "tests", fs.ent.RECURSE, '(.*)\\.et' );
@@ -11,18 +12,26 @@ files = fs.dir_entries( "tests", fs.ent.RECURSE, '(.*)\\.et' );
 p = 0;
 f = 0;
 
+start = time.now();
+tmp_start = start;
+
 sz = files.len();
 for i = 0; i < sz; i += 1 {
 	cprint( '{c}performing test{0}: {y}', files[ i ], '{0} ... ' );
 	flush_out();
-	if os.exec( __PROG__ + ' ' + files[ i ] + ' test 1>/dev/null 2>&1' ) == 0 {
-		cprintln( '{g}passed{0}' );
+	res = os.exec( __PROG__ + ' ' + files[ i ] + ' test 1>/dev/null 2>&1' ) == 0;
+	tmp_diff = time.now() - tmp_start;
+	if res {
+		cprintln( '{g}', tmp_diff.msecs(), ' ms{0}' );
 		p += 1;
 	} else {
-		cprintln( '{r}failed{0}' );
+		cprintln( '{r}', tmp_diff.msecs(), ' ms{0}' );
 		f += 1;
 	}
+	tmp_start = time.now();
 }
 
-cprintln( '{y}OS{0}: {m}', os.name, '{0}, {y}Passed{0}: {g}', p, '{0}, {y}Failed{0}: {r}', f, '{0}' );
+diff = time.now() - start;
+
+cprintln( '{y}OS{0}: {m}', os.name, '{0}, {y}Passed{0}: {g}', p, '{0}, {y}Failed{0}: {r}', f, '{0}, {y}Total Time{0}: {b}', diff.msecs(), ' ms{0}' );
 exit( f );

@@ -32,7 +32,7 @@ var_opt_t::var_opt_t( var_base_t * val, const int parse_ctr )
 { if( m_val ) VAR_IREF( m_val ); }
 var_opt_t::~var_opt_t() { if( m_val ) VAR_DREF( m_val ); }
 
-std::string var_opt_t::type_str() const { return "_opt_t"; }
+std::string var_opt_t::type_str() const { return "opt_t"; }
 std::string var_opt_t::to_str() const
 {
 	std::string str = "opt_t{";
@@ -87,7 +87,7 @@ REGISTER_MODULE( opt )
 {
 	vm.funcs.add( { "opt_new", 0, 0, {}, FnType::MODULE, { .modfn = opt_create }, true } );
 
-	functions_t & opt = vm.typefuncs[ "_opt_t" ];
+	functions_t & opt = vm.typefuncs[ "opt_t" ];
 	opt.add( { "empty", 0, 0, {}, FnType::MODULE, { .modfn = opt_empty }, false } );
 	opt.add( { "clear", 0, 0, {}, FnType::MODULE, { .modfn = opt_clear }, false } );
 	opt.add( { "set",   1, 1, { "_any_" }, FnType::MODULE, { .modfn = opt_set }, false } );

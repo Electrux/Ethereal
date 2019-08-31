@@ -1,0 +1,5 @@
+ldmod time;
+
+struct _time_t{}
+
+time = _time_t{};

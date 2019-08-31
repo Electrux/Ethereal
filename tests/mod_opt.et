@@ -19,3 +19,20 @@ s.a.clear();
 println( s );
 
 assert( s.a.empty(), 's.a should have been empty' );
+
+# test for object referring to another object which refers to first object
+struct tmp1 {
+	b = opt_new();
+}
+
+struct tmp2 {
+	d = opt_new();
+}
+
+a = tmp1{};
+c = tmp2{};
+
+a.b.set( c );
+c.d.set( a );
+
+#println( a, '\n', c );

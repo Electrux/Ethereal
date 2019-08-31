@@ -74,8 +74,7 @@ var_base_t * opt_clear( vm_state_t & vm, func_call_data_t & fcd )
 var_base_t * opt_set( vm_state_t & vm, func_call_data_t & fcd )
 {
 	AS_OPT( fcd.args[ 0 ] )->clear();
-	VAR_IREF( fcd.args[ 1 ] );
-	AS_OPT( fcd.args[ 0 ] )->get() = fcd.args[ 1 ];
+	AS_OPT( fcd.args[ 0 ] )->get() = fcd.args[ 1 ]->copy( fcd.parse_ctr );
 	return AS_OPT( fcd.args[ 0 ] )->get();
 }
 

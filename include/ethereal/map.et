@@ -1,6 +1,16 @@
 ldmod map;
 
-mfn< map > '[]'( sub ) {
-	assert( var_mfn_exists( sub, 'hash' ), 'type \'', sub.type(), '\' does not implement a hash member function' );
-	return self.get( sub.hash() );
+mfn< map > insert( key, val ) {
+	assert( var_mfn_exists( key, 'hash' ), 'type \'', key.type(), '\' does not implement a hash member function' );
+	self._insert( key.hash(), val );
+}
+
+mfn< map > delete( key ) {
+	assert( var_mfn_exists( key, 'hash' ), 'type \'', key.type(), '\' does not implement a hash member function' );
+	return self._delete( key.hash() );
+}
+
+mfn< map > '[]'( key ) {
+	assert( var_mfn_exists( key, 'hash' ), 'type \'', key.type(), '\' does not implement a hash member function' );
+	return self.get( key.hash() );
 }

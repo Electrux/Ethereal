@@ -12,7 +12,7 @@ if( "${PREFIX}" == "" ) {
 }
 
 builds.add_flags( "-fPIC", "-Wall", "-Wextra", "-Wno-unused-parameter",
-		  "-DVERSION_MAIN=0", "-DVERSION_SUB=0", "-DVERSION_PATCH=1",
+		  "-DVERSION_MAIN=0", "-DVERSION_SUB=0", "-DVERSION_PATCH=2",
 		  "-DBUILD_PREFIX_DIR=${PREFIX}", "-Wl,-rpath,${PREFIX}/lib/ethereal/" )
 
 if( "${CC}" != "g++" ) {

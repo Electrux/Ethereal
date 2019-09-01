@@ -5,6 +5,9 @@ import map;
 
 m = { 'k', 'v' };
 
+assert( m[ 'k' ] == 'v', 'key \'k\' in map \'m\' should have been \'v\'' );
+assert( m[ 'l' ] == nil, 'key \'l\' in map \'m\' should have been nil' );
+
 assert( m.delete( 'v' ) == false, 'shouldn\'t be able to delete key: v' );
 assert( m.delete( 'k' ), 'shouldn\'t be able to delete key: v' );
 assert( m.len() == 0, 'len should be 0, but is: ', m.len() );

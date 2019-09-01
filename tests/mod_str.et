@@ -18,7 +18,12 @@ assert( 'str1' >= 'str1', "'str1' should have been greater or equal to 'str1'" )
 
 s1 = 'str1';
 
+assert( s1.at( 1 ) == 't', 's1.at( 1 ) when s1 = \'str1\' should be \'t\' but is: ', s1.at( 1 ) );
+assert( s1[ 5 ] == nil, 's1[ 5 ] when s1 = \'str1\' should be nil but is: ', s1[ 5 ] );
+assert( s1.hash() == s1, 'hash of \'str1\' should be \'str1\' but is: ', s1.hash() );
+
 assert( s1.len() == 4, 'length of \'str1\' should be 4 but is: ', s1.len() );
+
 assert( !s1.empty(), '\'str1\' should empty' );
 s1.clear();
 assert( s1.empty(), 's1 should have been empty but is: ', s1 );

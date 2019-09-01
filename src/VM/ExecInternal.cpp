@@ -277,68 +277,6 @@ int exec_internal( vm_state_t & vm, long begin, long end, var_base_t * ret )
 			}
 			break;
 		}
-		case IC_SUBSCR: {
-			VERIFY_STACK_MIN( 2 );
-			var_base_t * sub = vm.stack->back();
-			bool manual_del_sub = false;
-			if( sub->ref() == 1 ) { manual_del_sub = true; vm.stack->pop_back( false ); }
-			else vm.stack->pop_back();
-			var_base_t * var = vm.stack->back();
-			bool manual_del_var = false;
-			if( var->ref() == 1 ) { manual_del_var = true; vm.stack->pop_back( false ); }
-			else vm.stack->pop_back();
-			if( var == nullptr ) {
-				VM_FAIL( "variable '%s' does not exist", ins.oper.val.c_str() );
-				goto tmp_fail;
-			}
-			if( var->type() != VT_STR && var->type() != VT_VEC && var->type() != VT_MAP ) {
-				VM_FAIL( "expected one of 'str', 'vec', or 'map' but found: %s", var->type_str().c_str() );
-				goto tmp_fail;
-			}
-			if( var->type() == VT_STR || var->type() == VT_VEC ) {
-				if( sub->type() != VT_INT && sub->type() != VT_STR ) {
-					VM_FAIL( "subscript expression must be of integer type, but found: '%s'",
-						 sub->type_str().c_str() );
-					goto tmp_fail;
-				}
-				int idx = sub->to_int().get_si();
-				if( var->type() == VT_STR ) {
-					std::string & val = AS_STR( var )->get();
-					if( idx < 0 || idx >= ( int )val.size() ) {
-						VM_FAIL( "index can only be between [0, %zu), but is: %d", val.size(), idx );
-						goto tmp_fail;
-					}
-					vm.stack->push_back( new var_str_t( std::string( 1, val[ idx ] ), ins.parse_ctr ), false );
-				} else if( var->type() == VT_VEC ) {
-					std::vector< var_base_t * > & val = AS_VEC( var )->get();
-					if( idx < 0 || idx >= ( int )val.size() ) {
-						VM_FAIL( "index can only be between [0, %zu), but is: %d", val.size(), idx );
-						goto tmp_fail;
-					}
-					vm.stack->push_back( val[ idx ] );
-				}
-			} else if( var->type() == VT_MAP ) {
-				std::unordered_map< std::string, var_base_t * > & val = AS_MAP( var )->get();
-				if( sub->type() != VT_STR && sub->type() != VT_INT ) {
-					VM_FAIL( "subscript expression must be of string or int type, but found: '%s'",
-						 sub->type_str().c_str() );
-					goto tmp_fail;
-				}
-				const std::string key = sub->to_str();
-				if( val.find( key ) == val.end() ) {
-					VM_FAIL( "map does not contain a key '%s'", key.c_str() );
-					goto tmp_fail;
-				}
-				vm.stack->push_back( val.at( key ) );
-			}
-			if( manual_del_sub ) VAR_DREF( sub );
-			if( manual_del_var ) VAR_DREF( var );
-			break;
-tmp_fail:
-			if( manual_del_sub ) VAR_DREF( sub );
-			if( manual_del_var ) VAR_DREF( var );
-			goto fail;
-		}
 		case IC_BUILD_ENUM: // fallthrough
 		case IC_BUILD_ENUM_MASK: {
 			std::string name = vm.stack->back()->to_str();

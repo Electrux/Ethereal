@@ -22,7 +22,7 @@ stmt_func_t * parse_func( src_t & src, parse_helper_t * ph )
 	std::vector< stmt_simple_t * > mem_types;
 	if( is_member_func ) {
 		NEXT_VALID( TOK_LT );
-begin_mfn_type:
+	begin_mfn_type:
 		NEXT_VALID2( TOK_IDEN, TOK_STR );
 		mem_types.push_back( new stmt_simple_t( SIMPLE_TOKEN, ph->peak(), ph->tok_ctr() ) );
 		NEXT_VALID2( TOK_GT, TOK_COMMA );
@@ -30,7 +30,7 @@ begin_mfn_type:
 	}
 
 	const tok_t * name = nullptr;
-	NEXT_VALID( TOK_IDEN );
+	NEXT_VALID2( TOK_IDEN, TOK_STR );
 	name = ph->peak();
 
 	NEXT_VALID( TOK_LPAREN );

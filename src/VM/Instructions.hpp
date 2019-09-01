@@ -48,8 +48,6 @@ enum InstrCode
 	IC_STRUCT_DECL,		// args: same as IC_FN_CALL
 	IC_ATTR,		// args: same as IC_FN_CALL
 
-	IC_SUBSCR,		// args: name of variable
-
 	IC_BLOCK_TILL,		// args: index of bcode uptil where block lasts
 	IC_ARGS_TILL,
 

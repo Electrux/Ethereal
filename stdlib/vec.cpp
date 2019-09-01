@@ -9,6 +9,17 @@
 
 #include "../src/VM/Core.hpp"
 
+var_base_t * at( vm_state_t & vm, func_call_data_t & fcd )
+{
+	std::vector< var_base_t * > & v = AS_VEC( fcd.args[ 0 ] )->get();
+	size_t sz = v.size();
+	int idx = AS_INT( fcd.args[ 1 ] )->get().get_si();
+	if( idx < 0 || ( size_t )idx >= sz ) {
+		return vm.nil;
+	}
+	return v[ idx ];
+}
+
 var_base_t * append( vm_state_t & vm, func_call_data_t & fcd )
 {
 	std::vector< var_base_t * > & a = AS_VEC( fcd.args[ 0 ] )->get();
@@ -140,6 +151,8 @@ REGISTER_MODULE( vec )
 {
 	functions_t & vecfns = vm.typefuncs[ "vec" ];
 
+	vecfns.add( { "[]", 1, 1, { "int" }, FnType::MODULE, { .modfn = at }, false } );
+	vecfns.add( { "at", 1, 1, { "int" }, FnType::MODULE, { .modfn = at }, false } );
 	vecfns.add( { "append", 1, 1, { "vec" }, FnType::MODULE, { .modfn = append }, false } );
 	vecfns.add( { "push", 1, 1, { "_any_" }, FnType::MODULE, { .modfn = push }, false } );
 	vecfns.add( { "push_front", 1, 1, { "_any_" }, FnType::MODULE, { .modfn = push_front }, false } );

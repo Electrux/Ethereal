@@ -42,8 +42,6 @@ const char * InstrCodeStrs[ _IC_LAST ] = {
 	"STRUCT_DECL",
 	"OBJ_ATTR",
 
-	"SUBSCRIPT",
-
 	"BLOCK_TILL",
 	"ARGS_TILL",
 

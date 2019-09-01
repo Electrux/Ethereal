@@ -81,4 +81,9 @@ var_base_t * flt( vm_state_t & vm, func_call_data_t & fcd )
 	return new var_flt_t( flt_str );
 }
 
+var_base_t * hash_flt( vm_state_t & vm, func_call_data_t & fcd )
+{
+	return new var_str_t( fcd.args[ 0 ]->to_str() );
+}
+
 #endif // VM_MODULES_CORE_FLT_HPP

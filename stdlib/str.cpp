@@ -28,6 +28,22 @@ var_base_t * add_assn( vm_state_t & vm, func_call_data_t & fcd )
 	return fcd.args[ 0 ];
 }
 
+var_base_t * at( vm_state_t & vm, func_call_data_t & fcd )
+{
+	std::string & str = AS_STR( fcd.args[ 0 ] )->get();
+	size_t sz = str.size();
+	int idx = AS_INT( fcd.args[ 1 ] )->get().get_si();
+	if( idx < 0 || ( size_t )idx >= sz ) {
+		return vm.nil;
+	}
+	return new var_str_t( std::string( 1, str[ idx ] ) );
+}
+
+var_base_t * hash( vm_state_t & vm, func_call_data_t & fcd )
+{
+	return fcd.args[ 0 ];
+}
+
 var_base_t * len( vm_state_t & vm, func_call_data_t & fcd )
 {
 	return new var_int_t( ( int )AS_STR( fcd.args[ 0 ] )->get().size() );
@@ -187,6 +203,9 @@ REGISTER_MODULE( str )
 
 	functions_t & strfns = vm.typefuncs[ "str" ];
 
+	strfns.add( { "[]", 1, 1, { "int" }, FnType::MODULE, { .modfn = at }, true } );
+	strfns.add( { "at", 1, 1, { "int" }, FnType::MODULE, { .modfn = at }, true } );
+	strfns.add( { "hash", 0, 0, {}, FnType::MODULE, { .modfn = hash }, false } );
 	strfns.add( { "len", 0, 0, {}, FnType::MODULE, { .modfn = len }, true } );
 	strfns.add( { "empty", 0, 0, {}, FnType::MODULE, { .modfn = empty }, false } );
 	strfns.add( { "clear", 0, 0, {}, FnType::MODULE, { .modfn = clear }, false } );

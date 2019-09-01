@@ -30,7 +30,9 @@ bool stmt_func_struct_subscr_call_t::bytecode( src_t & src ) const
 			if( arg == nullptr ) continue;
 			arg->bytecode( src );
 			src.bcode.push_back( { m_tok_ctr, m_name ? m_name->m_val->line : line , m_name ? m_name->m_val->col : col,
-					       IC_SUBSCR, { OP_NONE, "" } } );
+					       IC_PUSH, { OP_CONST, "[]" } } );
+			src.bcode.push_back( { m_tok_ctr, m_name ? m_name->m_val->line : line , m_name ? m_name->m_val->col : col,
+					       IC_MFN_CALL, { OP_INT, "1" } } );
 		}
 		src.bcode_as_const = bcodeasconst;
 		return true;
@@ -55,16 +57,5 @@ bool stmt_func_struct_subscr_call_t::bytecode( src_t & src ) const
 		src.bcode.push_back( { m_tok_ctr, m_name->m_val->line, m_name->m_val->col,
 				       IC_STRUCT_DECL, { OP_INT, std::to_string( args ) } } );
 	}
-
-	bool bcodeasconst = src.bcode_as_const;
-	src.bcode_as_const = false;
-	for( size_t i = 1; i < m_args.size(); ++i ) {
-		auto & arg = m_args[ i ];
-		if( arg == nullptr ) continue;
-		arg->bytecode( src );
-		src.bcode.push_back( { m_tok_ctr, m_name ? m_name->m_val->line : line , m_name ? m_name->m_val->col : col,
-				       IC_SUBSCR, { OP_NONE, "" } } );
-	}
-	src.bcode_as_const = bcodeasconst;
 	return true;
 }

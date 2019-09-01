@@ -34,4 +34,9 @@ var_base_t * bool_create( vm_state_t & vm, func_call_data_t & fcd )
 	return TRUE_FALSE( fcd.args[ 0 ]->to_bool() );
 }
 
+var_base_t * hash_bool( vm_state_t & vm, func_call_data_t & fcd )
+{
+	return new var_str_t( fcd.args[ 0 ]->to_str() );
+}
+
 #endif // VM_MODULES_CORE_BOOL_HPP

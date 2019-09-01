@@ -1,1 +1,6 @@
 ldmod map;
+
+mfn< map > '[]'( sub ) {
+	assert( var_mfn_exists( sub, 'hash' ), 'type \'', sub.type(), '\' does not implement a hash member function' );
+	return self.get( sub.hash() );
+}

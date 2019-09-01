@@ -133,4 +133,9 @@ var_base_t * num( vm_state_t & vm, func_call_data_t & fcd )
 	return new var_int_t( fcd.args[ 0 ]->to_int() );
 }
 
+var_base_t * hash_int( vm_state_t & vm, func_call_data_t & fcd )
+{
+	return new var_str_t( AS_INT( fcd.args[ 0 ] )->get().get_str() );
+}
+
 #endif // VM_MODULES_CORE_INT_HPP

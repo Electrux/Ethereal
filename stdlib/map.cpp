@@ -32,6 +32,16 @@ var_base_t * _delete( vm_state_t & vm, func_call_data_t & fcd )
 	return vm.vars->get( "false" );
 }
 
+var_base_t * get( vm_state_t & vm, func_call_data_t & fcd )
+{
+	std::unordered_map< std::string, var_base_t * > & map = AS_MAP( fcd.args[ 0 ] )->get();
+	std::string key = fcd.args[ 1 ]->to_str();
+	if( map.find( key ) != map.end() ) {
+		return map[ key ];
+	}
+	return vm.nil;
+}
+
 var_base_t * len( vm_state_t & vm, func_call_data_t & fcd )
 {
 	return new var_int_t( ( int )AS_MAP( fcd.args[ 0 ] )->get().size() );
@@ -56,6 +66,7 @@ REGISTER_MODULE( map )
 
 	mapfns.add( { "insert", 2, 2, { "str", "_any_" }, FnType::MODULE, { .modfn = insert }, false } );
 	mapfns.add( { "delete", 1, 1, { "str" }, FnType::MODULE, { .modfn = _delete }, false } );
+	mapfns.add( { "get", 1, 1, { "str" }, FnType::MODULE, { .modfn = get }, false } );
 	mapfns.add( { "len", 0, 0, {}, FnType::MODULE, { .modfn = len }, true } );
 	mapfns.add( { "clear", 0, 0, {}, FnType::MODULE, { .modfn = clear }, false } );
 	mapfns.add( { "find", 1, 1, { "str" }, FnType::MODULE, { .modfn = find }, false } );

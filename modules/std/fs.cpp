@@ -126,7 +126,7 @@ var_base_t * file_read( vm_state_t & vm, func_call_data_t & fcd )
 	if( line_str.size() > 0 && line_str.back() == '\n' ) {
 		line_str.erase( line_str.end() - 1 );
 	}
-	if( line ) free( line );
+	free( line );
 
 	AS_STR( fcd.args[ 1 ] )->get() = line_str;
 

@@ -6,12 +6,12 @@ A simple, dynamically typed, interpreted, generic programming language.
 
 # Prerequisites
 
-* GCC/Clang with full C++ 11 support, tested with:
-  * Ubuntu >= 14.04 (GCC >= 4.8.4, GMP >= 5.1.3)
-  * Arch Linux (GCC 9.1.0, GMP 6.1.2)
-  * macOS 10.14.6 (Homebrew LLVM 8.0.1, Apple LLVM 10.0.1, Homebrew GMP 6.1.2)
-  * Android 9 - Pie (Termux - clang 8.0.0, GMP 6.1.2 manually compiled - see the note below)
-* GMP library with CXX support (will be almost always built with support for CXX in your official distribution package)
+*  GCC/Clang with full C++ 11 support, tested with:
+  *  Ubuntu >= 14.04 (GCC >= 4.8.4, GMP >= 5.1.3)
+  *  Arch Linux (GCC 9.1.0, GMP 6.1.2)
+  *  macOS 10.14.6 (Homebrew LLVM 8.0.1, Apple LLVM 10.0.1, Homebrew GMP 6.1.2)
+  *  Android 9 - Pie (Termux - clang 8.0.0, GMP 6.1.2 manually compiled - see the note below)
+*  GMP library with CXX support (will be almost always built with support for CXX in your official distribution package)
 
 Note that GMP on Termux for android does not come with CXX support, hence it will have to be manually compiled from source with the `--enable-cxx` configure option. You may also need to specify the `PREFIX` directory using `--prefix` configure option which, for me, is `/data/data/com.termux/files/usr`
 
@@ -25,7 +25,7 @@ Ethereal does use a concept of member functions which are actually nothing but p
 
 One can easily make extensions for the language in the form of language modules or c++ dynamic libraries (if high performance is needed). See the existing modules for more information about it (language modules: `include/ethereal/`, C++ standard modules: `modules/std/`).
 
-Documentation is under development and will take some time to build, but till then, feel free to go through the [Code Samples](https://github.com/Electrux/Ethereal/blob/master/code_samples.md) and hack around with the programs in the `tests` directory.
+Documentation is under development and will take some time to build, but till then, feel free to go through the [Code Samples](https://github.com/Electrux/Ethereal/blob/master/Samples.md) and hack around with the programs in the `tests` directory.
 
 # Installation
 
@@ -35,16 +35,16 @@ Note that if you use PREFIX, you may need root access depending on the directory
 
 The following items will be installed:
 
-* buildfiles/et -> PREFIX_DIR/bin/
-* buildfiles/lib*.so PREFIX_DIR/lib/ethereal/
-* include/ethereal/* PREFIX_DIR/include/ethereal/
+*  buildfiles/et -> PREFIX_DIR/bin/
+*  buildfiles/lib*.so PREFIX_DIR/lib/ethereal/
+*  include/ethereal/*  PREFIX_DIR/include/ethereal/
 
 Also, the interpreter code internally uses `PREFIX` to locate the `lib` and `include` directories, so you will have to rebuild the codebase if you change `PREFIX` and then install.
 
 # Roadmap
 
-* Add terminal related functions (like term width, height) in libterm
-* Write primary language and standard library documentation
-* Perhaps use `union` type for operand value of `instr_code_t` to avoid using conversions like `std::stoi` in ExecInternal
+*  Add terminal related functions (like term width, height) in libterm
+*  Write primary language and standard library documentation
+*  Perhaps use `union` type for operand value of `instr_code_t` to avoid using conversions like `std::stoi` in ExecInternal
 
 Contributions are definitely accepted and greatly appreciated. ❤️

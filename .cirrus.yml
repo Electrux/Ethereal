@@ -2,7 +2,7 @@ task:
   name: Ubuntu 14.04 build
   container:
     image: ubuntu:14.04
-  install_script: apt-get install -y libgmp-dev
+  install_script: apt-get update && apt-get install -y libgmp-dev
   compile_script: ./bootstrap.sh
   tests_script: ./perform_tests.et
 
@@ -12,7 +12,7 @@ task:
     image: ubuntu:18.04
   env:
     CXX: g++
-  install_script: apt install -y libgmp-dev gcc
+  install_script: apt-get update && apt install -y libgmp-dev gcc
   compile_script: ./bootstrap.sh
   tests_script: ./perform_tests.et
 
@@ -22,7 +22,7 @@ task:
     image: ubuntu:18.04
   env:
     CXX: clang++
-  install_script: apt install -y libgmp-dev clang clang++
+  install_script: apt-get update && apt install -y libgmp-dev clang clang++
   compile_script: ./bootstrap.sh
   tests_script: ./perform_tests.et
 

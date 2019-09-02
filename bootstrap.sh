@@ -69,7 +69,7 @@ buildfiles=$(find buildfiles -name "*.cpp.o" | paste -sd " " -)
 
 install_name=""
 if [[ "$os" == "Darwin" ]]; then
-	install_name="-Wl,-install_name -Wl,@rpath/libcore.so"
+	install_name="-Wl,-install_name -Wl,@rpath/libet.so"
 fi
 
 if [[ -z "$COMPILE_COMMAND" ]]; then

@@ -41,10 +41,4 @@ The following items will be installed:
 
 Also, the interpreter code internally uses `PREFIX` to locate the `lib` and `include` directories, so you will have to rebuild the codebase if you change `PREFIX` and then install.
 
-# Roadmap
-
-*  Add terminal related functions (like term width, height) in libterm
-*  Write primary language and standard library documentation
-*  Perhaps use `union` type for operand value of `instr_code_t` to avoid using conversions like `std::stoi` in ExecInternal
-
 Contributions are definitely accepted and greatly appreciated. ❤️

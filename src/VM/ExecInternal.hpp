@@ -12,6 +12,7 @@
 
 #include "VM.hpp"
 
+// TODO: Perhaps use `union` type for operand value of `instr_code_t` to avoid using conversions like `std::stoi` in ExecInternal
 int exec_internal( vm_state_t & vm, long begin = -1, long end = -1, var_base_t * ret = nullptr );
 
 #endif // VM_EXEC_INTERNAL_HPP

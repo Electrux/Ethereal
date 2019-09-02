@@ -10,7 +10,7 @@ if( "${PREFIX}" == "" ) {
 	PREFIX = "%{pwd}"
 	USE_SELF_PREFIX = "true"
 }
-
+# TODO: fix the rpaths with respect to libet and the standard library
 builds.add_flags( "-fPIC", "-Wall", "-Wextra", "-Wno-unused-parameter",
 		  "-DVERSION_MAIN=0", "-DVERSION_SUB=0", "-DVERSION_PATCH=2",
 		  "-DBUILD_PREFIX_DIR=${PREFIX}", "-Wl,-rpath,${PREFIX}/lib/ethereal/" )

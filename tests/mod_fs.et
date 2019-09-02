@@ -1,8 +1,8 @@
 #!./buildfiles/et
 
-import str;
-import vec;
-import fs;
+import std.str;
+import std.vec;
+import std.fs;
 
 assert( fs.exists( 'mod_core' ), 'mod_core should exist (directory)' );
 assert( fs.exists( 'block.et' ), 'block.et should exist (file)' );

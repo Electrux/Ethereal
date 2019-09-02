@@ -1,4 +1,4 @@
-ldmod time;
+ldmod std.time;
 
 struct _time_t{}
 

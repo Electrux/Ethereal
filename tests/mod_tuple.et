@@ -1,7 +1,7 @@
 #!./buildfiles/et
 
-import str;
-import tuple;
+import std.str;
+import std.tuple;
 
 t1 = make_tuple( 'a', 5, 1.1 );
 t2 = make_tuple( 'b', 5, 1.1 );

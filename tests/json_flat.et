@@ -1,7 +1,7 @@
 #!./buildfiles/et
 
-import str;
-import fs;
+import std.str;
+import std.fs;
 
 r = fopen( 'data/test1_json_flat.json', 'r' );
 if !r.is_open() {

@@ -1,6 +1,6 @@
 #!./buildfiles/et
 
-import opt;
+import std.opt;
 
 struct btree {
 	data = 0;

@@ -78,7 +78,4 @@ std::vector< std::string > str_delimit( const std::string & str, const char ch, 
 
 #define TRUE_FALSE( condition ) ( condition ) ? vm.vars->get( "true" ) : vm.vars->get( "false" )
 
-#define _STRINGIZE(x) #x
-#define STRINGIFY(x) _STRINGIZE(x)
-
 #endif // VM_CORE_HPP

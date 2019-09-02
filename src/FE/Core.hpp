@@ -21,6 +21,9 @@
 #define ATTR_FALLTHROUGH
 #endif
 
+#define _STRINGIZE(x) #x
+#define STRINGIFY(x) _STRINGIZE(x)
+
 template< typename T > struct res_t {
 	int code;
 	T data;

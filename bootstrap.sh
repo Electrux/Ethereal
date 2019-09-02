@@ -106,10 +106,10 @@ for l in "core" "fs" "map" "math" "opt" "os" "set" "str" "term" "time" "tuple" "
 	if [[ -z "$COMPILE_COMMAND" ]]; then
 		echo "Building library: $l ..."
 	else
-		echo "$compiler -O2 -fPIC -std=c++11 -shared -o buildfiles/lib$l.so stdlib/$l.cpp $buildfiles -Wl,-rpath,${PREFIX_DIR}/lib/ethereal \
+		echo "$compiler -O2 -fPIC -std=c++11 -shared -o buildfiles/lib$l.so modules/std/$l.cpp $buildfiles -Wl,-rpath,${PREFIX_DIR}/lib/ethereal \
 		$install_name -L./buildfiles/ ${EXTRA_INCLUDES} ${EXTRA_FLAGS} -lgmpxx -lgmp -let -DBUILD_PREFIX_DIR=${PREFIX_DIR} ${VERSION_STRING}"
 	fi
-	$compiler -O2 -fPIC -std=c++11 -shared -o buildfiles/lib$l.so stdlib/$l.cpp $buildfiles -Wl,-rpath,${PREFIX_DIR}/lib/ethereal \
+	$compiler -O2 -fPIC -std=c++11 -shared -o buildfiles/lib$l.so modules/std/$l.cpp $buildfiles -Wl,-rpath,${PREFIX_DIR}/lib/ethereal \
 		$install_name -L./buildfiles/ ${EXTRA_INCLUDES} ${EXTRA_FLAGS} -lgmpxx -lgmp -let -DBUILD_PREFIX_DIR=${PREFIX_DIR} ${VERSION_STRING}
 	if [[ $? != 0 ]]; then
 		exit $?
@@ -137,7 +137,9 @@ fi
 
 echo "Installing files ..."
 $cp_cmd buildfiles/et "$PREFIX_DIR/bin/"
-$cp_cmd buildfiles/lib*.so "$PREFIX_DIR/lib/ethereal/"
+$cp_cmd buildfiles/libet.so "$PREFIX_DIR/lib/ethereal/"
+$cp_cmd buildfiles/lib*.so "$PREFIX_DIR/lib/ethereal/std/"
+rm -f "$PREFIX_DIR/lib/ethereal/std/libet.so"
 if [[ "$(pwd)" != "$PREFIX_DIR" ]]; then
 	$cp_cmd include/ethereal/* "$PREFIX_DIR/include/ethereal/"
 fi

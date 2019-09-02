@@ -19,4 +19,11 @@ void SetCWD( std::string dir );
 
 void DirFormat( std::string & dir );
 
+enum class FormatFileType {
+	INC,
+	LIB,
+};
+
+int format_file_str( std::string & file, const FormatFileType ftype );
+
 #endif // ENV_HPP

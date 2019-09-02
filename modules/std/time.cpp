@@ -9,7 +9,7 @@
 
 #include <chrono>
 
-#include "../src/VM/Core.hpp"
+#include "../../src/VM/Core.hpp"
 
 typedef std::chrono::high_resolution_clock::time_point time_point_t;
 

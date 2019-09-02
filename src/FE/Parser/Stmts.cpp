@@ -86,8 +86,9 @@ void stmt_enum_t::disp( const bool has_next ) const
 /////////////////////////////////////////// ldmod /////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 
-stmt_ldmod_t::stmt_ldmod_t( const tok_t * what, const int tok_ctr )
-	: stmt_base_t( GRAM_LDMOD, tok_ctr ), m_what( what ) {}
+stmt_ldmod_t::stmt_ldmod_t( const tok_t * what, const std::string & full_name, const int tok_ctr )
+	: stmt_base_t( GRAM_LDMOD, tok_ctr ), m_what( what ),
+	  m_full_name( full_name ) {}
 stmt_ldmod_t::~stmt_ldmod_t() {}
 
 void stmt_ldmod_t::disp( const bool has_next ) const
@@ -96,7 +97,7 @@ void stmt_ldmod_t::disp( const bool has_next ) const
 	IO::print( has_next, "Load Module at: %x\n", this );
 
 	IO::tab_add( false );
-	IO::print( false, "Name: %s\n", m_what->data.c_str() );
+	IO::print( false, "Name: %s\n", m_full_name.c_str() );
 	IO::tab_rem( 2 );
 }
 
@@ -104,8 +105,10 @@ void stmt_ldmod_t::disp( const bool has_next ) const
 ////////////////////////////////////////// import /////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 
-stmt_import_t::stmt_import_t( const tok_t * what, const tok_t * as, const int tok_ctr )
-	: stmt_base_t( GRAM_IMPORT, tok_ctr ), m_what( what ), m_as( as ) {}
+stmt_import_t::stmt_import_t( const tok_t * what, const tok_t * as,
+			      const std::string & full_name, const int tok_ctr )
+	: stmt_base_t( GRAM_IMPORT, tok_ctr ), m_what( what ),
+	  m_as( as ), m_full_name( full_name ) {}
 stmt_import_t::~stmt_import_t() {}
 
 void stmt_import_t::disp( const bool has_next ) const
@@ -114,7 +117,7 @@ void stmt_import_t::disp( const bool has_next ) const
 	IO::print( has_next, "Import at: %x\n", this );
 
 	IO::tab_add( false );
-	IO::print( true, "Name: %s\n", m_what->data.c_str() );
+	IO::print( true, "Name: %s\n", m_full_name.c_str() );
 	IO::print( false, "As: %s\n", m_as == nullptr ? "(none)" : m_as->data.c_str() );
 	IO::tab_rem( 2 );
 }

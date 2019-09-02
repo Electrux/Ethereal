@@ -1,11 +1,11 @@
 #!./buildfiles/et
 
-import fs;
-import os;
-import str;
-import term;
-import time;
-import vec;
+import std.fs;
+import std.os;
+import std.str;
+import std.term;
+import std.time;
+import std.vec;
 
 files = fs.dir_entries( "tests", fs.ent.RECURSE, '(.*)\\.et' );
 

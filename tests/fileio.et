@@ -1,8 +1,8 @@
 #!./buildfiles/et
 
-import vec;
-import fs;
-import os;
+import std.vec;
+import std.fs;
+import std.os;
 
 fn write() {
 	f = fopen( "some", "w" );

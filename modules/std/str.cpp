@@ -9,7 +9,7 @@
 
 #include <cctype>
 
-#include "../src/VM/Core.hpp"
+#include "../../src/VM/Core.hpp"
 
 var_base_t * add( vm_state_t & vm, func_call_data_t & fcd )
 {

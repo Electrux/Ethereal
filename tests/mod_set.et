@@ -1,6 +1,6 @@
 #!./buildfiles/et
 
-import set;
+import std.set;
 
 s = set_create();
 

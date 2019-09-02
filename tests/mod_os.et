@@ -1,7 +1,7 @@
 #!./buildfiles/et
 
-import os;
-import str;
+import std.os;
+import std.str;
 
 assert( os.name, 'os name cannot be empty' );
 

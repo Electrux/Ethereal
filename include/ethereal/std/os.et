@@ -1,4 +1,4 @@
-ldmod os;
+ldmod std.os;
 
 struct _os_t {
 	name = os_get_name();

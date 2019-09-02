@@ -1,7 +1,7 @@
 #!./buildfiles/et
 
-import str;
-import vec;
+import std.str;
+import std.vec;
 
 if args.len() > 1 {
 	num = 5;

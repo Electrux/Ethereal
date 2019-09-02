@@ -58,27 +58,29 @@ builds( bin ) {
 
 builds( lib, dynamic ) {
 	builds.add_lib_flags( "-let" )
-	build( core,  "stdlib/core.cpp" )
-	build( fs,    "stdlib/fs.cpp" )
-	build( map,   "stdlib/map.cpp" )
-	build( math,  "stdlib/math.cpp" )
-	build( opt,   "stdlib/opt.cpp" )
-	build( os,    "stdlib/os.cpp" )
-	build( set,   "stdlib/set.cpp" )
-	build( str,   "stdlib/str.cpp" )
-	build( term,  "stdlib/term.cpp" )
-	build( time,  "stdlib/time.cpp" )
-	build( tuple, "stdlib/tuple.cpp" )
-	build( vec,   "stdlib/vec.cpp" )
+	build( core,  "modules/std/core.cpp" )
+	build( fs,    "modules/std/fs.cpp" )
+	build( map,   "modules/std/map.cpp" )
+	build( math,  "modules/std/math.cpp" )
+	build( opt,   "modules/std/opt.cpp" )
+	build( os,    "modules/std/os.cpp" )
+	build( set,   "modules/std/set.cpp" )
+	build( str,   "modules/std/str.cpp" )
+	build( term,  "modules/std/term.cpp" )
+	build( time,  "modules/std/time.cpp" )
+	build( tuple, "modules/std/tuple.cpp" )
+	build( vec,   "modules/std/vec.cpp" )
 }
 
 if( "${ARGC}" > 0 && "${ARG_0}" == "install" || "${USE_SELF_PREFIX}" == "true" ) {
 	if( "${IS_ROOT}" == "true" || "${OS}" == OS_OSX ) {
 		install( "buildfiles/et", "${PREFIX}/bin/" )
-		install( "buildfiles/lib*.so", "${PREFIX}/lib/ethereal/" )
+		install( "buildfiles/libet.so", "${PREFIX}/lib/ethereal/" )
+		install( "buildfiles/lib*.so", "${PREFIX}/lib/ethereal/std/" )
 		if( "%{pwd}" != "${PREFIX}" ) {
 			install( "include/*", "${PREFIX}/include/" )
 		}
+		eval( "#{rm -f ${PREFIX}/lib/ethereal/std/libet.so}" )
 	} else {
 		print( "{r}Run as root to install the built files{0}\n" )
 	}

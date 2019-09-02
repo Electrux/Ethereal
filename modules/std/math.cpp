@@ -9,7 +9,7 @@
 
 #include <cmath>
 
-#include "../src/VM/Core.hpp"
+#include "../../src/VM/Core.hpp"
 
 var_base_t * _abs( vm_state_t & vm, func_call_data_t & fcd )
 {

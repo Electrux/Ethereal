@@ -1,4 +1,4 @@
-ldmod map;
+ldmod std.map;
 
 mfn< map > insert( key, val ) {
 	assert( var_mfn_exists( key, 'hash' ), 'type \'', key.type(), '\' does not implement a hash member function' );

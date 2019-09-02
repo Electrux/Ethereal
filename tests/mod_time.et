@@ -1,6 +1,6 @@
 #!./buildfiles/et
 
-import time;
+import std.time;
 
 start = time.now();
 

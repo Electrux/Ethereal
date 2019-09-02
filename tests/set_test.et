@@ -1,7 +1,7 @@
 #!./buildfiles/et
 
-import set;
-import vec;
+import std.set;
+import std.vec;
 
 s = set_create();
 

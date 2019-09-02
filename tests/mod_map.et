@@ -1,7 +1,7 @@
 #!./buildfiles/et
 
-import str;
-import map;
+import std.str;
+import std.map;
 
 m = { 'k', 'v' };
 

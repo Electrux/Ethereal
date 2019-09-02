@@ -1,6 +1,6 @@
 #!./buildfiles/et
 
-import math;
+import std.math;
 
 assert( abs( -131 ) == 131, 'abs( -131 ) should be 131' );
 assert( abs( 131 ) == 131, 'abs( 131 ) should be 131' );

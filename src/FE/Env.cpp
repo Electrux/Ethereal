@@ -12,6 +12,7 @@
 #include <unistd.h>
 
 #include "Env.hpp"
+#include "FS.hpp"
 
 #define MAX_PATH 1024
 
@@ -49,4 +50,20 @@ void DirFormat( std::string & dir )
 	}
 	if( dir.size() > 1 && dir.back() == '/' ) dir.pop_back();
 	return;
+}
+
+int format_file_str( std::string & file, const FormatFileType ftype )
+{
+	if( file.front() != '~' && file.front() != '/' && file.front() != '.' ) {
+		std::string type;
+		if( ftype == FormatFileType::INC ) type = "include";
+		else if( ftype == FormatFileType::LIB ) type = "lib";
+		file = STRINGIFY( BUILD_PREFIX_DIR ) "/" + type + "/ethereal/" + file;
+	} else if( file.front() == '~' ) {
+		file.erase( file.begin() );
+		std::string home = GetEnv( "HOME" );
+		file.insert( file.begin(), home.begin(), home.end() );
+	}
+	if( ftype == FormatFileType::INC ) file += ".et";
+	return ( int )!fexists( file + ( ftype == FormatFileType::LIB ? ".so" : "" ) );
 }

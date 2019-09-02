@@ -16,9 +16,6 @@
 #include "Env.hpp"
 #include "FS.hpp"
 
-#define _STRINGIZE(x) #x
-#define STRINGIFY(x) _STRINGIZE(x)
-
 int read_file( src_t & src )
 {
 	FILE * fp;

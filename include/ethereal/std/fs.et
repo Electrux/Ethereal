@@ -1,4 +1,4 @@
-ldmod fs;
+ldmod std.fs;
 
 enum_mask _FSEnt {
 	FILES,

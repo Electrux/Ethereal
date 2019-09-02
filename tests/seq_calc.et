@@ -1,7 +1,7 @@
 #!./buildfiles/et
 
-import vec;
-import str;
+import std.vec;
+import std.str;
 
 a = [ '5', '+', '9', '-', '2' ];
 

@@ -7,7 +7,7 @@
 	before using or altering the project.
 */
 
-#include "../src/VM/Core.hpp"
+#include "../../src/VM/Core.hpp"
 
 var_base_t * insert( vm_state_t & vm, func_call_data_t & fcd )
 {

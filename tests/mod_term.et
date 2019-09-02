@@ -1,6 +1,6 @@
 #!./buildfiles/et
 
-import term;
+import std.term;
 
 println( colorize( '{r}red{0}' ) );
 

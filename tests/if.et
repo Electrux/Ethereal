@@ -1,6 +1,6 @@
 #!./buildfiles/et
 
-import vec;
+import std.vec;
 
 a = 5;
 b = 10;

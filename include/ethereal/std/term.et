@@ -1,4 +1,4 @@
-ldmod term;
+ldmod std.term;
 
 struct _term_t {}
 

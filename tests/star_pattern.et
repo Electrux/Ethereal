@@ -10,7 +10,7 @@
    *******
 */
 
-import vec;
+import std.vec;
 
 count = 5;
 if args.len() < 2 {

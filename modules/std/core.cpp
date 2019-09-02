@@ -7,7 +7,7 @@
 	before using or altering the project.
 */
 
-#include "../src/VM/Core.hpp"
+#include "../../src/VM/Core.hpp"
 
 #include "Core/Int.hpp"
 #include "Core/Flt.hpp"

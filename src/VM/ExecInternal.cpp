@@ -183,20 +183,7 @@ int exec_internal( vm_state_t & vm, long begin, long end, var_base_t * ret )
 		}
 		case IC_LDMOD: {
 			std::string module_name = ins.oper.val + ".so";
-			std::string init_fn_str = ins.oper.val;
-			if( ins.oper.val.front() != '~' && ins.oper.val.find( '/' ) == std::string::npos && ins.oper.val.front() != '.' ) {
-				module_name = STRINGIFY( BUILD_PREFIX_DIR ) "/lib/ethereal/lib" + ins.oper.val + ".so";
-			} else {
-				size_t loc = ins.oper.val.find_last_of( '/' );
-				if( loc != std::string::npos ) {
-					init_fn_str = init_fn_str.substr( loc + 1 );
-				}
-				if( init_fn_str.substr( 0, 3 ) == "lib" ) init_fn_str = init_fn_str.substr( 3 );
-			}
-			if( !fexists( module_name ) ) {
-				VM_FAIL( "failed to locate module file '%s'", module_name.c_str() );
-				goto fail;
-			}
+			std::string init_fn_str = ins.oper.val.substr( ins.oper.val.find_last_of( '/' ) + 4 );
 			if( vm.dlib->load( module_name ) == nullptr ) goto fail;
 			init_fnptr_t init_fn = ( init_fnptr_t ) vm.dlib->get( module_name, "init_" + init_fn_str );
 			if( init_fn == nullptr ) {

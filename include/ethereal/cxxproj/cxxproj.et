@@ -1,16 +1,16 @@
-import str;
-import vec;
-import fs;
-import os;
+import std.str;
+import std.vec;
+import std.fs;
+import std.os;
 
 struct _cxx_build_t {
 	name = 'tmp';
-	type = 'bin';
 	flags = [];
 	inc_dirs = [];
 	lib_dirs = [];
 	lib_flags = [];
 }
+	type = 'bin';
 
 struct _cxx_proj_t {
 	flags = [];
@@ -38,5 +38,5 @@ mfn< _cxx_proj_t > add_build( name, type ) {
 	self.builds.push( b );
 }
 
-import 'cxxproj/flags';
-import 'cxxproj/libs';
+import flags;
+import libs;

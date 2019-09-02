@@ -1,6 +1,6 @@
 #!./buildfiles/et
 
-import str;
+import std.str;
 
 mfn< int > add_one() {
 	self += 1;

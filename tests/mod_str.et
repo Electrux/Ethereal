@@ -1,7 +1,7 @@
 #!./buildfiles/et
 
-import vec;
-import str;
+import std.vec;
+import std.str;
 
 s1 = 'str1';
 s2 = ' str2 ';

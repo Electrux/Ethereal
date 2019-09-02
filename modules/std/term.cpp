@@ -9,7 +9,7 @@
 
 #include <sys/ioctl.h>
 
-#include "../src/VM/Core.hpp"
+#include "../../src/VM/Core.hpp"
 
 static std::unordered_map< std::string, const char * > COL = {
 	{ "0", "\033[0m" },

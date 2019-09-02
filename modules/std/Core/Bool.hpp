@@ -10,7 +10,7 @@
 #ifndef VM_MODULES_CORE_BOOL_HPP
 #define VM_MODULES_CORE_BOOL_HPP
 
-#include "../../src/VM/Core.hpp"
+#include "../../../src/VM/Core.hpp"
 
 #define DECL_FUNC_ALLOC__BOOL( name, oper )				\
 	var_base_t * name( vm_state_t & vm, func_call_data_t & fcd )	\

@@ -1,4 +1,4 @@
-import map;
+import std.map;
 
 mfn< _cxx_proj_t, _cxx_build_t > add_lib_dirs( dirs ) {
 	sz = dirs.len();

@@ -90,8 +90,9 @@ public:
 class stmt_ldmod_t : public stmt_base_t
 {
 	const tok_t * m_what;
+	const std::string m_full_name;
 public:
-	stmt_ldmod_t( const tok_t * what, const int tok_ctr );
+	stmt_ldmod_t( const tok_t * what, const std::string & full_name, const int tok_ctr );
 	~stmt_ldmod_t();
 	void disp( const bool has_next ) const;
 	bool bytecode( src_t & src ) const;
@@ -101,8 +102,10 @@ class stmt_import_t : public stmt_base_t
 {
 	const tok_t * m_what;
 	const tok_t * m_as;
+	const std::string m_full_name;
 public:
-	stmt_import_t( const tok_t * what, const tok_t * as, const int tok_ctr );
+	stmt_import_t( const tok_t * what, const tok_t * as,
+		       const std::string & full_name, const int tok_ctr );
 	~stmt_import_t();
 	void disp( const bool has_next ) const;
 	bool bytecode( src_t & src ) const;

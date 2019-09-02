@@ -1,6 +1,6 @@
 #!./buildfiles/et
 
-import vec;
+import std.vec;
 
 v = [];
 v += [ 1, 2 ];

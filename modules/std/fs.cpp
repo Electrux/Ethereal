@@ -10,8 +10,10 @@
 #include <regex>
 
 #include <cstdio>
+#include <cstdlib>
 #include <dirent.h>
 #include <sys/wait.h>
+#include <unistd.h>
 
 #include "../../src/VM/Core.hpp"
 

@@ -7,6 +7,7 @@
 	before using or altering the project.
 */
 
+#include <cstdlib>
 #include <cctype>
 
 #include "../../src/VM/Core.hpp"

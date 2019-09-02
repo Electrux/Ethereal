@@ -7,6 +7,8 @@
 	before using or altering the project.
 */
 
+#include <cstdlib>
+
 #include "../FE/FS.hpp"
 
 #include "ExecInternal.hpp"

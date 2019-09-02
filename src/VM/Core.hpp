@@ -14,7 +14,6 @@
 #include "DynLib.hpp"
 #include "Consts.hpp"
 #include "VMStack.hpp"
-#include "unistd.h"
 
 typedef std::vector< src_t * > src_stack_t;
 

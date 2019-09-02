@@ -35,7 +35,7 @@ EXTRA_INCLUDES=""
 EXTRA_FLAGS=""
 
 if [[ "$os" =~ .*BSD.* ]]; then
-	EXTRA_INCLUDES="-I/usr/local/include -L/usr/local/lib -Wno-unused-command-line-argument"
+	EXTRA_INCLUDES="-I/usr/local/include -L/usr/local/lib -Wno-unused-command-line-argument -D_WITH_GETLINE"
 else
 	EXTRA_FLAGS="-ldl"
 fi
@@ -62,7 +62,7 @@ fi
 
 if [[ "$SRC_FAILED" == "true" ]]; then
 	echo "Error in compiling sources, will not continue"
-	exit $?
+	exit 1
 fi
 
 buildfiles=$(find buildfiles -name "*.cpp.o" | paste -sd " " -)

@@ -118,14 +118,14 @@ done
 
 # Install this
 
-mkdir -p "$PREFIX_DIR/include/ethereal"
+mkdir -p "$PREFIX_DIR/include/ethereal/std"
 
 if [[ $? != 0 ]]; then
 	echo "You might wanna run this as root for installation to dir: ${PREFIX_DIR}"
 	exit $?
 fi
 
-mkdir -p "$PREFIX_DIR/lib/ethereal"
+mkdir -p "$PREFIX_DIR/lib/ethereal/std"
 
 mkdir -p "$PREFIX_DIR/bin/"
 

@@ -102,7 +102,7 @@ int main( int argc, char ** argv )
 		vm.flags = flags;
 		vm.srcstack.push_back( main_src );
 		vm.srcs[ main_src->name ] = main_src;
-		if( !set_init_mods( vm ) ) { err = E_VM_FAIL; goto cleanup; }
+		if( !set_init_mods( vm ) ) { err = E_VM_FAIL; goto end; }
 		std::vector< var_base_t * > arg_vec;
 		for( auto & v : args ) {
 			arg_vec.push_back( new var_str_t( v, 0 ) );
@@ -115,12 +115,11 @@ int main( int argc, char ** argv )
 		vm.vars->add( "nil", vm.nil );
 		err = vm_exec( vm );
 		vm.srcstack.pop_back();
-		// reset working dir
-		SetCWD( curr_dir );
-		return err;
+		goto end;
 	}
 cleanup:
 	delete main_src;
+end:
 	// reset working dir
 	SetCWD( curr_dir );
 	return err;

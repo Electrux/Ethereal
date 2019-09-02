@@ -1,7 +1,43 @@
 task:
+  name: Ubuntu 14.04 build
+  container:
+    image: ubuntu:14.04
+  install_script: pkg install -y gmp
+  compile_script: ./bootstrap.sh
+  tests_script: ./perform_tests.et
+
+task:
+  name: Ubuntu 18.04 gcc build
+  container:
+    image: ubuntu:18.04
+  env:
+    CXX: g++
+  install_script: apt install -y libgmp-dev gcc
+  compile_script: ./bootstrap.sh
+  tests_script: ./perform_tests.et
+
+task:
+  name: Ubuntu 18.04 clang build
+  container:
+    image: ubuntu:18.04
+  env:
+    CXX: clang++
+  install_script: apt install -y libgmp-dev clang clang++
+  compile_script: ./bootstrap.sh
+  tests_script: ./perform_tests.et
+
+task:
+  name: FreeBSD 10.4 build
   freebsd_instance:
     image: freebsd-10-4-release-amd64
-  name: FreeBSD 10.4 Build
   install_script: pkg install -y gmp
+  compile_script: ./bootstrap.sh
+  tests_script: ./perform_tests.et
+
+task:
+  name: macOS Mojave build
+  osx_instance:
+    image: mojave-base
+  install_script: brew install gmp
   compile_script: ./bootstrap.sh
   tests_script: ./perform_tests.et

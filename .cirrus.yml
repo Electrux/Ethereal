@@ -2,7 +2,7 @@ task:
   name: Ubuntu 14.04 build
   container:
     image: ubuntu:14.04
-  install_script: pkg install -y gmp
+  install_script: apt-get install -y libgmp-dev
   compile_script: ./bootstrap.sh
   tests_script: ./perform_tests.et
 

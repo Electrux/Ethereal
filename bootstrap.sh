@@ -100,7 +100,7 @@ fi
 for l in "core" "fs" "map" "math" "opt" "os" "set" "str" "term" "time" "tuple" "vec"; do
 	install_name=""
 	if [[ "$os" == "Darwin" ]]; then
-		install_name="-Wl,-install_name -Wl,@rpath/lib$l.so"
+		install_name="-Wl,-install_name -Wl,@rpath/std/lib$l.so"
 	fi
 
 	if [[ -z "$COMPILE_COMMAND" ]]; then

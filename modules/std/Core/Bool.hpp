@@ -20,20 +20,32 @@
 		return TRUE_FALSE( lhs oper rhs );			\
 	}
 
+/*
+ * comparison (equals and not equals) for booleans
+ */
 DECL_FUNC_ALLOC__BOOL( log_eq, == )
 DECL_FUNC_ALLOC__BOOL( log_ne, != )
 
+/*
+ * boolean not (!true => false)
+ */
 var_base_t * not_operb( vm_state_t & vm, func_call_data_t & fcd )
 {
 	bool val = AS_BOOL( fcd.args[ 0 ] )->get();
 	return TRUE_FALSE( !val );
 }
 
+/*
+ * convert an object to boolean
+ */
 var_base_t * bool_create( vm_state_t & vm, func_call_data_t & fcd )
 {
 	return TRUE_FALSE( fcd.args[ 0 ]->to_bool() );
 }
 
+/*
+ * return a hash string from boolean
+ */
 var_base_t * hash_bool( vm_state_t & vm, func_call_data_t & fcd )
 {
 	return new var_str_t( fcd.args[ 0 ]->to_str() );

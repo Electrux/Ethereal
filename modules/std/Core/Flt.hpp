@@ -37,16 +37,25 @@
 		return fcd.args[ 0 ];					\
 	}
 
+/*
+ * Basic arithmetic operators
+ */
 DECL_FUNC_ALLOC__FLT( addf, +, var_flt_t )
 DECL_FUNC_ALLOC__FLT( subf, -, var_flt_t )
 DECL_FUNC_ALLOC__FLT( mulf, *, var_flt_t )
 DECL_FUNC_ALLOC__FLT( divf, /, var_flt_t )
 
+/*
+ * Basic arithmetic operators and assign to LHS
+ */
 DECL_FUNC_ASSN__FLT( add_assnf, += )
 DECL_FUNC_ASSN__FLT( sub_assnf, -= )
 DECL_FUNC_ASSN__FLT( mul_assnf, *= )
 DECL_FUNC_ASSN__FLT( div_assnf, /= )
 
+/*
+ * comparison between floating point values
+ */
 DECL_FUNC_BOOL__FLT( eqf, == )
 DECL_FUNC_BOOL__FLT( nef, != )
 DECL_FUNC_BOOL__FLT( ltf, < )
@@ -54,6 +63,9 @@ DECL_FUNC_BOOL__FLT( lef, <= )
 DECL_FUNC_BOOL__FLT( gtf, > )
 DECL_FUNC_BOOL__FLT( gef, >= )
 
+/*
+ * raise a floating point number LHS to power integer RHS
+ */
 var_base_t * powerf( vm_state_t & vm, func_call_data_t & fcd )
 {
 	mpf_class & lhs = AS_FLT( fcd.args[ 1 ] )->get();
@@ -63,24 +75,38 @@ var_base_t * powerf( vm_state_t & vm, func_call_data_t & fcd )
 	return res;
 }
 
+/*
+ * returns negative value of the given floating point argument
+ */
 var_base_t * unary_subf( vm_state_t & vm, func_call_data_t & fcd )
 {
 	mpf_class & num = AS_FLT( fcd.args[ 0 ] )->get();
 	return new var_flt_t( -num );
 }
 
+/*
+ * boolean not: converts float to its negative boolean
+ * !(5.0) => false
+ * !(0.0) => true
+ */
 var_base_t * not_operf( vm_state_t & vm, func_call_data_t & fcd )
 {
 	mpf_class & num = AS_FLT( fcd.args[ 0 ] )->get();
 	return TRUE_FALSE( !num );
 }
 
+/*
+ * converts a string to float
+ */
 var_base_t * flt( vm_state_t & vm, func_call_data_t & fcd )
 {
 	const std::string & flt_str = fcd.args[ 0 ]->to_str();
 	return new var_flt_t( flt_str );
 }
 
+/*
+ * returns a hash string from float
+ */
 var_base_t * hash_flt( vm_state_t & vm, func_call_data_t & fcd )
 {
 	return new var_str_t( fcd.args[ 0 ]->to_str() );

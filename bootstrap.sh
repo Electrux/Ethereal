@@ -112,7 +112,7 @@ for l in "core" "fs" "map" "math" "opt" "os" "set" "str" "term" "time" "tuple" "
 	$compiler -O2 -fPIC -std=c++11 -shared -o buildfiles/lib$l.so modules/std/$l.cpp $buildfiles -Wl,-rpath,${PREFIX_DIR}/lib/ethereal \
 		$install_name -L./buildfiles/ ${EXTRA_INCLUDES} ${EXTRA_FLAGS} -lgmpxx -lgmp -let -DBUILD_PREFIX_DIR=${PREFIX_DIR} ${VERSION_STRING}
 	if [[ $? != 0 ]]; then
-		exit $?
+		exit 1
 	fi
 done
 

@@ -7,7 +7,7 @@ task:
   tests_script: ./perform_tests.et
 
 task:
-  name: Ubuntu 18.04 gcc build
+  name: Ubuntu gcc build
   container:
     image: gcc:6
   env:
@@ -17,7 +17,7 @@ task:
   tests_script: ./perform_tests.et
 
 task:
-  name: Ubuntu 18.04 clang build
+  name: Ubuntu clang build
   container:
     image: teeks99/clang-ubuntu:3.4
   env:

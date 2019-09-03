@@ -69,7 +69,7 @@ std::unordered_set< std::string > & var_set_t::get() { return m_set; }
 
 var_base_t * set_create( vm_state_t & vm, func_call_data_t & fcd )
 {
-	return new var_set_t( {}, 0 );
+	return new var_set_t( std::unordered_set< std::string >{}, 0 );
 }
 
 var_base_t * set_insert( vm_state_t & vm, func_call_data_t & fcd )

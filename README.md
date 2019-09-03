@@ -37,6 +37,8 @@ println( "Factorial of ", num, ": ", fact );
 
 # About
 
+Visit the medium article: [Here](https://medium.com/p/so-i-created-a-programming-language-4d9c11038d22?source=email-852839018f8a--writer.postDistributed&sk=d09aaa9916783522215c1024f3ef86f2) for an overview of my journey with it :)
+
 The language syntax is inspired from Python and C. It contains sufficient features to enjoy working with it, but avoids complex features like OOP.
 
 Ethereal does use a concept of member functions which are actually nothing but plain functions bound to a particular struct/type. And they allow the use of `self` to use the calling variable inside the function itself.

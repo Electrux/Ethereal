@@ -68,9 +68,9 @@ Note that if you use PREFIX, you may need root access depending on the directory
 
 The following items will be installed:
 
-*  buildfiles/et -> PREFIX_DIR/bin/
-*  buildfiles/lib*.so PREFIX_DIR/lib/ethereal/
-*  include/ethereal/*  PREFIX_DIR/include/ethereal/
+*  buildfiles/et -> $PREFIX/bin/
+*  buildfiles/lib*.so $PREFIX/lib/ethereal/
+*  include/ethereal/*  $PREFIX/include/ethereal/
 
 Also, the interpreter code internally uses `PREFIX` to locate the `lib` and `include` directories, so you will have to rebuild the codebase if you change `PREFIX` and then install.
 

@@ -19,7 +19,7 @@ task:
 task:
   name: Ubuntu 18.04 clang build
   container:
-    image: clang-ubuntu:3.4
+    image: teeks99/clang-ubuntu:3.4
   env:
     CXX: clang++-3.4
   install_script: apt update && apt install -y libgmp-dev

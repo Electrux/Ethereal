@@ -1,5 +1,5 @@
 task:
-  name: Ubuntu 14.04 build
+  name: Ubuntu 14.04 gcc 4.8.4
   container:
     image: ubuntu:14.04
   install_script: apt-get update && apt-get install -y libgmp-dev g++
@@ -7,17 +7,7 @@ task:
   tests_script: ./perform_tests.et
 
 task:
-  name: Ubuntu gcc build
-  container:
-    image: gcc:6
-  env:
-    CXX: g++
-  install_script: apt update && apt install -y libgmp-dev
-  compile_script: ./bootstrap.sh
-  tests_script: ./perform_tests.et
-
-task:
-  name: Ubuntu clang build
+  name: Ubuntu 14.04 clang 3.4.0
   container:
     image: teeks99/clang-ubuntu:3.4
   env:
@@ -27,7 +17,17 @@ task:
   tests_script: ./perform_tests.et
 
 task:
-  name: FreeBSD 10.4 build
+  name: Debian 8 gcc 6.5.0
+  container:
+    image: gcc:6
+  env:
+    CXX: g++
+  install_script: apt update && apt install -y libgmp-dev
+  compile_script: ./bootstrap.sh
+  tests_script: ./perform_tests.et
+
+task:
+  name: FreeBSD 10.4 clang 3.4.1
   freebsd_instance:
     image: freebsd-10-4-release-amd64
   install_script: pkg install -y gmp
@@ -35,7 +35,7 @@ task:
   tests_script: ./perform_tests.et
 
 task:
-  name: macOS Mojave build
+  name: macOS Mojave apple llvm 10.0.1
   osx_instance:
     image: mojave-base
   install_script: brew install gmp

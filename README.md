@@ -1,6 +1,6 @@
 # Ethereal
 
-[![Build Status](https://travis-ci.com/Electrux/Ethereal.svg?branch=master)](https://travis-ci.com/Electrux/Ethereal)
+[![Build Status](https://api.cirrus-ci.com/github/Electrux/Ethereal.svg?branch=master)](https://cirrus-ci.com/github/Electrux/Ethereal)
 
 A simple, dynamically typed, interpreted, generic programming language.
 

@@ -4,6 +4,47 @@
 
 A simple, dynamically typed, interpreted, generic programming language.
 
+# Some Sample Programs
+
+## Hello world using Function:
+```perl
+fn hello( to ) {
+	println( 'Hello ', to );
+}
+
+hello( 'world' );
+```
+
+## Taking input from the user - with a prompt:
+```perl
+dat = scan( 'Please enter some data: ' );
+println( 'The data you entered is: ', dat );
+```
+
+## Iterative Factorial of a number:
+```perl
+import std.str; # for to_int()
+
+num = scan( "Enter factorial of: " ).to_int();
+fact = 1;
+
+for x = num; x >= 2; x -= 1 {
+        fact *= x;
+}
+
+println( "Factorial of ", num, ": ", fact );
+```
+
+# About
+
+The language syntax is inspired from Python and C. It contains sufficient features to enjoy working with it, but avoids complex features like OOP.
+
+Ethereal does use a concept of member functions which are actually nothing but plain functions bound to a particular struct/type. And they allow the use of `self` to use the calling variable inside the function itself.
+
+One can easily make extensions for the language in the form of language modules or c++ dynamic libraries (if high performance is needed). See the existing modules for more information about it (language modules: `include/ethereal/`, C++ standard modules: `modules/std/`).
+
+Documentation is under development and will take some time to build, but till then, feel free to go through the [Code Samples](https://github.com/Electrux/Ethereal/blob/master/Samples.md) and hack around with the programs in the `tests` directory.
+
 # Prerequisites
 
 *  GCC/Clang with full C++ 11 support, tested with:
@@ -16,16 +57,6 @@ A simple, dynamically typed, interpreted, generic programming language.
 Note that GMP on Termux for android does not come with CXX support, hence it will have to be manually compiled from source with the `--enable-cxx` configure option. You may also need to specify the `PREFIX` directory using `--prefix` configure option which, for me, is `/data/data/com.termux/files/usr`
 
 The entire command sequence for installing GMP on android (for me) is: `./configure --prefix /data/data/com.termux/files/usr --enable-cxx && make -j8 && make install`
-
-# About
-
-The language syntax is inspired from Python and C. It contains sufficient features to enjoy working with it, but avoids complex features like OOP.
-
-Ethereal does use a concept of member functions which are actually nothing but plain functions bound to a particular struct/type. And they allow the use of `self` to use the calling variable inside the function itself.
-
-One can easily make extensions for the language in the form of language modules or c++ dynamic libraries (if high performance is needed). See the existing modules for more information about it (language modules: `include/ethereal/`, C++ standard modules: `modules/std/`).
-
-Documentation is under development and will take some time to build, but till then, feel free to go through the [Code Samples](https://github.com/Electrux/Ethereal/blob/master/Samples.md) and hack around with the programs in the `tests` directory.
 
 # Installation
 

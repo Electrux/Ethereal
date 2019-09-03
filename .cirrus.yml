@@ -12,7 +12,7 @@ task:
     image: ubuntu:18.04
   env:
     CXX: g++
-  install_script: apt-get update && apt-get install -y libgmp-dev g++
+  install_script: apt update && apt install -y libgmp-dev g++
   compile_script: ./bootstrap.sh
   tests_script: ./perform_tests.et
 
@@ -22,7 +22,7 @@ task:
     image: ubuntu:18.04
   env:
     CXX: clang++
-  install_script: apt-get update && apt-get install -y libgmp-dev clang++
+  install_script: apt update && apt install -yf libgmp-dev clang++
   compile_script: ./bootstrap.sh
   tests_script: ./perform_tests.et
 

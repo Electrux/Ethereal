@@ -21,8 +21,8 @@ task:
   container:
     image: ubuntu:18.04
   env:
-    CXX: clang++-3.5
-  install_script: apt update && apt install -y libgmp-dev clang++-3.5 && ls /usr/bin && find / -name "clang++*"
+    CXX: clang++-6.0
+  install_script: apt update && apt install -y libgmp-dev clang-6.0 && ls /usr/bin && find / -name "clang++*"
   compile_script: ./bootstrap.sh
   tests_script: ./perform_tests.et
 

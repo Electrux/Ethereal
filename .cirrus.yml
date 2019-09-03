@@ -7,9 +7,9 @@ task:
   tests_script: ./perform_tests.et
 
 task:
-  name: Ubuntu 18.04 gcc build
+  name: Ubuntu 16.04 gcc build
   container:
-    image: ubuntu:18.04
+    image: ubuntu:16.04
   env:
     CXX: g++
   install_script: apt update && apt install -y libgmp-dev g++
@@ -17,9 +17,9 @@ task:
   tests_script: ./perform_tests.et
 
 task:
-  name: Ubuntu 18.04 clang build
+  name: Ubuntu 16.04 clang build
   container:
-    image: ubuntu:18.04
+    image: ubuntu:16.04
   env:
     CXX: clang++
   install_script: apt update && apt install -yf libgmp-dev clang++

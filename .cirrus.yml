@@ -9,20 +9,20 @@ task:
 task:
   name: Ubuntu 18.04 gcc build
   container:
-    image: ubuntu:18.04
+    image: gcc:6
   env:
     CXX: g++
-  install_script: apt update && apt install -y libgmp-dev g++
+  install_script: apt update && apt install -y libgmp-dev
   compile_script: ./bootstrap.sh
   tests_script: ./perform_tests.et
 
 task:
   name: Ubuntu 18.04 clang build
   container:
-    image: ubuntu:18.04
+    image: clang-ubuntu:3.4
   env:
-    CXX: clang++-6.0
-  install_script: apt update && apt install -y libgmp-dev clang-6.0 && ls /usr/bin && find / -name "clang++*"
+    CXX: clang++-3.4
+  install_script: apt update && apt install -y libgmp-dev
   compile_script: ./bootstrap.sh
   tests_script: ./perform_tests.et
 

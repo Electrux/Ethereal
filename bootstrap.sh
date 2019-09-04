@@ -3,7 +3,7 @@
 compiler="clang++"
 os=$(uname)
 
-if [[ "$os" == 'Linux' ]]; then
+if [[ "$os" == 'Linux' && "$(uname -o 2>/dev/null)" != "Android" ]]; then
 	compiler="g++"
 fi
 
@@ -104,7 +104,7 @@ for l in "core" "fs" "map" "math" "opt" "os" "set" "str" "term" "time" "tuple" "
 	fi
 
 	if [[ -z "$COMPILE_COMMAND" ]]; then
-		echo "Building library: $l ..."
+		echo "Building library: std.$l ..."
 	else
 		echo "$compiler -O2 -fPIC -std=c++11 -shared -o buildfiles/lib$l.so modules/std/$l.cpp $buildfiles -Wl,-rpath,${PREFIX_DIR}/lib/ethereal \
 		$install_name -L./buildfiles/ ${EXTRA_INCLUDES} ${EXTRA_FLAGS} -lgmpxx -lgmp -let -DBUILD_PREFIX_DIR=${PREFIX_DIR} ${VERSION_STRING}"

@@ -1,0 +1,39 @@
+#!./buildfiles/et
+
+import std.str;
+import std.vec;
+import eth.vm;
+
+vm = evm.new();
+
+struct line {
+	num = 0;
+	input = "";
+}
+
+res = 0;
+
+indent = 0;
+line_id = 0;
+input = "";
+lines = [];
+for ; vm.is_running(); {
+	line_id += 1;
+
+	input = scan( indent == 0 ? '> ' : '... ' );
+
+	if input == '!!!' { break; }
+
+	lines.push( line{ line_id, input } );
+
+	if input.back() == '{' { indent += 1; continue; }
+	if input.back() == '}' { if indent > 0 { indent -= 1; } continue; }
+
+	#vm.add_code_vec( lines );
+	#vm.exec();
+
+}
+
+println( lines );
+
+exit( 0/*vm.exit_status()*/ );

@@ -1,0 +1,5 @@
+ldmod eth.vm;
+
+struct _evm {}
+
+evm = _evm{};

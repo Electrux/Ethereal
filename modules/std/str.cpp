@@ -102,14 +102,14 @@ var_base_t * find( vm_state_t & vm, func_call_data_t & fcd )
 var_base_t * front( vm_state_t & vm, func_call_data_t & fcd )
 {
 	const std::string & dat = AS_STR( fcd.args[ 0 ] )->get();
-	if( dat.empty() ) return vm.nil;
+	if( dat.empty() ) return new var_str_t( "" );
 	return new var_str_t( std::string( 1, dat.front() ) );
 }
 
 var_base_t * back( vm_state_t & vm, func_call_data_t & fcd )
 {
 	const std::string & dat = AS_STR( fcd.args[ 0 ] )->get();
-	if( dat.empty() ) return vm.nil;
+	if( dat.empty() ) return new var_str_t( "" );
 	return new var_str_t( std::string( 1, dat.back() ) );
 }
 

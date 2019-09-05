@@ -157,7 +157,7 @@ static int tokenize_line( const std::string & src, const std::string & dir, cons
 	int i = 0;
 	int err = E_OK;
 
-	static bool comment_block = false;
+	static int comment_block = 0;
 	static bool main_src_block = false;
 
 	static bool back_tick_block = false;
@@ -175,24 +175,24 @@ static int tokenize_line( const std::string & src, const std::string & dir, cons
 		if( isspace( line[ i ] ) ) { ++i; continue; }
 
 		if( CURR( line ) == '*' && NEXT( line ) == '/' ) {
-			if( !comment_block ) {
+			if( comment_block == 0 ) {
 				SRC_FAIL( "encountered multi line comment terminator '*/' "
 					  "in non commented block", line_num, i + 1 );
 				err = E_LEX_FAIL;
 				break;
 			}
 			i += 2;
-			comment_block = false;
+			--comment_block;
+			continue;
+		}
+
+		if( CURR( line ) == '/' && NEXT( line ) == '*' ) {
+			i += 2;
+			++comment_block;
 			continue;
 		}
 
 		if( comment_block ) { ++i; continue; }
-
-		if( CURR( line ) == '/' && NEXT( line ) == '*' ) {
-			i += 2;
-			comment_block = true;
-			continue;
-		}
 
 		if( CURR( line ) == '#' ) break;
 

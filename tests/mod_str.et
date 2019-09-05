@@ -42,9 +42,9 @@ assert( ''.find( 'a' ) == false, 'find \'a\' in \'\' should have been false' );
 assert( 'abc'.find( 'a' ) == true, 'find \'a\' in \'abc\' should have been true' );
 assert( 'abc'.find( '' ) == false, 'find \'\' in \'abc\' should have been false' );
 
-assert( ''.front() == nil, 'empty string\'s front() should have been nil' );
+assert( ''.front() == '', 'empty string\'s front() should have been \'\'' );
 assert( 'ab'.front() == 'a', 'front of \'ab\' should have been \'a\'' );
-assert( ''.back() == nil, 'empty string\'s back() should have been nil' );
+assert( ''.back() == '', 'empty string\'s back() should have been \'\'' );
 assert( 'ab'.back() == 'b', 'back of \'ab\' should have been \'b\'' );
 
 assert( ''.pop_front() == '', 'pop_front on empty string should have returned empty string' );

@@ -20,6 +20,8 @@ echo "Creating directories ..."
 
 mkdir -p "buildfiles/src/FE/Parser"
 mkdir -p "buildfiles/src/VM/Vars"
+mkdir -p "buildfiles/std"
+mkdir -p "buildfiles/eth"
 
 if [[ -z "${PREFIX}" ]]; then
 	PREFIX_DIR=$(pwd)
@@ -72,6 +74,7 @@ if [[ "$os" == "Darwin" ]]; then
 	install_name="-Wl,-install_name -Wl,@rpath/libet.so"
 fi
 
+echo
 if [[ -z "$COMPILE_COMMAND" ]]; then
 	echo "Building library: et ..."
 else
@@ -85,7 +88,7 @@ if [[ $? != 0 ]]; then
 fi
 
 if [[ -z "$COMPILE_COMMAND" ]]; then
-	echo "Building binary: et ..."
+	echo "Building binary:  et ..."
 else
 	echo "$compiler -O2 -fPIC -std=c++11 -g -o buildfiles/et src/FE/Main.cpp $buildfiles -Wl,-rpath,${PREFIX_DIR}/lib/ethereal \
 	-L./buildfiles/ ${EXTRA_INCLUDES} ${EXTRA_FLAGS} -lgmpxx -lgmp -let -DBUILD_PREFIX_DIR=${PREFIX_DIR} ${VERSION_STRING}"
@@ -96,7 +99,9 @@ if [[ $? != 0 ]]; then
 	exit $?
 fi
 
-# Libraries
+# Standard Libraries
+echo
+echo 'Building Standard Libraries ...'
 for l in "core" "fs" "map" "math" "opt" "os" "set" "str" "term" "time" "tuple" "vec"; do
 	install_name=""
 	if [[ "$os" == "Darwin" ]]; then
@@ -104,12 +109,34 @@ for l in "core" "fs" "map" "math" "opt" "os" "set" "str" "term" "time" "tuple" "
 	fi
 
 	if [[ -z "$COMPILE_COMMAND" ]]; then
-		echo "Building library: std.$l ..."
+		echo "-> std.$l ..."
 	else
-		echo "$compiler -O2 -fPIC -std=c++11 -shared -o buildfiles/lib$l.so modules/std/$l.cpp $buildfiles -Wl,-rpath,${PREFIX_DIR}/lib/ethereal \
+		echo "$compiler -O2 -fPIC -std=c++11 -shared -o buildfiles/std/lib$l.so modules/std/$l.cpp $buildfiles -Wl,-rpath,${PREFIX_DIR}/lib/ethereal \
 		$install_name -L./buildfiles/ ${EXTRA_INCLUDES} ${EXTRA_FLAGS} -lgmpxx -lgmp -let -DBUILD_PREFIX_DIR=${PREFIX_DIR} ${VERSION_STRING}"
 	fi
-	$compiler -O2 -fPIC -std=c++11 -shared -o buildfiles/lib$l.so modules/std/$l.cpp $buildfiles -Wl,-rpath,${PREFIX_DIR}/lib/ethereal \
+	$compiler -O2 -fPIC -std=c++11 -shared -o buildfiles/std/lib$l.so modules/std/$l.cpp $buildfiles -Wl,-rpath,${PREFIX_DIR}/lib/ethereal \
+		$install_name -L./buildfiles/ ${EXTRA_INCLUDES} ${EXTRA_FLAGS} -lgmpxx -lgmp -let -DBUILD_PREFIX_DIR=${PREFIX_DIR} ${VERSION_STRING}
+	if [[ $? != 0 ]]; then
+		exit 1
+	fi
+done
+
+# Ethereal VM Libraries
+echo
+echo 'Building Ethereal VM Libraries ...'
+for l in "vm"; do
+	install_name=""
+	if [[ "$os" == "Darwin" ]]; then
+		install_name="-Wl,-install_name -Wl,@rpath/eth/lib$l.so"
+	fi
+
+	if [[ -z "$COMPILE_COMMAND" ]]; then
+		echo "-> eth.$l ..."
+	else
+		echo "$compiler -O2 -fPIC -std=c++11 -shared -o buildfiles/eth/lib$l.so modules/eth/$l.cpp $buildfiles -Wl,-rpath,${PREFIX_DIR}/lib/ethereal \
+		$install_name -L./buildfiles/ ${EXTRA_INCLUDES} ${EXTRA_FLAGS} -lgmpxx -lgmp -let -DBUILD_PREFIX_DIR=${PREFIX_DIR} ${VERSION_STRING}"
+	fi
+	$compiler -O2 -fPIC -std=c++11 -shared -o buildfiles/eth/lib$l.so modules/eth/$l.cpp $buildfiles -Wl,-rpath,${PREFIX_DIR}/lib/ethereal \
 		$install_name -L./buildfiles/ ${EXTRA_INCLUDES} ${EXTRA_FLAGS} -lgmpxx -lgmp -let -DBUILD_PREFIX_DIR=${PREFIX_DIR} ${VERSION_STRING}
 	if [[ $? != 0 ]]; then
 		exit 1
@@ -117,6 +144,7 @@ for l in "core" "fs" "map" "math" "opt" "os" "set" "str" "term" "time" "tuple" "
 done
 
 # Install this
+echo
 
 mkdir -p "$PREFIX_DIR/include/ethereal/std"
 
@@ -125,8 +153,9 @@ if [[ $? != 0 ]]; then
 	exit $?
 fi
 
+mkdir -p "$PREFIX_DIR/include/ethereal/eth"
 mkdir -p "$PREFIX_DIR/lib/ethereal/std"
-
+mkdir -p "$PREFIX_DIR/lib/ethereal/eth"
 mkdir -p "$PREFIX_DIR/bin/"
 
 cp_cmd="cp -r "
@@ -138,8 +167,8 @@ fi
 echo "Installing files ..."
 $cp_cmd buildfiles/et "$PREFIX_DIR/bin/"
 $cp_cmd buildfiles/libet.so "$PREFIX_DIR/lib/ethereal/"
-$cp_cmd buildfiles/lib*.so "$PREFIX_DIR/lib/ethereal/std/"
-rm -f "$PREFIX_DIR/lib/ethereal/std/libet.so"
+$cp_cmd buildfiles/std/lib*.so "$PREFIX_DIR/lib/ethereal/std/"
+$cp_cmd buildfiles/eth/lib*.so "$PREFIX_DIR/lib/ethereal/eth/"
 if [[ "$(pwd)" != "$PREFIX_DIR" ]]; then
 	$cp_cmd include/ethereal/* "$PREFIX_DIR/include/ethereal/"
 fi

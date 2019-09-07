@@ -16,7 +16,7 @@ if ! [[ -z "${USE_CCACHE}" ]]; then
 fi
 
 if [[ -z "${DEBUG}" ]]; then
-	opti="-O2 -flto"
+	opti="-O2"
 fi
 
 compiler_version=$($compiler --version)

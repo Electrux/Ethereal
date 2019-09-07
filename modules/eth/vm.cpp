@@ -133,6 +133,7 @@ var_base_t * vm_exec_code( vm_state_t & vm, func_call_data_t & fcd )
 	vm_state_t * v = AS_EVM( fcd.args[ 0 ] )->get();
 	src_t * s = v->srcstack.back();
 	src_t src( false );
+	src.name = s->name;
 
 	size_t code_size = s->code.size();
 	size_t toks_size = s->toks.size();

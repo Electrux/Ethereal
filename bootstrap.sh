@@ -11,6 +11,14 @@ if ! [[ -z "${CXX}" ]]; then
 	compiler="${CXX}"
 fi
 
+if ! [[ -z "${USE_CCACHE}" ]]; then
+	compiler="ccache $compiler"
+fi
+
+if [[ -z "${DEBUG}" ]]; then
+	opti="-O2 -flto"
+fi
+
 compiler_version=$($compiler --version)
 echo "Using compiler: $compiler, version: $compiler_version"
 
@@ -50,9 +58,9 @@ find src -name "*.cpp" | grep -v "Main.cpp" | while read -r src_file; do
 	if [[ -z "$COMPILE_COMMAND" ]]; then
 		echo "Compiling: $src_file ..."
 	else
-		echo "$compiler -O2 -fPIC -std=c++11 -c $src_file -o buildfiles/$src_file.o ${EXTRA_INCLUDES} -DBUILD_PREFIX_DIR=${PREFIX_DIR} ${VERSION_STRING}"
+		echo "$compiler ${opti} -fPIC -std=c++11 -c $src_file -o buildfiles/$src_file.o ${EXTRA_INCLUDES} -DBUILD_PREFIX_DIR=${PREFIX_DIR} ${VERSION_STRING}"
 	fi
-	$compiler -O2 -fPIC -std=c++11 -c $src_file -o buildfiles/$src_file.o ${EXTRA_INCLUDES} -DBUILD_PREFIX_DIR=${PREFIX_DIR} ${VERSION_STRING}
+	$compiler ${opti} -fPIC -std=c++11 -c $src_file -o buildfiles/$src_file.o ${EXTRA_INCLUDES} -DBUILD_PREFIX_DIR=${PREFIX_DIR} ${VERSION_STRING}
 	if [[ $? != 0 ]]; then
 		SRC_FAILED="true"
 		break
@@ -78,10 +86,10 @@ echo
 if [[ -z "$COMPILE_COMMAND" ]]; then
 	echo "Building library: et ..."
 else
-	echo "$compiler -O2 -fPIC -std=c++11 -shared -o buildfiles/libet.so src/VM/Main.cpp $buildfiles -Wl,-rpath,${PREFIX_DIR}/lib/ethereal \
+	echo "$compiler ${opti} -fPIC -std=c++11 -shared -o buildfiles/libet.so src/VM/Main.cpp $buildfiles -Wl,-rpath,${PREFIX_DIR}/lib/ethereal \
 	$install_name -L./buildfiles/ ${EXTRA_INCLUDES} ${EXTRA_FLAGS} -lgmpxx -lgmp -DBUILD_PREFIX_DIR=${PREFIX_DIR} ${VERSION_STRING}"
 fi
-$compiler -O2 -fPIC -std=c++11 -shared -o buildfiles/libet.so src/VM/Main.cpp $buildfiles -Wl,-rpath,${PREFIX_DIR}/lib/ethereal \
+$compiler ${opti} -fPIC -std=c++11 -shared -o buildfiles/libet.so src/VM/Main.cpp $buildfiles -Wl,-rpath,${PREFIX_DIR}/lib/ethereal \
 	$install_name -L./buildfiles/ ${EXTRA_INCLUDES} ${EXTRA_FLAGS} -lgmpxx -lgmp -DAS_LIB -DBUILD_PREFIX_DIR=${PREFIX_DIR} ${VERSION_STRING}
 if [[ $? != 0 ]]; then
 	exit $?
@@ -90,10 +98,10 @@ fi
 if [[ -z "$COMPILE_COMMAND" ]]; then
 	echo "Building binary:  et ..."
 else
-	echo "$compiler -O2 -fPIC -std=c++11 -g -o buildfiles/et src/FE/Main.cpp $buildfiles -Wl,-rpath,${PREFIX_DIR}/lib/ethereal \
+	echo "$compiler ${opti} -fPIC -std=c++11 -g -o buildfiles/et src/FE/Main.cpp $buildfiles -Wl,-rpath,${PREFIX_DIR}/lib/ethereal \
 	-L./buildfiles/ ${EXTRA_INCLUDES} ${EXTRA_FLAGS} -lgmpxx -lgmp -let -DBUILD_PREFIX_DIR=${PREFIX_DIR} ${VERSION_STRING}"
 fi
-$compiler -O2 -fPIC -std=c++11 -g -o buildfiles/et src/FE/Main.cpp $buildfiles -Wl,-rpath,${PREFIX_DIR}/lib/ethereal \
+$compiler ${opti} -fPIC -std=c++11 -g -o buildfiles/et src/FE/Main.cpp $buildfiles -Wl,-rpath,${PREFIX_DIR}/lib/ethereal \
 	-L./buildfiles/ ${EXTRA_INCLUDES} ${EXTRA_FLAGS} -lgmpxx -lgmp -let -DBUILD_PREFIX_DIR=${PREFIX_DIR} ${VERSION_STRING}
 if [[ $? != 0 ]]; then
 	exit $?
@@ -111,10 +119,10 @@ for l in "core" "fs" "map" "math" "opt" "os" "set" "str" "term" "time" "tuple" "
 	if [[ -z "$COMPILE_COMMAND" ]]; then
 		echo "-> std.$l ..."
 	else
-		echo "$compiler -O2 -fPIC -std=c++11 -shared -o buildfiles/std/lib$l.so modules/std/$l.cpp $buildfiles -Wl,-rpath,${PREFIX_DIR}/lib/ethereal \
+		echo "$compiler ${opti} -fPIC -std=c++11 -shared -o buildfiles/std/lib$l.so modules/std/$l.cpp $buildfiles -Wl,-rpath,${PREFIX_DIR}/lib/ethereal \
 		$install_name -L./buildfiles/ ${EXTRA_INCLUDES} ${EXTRA_FLAGS} -lgmpxx -lgmp -let -DBUILD_PREFIX_DIR=${PREFIX_DIR} ${VERSION_STRING}"
 	fi
-	$compiler -O2 -fPIC -std=c++11 -shared -o buildfiles/std/lib$l.so modules/std/$l.cpp $buildfiles -Wl,-rpath,${PREFIX_DIR}/lib/ethereal \
+	$compiler ${opti} -fPIC -std=c++11 -shared -o buildfiles/std/lib$l.so modules/std/$l.cpp $buildfiles -Wl,-rpath,${PREFIX_DIR}/lib/ethereal \
 		$install_name -L./buildfiles/ ${EXTRA_INCLUDES} ${EXTRA_FLAGS} -lgmpxx -lgmp -let -DBUILD_PREFIX_DIR=${PREFIX_DIR} ${VERSION_STRING}
 	if [[ $? != 0 ]]; then
 		exit 1
@@ -133,10 +141,10 @@ for l in "vm"; do
 	if [[ -z "$COMPILE_COMMAND" ]]; then
 		echo "-> eth.$l ..."
 	else
-		echo "$compiler -O2 -fPIC -std=c++11 -shared -o buildfiles/eth/lib$l.so modules/eth/$l.cpp $buildfiles -Wl,-rpath,${PREFIX_DIR}/lib/ethereal \
+		echo "$compiler ${opti} -fPIC -std=c++11 -shared -o buildfiles/eth/lib$l.so modules/eth/$l.cpp $buildfiles -Wl,-rpath,${PREFIX_DIR}/lib/ethereal \
 		$install_name -L./buildfiles/ ${EXTRA_INCLUDES} ${EXTRA_FLAGS} -lgmpxx -lgmp -let -DBUILD_PREFIX_DIR=${PREFIX_DIR} ${VERSION_STRING}"
 	fi
-	$compiler -O2 -fPIC -std=c++11 -shared -o buildfiles/eth/lib$l.so modules/eth/$l.cpp $buildfiles -Wl,-rpath,${PREFIX_DIR}/lib/ethereal \
+	$compiler ${opti} -fPIC -std=c++11 -shared -o buildfiles/eth/lib$l.so modules/eth/$l.cpp $buildfiles -Wl,-rpath,${PREFIX_DIR}/lib/ethereal \
 		$install_name -L./buildfiles/ ${EXTRA_INCLUDES} ${EXTRA_FLAGS} -lgmpxx -lgmp -let -DBUILD_PREFIX_DIR=${PREFIX_DIR} ${VERSION_STRING}
 	if [[ $? != 0 ]]; then
 		exit 1

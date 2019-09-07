@@ -38,7 +38,7 @@ int main( int argc, char ** argv )
 	}
 
 	if( args.size() < 1 ) {
-		fprintf( stdout, "usage: %s [flags] <source file>\n", argv[ 0 ] );
+		fprintf( stderr, "usage: %s [flags] <source file>\n", argv[ 0 ] );
 		return E_FAIL;
 	}
 

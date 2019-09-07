@@ -1,4 +1,4 @@
 #!./buildfiles/et
 
 ldmod std.fs;
-ldmod '../buildfiles/str';
+ldmod '../buildfiles/std/str';

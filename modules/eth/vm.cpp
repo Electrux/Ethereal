@@ -9,6 +9,8 @@
 
 #include "../../src/VM/Core.hpp"
 
+#include "../../src/VM/ExecInternal.hpp"
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////// Class ////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -18,6 +20,9 @@ class var_evm_t : public var_base_t
 	vm_state_t * m_vm;
 	bool m_copied;
 public:
+	// can't use pointer for m_pre_ph because it doesn't get freed correctly
+	// since it uses reference to m_vm->srcstack.back()
+	parse_helper_t m_pre_ph;
 	var_evm_t( vm_state_t * vm, const int parse_ctr = 0 );
 	~var_evm_t();
 
@@ -33,9 +38,15 @@ public:
 
 var_evm_t::var_evm_t( vm_state_t * vm, const int parse_ctr )
 	: var_base_t( VT_CUSTOM, true, parse_ctr ), m_vm( vm ),
-	  m_copied( false ) {}
+	  m_copied( false ), m_pre_ph( vm->srcstack.back()->toks )
+{}
 var_evm_t::~var_evm_t()
-{ if( !m_copied ) { m_vm->srcstack.pop_back(); delete m_vm; } }
+{
+	if( !m_copied ) {
+		m_vm->srcstack.pop_back();
+		delete m_vm;
+	}
+}
 
 std::string var_evm_t::type_str() const { return "evm_t"; }
 std::string var_evm_t::to_str() const
@@ -71,10 +82,14 @@ vm_state_t * & var_evm_t::get() { return m_vm; }
 var_base_t * vm_create( vm_state_t & vm, func_call_data_t & fcd )
 {
 	int err = E_OK;
+
 	src_t * src = new src_t( true );
+	src->ptree = new parse_tree_t;
 	src->dir = vm.srcstack.back()->dir;
-	src->name = fcd.args.size() > 0 ? fcd.args[ 0 ]->to_str() : "<repl>";
+	src->name = fcd.args.size() > 1 ? fcd.args[ 0 ]->to_str() : "<repl>";
+
 	vm_state_t * v = new vm_state_t();
+
 	v->flags = vm.flags;
 	v->srcstack.push_back( src );
 	v->srcs[ src->name ] = src;
@@ -99,7 +114,7 @@ var_base_t * vm_create( vm_state_t & vm, func_call_data_t & fcd )
 	VAR_IREF( v->nil );
 	v->vars->add( "nil", v->nil );
 
-	return new var_evm_t( v, 0 );
+	return new var_evm_t( v );
 fail:
 	delete v;
 	return vm.nil;
@@ -111,6 +126,59 @@ var_base_t * vm_is_running( vm_state_t & vm, func_call_data_t & fcd )
 	return TRUE_FALSE( !v->get()->exit_called );
 }
 
+var_base_t * vm_exec_code( vm_state_t & vm, func_call_data_t & fcd )
+{
+	std::vector< std::string > new_code;
+	std::vector< var_base_t * > vec = AS_VEC( fcd.args[ 1 ] )->get();
+	vm_state_t * v = AS_EVM( fcd.args[ 0 ] )->get();
+	src_t * s = v->srcstack.back();
+	src_t src( false );
+
+	size_t code_size = s->code.size();
+	size_t toks_size = s->toks.size();
+	size_t ptree_size = s->ptree->size();
+	size_t bcode_size = s->bcode.size();
+
+	// add old code for correct line numbers of new ones
+	for( size_t i = 0; i < code_size; ++i ) src.code.push_back( "" );
+
+	// add the new code
+	for( auto & e : vec ) {
+		src.code.push_back( e->to_str() );
+	}
+
+	int err = E_OK;
+
+	err = tokenize( src );
+	if( err != E_OK ) return new var_int_t( err );
+
+	src.ptree = parse( src );
+	if( src.ptree == nullptr ) return new var_int_t( E_PARSE_FAIL );
+
+	for( auto & it : * src.ptree ) {
+		if( !it->bytecode( src ) ) return new var_int_t( E_BYTECODE_FAIL );
+	}
+
+	s->code.insert( s->code.end(), src.code.begin() + code_size, src.code.end() );
+	s->toks.insert( s->toks.end(), src.toks.begin(), src.toks.end() );
+	s->ptree->insert( s->ptree->end(), src.ptree->begin(), src.ptree->end() );
+	s->bcode.insert( s->bcode.end(), src.bcode.begin(), src.bcode.end() );
+
+	v->bcodectr.push_back( bcode_size );
+	int res = exec_internal( * v, bcode_size );
+	v->bcodectr.pop_back();
+	if( res != E_OK ) {
+		s->code.erase( s->code.begin() + code_size, s->code.end() );
+		s->toks.erase( s->toks.begin() + toks_size, s->toks.end() );
+		s->ptree->erase( s->ptree->begin() + ptree_size, s->ptree->end() );
+		s->bcode.erase( s->bcode.begin() + bcode_size, s->bcode.end() );
+	} else {
+		src.ptree->clear();
+	}
+	AS_INT( fcd.args[ 2 ] )->get() = v->exit_status;
+	return new var_int_t( res );
+}
+
 REGISTER_MODULE( vm )
 {
 	functions_t & vmfns = vm.typefuncs[ "_evm" ];
@@ -118,4 +186,5 @@ REGISTER_MODULE( vm )
 
 	functions_t & evmfns = vm.typefuncs[ "evm_t" ];
 	evmfns.add( { "is_running", 0, 0, {}, FnType::MODULE, { .modfn = vm_is_running }, false } );
+	evmfns.add( { "exec_code", 2, 2, { "vec", "int" }, FnType::MODULE, { .modfn = vm_exec_code }, true } );
 }

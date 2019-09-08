@@ -165,7 +165,7 @@ expr_res_t parse_expr( const src_t & src, parse_helper_t * ph, const int end, co
 			if( !token_is_oper( ph->peak() ) ) {
 				if( ph->peak()->type == TOK_INVALID ) {
 					ph->set_tok_ctr( ph->tok_ctr() - 1 );
-					PARSE_FAIL( "failed parsing expression, possibly missing semicolon here" );
+					PARSE_FAIL( "failed parsing expression, possibly missing semicolon after this" );
 				} else {
 					PARSE_FAIL( "invalid token '%s' while parsing expression", ph->peak()->data.c_str() );
 				}

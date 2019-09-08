@@ -37,6 +37,7 @@ int load_src( vm_state_t & vm, const std::string & file, const std::string & ali
 	parse_tree_t * ptree = nullptr;
 	src_t * new_src = new src_t( false );
 	new_src->name = new_src_str;
+	new_src->id = new_src_str;
 	new_src->dir = src_dir;
 	err = tokenize( * new_src );
 	if( err != E_OK ) goto cleanup;
@@ -83,9 +84,10 @@ int load_src( vm_state_t & vm, const std::string & file, const std::string & ali
 	// actual code execution
 	if( !( vm.flags & OPT_C ) && !( vm.flags & OPT_D ) ) {
 		vm.srcstack.push_back( new_src );
+		vm.srcs[ new_src->id ] = new_src;
 		err = vm_exec( vm );
 		vm.srcstack.pop_back();
-		if( err == E_OK ) vm.srcs[ new_src->name ] = new_src;
+		if( err != E_OK ) vm.srcs.erase( new_src->id );
 	}
 
 cleanup:

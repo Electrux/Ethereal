@@ -87,12 +87,13 @@ var_base_t * vm_create( vm_state_t & vm, func_call_data_t & fcd )
 	src->ptree = new parse_tree_t;
 	src->dir = vm.srcstack.back()->dir;
 	src->name = fcd.args.size() > 1 ? fcd.args[ 0 ]->to_str() : "<repl>";
+	src->id = src->name;
 
 	vm_state_t * v = new vm_state_t();
 
 	v->flags = vm.flags;
 	v->srcstack.push_back( src );
-	v->srcs[ src->name ] = src;
+	v->srcs[ src->id ] = src;
 
 	var_base_t * prog = vm.vars->get( "__PROG__" );
 	var_base_t * args = vm.vars->get( "args" );
@@ -134,6 +135,7 @@ var_base_t * vm_exec_code( vm_state_t & vm, func_call_data_t & fcd )
 	src_t * s = v->srcstack.back();
 	src_t src( false );
 	src.name = s->name;
+	src.id = s->name;
 
 	size_t code_size = s->code.size();
 	size_t toks_size = s->toks.size();

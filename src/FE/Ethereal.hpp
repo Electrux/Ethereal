@@ -20,6 +20,9 @@
 
 struct src_t
 {
+	// id is unique and used as the srcs map's key
+	// name is the name of the source file
+	std::string id;
 	std::string name;
 	std::string dir;
 	std::vector< std::string > code;

@@ -54,11 +54,10 @@ int main( int argc, char ** argv )
 
 	src_t * main_src = new src_t( true );
 	main_src->name = main_src_str;
+	main_src->id = "main_src_" + main_src->name;
 	main_src->dir = src_dir;
 	err = tokenize( * main_src );
 	if( err != E_OK ) goto cleanup;
-
-	main_src->name = "main_src_" + main_src->name;
 
 	if( flags & OPT_T ) {
 		fprintf( stdout, "Tokens:\n" );
@@ -103,7 +102,7 @@ int main( int argc, char ** argv )
 		vm_state_t vm;
 		vm.flags = flags;
 		vm.srcstack.push_back( main_src );
-		vm.srcs[ main_src->name ] = main_src;
+		vm.srcs[ main_src->id ] = main_src;
 		if( !set_init_mods( vm ) ) { err = E_VM_FAIL; goto end; }
 		std::vector< var_base_t * > arg_vec;
 		for( auto & v : args ) {

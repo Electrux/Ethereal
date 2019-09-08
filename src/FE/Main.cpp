@@ -56,8 +56,9 @@ int main( int argc, char ** argv )
 	main_src->name = main_src_str;
 	main_src->dir = src_dir;
 	err = tokenize( * main_src );
-	main_src->name = "main_src_" + main_src->name;
 	if( err != E_OK ) goto cleanup;
+
+	main_src->name = "main_src_" + main_src->name;
 
 	if( flags & OPT_T ) {
 		fprintf( stdout, "Tokens:\n" );

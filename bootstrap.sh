@@ -30,6 +30,7 @@ mkdir -p "buildfiles/src/FE/Parser"
 mkdir -p "buildfiles/src/VM/Vars"
 mkdir -p "buildfiles/std"
 mkdir -p "buildfiles/eth"
+mkdir -p "buildfiles/pre"
 
 if [[ -z "${PREFIX}" ]]; then
 	PREFIX_DIR=$(pwd)
@@ -107,10 +108,32 @@ if [[ $? != 0 ]]; then
 	exit $?
 fi
 
+# Preludes
+echo
+echo 'Building Prelude Libraries ...'
+for l in "core"; do
+	install_name=""
+	if [[ "$os" == "Darwin" ]]; then
+		install_name="-Wl,-install_name -Wl,@rpath/pre/lib$l.so"
+	fi
+
+	if [[ -z "$COMPILE_COMMAND" ]]; then
+		echo "-> pre.$l ..."
+	else
+		echo "$compiler ${opti} -fPIC -std=c++11 -shared -o buildfiles/pre/lib$l.so modules/pre/$l.cpp $buildfiles -Wl,-rpath,${PREFIX_DIR}/lib/ethereal \
+		$install_name -L./buildfiles/ ${EXTRA_INCLUDES} ${EXTRA_FLAGS} -lgmpxx -lgmp -let -DBUILD_PREFIX_DIR=${PREFIX_DIR} ${VERSION_STRING}"
+	fi
+	$compiler ${opti} -fPIC -std=c++11 -shared -o buildfiles/pre/lib$l.so modules/pre/$l.cpp $buildfiles -Wl,-rpath,${PREFIX_DIR}/lib/ethereal \
+		$install_name -L./buildfiles/ ${EXTRA_INCLUDES} ${EXTRA_FLAGS} -lgmpxx -lgmp -let -DBUILD_PREFIX_DIR=${PREFIX_DIR} ${VERSION_STRING}
+	if [[ $? != 0 ]]; then
+		exit 1
+	fi
+done
+
 # Standard Libraries
 echo
 echo 'Building Standard Libraries ...'
-for l in "core" "fs" "map" "math" "opt" "os" "set" "str" "term" "time" "tuple" "vec"; do
+for l in "fs" "map" "math" "opt" "os" "set" "str" "term" "time" "tuple" "vec"; do
 	install_name=""
 	if [[ "$os" == "Darwin" ]]; then
 		install_name="-Wl,-install_name -Wl,@rpath/std/lib$l.so"
@@ -162,6 +185,7 @@ if [[ $? != 0 ]]; then
 fi
 
 mkdir -p "$PREFIX_DIR/include/ethereal/eth"
+mkdir -p "$PREFIX_DIR/lib/ethereal/pre"
 mkdir -p "$PREFIX_DIR/lib/ethereal/std"
 mkdir -p "$PREFIX_DIR/lib/ethereal/eth"
 mkdir -p "$PREFIX_DIR/bin/"
@@ -175,6 +199,7 @@ fi
 echo "Installing files ..."
 $cp_cmd buildfiles/et "$PREFIX_DIR/bin/"
 $cp_cmd buildfiles/libet.so "$PREFIX_DIR/lib/ethereal/"
+$cp_cmd buildfiles/pre/lib*.so "$PREFIX_DIR/lib/ethereal/pre/"
 $cp_cmd buildfiles/std/lib*.so "$PREFIX_DIR/lib/ethereal/std/"
 $cp_cmd buildfiles/eth/lib*.so "$PREFIX_DIR/lib/ethereal/eth/"
 if [[ "$(pwd)" != "$PREFIX_DIR" ]]; then

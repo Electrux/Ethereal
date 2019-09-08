@@ -17,7 +17,7 @@ tmp_start = start;
 
 sz = files.len();
 for i = 0; i < sz; i += 1 {
-	cprint( '{c}performing test{0}: {y}', files[ i ], '{0} ... ' );
+	cprint( '{c}test{0}: {y}', files[ i ], '{0} ... ' );
 	flush_out();
 	res = os.exec( __PROG__ + ' ' + files[ i ] + ' test 1>/dev/null 2>&1' ) == 0;
 	tmp_diff = time.now() - tmp_start;

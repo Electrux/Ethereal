@@ -38,7 +38,7 @@ bool set_init_mods( vm_state_t & vm )
 	for( auto & m : mods ) {
 		std::string module_name = m + ".so";
 		if( m.front() != '~' && m.front() != '/' && m.front() != '.' ) {
-			module_name = STRINGIFY( BUILD_PREFIX_DIR ) "/lib/ethereal/std/lib" + m + ".so";
+			module_name = STRINGIFY( BUILD_PREFIX_DIR ) "/lib/ethereal/pre/lib" + m + ".so";
 		}
 		if( !fexists( module_name ) ) {
 			fprintf( stderr, "failed to find the prelude module library: %s\n", module_name.c_str() );

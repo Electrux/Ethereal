@@ -22,6 +22,7 @@ for ; vm.is_running(); {
 
 	if input.back() == '{' { indent += 1; continue; }
 	if input.back() == '}' { if indent > 0 { indent -= 1; } }
+	if indent > 0 { continue; }
 
 	res = vm.exec_code( lines, exit_code );
 

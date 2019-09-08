@@ -15,7 +15,7 @@ mfn< str > append_( s ) {
 	println( self );
 }
 
-"hi".append_( "1" );
+"he".append_( "llo" );
 
 mfn< str, int, flt > print2() {
 	println( '2' );

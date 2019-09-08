@@ -4,8 +4,8 @@ import std.time;
 
 start = time.now();
 
-println( 'current time from epoch: ', start );
+println( 'seconds passed since epoch: ', start );
 
 end = time.now();
 
-println( ( end - start ).usecs() );
+println( 'time in microseconds for a println: ', ( end - start ).usecs() );

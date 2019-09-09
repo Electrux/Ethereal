@@ -11,12 +11,16 @@ if ! [[ -z "${CXX}" ]]; then
 	compiler="${CXX}"
 fi
 
-if ! [[ -z "${USE_CCACHE}" ]]; then
+if [[ "${USE_CCACHE}" == "yes" || "${USE_CCACHE}" == "true" ]]; then
 	compiler="ccache $compiler"
+else
+	USE_CCACHE="no"
 fi
 
 if [[ -z "${DEBUG}" ]]; then
 	opti="-O2"
+else
+	opti="-DDEBUG_MODE"
 fi
 
 compiler_version=$($compiler --version)
@@ -39,6 +43,7 @@ else
 fi
 
 echo "Using PREFIX = ${PREFIX_DIR}"
+echo "Using USE_CCACHE = ${USE_CCACHE}"
 
 VERSION_STRING="-DVERSION_MAIN=0 -DVERSION_SUB=0 -DVERSION_PATCH=2"
 

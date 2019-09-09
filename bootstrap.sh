@@ -19,6 +19,8 @@ fi
 
 if [[ -z "${DEBUG}" ]]; then
 	opti="-O2"
+else
+	opti="-DDEBUG_MODE"
 fi
 
 compiler_version=$($compiler --version)

@@ -9,6 +9,7 @@
 
 #include "../../src/VM/Core.hpp"
 
+#include "../../src/FE/CmdArgs.hpp"
 #include "../../src/VM/ExecInternal.hpp"
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -142,8 +143,9 @@ var_base_t * vm_exec_code( vm_state_t & vm, func_call_data_t & fcd )
 	size_t ptree_size = s->ptree->size();
 	size_t bcode_size = s->bcode.size();
 
-	// add old code for correct line numbers of new ones
+	// add old code and bytecode entries for correct line/bytecode numbers of new ones
 	for( size_t i = 0; i < code_size; ++i ) src.code.push_back( "" );
+	for( size_t i = 0; i < bcode_size; ++i ) src.bcode.push_back( {} );
 
 	// add the new code
 	for( auto & e : vec ) {
@@ -154,18 +156,42 @@ var_base_t * vm_exec_code( vm_state_t & vm, func_call_data_t & fcd )
 
 	err = tokenize( src );
 	if( err != E_OK ) return new var_int_t( err );
-
+	if( v->flags & OPT_T ) {
+		fprintf( stdout, "Tokens:\n" );
+		auto & toks = src.toks;
+		for( size_t i = 0; i < toks.size(); ++i ) {
+			auto & tok = toks[ i ];
+			fprintf( stdout, "ID: %zu\tType: %s\tLine: %d[%d]\tSymbol: %s\n",
+				i, TokStrs[ tok.type ], tok.line, tok.col, tok.data.c_str() );
+		}
+	}
 	src.ptree = parse( src );
 	if( src.ptree == nullptr ) return new var_int_t( E_PARSE_FAIL );
+
+	if( v->flags & OPT_P ) {
+		fprintf( stdout, "Parse Tree:\n" );
+		for( auto it = src.ptree->begin(); it != src.ptree->end(); ++it ) {
+			( * it )->disp( it != src.ptree->end() - 1 );
+		}
+	}
 
 	for( auto & it : * src.ptree ) {
 		if( !it->bytecode( src ) ) return new var_int_t( E_BYTECODE_FAIL );
 	}
 
+	if( v->flags & OPT_B ) {
+		fprintf( stdout, "Byte Code:\n" );
+		for( size_t i = 0; i < src.bcode.size(); ++i ) {
+			auto & ins = src.bcode[ i ];
+			fprintf( stdout, "%-*zu %-*s%-*s[%s]\n",
+				 5, i, 20, InstrCodeStrs[ ins.opcode ], 7, OperTypeStrs[ ins.oper.type ], ins.oper.val.c_str() );
+		}
+	}
+
 	s->code.insert( s->code.end(), src.code.begin() + code_size, src.code.end() );
 	s->toks.insert( s->toks.end(), src.toks.begin(), src.toks.end() );
 	s->ptree->insert( s->ptree->end(), src.ptree->begin(), src.ptree->end() );
-	s->bcode.insert( s->bcode.end(), src.bcode.begin(), src.bcode.end() );
+	s->bcode.insert( s->bcode.end(), src.bcode.begin() + bcode_size, src.bcode.end() );
 
 	v->bcodectr.push_back( bcode_size );
 	int res = exec_internal( * v, bcode_size );

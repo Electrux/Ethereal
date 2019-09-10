@@ -7,7 +7,7 @@ import std.term;
 import std.time;
 import std.vec;
 
-files = fs.dir_entries( "tests", fs.ent.RECURSE, '(.*)\\.et' );
+files = fs.dir_entries( 'tests', fs.ent.RECURSE, '(.*)\\.et' );
 
 p = 0;
 f = 0;

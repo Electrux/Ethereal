@@ -41,7 +41,6 @@ int load_src( vm_state_t & vm, const std::string & file, const std::string & ali
 	new_src->name = new_src_str;
 	new_src->id = new_src_str;
 	new_src->dir = GetCWD();
-	fprintf( stdout, "dir for src %s: %s\n", new_src->id.c_str(), new_src->dir.c_str() );
 	err = tokenize( * new_src );
 	if( err != E_OK ) goto cleanup;
 

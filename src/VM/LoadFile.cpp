@@ -17,13 +17,16 @@ int load_src( vm_state_t & vm, const std::string & file, const std::string & ali
 	src_t & src = * vm.srcstack.back();
 	auto last_slash_loc = file.find_last_of( '/' ) + 1;
 	auto last_dot_loc = file.find_last_of( '.' );
-	std::string mod_name = alias == "" ? file.substr( last_slash_loc, last_dot_loc ) : alias;
+	std::string mod_name = alias == "" ? file.substr( last_slash_loc, last_dot_loc - last_slash_loc ) : alias;
 	if( vm.bcodectr.size() == MAX_BCODE_CTR_SRCS ) {
 		VM_FAIL( "internal error: too many nested imports, cannot continue (max nested size is: %zu, including main source",
 			 vm.bcodectr.capacity() );
 		return E_VM_FAIL;
 	}
-	if( vm.srcs.find( mod_name ) != vm.srcs.end() ) {
+
+	const std::string new_src_str = file.substr( last_slash_loc );
+
+	if( vm.srcs.find( new_src_str ) != vm.srcs.end() ) {
 		return E_OK;
 	}
 
@@ -32,13 +35,13 @@ int load_src( vm_state_t & vm, const std::string & file, const std::string & ali
 	DirFormat( src_dir );
 	SetCWD( src_dir );
 	int err = E_OK;
-	const std::string new_src_str = file.substr( last_slash_loc );
 
 	parse_tree_t * ptree = nullptr;
 	src_t * new_src = new src_t( false );
 	new_src->name = new_src_str;
 	new_src->id = new_src_str;
-	new_src->dir = src_dir;
+	new_src->dir = GetCWD();
+	fprintf( stdout, "dir for src %s: %s\n", new_src->id.c_str(), new_src->dir.c_str() );
 	err = tokenize( * new_src );
 	if( err != E_OK ) goto cleanup;
 

@@ -5,12 +5,12 @@ import std.os;
 
 struct _cxx_build_t {
 	name = 'tmp';
+	type = 'bin';
 	flags = [];
 	inc_dirs = [];
 	lib_dirs = [];
 	lib_flags = [];
 }
-	type = 'bin';
 
 struct _cxx_proj_t {
 	flags = [];
@@ -32,11 +32,9 @@ fn cxx_new_proj() {
 }
 
 mfn< _cxx_proj_t > add_build( name, type ) {
-	b = _cxx_build_t{};
-	b.name = name;
-	b.type = type;
+	b = _cxx_build_t{ name, type };
 	self.builds.push( b );
 }
 
-import flags;
-import libs;
+import './flags';
+import './libs';

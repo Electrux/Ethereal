@@ -55,7 +55,7 @@ int main( int argc, char ** argv )
 	src_t * main_src = new src_t( true );
 	main_src->name = main_src_str;
 	main_src->id = "main_src_" + main_src->name;
-	main_src->dir = src_dir;
+	main_src->dir = GetCWD();
 	err = tokenize( * main_src );
 	if( err != E_OK ) goto cleanup;
 

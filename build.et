@@ -1,9 +1,9 @@
 #!./buildfiles/et
 
-import os;
-import str;
-import term;
-import cxxproj;
+import std.os;
+import std.str;
+import std.term;
+import cxxproj.cxxproj;
 
 # will set CC variable accordingly
 eth = cxx_new_proj();

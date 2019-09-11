@@ -2,6 +2,7 @@
 
 import std.str;
 import std.vec;
+import std.term;
 import eth.vm;
 
 vm = evm.new();
@@ -14,7 +15,12 @@ line_id = 0;
 input = "";
 lines = [];
 for ; vm.is_running(); {
-	input = scan( indent == 0 ? res.to_str() + ' > ' : '... ' );
+	if indent == 0 {
+		cprint( res == 0 ? '{g}0 {c}>{0} ' : '{r}' + res.to_str() + ' {c}>{0} ' );
+	} else {
+		cprint( '{y}...{0} ' );
+	}
+	input = scan();
 
 	if input == '!!!' { break; }
 

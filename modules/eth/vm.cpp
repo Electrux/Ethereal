@@ -179,6 +179,10 @@ var_base_t * vm_exec_code( vm_state_t & vm, func_call_data_t & fcd )
 		if( !it->bytecode( src ) ) return new var_int_t( E_BYTECODE_FAIL );
 	}
 
+	for( auto & bc : src.bcode ) {
+		bc.parse_ctr += toks_size;
+	}
+
 	if( v->flags & OPT_B ) {
 		fprintf( stdout, "Byte Code:\n" );
 		for( size_t i = 0; i < src.bcode.size(); ++i ) {

@@ -18,12 +18,7 @@ else
 fi
 
 if [[ -z "${DEBUG}" ]]; then
-	opti="-O2"
-	# check for -flto
-	$compiler -fsyntax-only -flto -xc++ /dev/null 2>/dev/null
-	if [[ $? == 0 ]]; then
-		opti="$opti -flto"
-	fi
+	opti="-O2 -flto"
 else
 	opti="-DDEBUG_MODE"
 fi
@@ -49,6 +44,15 @@ fi
 
 echo "Using PREFIX = ${PREFIX_DIR}"
 echo "Using USE_CCACHE = ${USE_CCACHE}"
+
+# check for -march=native
+$compiler -fsyntax-only -march=native -xc++ /dev/null 2>/dev/null
+if [[ $? == 0 ]]; then
+	opti="$opti -march=native"
+	echo "-march=native support = yes"
+else
+	echo "-march=native support = no"
+fi
 
 VERSION_STRING="-DVERSION_MAIN=0 -DVERSION_SUB=0 -DVERSION_PATCH=2"
 

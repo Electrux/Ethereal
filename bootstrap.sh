@@ -19,6 +19,11 @@ fi
 
 if [[ -z "${DEBUG}" ]]; then
 	opti="-O2"
+	# check for -flto
+	$compiler -fsyntax-only -flto -xc++ /dev/null 2>/dev/null
+	if [[ $? == 0 ]]; then
+		opti="$opti -flto"
+	fi
 else
 	opti="-DDEBUG_MODE"
 fi

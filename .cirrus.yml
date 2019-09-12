@@ -1,3 +1,5 @@
+# LTO is disabled on ubuntu 14.04 and freebsd 10.4
+# because clang 3.4 does work correctly with it
 task:
   name: Ubuntu 14.04 gcc 4.8.4
   container:
@@ -12,6 +14,7 @@ task:
     image: teeks99/clang-ubuntu:3.4
   env:
     CXX: clang++-3.4
+    USE_LTO: false
   install_script: apt update && apt install -y libgmp-dev
   compile_script: ./bootstrap.sh
   tests_script: ./perform_tests.et
@@ -30,6 +33,8 @@ task:
   name: FreeBSD 10.4 clang 3.4.1
   freebsd_instance:
     image: freebsd-10-4-release-amd64
+  env:
+    USE_LTO: false
   install_script: pkg install -y gmp
   compile_script: ./bootstrap.sh
   tests_script: ./perform_tests.et

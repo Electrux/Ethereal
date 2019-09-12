@@ -18,7 +18,11 @@ else
 fi
 
 if [[ -z "${DEBUG}" ]]; then
-	opti="-O2 -flto"
+	opti="-O2"
+	# do not use LTO if explicitly disabled
+	if [[ "${USE_LTO}" != "no" && "${USE_LTO}" != "false" ]]; then
+		opti="${opti} -flto"
+	fi
 else
 	opti="-DDEBUG_MODE"
 fi
@@ -44,6 +48,9 @@ fi
 
 echo "Using PREFIX = ${PREFIX_DIR}"
 echo "Using USE_CCACHE = ${USE_CCACHE}"
+
+if [[ -z "${USE_LTO}" ]]; then USE_LTO="true"; fi
+echo "Using USE_LTO = ${USE_LTO}"
 
 # check for -march=native
 $compiler -fsyntax-only -march=native -xc++ /dev/null 2>/dev/null

@@ -56,9 +56,9 @@ echo "Using USE_LTO = ${USE_LTO}"
 $compiler -fsyntax-only -march=native -xc++ /dev/null 2>/dev/null
 if [[ $? == 0 ]]; then
 	opti="$opti -march=native"
-	echo "-march=native support = yes"
+	echo "Using -march=native = yes"
 else
-	echo "-march=native support = no"
+	echo "Using -march=native = no"
 fi
 
 VERSION_STRING="-DVERSION_MAIN=0 -DVERSION_SUB=0 -DVERSION_PATCH=2"

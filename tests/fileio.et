@@ -37,9 +37,8 @@ fn read_all() {
 	} else {
 		s = [];
 		if f.read_all( s ) {
-			sz = s.len();
-			for i = 0; i < sz; i += 1 {
-				println( '--> ', s[ i ] );
+			for line in s.iter() {
+				println( '--> ', line );
 			}
 		} else {
 			println( 'nothing to read :(' );

@@ -36,6 +36,7 @@ const char * TokStrs[ _TOK_LAST ] = {
 	"elif",
 	"else",
 	"for",
+	"in",
 	"continue",
 	"break",
 	"ldmod",
@@ -296,6 +297,7 @@ static int classify_str( const std::string & str )
 	else if( str == TokStrs[ TOK_ELIF ] ) return TOK_ELIF;
 	else if( str == TokStrs[ TOK_ELSE ] ) return TOK_ELSE;
 	else if( str == TokStrs[ TOK_FOR ] ) return TOK_FOR;
+	else if( str == TokStrs[ TOK_IN ] ) return TOK_IN;
 	else if( str == TokStrs[ TOK_CONTINUE ] ) return TOK_CONTINUE;
 	else if( str == TokStrs[ TOK_BREAK ] ) return TOK_BREAK;
 	else if( str == TokStrs[ TOK_LDMOD ] ) return TOK_LDMOD;

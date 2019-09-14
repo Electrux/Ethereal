@@ -29,6 +29,7 @@ enum GrammarTypes
 	GRAM_FN_STRUCT_SUBSCR_CALL,
 	GRAM_IF,
 	GRAM_FOR,
+	GRAM_FOREACH,
 	GRAM_RETURN,
 	GRAM_CONTINUE,
 	GRAM_BREAK,
@@ -232,6 +233,19 @@ public:
 	stmt_for_t( stmt_expr_t * init, stmt_expr_t * cond, stmt_expr_t * step,
 		     const stmt_block_t * block, const int tok_ctr );
 	~stmt_for_t();
+	void disp( const bool has_next ) const;
+	bool bytecode( src_t & src ) const;
+};
+
+class stmt_foreach_t : public stmt_base_t
+{
+	const stmt_simple_t * m_iter;
+	stmt_expr_t * m_expr;
+	const stmt_block_t * m_block;
+public:
+	stmt_foreach_t( const stmt_simple_t * name, stmt_expr_t * expr,
+			const stmt_block_t * block, const int tok_ctr );
+	~stmt_foreach_t();
 	void disp( const bool has_next ) const;
 	bool bytecode( src_t & src ) const;
 };

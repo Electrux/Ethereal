@@ -42,7 +42,7 @@ if 1 == 1 {
 }
 ```
 
-7.  Loops
+7.  Loops (For)
 ```perl
 num = num( scan( "Enter factorial of: " ) );
 fact = 1;
@@ -54,7 +54,17 @@ for x = num; x >= 2; --x {
 println( "Factorial of ", num, ": ", fact );
 ```
 
-8.  Structures & Objects
+8.  Loops (Foreach)
+```perl
+import std.vec;
+
+a = [ 1, 2, 3 ];
+for x in a.iter() {
+	println( x );
+}
+```
+
+9.  Structures & Objects
 ```perl
 struct C {
 	a = 10;
@@ -67,7 +77,7 @@ c = C{};
 print( mult_by( c, 5 ) );
 ```
 
-9.  Structure Member functions
+10.  Structure Member functions
 ```perl
 # first argument is implicitly the calling variable itself: used as 'self'
 mfn< str > print() {

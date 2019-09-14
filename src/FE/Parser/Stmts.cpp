@@ -21,6 +21,7 @@ const char * GrammarTypeStrs[ _GRAM_LAST ] = {
 	"Func/Struct/Subscr Call",
 	"If Conditional",
 	"For Loop",
+	"Foreach Loop",
 	"Return",
 	"Continue",
 	"Break",
@@ -387,6 +388,39 @@ void stmt_for_t::disp( const bool has_next ) const
 	if( m_cond != nullptr ) m_cond->disp( false );
 	IO::print( true, "Expression (step):\n" );
 	if( m_step != nullptr ) m_step->disp( false );
+	IO::tab_rem();
+	IO::tab_add( false );
+	IO::print( false, "Block:\n" );
+	if( m_block != nullptr ) m_block->disp( false );
+
+	IO::tab_rem( 2 );
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////// Foreach Loop //////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////
+
+stmt_foreach_t::stmt_foreach_t( const stmt_simple_t * name, stmt_expr_t * expr,
+				const stmt_block_t * block, const int tok_ctr )
+	: stmt_base_t( GRAM_FOREACH, tok_ctr ), m_iter( name ), m_expr( expr ),
+	  m_block( block ) {}
+
+stmt_foreach_t::~stmt_foreach_t()
+{
+	delete m_iter;
+	delete m_expr;
+	if( m_block != nullptr ) delete m_block;
+}
+
+void stmt_foreach_t::disp( const bool has_next ) const
+{
+	IO::tab_add( has_next );
+	IO::print( has_next, "Foreach Loop at: %x\n", this );
+
+	IO::tab_add( true );
+	IO::print( true, "Iterator: %s\n", m_iter->m_val->data.c_str() );
+	IO::print( m_block != nullptr, "Loop Expression:\n" );
+	if( m_expr != nullptr ) m_expr->disp( false );
 	IO::tab_rem();
 	IO::tab_add( false );
 	IO::print( false, "Block:\n" );

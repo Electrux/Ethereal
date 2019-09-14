@@ -42,7 +42,11 @@ parse_tree_t * parse( src_t & src, parse_helper_t * pre_ph, std::vector< Grammar
 		} else if( ph->peak()->type == TOK_IF ) {
 			res = parse_if( src, ph, parent_stack );
 		} else if( ph->peak()->type == TOK_FOR ) {
-			res = parse_for( src, ph, parent_stack );
+			if( ph->peak( 1 )->type == TOK_IDEN && ph->peak( 2 )->type == TOK_IN ) {
+				res = parse_foreach( src, ph, parent_stack );
+			} else {
+				res = parse_for( src, ph, parent_stack );
+			}
 		} else if( ph->peak()->type == TOK_RETURN ) {
 			if( std::find( parent_stack.begin(), parent_stack.end(), GRAM_FUNC ) == parent_stack.end() ) {
 				PARSE_FAIL( "keyword 'return' can only be used inside a function" );
@@ -50,14 +54,17 @@ parse_tree_t * parse( src_t & src, parse_helper_t * pre_ph, std::vector< Grammar
 			}
 			res = parse_return( src, ph );
 		} else if( ph->peak()->type == TOK_CONTINUE ) {
-			if( std::find( parent_stack.begin(), parent_stack.end(), GRAM_FOR ) == parent_stack.end() ) {
+			// TODO: convert two find calls to a single
+			if( std::find( parent_stack.begin(), parent_stack.end(), GRAM_FOR ) == parent_stack.end() &&
+			    std::find( parent_stack.begin(), parent_stack.end(), GRAM_FOREACH ) == parent_stack.end() ) {
 				PARSE_FAIL( "keyword 'continue' can only be used inside a loop" );
 				goto fail;
 			}
 			res = new stmt_continue_t( ph->tok_ctr() );
 			ph->next();
 		} else if( ph->peak()->type == TOK_BREAK ) {
-			if( std::find( parent_stack.begin(), parent_stack.end(), GRAM_FOR ) == parent_stack.end() ) {
+			if( std::find( parent_stack.begin(), parent_stack.end(), GRAM_FOR ) == parent_stack.end() &&
+			    std::find( parent_stack.begin(), parent_stack.end(), GRAM_FOREACH ) == parent_stack.end() ) {
 				PARSE_FAIL( "keyword 'break' can only be used inside a loop" );
 				goto fail;
 			}

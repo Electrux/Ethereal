@@ -9,6 +9,61 @@
 
 #include "../../src/VM/Core.hpp"
 
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////// Classes ///////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+class var_vec_iter_t : public var_base_t
+{
+	int m_idx;
+	var_vec_t * m_vec;
+public:
+	var_vec_iter_t( var_vec_t * vec, int idx = -1, const int parse_ctr = 0 );
+	~var_vec_iter_t();
+
+	std::string type_str() const;
+	std::string to_str() const;
+	mpz_class to_int() const;
+	bool to_bool() const;
+	var_base_t * copy( const int parse_ctr );
+	void assn( var_base_t * b );
+	var_vec_t * & get();
+	int & pos();
+};
+#define AS_VEC_ITER( x ) static_cast< var_vec_iter_t * >( x )
+
+var_vec_iter_t::var_vec_iter_t( var_vec_t * vec, int idx, const int parse_ctr )
+	: var_base_t( VT_CUSTOM, true, parse_ctr ), m_idx( idx ), m_vec( vec )
+{ VAR_IREF( m_vec ); }
+var_vec_iter_t::~var_vec_iter_t() { VAR_DREF( m_vec ); }
+
+std::string var_vec_iter_t::type_str() const { return "vec_iter_t"; }
+std::string var_vec_iter_t::to_str() const
+{
+	return std::to_string( m_idx );
+}
+mpz_class var_vec_iter_t::to_int() const { return m_idx; }
+bool var_vec_iter_t::to_bool() const { return m_idx >= 0 && m_idx < m_vec->get().size(); }
+var_base_t * var_vec_iter_t::copy( const int parse_ctr )
+{
+	return new var_vec_iter_t( m_vec, m_idx, parse_ctr );
+}
+void var_vec_iter_t::assn( var_base_t * b )
+{
+	m_idx = AS_VEC_ITER( b )->pos();
+	VAR_DREF( m_vec );
+	var_vec_t * vec = AS_VEC_ITER( b )->get();
+	VAR_IREF( vec );
+	m_vec = vec;
+}
+var_vec_t * & var_vec_iter_t::get() { return m_vec; }
+int & var_vec_iter_t::pos() { return m_idx; }
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////// Functions //////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 var_base_t * at( vm_state_t & vm, func_call_data_t & fcd )
 {
 	std::vector< var_base_t * > & v = AS_VEC( fcd.args[ 0 ] )->get();
@@ -101,6 +156,11 @@ var_base_t * find( vm_state_t & vm, func_call_data_t & fcd )
 	return new var_int_t( loc );
 }
 
+var_base_t * iter( vm_state_t & vm, func_call_data_t & fcd )
+{
+	return new var_vec_iter_t( AS_VEC( fcd.args[ 0 ] ) );
+}
+
 var_base_t * add( vm_state_t & vm, func_call_data_t & fcd )
 {
 	std::vector< var_base_t * > res;
@@ -147,6 +207,16 @@ var_base_t * nev( vm_state_t & vm, func_call_data_t & fcd )
 	return vm.vars->get( "false" );
 }
 
+var_base_t * next( vm_state_t & vm, func_call_data_t & fcd )
+{
+	var_vec_iter_t * it = AS_VEC_ITER( fcd.args[ 0 ] );
+	std::vector< var_base_t * > & vec = it->get()->get();
+	int & pos = it->pos();
+	++pos;
+	if( pos >= vec.size() ) return vm.nil;
+	return vec[ pos ];
+}
+
 REGISTER_MODULE( vec )
 {
 	functions_t & vecfns = vm.typefuncs[ "vec" ];
@@ -163,10 +233,14 @@ REGISTER_MODULE( vec )
 	vecfns.add( { "len", 0, 0, {}, FnType::MODULE, { .modfn = len }, true } );
 	vecfns.add( { "clear", 0, 0, {}, FnType::MODULE, { .modfn = clear }, false } );
 	vecfns.add( { "find", 1, 1, { "_any_" }, FnType::MODULE, { .modfn = find }, true } );
+	vecfns.add( { "iter", 0, 0, {}, FnType::MODULE, { .modfn = iter }, true } );
 
 	vm.funcs.add( { "+", 2, 2, { "vec", "vec" }, FnType::MODULE, { .modfn = add }, true } );
 	vm.funcs.add( { "+=", 2, 2, { "vec", "vec" }, FnType::MODULE, { .modfn = add_assn }, false } );
 
 	vm.funcs.add( { "==", 2, 2, { "vec", "vec" }, FnType::MODULE, { .modfn = eqv }, false } );
 	vm.funcs.add( { "!=", 2, 2, { "vec", "vec" }, FnType::MODULE, { .modfn = nev }, false } );
+
+	functions_t & veciterfns = vm.typefuncs[ "vec_iter_t" ];
+	veciterfns.add( { "next", 0, 0, {}, FnType::MODULE, { .modfn = next }, false } );
 }

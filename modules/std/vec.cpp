@@ -221,7 +221,7 @@ var_base_t * range( vm_state_t & vm, func_call_data_t & fcd )
 {
 	mpz_class & a = AS_INT( fcd.args[ 0 ] )->get();
 	mpz_class & b = AS_INT( fcd.args[ 1 ] )->get();
-	mpz_class step = fcd.args.size() > 2 ? AS_INT( fcd.args[ 0 ] )->get() : 1;
+	mpz_class step = fcd.args.size() > 2 ? AS_INT( fcd.args[ 2 ] )->get() : 1;
 
 	std::vector< var_base_t * > vec;
 	for( mpz_class i = a; i < b; i += step ) {

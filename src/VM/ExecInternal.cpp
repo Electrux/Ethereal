@@ -85,7 +85,9 @@ int exec_internal( vm_state_t & vm, long begin, long end, var_base_t * ret )
 			break;
 		}
 		case IC_STORE: // fallthrough
-		case IC_STORE_LOAD: {
+		case IC_STORE_LOAD:
+		case IC_STORE_NO_COPY:
+		case IC_STORE_LOAD_NO_COPY: {
 			std::string var;
 			VERIFY_STACK_MIN( 2 );
 			var = vm.stack->back()->to_str();
@@ -112,9 +114,14 @@ int exec_internal( vm_state_t & vm, long begin, long end, var_base_t * ret )
 				}
 				break;
 			}
-			vm.vars->add( var, newval->copy( ins.parse_ctr ) );
+			if( ins.opcode == IC_STORE_NO_COPY || ins.opcode == IC_STORE_LOAD_NO_COPY ) {
+				VAR_IREF( newval );
+				vm.vars->add( var, newval );
+			} else {
+				vm.vars->add( var, newval->copy( ins.parse_ctr ) );
+			}
 			vm.stack->pop_back();
-			if( ins.opcode == IC_STORE_LOAD ) {
+			if( ins.opcode == IC_STORE_LOAD || ins.opcode == IC_STORE_LOAD_NO_COPY ) {
 				vm.stack->push_back( vm.vars->get( var ) );
 			}
 			break;
@@ -133,7 +140,7 @@ int exec_internal( vm_state_t & vm, long begin, long end, var_base_t * ret )
 			if( var->type() != newval->type() || ( ( var->type() == VT_STRUCT || var->type() == VT_CUSTOM ) &&
 			    var->type_str() != newval->type_str() ) ) {
 				VM_FAIL( "assignment of an existing value expects same type, found lhs: %s and rhs: %s",
-						var->type_str().c_str(), newval->type_str().c_str() );
+					 var->type_str().c_str(), newval->type_str().c_str() );
 				goto fail;
 			}
 

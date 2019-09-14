@@ -19,6 +19,8 @@ enum InstrCode
 	IC_POP,			// Pop from the VM stack
 	IC_STORE,		// args: none, optionally - count of elements to store
 	IC_STORE_LOAD,		// same as IC_STORE + push the result back on stack
+	IC_STORE_NO_COPY,	// args: none
+	IC_STORE_LOAD_NO_COPY,	// args: none
 	IC_STORE_STACK,		// args: none, optionally - count of elements to store
 	IC_STORE_LOAD_STACK,	// same as IC_STORE_STACK + push the result back on stack
 

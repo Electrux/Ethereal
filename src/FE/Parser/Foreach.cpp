@@ -103,7 +103,7 @@ bool stmt_foreach_t::bytecode( src_t & src ) const
 	src.bcode.push_back( { m_iter->m_tok_ctr, m_iter->m_val->line, m_iter->m_val->col,
 			       IC_PUSH, { OP_CONST, m_iter->m_val->data } } );
 	src.bcode.push_back( { m_iter->m_tok_ctr, m_iter->m_val->line, m_iter->m_val->col,
-			       IC_STORE, { OP_NONE, "" } } );
+			       IC_STORE_NO_COPY, { OP_NONE, "" } } );
 
 	// compare the result with nil, break if it is nil
 	src.bcode.push_back( { m_iter->m_tok_ctr, m_iter->m_val->line, m_iter->m_val->col,

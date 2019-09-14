@@ -227,7 +227,7 @@ class var_tuple_t : public var_base_t
 {
 	std::vector< var_base_t * > m_val;
 public:
-	var_tuple_t( std::vector< var_base_t * > & val, const int parse_ctr = 0 );
+	var_tuple_t( const std::vector< var_base_t * > & val, const int parse_ctr = 0 );
 	~var_tuple_t();
 	std::string to_str() const;
 	mpz_class to_int() const;

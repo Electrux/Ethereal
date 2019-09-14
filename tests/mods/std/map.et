@@ -35,3 +35,9 @@ nm = {
 };
 
 assert( nm[ 'solar system' ][ 'second' ] == 'venus', 'nm[ \'solar system\' ][ \'second\' ] should have been \'venus\'' );
+
+for nm_n in nm.iter() {
+	for nm_m in nm_n.1.iter() {
+		println( nm_m );
+	}
+}

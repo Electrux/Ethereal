@@ -19,7 +19,7 @@ class var_vec_iter_t : public var_base_t
 	int m_idx;
 	var_vec_t * m_vec;
 public:
-	var_vec_iter_t( var_vec_t * vec, int idx = -1, const int parse_ctr = 0 );
+	var_vec_iter_t( var_vec_t * vec, bool inc_ref = true, int idx = -1, const int parse_ctr = 0 );
 	~var_vec_iter_t();
 
 	std::string type_str() const;
@@ -33,9 +33,9 @@ public:
 };
 #define AS_VEC_ITER( x ) static_cast< var_vec_iter_t * >( x )
 
-var_vec_iter_t::var_vec_iter_t( var_vec_t * vec, int idx, const int parse_ctr )
+var_vec_iter_t::var_vec_iter_t( var_vec_t * vec, bool inc_ref, int idx, const int parse_ctr )
 	: var_base_t( VT_CUSTOM, true, parse_ctr ), m_idx( idx ), m_vec( vec )
-{ VAR_IREF( m_vec ); }
+{ if( inc_ref ) VAR_IREF( m_vec ); }
 var_vec_iter_t::~var_vec_iter_t() { VAR_DREF( m_vec ); }
 
 std::string var_vec_iter_t::type_str() const { return "vec_iter_t"; }
@@ -47,7 +47,7 @@ mpz_class var_vec_iter_t::to_int() const { return m_idx; }
 bool var_vec_iter_t::to_bool() const { return m_idx >= 0 && m_idx < m_vec->get().size(); }
 var_base_t * var_vec_iter_t::copy( const int parse_ctr )
 {
-	return new var_vec_iter_t( m_vec, m_idx, parse_ctr );
+	return new var_vec_iter_t( m_vec, true, m_idx, parse_ctr );
 }
 void var_vec_iter_t::assn( var_base_t * b )
 {
@@ -217,6 +217,19 @@ var_base_t * next( vm_state_t & vm, func_call_data_t & fcd )
 	return vec[ pos ];
 }
 
+var_base_t * range( vm_state_t & vm, func_call_data_t & fcd )
+{
+	mpz_class & a = AS_INT( fcd.args[ 0 ] )->get();
+	mpz_class & b = AS_INT( fcd.args[ 1 ] )->get();
+	mpz_class step = fcd.args.size() > 2 ? AS_INT( fcd.args[ 0 ] )->get() : 1;
+
+	std::vector< var_base_t * > vec;
+	for( mpz_class i = a; i < b; i += step ) {
+		vec.push_back( new var_int_t( i, fcd.parse_ctr ) );
+	}
+	return new var_vec_iter_t( new var_vec_t( vec ), false );
+}
+
 REGISTER_MODULE( vec )
 {
 	functions_t & vecfns = vm.typefuncs[ "vec" ];
@@ -243,4 +256,6 @@ REGISTER_MODULE( vec )
 
 	functions_t & veciterfns = vm.typefuncs[ "vec_iter_t" ];
 	veciterfns.add( { "next", 0, 0, {}, FnType::MODULE, { .modfn = next }, false } );
+
+	vm.funcs.add( { "range", 2, 3, { "int", "int", "int" }, FnType::MODULE, { .modfn = range }, true } );
 }

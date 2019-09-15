@@ -1,10 +1,7 @@
 import std.map;
 
 mfn< _cxx_proj_t, _cxx_build_t > add_lib_dirs( dirs ) {
-	sz = dirs.len();
-	for i = 0; i < sz; i += 1 {
-		self.lib_dirs.push( dirs[ i ] );
-	}
+	self.lib_dirs += dirs;
 }
 
 mfn< _cxx_proj_t, _cxx_build_t > use_lib( lib ) {

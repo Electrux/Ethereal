@@ -8,9 +8,8 @@ fn read_flag_file( file, v ) {
 fn write_flag_file( file, v ) {
 	f = fopen( file, 'a' );
 	if f.is_open() {
-		sz = v.len();
-		for x = 0; x < sz; x += 1 {
-			f.write( v[ x ] + '\n' );
+		for e in v.iter() {
+			f.write( e + '\n' );
 		}
 	}
 }
@@ -26,16 +25,15 @@ mfn< _cxx_proj_t, _cxx_build_t > add_flags( flags ) {
 	avail_flags = [];
 	not_avail_flags = [];
 	read_flag_file( 'flag_cache', avail_flags );
-	sz = flags.len();
-	for i = 0; i < sz; i += 1 {
-		cprint( '{y}checking if compiler supports {c}', flags[ i ], ' {0}... ' );
+	for flag in flags.iter() {
+		cprint( '{y}checking if compiler supports {c}', flag, ' {0}... ' );
 		flush_out();
-		if avail_flags.find( flags[ i ] ) >= 0 {
-			self.flags.push( flags[ i ] );
+		if avail_flags.find( flag ) >= 0 {
+			self.flags.push( flag );
 			cprintln( '{g}yes (cached){0}' );
-		} elif check_compiler_flag( flags[ i ] ) {
-			self.flags.push( flags[ i ] );
-			not_avail_flags.push( flags[ i ] );
+		} elif check_compiler_flag( flag ) {
+			self.flags.push( flag );
+			not_avail_flags.push( flag );
 			cprintln( '{g}yes{0}' );
 		} else {
 			cprintln( '{r}no{0}' );

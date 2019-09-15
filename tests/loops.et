@@ -12,6 +12,9 @@ for i = 1; i < 10; i += 1 {
 	}
 }
 
+assert( var_exists( 'i' ) == false, 'i should not exist here' );
+assert( var_exists( 'j' ) == false, 'j should not exist here' );
+
 for i in range( 1, 10 ) {
 	if i == 2 { println( 'continuing on i = 2' ); continue; }
 	if i == 5 { println( 'breaking on i = 5' ); break; }
@@ -24,3 +27,5 @@ for i in range( 1, 10 ) {
 
 assert( var_exists( 'i' ) == false, 'i should not exist here' );
 assert( var_exists( 'j' ) == false, 'j should not exist here' );
+assert( var_exists( '._i' ) == false, '._i should not exist here' );
+assert( var_exists( '._j' ) == false, '._j should not exist here' );

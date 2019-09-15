@@ -10,3 +10,5 @@ assert( os.get_env( 'RANDOM_ENV_VAR' ) == 'temp', 'RANDOM_ENV_VAR should have be
 
 assert( os.set_env( 'RANDOM_ENV_VAR', 'temp', false ) == 0, 'RANDOM_ENV_VAR should not be set because overwrite is disabled' );
 assert( os.set_env( 'RANDOM_ENV_VAR', 'temp' ) == 0, 'RANDOM_ENV_VAR should be set because overwrite is enabled' );
+
+assert( !os.find_exec( 'ls' ).empty(), '\'ls\' command should have been available in PATH = ', os.get_env( 'PATH' ) );

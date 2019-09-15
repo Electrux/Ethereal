@@ -1,7 +1,20 @@
 ldmod std.os;
 
+import std.str;
+import std.vec;
+import std.fs;
+
 struct _os_t {
 	name = os_get_name();
+}
+
+mfn< _os_t > find_exec( loc ) {
+	for p in os.get_env( 'PATH' ).split( ':' ).iter() {
+		if fs.exists( p + '/' + loc ) {
+			return p + '/' + loc;
+		}
+	}
+	return '';
 }
 
 os = _os_t{};

@@ -26,7 +26,6 @@ int CallFunc( vm_state_t & vm, func_call_data_t & fcd, const int ins_ctr )
 	const langfn_t * lfnptr = nullptr;
 	res_t< var_base_t * > res = { 0, nullptr };
 
-	VERIFY_STACK_MIN( 1 );
 	fcd.args_count = std::stoi( ins.oper.val );
 	// + 1 for function name
 	VERIFY_STACK_MIN( ( size_t )fcd.args_count + 1 );

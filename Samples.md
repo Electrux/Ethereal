@@ -19,8 +19,8 @@ println( var[ 1 ] );
 
 4.  Maps/Dictionaries
 ```perl
-var = {};
-var[ 'str' ] = "test";
+var = { 'str', 'test' };
+var[ 'str' ] = 'test2';
 println( var[ 'str' ] );
 ```
 
@@ -44,14 +44,14 @@ if 1 == 1 {
 
 7.  Loops (For)
 ```perl
-num = num( scan( "Enter factorial of: " ) );
+num = num( scan( 'Enter factorial of: ' ) );
 fact = 1;
 
 for x = num; x >= 2; --x {
 	fact *= x;
 }
 
-println( "Factorial of ", num, ": ", fact );
+println( 'Factorial of ', num, ': ', fact );
 ```
 
 8.  Loops (Foreach)
@@ -84,6 +84,6 @@ mfn< str > print() {
 	println( self );
 }
 
-str = "string";
+str = 'string';
 str.print();
 ```

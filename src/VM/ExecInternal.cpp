@@ -43,8 +43,7 @@ int exec_internal( vm_state_t & vm, long begin, long end, var_base_t * ret )
 	std::chrono::time_point< clk_t > stamp;
 #endif
 
-	int & i = vm.bcodectr.back();
-	for( i = begin; i < end; ++i ) {
+	for( int i = begin; i < end; ++i ) {
 		instr_t & ins = src.bcode[ i ];
 
 #ifdef DEBUG_MODE

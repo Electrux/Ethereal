@@ -16,6 +16,7 @@ int CallFunc( vm_state_t & vm, func_call_data_t & fcd, const int ins_ctr )
 {
 	src_t & src = * vm.srcstack.back();
 	instr_t & ins = src.bcode[ ins_ctr ];
+	fcd.bcodectr = ins_ctr;
 
 	fcd.arg_types.clear();
 	fcd.rem_locs.clear();
@@ -88,9 +89,7 @@ int CallFunc( vm_state_t & vm, func_call_data_t & fcd, const int ins_ctr )
 			vm.vars->add( fn->arg_types[ i ], fcd.args[ i ] );
 		}
 		fcd.args.clear();
-		vm.bcodectr.push_back( 0 );
 		res.code = exec_internal( vm, lfnptr->beg, lfnptr->end, res.data );
-		vm.bcodectr.pop_back();
 		vm.srcstack.pop_back();
 		if( res.code != E_OK ) {
 			VM_FAIL( "function '%s' failed to execute properly", fcd.fn_name.c_str() );

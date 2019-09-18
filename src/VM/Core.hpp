@@ -29,8 +29,6 @@ struct vm_state_t
 	bool exit_called;
 	int exit_status;
 
-	std::vector< int > bcodectr;
-
 	var_none_t * none;
 	var_nil_t * nil;
 
@@ -56,10 +54,11 @@ struct func_call_data_t
 {
 	std::string fn_name;
 	int args_count;
+	int parse_ctr;
+	int bcodectr;
 	std::vector< std::string > arg_types;
 	std::vector< var_base_t * > args;
 	std::vector< void * > rem_locs;
-	int parse_ctr;
 };
 
 #define VM_FAIL( ... ) src_fail( src.name, src.code[ ins.line - 1 ], \

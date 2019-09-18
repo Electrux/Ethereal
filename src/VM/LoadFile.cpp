@@ -18,11 +18,6 @@ int load_src( vm_state_t & vm, const std::string & file, const std::string & ali
 	auto last_slash_loc = file.find_last_of( '/' ) + 1;
 	auto last_dot_loc = file.find_last_of( '.' );
 	std::string mod_name = alias == "" ? file.substr( last_slash_loc, last_dot_loc - last_slash_loc ) : alias;
-	if( vm.bcodectr.size() == MAX_BCODE_CTR_SRCS ) {
-		VM_FAIL( "internal error: too many nested imports, cannot continue (max nested size is: %zu, including main source",
-			 vm.bcodectr.capacity() );
-		return E_VM_FAIL;
-	}
 
 	const std::string new_src_str = file.substr( last_slash_loc );
 

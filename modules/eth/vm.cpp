@@ -197,9 +197,7 @@ var_base_t * vm_exec_code( vm_state_t & vm, func_call_data_t & fcd )
 	s->ptree->insert( s->ptree->end(), src.ptree->begin(), src.ptree->end() );
 	s->bcode.insert( s->bcode.end(), src.bcode.begin() + bcode_size, src.bcode.end() );
 
-	v->bcodectr.push_back( bcode_size );
 	int res = exec_internal( * v, bcode_size );
-	v->bcodectr.pop_back();
 	if( res != E_OK ) {
 		s->code.erase( s->code.begin() + code_size, s->code.end() );
 		s->toks.erase( s->toks.begin() + toks_size, s->toks.end() );

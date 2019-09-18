@@ -93,8 +93,8 @@ var_base_t * assert_eth( vm_state_t & vm, func_call_data_t & fcd )
 {
 	if( fcd.args[ 0 ]->to_bool() ) { return nullptr; }
 	src_t & src = * vm.srcstack.back();
-	int line = src.bcode[ vm.bcodectr.back() ].line;
-	int col = src.bcode[ vm.bcodectr.back() ].col;
+	int line = src.bcode[ fcd.bcodectr ].line;
+	int col = src.bcode[ fcd.bcodectr ].col;
 	std::string op;
 	int sz = fcd.args.size();
 	for( int i = 1; i < sz; ++i ) {

@@ -12,9 +12,7 @@
 
 int vm_exec( vm_state_t & vm )
 {
-	vm.bcodectr.push_back( 0 );
 	int res = exec_internal( vm );
-	vm.bcodectr.pop_back();
 	if( res == E_OK ) res = vm.exit_status;
 	return res;
 }

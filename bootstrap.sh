@@ -23,8 +23,10 @@ if [[ -z "${DEBUG}" ]]; then
 	if [[ "${USE_LTO}" != "no" && "${USE_LTO}" != "false" ]]; then
 		opti="${opti} -flto"
 	fi
+	DEBUG=false
 else
 	opti="-DDEBUG_MODE"
+	DEBUG=true
 fi
 
 compiler_version=$($compiler --version)
@@ -46,6 +48,7 @@ else
 	PREFIX_DIR=${PREFIX}
 fi
 
+echo "Using DEBUG = ${DEBUG}"
 echo "Using PREFIX = ${PREFIX_DIR}"
 echo "Using USE_CCACHE = ${USE_CCACHE}"
 

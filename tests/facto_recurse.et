@@ -1,6 +1,7 @@
 #!./buildfiles/et
 
 import std.vec;
+import std.str;
 
 fn facto( n ) {
 	if n < 2 { return 1; }
@@ -11,5 +12,6 @@ if args.len() > 1 {
 	fact = facto( 5 );
 	assert( fact == 120, 'factorial of 5 should be 120, found: ', fact );
 } else {
-	println( 'factorial of 5 is: ', facto( 5 ) );
+	n = scan( 'Enter a number: ' ).to_int();
+	println( 'factorial of ', n, ' is: ', facto( n ) );
 }

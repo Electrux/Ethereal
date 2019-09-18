@@ -39,12 +39,7 @@ repeat:
 bool stmt_ldmod_t::bytecode( src_t & src ) const
 {
 	std::string file = m_full_name;
-	int res = format_file_str( file, FormatFileType::LIB );
-	if( res != 0 ) {
-		src_fail( src.name, src.code[ m_what->line - 1 ], m_what->line, m_what->col,
-			  "could not find module file '%s.so' for loading", file.c_str() );
-		return false;
-	}
+	format_file_str( file, FormatFileType::LIB );
 	src.bcode.push_back( { m_tok_ctr, m_what->line, m_what->col, IC_LDMOD, { OP_CONST, file } } );
 	return true;
 }

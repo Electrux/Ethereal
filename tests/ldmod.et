@@ -1,4 +1,9 @@
 #!./buildfiles/et
 
 ldmod std.fs;
-ldmod '../buildfiles/std/str';
+
+import std.fs;
+
+if fs.exists( '../buildfiles' ) {
+	ldmod '../buildfiles/std/str';
+}

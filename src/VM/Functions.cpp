@@ -32,7 +32,7 @@ functions_t::~functions_t()
 bool functions_t::add( const function_t & func )
 {
 	if( exists( func ) ) {
-		fprintf( stderr, "Function: %s already exists\n", func.name.c_str() );
+		//fprintf( stderr, "Function: %s already exists\n", func.name.c_str() );
 		return false;
 	}
 	m_funcs.push_back( func );
@@ -43,7 +43,7 @@ bool functions_t::add_vec( const std::vector< function_t > & funcs )
 {
 	for( auto & func : funcs ) {
 		if( exists( func ) ) {
-			fprintf( stderr, "Function: %s already exists\n", func.name.c_str() );
+			//fprintf( stderr, "Function: %s already exists\n", func.name.c_str() );
 			return false;
 		}
 		m_funcs.push_back( func );

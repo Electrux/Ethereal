@@ -192,10 +192,14 @@ int exec_internal( vm_state_t & vm, long begin, long end, var_base_t * ret )
 		case IC_LDMOD: {
 			std::string module_name = ins.oper.val + ".so";
 			std::string init_fn_str = ins.oper.val.substr( ins.oper.val.find_last_of( '/' ) + 4 );
+			if( !fexists( module_name ) ) {
+				VM_FAIL( "could not find module file '%s' for loading", module_name.c_str() );
+				goto fail;
+			}
 			if( vm.dlib->load( module_name ) == nullptr ) goto fail;
 			init_fnptr_t init_fn = ( init_fnptr_t ) vm.dlib->get( module_name, "init_" + init_fn_str );
 			if( init_fn == nullptr ) {
-				VM_FAIL( "failed to find init function '%s' in module '%s'\n", init_fn_str.c_str(), module_name.c_str() );
+				VM_FAIL( "failed to find init function '%s' in module '%s'", init_fn_str.c_str(), module_name.c_str() );
 				goto fail;
 			}
 			init_fn( vm );
@@ -212,6 +216,10 @@ int exec_internal( vm_state_t & vm, long begin, long end, var_base_t * ret )
 			const std::string file = vm.stack->back()->to_str();
 			vm.stack->pop_back();
 
+			if( !fexists( file ) ) {
+				VM_FAIL( "could not find file '%s' for importing", file.c_str() );
+				goto fail;
+			}
 			int ret = load_src( vm, file, alias, ins );
 
 			if( ret != E_OK ) {

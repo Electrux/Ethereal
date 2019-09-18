@@ -52,7 +52,7 @@ void DirFormat( std::string & dir )
 	return;
 }
 
-int format_file_str( std::string & file, const FormatFileType ftype )
+void format_file_str( std::string & file, const FormatFileType ftype )
 {
 	if( file.front() != '~' && file.front() != '/' && file.front() != '.' ) {
 		std::string type;
@@ -65,5 +65,4 @@ int format_file_str( std::string & file, const FormatFileType ftype )
 		file.insert( file.begin(), home.begin(), home.end() );
 	}
 	if( ftype == FormatFileType::INC ) file += ".et";
-	return ( int )!fexists( file + ( ftype == FormatFileType::LIB ? ".so" : "" ) );
 }

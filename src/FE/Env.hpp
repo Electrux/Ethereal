@@ -24,6 +24,6 @@ enum class FormatFileType {
 	LIB,
 };
 
-int format_file_str( std::string & file, const FormatFileType ftype );
+void format_file_str( std::string & file, const FormatFileType ftype );
 
 #endif // ENV_HPP

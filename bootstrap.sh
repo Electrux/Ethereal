@@ -3,6 +3,8 @@
 compiler="clang++"
 os=$(uname)
 
+VERSION_STRING="-DVERSION_MAIN=0 -DVERSION_SUB=0 -DVERSION_PATCH=3"
+
 if [[ "$os" == 'Linux' && "$(uname -o 2>/dev/null)" != "Android" ]]; then
 	compiler="g++"
 fi
@@ -63,8 +65,6 @@ if [[ $? == 0 ]]; then
 else
 	echo "Using -march=native = no"
 fi
-
-VERSION_STRING="-DVERSION_MAIN=0 -DVERSION_SUB=0 -DVERSION_PATCH=2"
 
 EXTRA_INCLUDES=""
 EXTRA_FLAGS=""

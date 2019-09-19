@@ -15,6 +15,9 @@
 
 #include "Core.hpp"
 
+/**
+ * \brief All valid lexical tokens in the language
+ */
 enum TokType
 {
 	TOK_INT,
@@ -110,8 +113,15 @@ enum TokType
 	_TOK_LAST,
 };
 
+/**
+ * \brief String value of each of the lexical tokens
+ */
 extern const char * TokStrs[ _TOK_LAST ];
 
+/**
+ * \brief Describes line number, column number,
+ * 	  token type, and string data of a token
+ */
 struct tok_t
 {
 	int line;
@@ -123,22 +133,53 @@ struct tok_t
 		line( _line ), col( _col ), type( ( TokType)_type ), data( _data ) {}
 };
 
+
+/**
+ * \brief A list of tokens
+ */
 typedef std::vector< tok_t > toks_t;
 
 struct src_t;
 
+/**
+ * \brief Main tokenizing function which is called for generating
+ *	  tokens from source code and store in field: toks of src_t
+ * \param reference to src_t which contains file name in field: name;
+ *
+ * \return on success: E_OK, on fail: something else from Errors enum
+ */
 int tokenize( src_t & src );
 
+/**
+ * \brief Check if the given type (int) is a variable data
+ *
+ * A 'variable data' consists of ints, floats, const strings, and identifiers
+ * 
+ * \param int type - from enum TokType
+ * \return true if the type is one of variable data tokens, false if it isn't
+ */
 inline bool token_type_is_data( const int type )
 {
 	return type == TOK_INT || type == TOK_FLT || type == TOK_STR || type == TOK_IDEN;
 }
 
+/**
+ * \brief Check if the given type (int) is an operator
+ *
+ * \param int type - from enum TokType
+ * \return true if the type is one of possible operators, false if it isn't
+ */
 inline bool token_type_is_oper( const int type )
 {
 	return ( type >= TOK_ASSN && type <= TOK_RBRACK );
 }
 
+/**
+ * \brief Check if the given type (int) is an assignment operator
+ *
+ * \param int type - from enum TokType
+ * \return true if the type is one of possible assignment operators, false if it isn't
+ */
 inline bool token_type_is_one_of_assign( const int type )
 {
 	return ( type == TOK_ASSN ||
@@ -156,16 +197,42 @@ inline bool token_type_is_one_of_assign( const int type )
 		);
 }
 
+/**
+ * \brief Check if the given token pointer's type is a variable data
+ *
+ * A 'variable data' consists of ints, floats, const strings, and identifiers
+ *
+ * This function calls the equivalent token_type_is_data function
+ *
+ * \param tok_t *
+ * \return true if the type is one of variable data tokens, false if it isn't
+ */
 inline bool token_is_data( const tok_t * tok )
 {
 	return token_type_is_data( tok->type );
 }
 
+/**
+ * \brief Check if the given token pointer's type is an operator
+ *
+ * This function calls the equivalent token_type_is_oper function
+ *
+ * \param tok_t *
+ * \return true if the type is one of operator tokens, false if it isn't
+ */
 inline bool token_is_oper( const tok_t * tok )
 {
 	return token_type_is_oper( tok->type );
 }
 
+/**
+ * \brief Check if the given token pointer's type is an assignment operator
+ *
+ * This function calls the equivalent token_type_is_assign function
+ *
+ * \param tok_t *
+ * \return true if the type is one of assignment operator tokens, false if it isn't
+ */
 inline bool token_is_one_of_assign( const tok_t * tok )
 {
 	return token_type_is_one_of_assign( tok->type );

@@ -128,7 +128,7 @@ static void remove_back_slash( std::string & s );
 
 int tokenize( src_t & src )
 {
-	// var_interpreter_t manually inserts code itself so read_file is useless there
+	// in /modules/eth/vm.cpp, var_evm_t manually inserts code itself so read_file is useless there
 	int res = src.code.empty() ? read_file( src ) : E_OK;
 	if( res == E_FILE_IO_ERR ) {
 		return res;

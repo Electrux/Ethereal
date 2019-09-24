@@ -149,7 +149,8 @@ var_base_t * vm_exec_code( vm_state_t & vm, func_call_data_t & fcd )
 
 	// add the new code
 	for( auto & e : vec ) {
-		src.code.push_back( e->to_str() );
+		std::vector< std::string > tmp = str_delimit( e->to_str(), '\n' );
+		src.code.insert( src.code.end(), tmp.begin(), tmp.end() );
 	}
 
 	int err = E_OK;

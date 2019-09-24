@@ -16,7 +16,7 @@ input = "";
 lines = [];
 for ; vm.is_running(); {
 	if indent == 0 {
-		cprint( res == 0 ? '{g}0 {c}>{0} ' : '{r}' + res.to_str() + ' {c}>{0} ' );
+		cprint( res == 0 ? '{g}0' : '{r}' + res.to_str(), ' {c}>{0} ' );
 	} else {
 		cprint( '{y}...{0} ' );
 	}

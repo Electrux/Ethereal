@@ -1,0 +1,24 @@
+ldmod std.regex;
+import std.vec;
+
+struct _regex_t {}
+
+re = _regex_t{};
+
+mfn< regex_t > match_in_vec( vec ) {
+	if self.empty() { return vec; }
+	res = [];
+	for e in vec.iter() {
+		if self.match( e ) { res.push( e ); }
+	}
+	return res;
+}
+
+mfn< regex_t > inv_match_in_vec( vec ) {
+	if self.empty() { return vec; }
+	res = [];
+	for e in vec.iter() {
+		if !self.match( e ) { res.push( e ); }
+	}
+	return res;
+}

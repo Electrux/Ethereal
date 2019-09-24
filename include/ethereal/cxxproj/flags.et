@@ -5,7 +5,7 @@ fn read_flag_file( file, v ) {
 	}
 }
 
-fn write_flag_file( file, v ) {
+fn append_flag_file( file, v ) {
 	f = fopen( file, 'a' );
 	if f.is_open() {
 		for e in v.iter() {
@@ -39,5 +39,5 @@ mfn< _cxx_proj_t, _cxx_build_t > add_flags( flags ) {
 			cprintln( '{r}no{0}' );
 		}
 	}
-	write_flag_file( 'flag_cache', not_avail_flags );
+	append_flag_file( 'flag_cache', not_avail_flags );
 }

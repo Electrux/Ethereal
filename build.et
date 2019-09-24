@@ -1,7 +1,8 @@
 #!./buildfiles/et
 
-import std.os;
 import std.str;
+import std.os;
+import std.fs;
 import std.term;
 import cxxproj.cxxproj;
 
@@ -47,7 +48,9 @@ if !eth.use_lib( 'gmpxx' ) {
 	exit( 1 );
 }
 
-eth.add_build( 'et', 'dynamic' );
+srcs = fs.dir_entries( 'src', fs.ent.RECURSE );
+
+eth.add_build( 'et', 'dynamic' ).add_files( srcs, '' );
 
 println( eth );
 

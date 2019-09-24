@@ -65,7 +65,7 @@ var_base_t * & var_opt_t::get() { return m_val; }
 
 var_base_t * opt_create( vm_state_t & vm, func_call_data_t & fcd )
 {
-	return new var_opt_t( nullptr, 0 );
+	return new var_opt_t( nullptr );
 }
 
 var_base_t * opt_empty( vm_state_t & vm, func_call_data_t & fcd )

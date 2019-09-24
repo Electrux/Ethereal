@@ -3,14 +3,7 @@ import std.vec;
 import std.fs;
 import std.os;
 
-struct _cxx_build_t {
-	name = 'tmp';
-	type = 'bin';
-	flags = [];
-	inc_dirs = [];
-	lib_dirs = [];
-	lib_flags = [];
-}
+import './cxxbuild';
 
 struct _cxx_proj_t {
 	flags = [];
@@ -34,6 +27,11 @@ fn cxx_new_proj() {
 mfn< _cxx_proj_t > add_build( name, type ) {
 	b = _cxx_build_t{ name, type };
 	self.builds.push( b );
+	return self.builds[ self.builds.len() - 1 ];
+}
+
+mfn< _cxx_proj_t > build() {
+
 }
 
 import './flags';

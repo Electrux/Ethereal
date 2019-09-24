@@ -157,7 +157,7 @@ done
 # Standard Libraries
 echo
 echo 'Building Standard Libraries ...'
-for l in "fs" "map" "math" "opt" "os" "set" "str" "term" "time" "tuple" "vec"; do
+for l in "fs" "map" "math" "opt" "os" "regex" "set" "str" "term" "time" "tuple" "vec"; do
 	install_name=""
 	if [[ "$os" == "Darwin" ]]; then
 		install_name="-Wl,-install_name -Wl,@rpath/std/lib$l.so"

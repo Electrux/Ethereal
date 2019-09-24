@@ -1,0 +1,24 @@
+import std.vec;
+import std.regex;
+
+struct _cxx_build_t {
+	name = 'tmp';
+	type = 'bin';
+	files = [];
+	flags = [];
+	inc_dirs = [];
+	lib_dirs = [];
+	lib_flags = [];
+}
+
+mfn< _cxx_build_t > add_files( vec, regex ) {
+	r = re.build( regex );
+	self.files += r.inv_match_in_vec( vec );
+	return self;
+}
+
+mfn< _cxx_build_t > rem_files( regex ) {
+	r = re.build( regex );
+	self.files = r.inv_match_in_vec( self.files );
+	return self;
+}

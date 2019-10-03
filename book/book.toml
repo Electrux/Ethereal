@@ -1,0 +1,6 @@
+[book]
+authors = ["Electrux"]
+language = "en"
+multilingual = false
+src = "src"
+title = "Ethereal Lang"

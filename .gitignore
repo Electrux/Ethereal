@@ -18,6 +18,7 @@ buildfiles/
 CMakeFiles/
 doxygen/
 flag_cache
+book/book/
 
 # Build file on BSD #
 #####################

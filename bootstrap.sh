@@ -9,6 +9,9 @@ if [[ "$os" == 'Linux' && "$(uname -o 2>/dev/null)" != "Android" ]]; then
 	compiler="g++"
 fi
 
+EXTRA_INCLUDES=""
+EXTRA_FLAGS=""
+
 if [[ "$os" =~ .*BSD.* ]]; then
 	compiler="clang++"
 	EXTRA_INCLUDES="-I/usr/local/include -L/usr/local/lib -Wno-unused-command-line-argument -D_WITH_GETLINE"
@@ -75,9 +78,6 @@ if [[ $? == 0 ]]; then
 else
 	echo "Using -march=native = no"
 fi
-
-EXTRA_INCLUDES=""
-EXTRA_FLAGS=""
 
 # Library: et
 if [[ "$os" != "Darwin" ]]; then

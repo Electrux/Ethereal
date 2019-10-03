@@ -9,6 +9,13 @@ if [[ "$os" == 'Linux' && "$(uname -o 2>/dev/null)" != "Android" ]]; then
 	compiler="g++"
 fi
 
+if [[ "$os" =~ .*BSD.* ]]; then
+	compiler="clang++"
+	EXTRA_INCLUDES="-I/usr/local/include -L/usr/local/lib -Wno-unused-command-line-argument -D_WITH_GETLINE"
+else
+	EXTRA_FLAGS="-ldl"
+fi
+
 if ! [[ -z "${CXX}" ]]; then
 	compiler="${CXX}"
 fi
@@ -45,7 +52,10 @@ mkdir -p "buildfiles/eth"
 mkdir -p "buildfiles/pre"
 
 if [[ -z "${PREFIX}" ]]; then
+	CDIR=$(pwd)
+	cd $(dirname $0)
 	PREFIX_DIR=$(pwd)
+	cd $CDIR
 else
 	PREFIX_DIR=${PREFIX}
 fi
@@ -68,12 +78,6 @@ fi
 
 EXTRA_INCLUDES=""
 EXTRA_FLAGS=""
-
-if [[ "$os" =~ .*BSD.* ]]; then
-	EXTRA_INCLUDES="-I/usr/local/include -L/usr/local/lib -Wno-unused-command-line-argument -D_WITH_GETLINE"
-else
-	EXTRA_FLAGS="-ldl"
-fi
 
 # Library: et
 if [[ "$os" != "Darwin" ]]; then

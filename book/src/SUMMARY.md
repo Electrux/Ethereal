@@ -1,3 +1,5 @@
-# Summary
+# Ethereal Docs
 
-- [Chapter 1](./chapter_1.md)
+- [User Guide](./01-guide.md)
+  - [Installation](./guide/00-install.md)
+  - [Basics](./guide/01-basics.md)

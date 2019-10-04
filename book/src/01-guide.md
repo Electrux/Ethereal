@@ -10,5 +10,7 @@ This guide also intends to go over the standard library of the language with som
 
 **INDEX**
 
-- [Installation](./guide/00-install.md)
-- [Language Basics](./guide/01-basics.md)
+- [The Ethereal Language](./guide/00-ethereal-lang.md)
+- [Installation](./guide/01-install.md)
+- [Hello World!](./guide/02-hello-world.md)
+- [Variables](./guide/03-vars.md)

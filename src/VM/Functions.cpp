@@ -101,6 +101,15 @@ const function_t * functions_t::get( const std::string & name, const int arg_cou
 	return nullptr;
 }
 
+const std::vector< function_t * > functions_t::get_all_by_name( const std::string & name )
+{
+	std::vector< function_t * > res;
+	for( auto & fn : m_funcs ) {
+		if( fn.name == name ) res.push_back( & fn );
+	}
+	return res;
+}
+
 static bool compare_arg_types( const std::vector< std::string > & ats1, const std::vector< std::string > & ats2, const int min_args )
 {
 	if( ats2.empty() ) return true;

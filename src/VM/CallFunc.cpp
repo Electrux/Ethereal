@@ -10,7 +10,9 @@
 #include "ExecInternal.hpp"
 #include "CallFunc.hpp"
 
-std::string args_types_to_string( const std::vector< var_base_t * > & args, bool is_mem );
+static std::string args_types_to_string( const std::vector< var_base_t * > & args, bool is_mem );
+static void disp_possible_funcs( vm_state_t & vm, const std::string & fn );
+static void disp_fn_vec( const std::vector< function_t * > & fns );
 
 int CallFunc( vm_state_t & vm, func_call_data_t & fcd, const int ins_ctr )
 {
@@ -61,6 +63,7 @@ int CallFunc( vm_state_t & vm, func_call_data_t & fcd, const int ins_ctr )
 			 ins.opcode == IC_MFN_CALL ? "member " : "",fcd.fn_name.c_str(),
 			 ins.opcode == IC_MFN_CALL ? ( "for type '" + member->type_str() + "' " ).c_str() : "",
 			 fcd.args_count, args_types_to_string( fcd.args, member ).c_str() );
+		disp_possible_funcs( vm, fcd.fn_name );
 		goto fail;
 	}
 	if( fn->type == FnType::MODULE ) mfnptr = fn->func.modfn;
@@ -118,7 +121,7 @@ fail:
 	return E_VM_FAIL;
 }
 
-std::string args_types_to_string( const std::vector< var_base_t * > & args, bool is_mem )
+static std::string args_types_to_string( const std::vector< var_base_t * > & args, bool is_mem )
 {
 	std::string res = "";
 	size_t size = args.size();
@@ -127,4 +130,40 @@ std::string args_types_to_string( const std::vector< var_base_t * > & args, bool
 		if( i < size - 1 ) res += ", ";
 	}
 	return res;
+}
+
+static void disp_possible_funcs( vm_state_t & vm, const std::string & fn )
+{
+	std::vector< function_t * > fns = vm.funcs.get_all_by_name( fn );
+	if( fns.size() > 0 ) {
+		fprintf( stderr, "Other possible functions with same name are:\n" );
+		disp_fn_vec( fns );
+	}
+
+	for( auto & type : vm.typefuncs ) {
+		std::vector< function_t * > mfns = type.second.get_all_by_name( fn );
+		if( mfns.size() > 0 ) {
+			fprintf( stderr, "Possible member functions for type '%s' with same name are:\n",
+				 type.first.c_str() );
+			disp_fn_vec( mfns );
+		}
+	}
+}
+
+static void disp_fn_vec( const std::vector< function_t * > & fns )
+{
+	for( auto & fn : fns ) {
+		fprintf( stderr, "-> %s with arg count: [%d,%d] ", fn->name.c_str(), fn->arg_count_min, fn->arg_count_max );
+		if( fn->arg_count_min > 0 && fn->arg_types.size() < 1 ) {
+			fprintf( stderr, "(...)\n" );
+		} else {
+			fprintf( stderr, "(" );
+			for( auto & type : fn->arg_types ) {
+				fprintf( stderr, "%s, ", type.c_str() );
+			}
+			if( fn->arg_count_max == -1 ) fprintf( stderr, "..." );
+			else if( fn->arg_count_min > 0 ) fprintf( stderr, "\b\b" );
+			fprintf( stderr, ")\n" );
+		}
+	}
 }

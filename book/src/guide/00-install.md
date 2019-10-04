@@ -13,6 +13,8 @@ Then, `cd` into the directory and execute the `bootstrap.sh` shell script. That 
 cd Ethereal && ./bootstrap.sh
 ```
 
+This will generate the Ethereal libraries and binaries which can be used to execute Ethereal code. The binary which we will use is called `et` and it should be generated in `bin/` directory of the repository (assuming no `PREFIX` is set).
+
 The `bootstrap.sh` script uses multiple environment variables which can be set for customizing and optimizing the build process. They are described below.
 
 ## Bootstrap Environment Variables

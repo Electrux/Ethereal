@@ -133,7 +133,7 @@ struct tok_t
 	std::string data;
 
 	tok_t( int _line, int _col, int _type, std::string _data ) :
-		line( _line ), col( _col ), type( ( TokType)_type ), data( _data ) {}
+	       line( _line ), col( _col ), type( ( TokType)_type ), data( _data ) {}
 };
 
 

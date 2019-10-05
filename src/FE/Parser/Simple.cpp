@@ -12,7 +12,7 @@
 
 bool stmt_simple_t::bytecode( src_t & src ) const
 {
-	if( m_stype == SIMPLE_KEYWORD || m_stype == SIMPLE_OPER ) {
+	if( m_stype == SIMPLE_OPER ) {
 		src.bcode.push_back( { m_tok_ctr, m_val->line, m_val->col, IC_PUSH, { OP_CONST, TokStrs[ m_val->type ] } } );
 	} else if( m_val->type == TOK_INT ) {
 		src.bcode.push_back( { m_tok_ctr, m_val->line, m_val->col, IC_PUSH, { OP_INT, m_val->data } } );

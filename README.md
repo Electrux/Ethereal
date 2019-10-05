@@ -7,7 +7,7 @@ A simple, dynamically typed, interpreted, generic programming language.
 # Some Sample Programs
 
 ## Hello world using Function:
-```python
+```go
 fn hello( to ) {
 	println( 'Hello ', to );
 }
@@ -16,13 +16,13 @@ hello( 'world' );
 ```
 
 ## Taking input from the user - with a prompt:
-```python
+```go
 dat = scan( 'Please enter some data: ' );
 println( 'The data you entered is: ', dat );
 ```
 
 ## Iterative Factorial of a number:
-```python
+```go
 import std.str; # for to_int()
 
 num = scan( "Enter factorial of: " ).to_int();

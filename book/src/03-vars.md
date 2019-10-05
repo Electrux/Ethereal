@@ -10,18 +10,18 @@ Clearly, variables are a crucial part of a programming language, and hence, Ethe
 
 Creating a variable is really easy. For example, if we want an integer data, say `20`, to be stored in memory (and be accessible later),
 we can create a variable for that, say `a`, and use that when required. To do this, the variable can be created directly as:
-```python
+```go
 a = 20;
 ```
 
 Since Ethereal is a dynamically typed language, we need not mention the data type, of the value that we want to store, manually.
 We can then use it later on, say in `println`, to print the value of this variable. To do that, we can do the following:
-```python
+```go
 println(a);
 ```
 
 The will produce the output:
-```python
+```go
 20
 ```
 
@@ -30,7 +30,7 @@ We can also reassign the variables to different values later on. However, we nee
 If we do something like that, the interpreter will throw an error.
 
 For example, if we write this program:
-```python
+```go
 a = 20;
 a = 'hi';
 ```
@@ -53,14 +53,14 @@ Ethereal, like many other languages, uses braces to define chunks, or **blocks**
 Any variable that is created, has its lifetime bound to this block. It will not be accessible outside this block.
 
 For example:
-```python
+```go
 a = 20;
 ```
 is globally scoped - it is not inside any set of braces, which means that it can be globally used anywhere and once created,
 it will not be destroyed until the end of the program (it will be available exactly from the location where it is created).
 
 On the other hand, if we declare the same variable as:
-```python
+```go
 {
 	a = 20;
 }
@@ -68,7 +68,7 @@ On the other hand, if we declare the same variable as:
 it will be accessible inside the set of braces (albeit after the creation - declaration of the variable), but not outside them.
 
 So, if we use the variable outside this set of braces (scope), say as follows:
-```python
+```go
 {
 	a = 20;
 }
@@ -82,7 +82,7 @@ println(a);
 ```
 
 Of course, if we create another variable named `a` with some data outside the scope, that would work just fine. So something like this works:
-```python
+```go
 {
 	a = 20;
 }

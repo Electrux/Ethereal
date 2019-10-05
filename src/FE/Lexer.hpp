@@ -43,6 +43,9 @@ enum TokType
 	TOK_CONTINUE,
 	TOK_BREAK,
 	TOK_LDMOD,
+	TOK_TRUE,
+	TOK_FALSE,
+	TOK_NIL,
 	// if the source file is the actual executed one, execute the code between these symbols
 	TOK_MAIN_SRC_BEG,
 	TOK_MAIN_SRC_END,
@@ -160,7 +163,10 @@ int tokenize( src_t & src );
  */
 inline bool token_type_is_data( const int type )
 {
-	return type == TOK_INT || type == TOK_FLT || type == TOK_STR || type == TOK_IDEN;
+	return type == TOK_INT || type == TOK_FLT ||
+	       type == TOK_STR || type == TOK_IDEN ||
+	       type == TOK_TRUE || type == TOK_FALSE ||
+	       type == TOK_NIL;
 }
 
 /**

@@ -40,6 +40,9 @@ const char * TokStrs[ _TOK_LAST ] = {
 	"continue",
 	"break",
 	"ldmod",
+	"true",
+	"false",
+	"nil",
 	// if the source file is the actual executed one, execute the code between these symbols
 	"_MAIN_BEG_",
 	"_MAIN_END_",
@@ -301,6 +304,9 @@ static int classify_str( const std::string & str )
 	else if( str == TokStrs[ TOK_CONTINUE ] ) return TOK_CONTINUE;
 	else if( str == TokStrs[ TOK_BREAK ] ) return TOK_BREAK;
 	else if( str == TokStrs[ TOK_LDMOD ] ) return TOK_LDMOD;
+	else if( str == TokStrs[ TOK_TRUE ] ) return TOK_TRUE;
+	else if( str == TokStrs[ TOK_FALSE ] ) return TOK_FALSE;
+	else if( str == TokStrs[ TOK_NIL ] ) return TOK_NIL;
 
 	return TOK_IDEN;
 }

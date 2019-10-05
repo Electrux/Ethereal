@@ -1,8 +1,8 @@
 # Hello World!
 
 A simple **hello world** program in Ethereal can be written as:
-```python
-println('hello world');
+```go
+println('hello, world');
 ```
 
 Save the code in a file named, say `hello.et`, and run it using the `et` binary which we built in the [installation](./01-install.md) document.
@@ -20,7 +20,7 @@ The `println` function adds a new line at the end of each call, so we did not ha
 But if we want to explicitly write new line characters wherever required without the function doing that internally, we can use the `print` function for that.
 
 For example, if we want to display multiple statements, using `print`:
-```python
+```go
 print('first line');
 print('second line');
 ```
@@ -31,7 +31,7 @@ first linesecond line
 ```
 
 To correct this, we will add a new line at the end of the first `print` call.
-```python
+```go
 print('first line\n');
 print('second line');
 ```
@@ -40,6 +40,12 @@ which then gives us the correct output:
 ```
 first line
 second line
+```
+
+One more important thing to add here is that `print` and `println` can take any number of arguments (but at least one for `print`) by separating each
+argument with a comma (,). So, something like this is possible:
+```go
+println('Hello, ', 'world');
 ```
 
 ## Conclusion

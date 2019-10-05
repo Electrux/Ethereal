@@ -1,31 +1,31 @@
 # Code Examples
 
 1.  Hello world
-```python
+```go
 println( 'Hello world' );
 ```
 
 2.  Variables
-```python
+```go
 var = 2 + 4 * 6 / 8;
 println( var );
 ```
 
 3.  Arrays/Lists
-```python
+```go
 var = [ 1, 2, 3, 4 ];
 println( var[ 1 ] );
 ```
 
 4.  Maps/Dictionaries
-```python
+```go
 var = { 'str', 'test' };
 var[ 'str' ] = 'test2';
 println( var[ 'str' ] );
 ```
 
 5.  Functions
-```python
+```go
 fn hello( to ) {
 	println( 'Hello ', to );
 }
@@ -34,7 +34,7 @@ hello( 'world' );
 ```
 
 6.  Conditionals
-```python
+```go
 if 1 == 1 {
 	print( 'One' );
 } else {
@@ -43,7 +43,7 @@ if 1 == 1 {
 ```
 
 7.  Loops (For)
-```python
+```go
 num = num( scan( 'Enter factorial of: ' ) );
 fact = 1;
 
@@ -55,7 +55,7 @@ println( 'Factorial of ', num, ': ', fact );
 ```
 
 8.  Loops (Foreach)
-```python
+```go
 import std.vec;
 
 a = [ 1, 2, 3 ];
@@ -65,7 +65,7 @@ for x in a.iter() {
 ```
 
 9.  Structures & Objects
-```python
+```go
 struct C {
 	a = 10;
 	b = 20;
@@ -78,7 +78,7 @@ print( mult_by( c, 5 ) );
 ```
 
 10.  Structure Member functions
-```python
+```go
 # first argument is implicitly the calling variable itself: used as 'self'
 mfn< str > print() {
 	println( self );

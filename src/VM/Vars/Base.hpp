@@ -180,7 +180,7 @@ class var_enum_t : public var_base_t
 	std::unordered_map< std::string, var_int_t * > m_val;
 public:
 	var_enum_t( const std::string & name, std::unordered_map< std::string, var_int_t * > & val,
-		    const int parse_ctr );
+		    const int parse_ctr = 0 );
 	~var_enum_t();
 	std::string to_str() const;
 	mpz_class to_int() const;
@@ -246,7 +246,8 @@ class var_struct_def_t : public var_base_t
 	std::unordered_map< std::string, var_base_t * > m_val;
 public:
 	var_struct_def_t( const std::string & name, std::vector< std::string > & pos,
-			  std::unordered_map< std::string, var_base_t * > & val, const int parse_ctr = 0 );
+			  std::unordered_map< std::string, var_base_t * > & val,
+			  const int parse_ctr = 0 );
 	~var_struct_def_t();
 	std::string type_str() const;
 	std::string to_str() const;
@@ -263,7 +264,8 @@ class var_struct_t : public var_base_t
 	std::string m_name;
 	std::unordered_map< std::string, var_base_t * > m_val;
 public:
-	var_struct_t( const std::string & name, std::unordered_map< std::string, var_base_t * > & val, const int parse_ctr = 0 );
+	var_struct_t( const std::string & name, std::unordered_map< std::string, var_base_t * > & val,
+		      const int parse_ctr = 0 );
 	~var_struct_t();
 	std::string type_str() const;
 	std::string to_str() const;

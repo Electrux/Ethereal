@@ -92,7 +92,7 @@ int exec_internal( vm_state_t & vm, long begin, long end, var_base_t * ret )
 			var = vm.stack->back()->to_str();
 			vm.stack->pop_back();
 			var_base_t * newval = vm.stack->back();
-			if( vm.vars->exists( var, true ) ) {
+			if( vm.vars->exists( var ) ) {
 				var_base_t * val = vm.vars->get( var );
 				if( val->type() != newval->type() || ( ( val->type() == VT_STRUCT || val->type() == VT_CUSTOM ) &&
 				    val->type_str() != newval->type_str() ) ) {
@@ -284,7 +284,7 @@ int exec_internal( vm_state_t & vm, long begin, long end, var_base_t * ret )
 		case IC_BUILD_ENUM_MASK: {
 			std::string name = vm.stack->back()->to_str();
 			vm.stack->pop_back();
-			if( vm.vars->exists( name, true ) ) {
+			if( vm.vars->exists( name ) ) {
 				var_base_t * val = vm.vars->get( name );
 				VM_FAIL( "variable '%s' already declared at another location" );
 				VM_FAIL_TOK_CTR( val->parse_ctr(), "original declared here" );

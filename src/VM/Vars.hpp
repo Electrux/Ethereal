@@ -26,7 +26,7 @@ public:
 
 	var_base_t * get( const std::string & var_name ) const;
 
-	bool exists( const std::string & var_name, const bool all_layers ) const;
+	bool exists( const std::string & var_name ) const;
 
 	void add( const std::string & var_name, var_base_t * const val );
 

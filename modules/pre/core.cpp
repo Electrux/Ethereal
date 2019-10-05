@@ -108,7 +108,7 @@ var_base_t * assert_eth( vm_state_t & vm, func_call_data_t & fcd )
 
 var_base_t * var_exists( vm_state_t & vm, func_call_data_t & fcd )
 {
-	return TRUE_FALSE( vm.vars->exists( fcd.args[ 0 ]->to_str(), true ) );
+	return TRUE_FALSE( vm.vars->exists( fcd.args[ 0 ]->to_str() ) );
 }
 
 var_base_t * var_mfn_exists( vm_state_t & vm, func_call_data_t & fcd )
@@ -119,7 +119,7 @@ var_base_t * var_mfn_exists( vm_state_t & vm, func_call_data_t & fcd )
 
 var_base_t * var_ref_count( vm_state_t & vm, func_call_data_t & fcd )
 {
-	if( !vm.vars->exists( fcd.args[ 0 ]->to_str(), true ) ) return new var_int_t( -1 );
+	if( !vm.vars->exists( fcd.args[ 0 ]->to_str() ) ) return new var_int_t( -1 );
 	return new var_int_t( vm.vars->get( fcd.args[ 0 ]->to_str() )->ref() );
 }
 

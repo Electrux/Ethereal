@@ -304,7 +304,8 @@ stmt_expr_t * gen_tree( const src_t & src, parse_helper_t * ph, std::vector< stm
 				++available;
 			}
 			ph->set_tok_ctr( ( * it )->m_tok_ctr );
-			PARSE_FAIL( "not enough arguments for operator '%s' (expected: %d, available: %d) (possibly an extra comma)",
+			PARSE_FAIL( "not enough arguments for operator '%s' (expected: %d, available: %d) "
+				    "(possibly an extra comma or a trailing dot)",
 				    TokStrs[ op->type ], arg_count, available );
 			goto fail;
 		}

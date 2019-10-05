@@ -1,7 +1,7 @@
 # Hello World!
 
 A simple **hello world** program in Ethereal can be written as:
-```perl
+```python
 println('hello world');
 ```
 
@@ -20,7 +20,7 @@ The `println` function adds a new line at the end of each call, so we did not ha
 But if we want to explicitly write new line characters wherever required without the function doing that internally, we can use the `print` function for that.
 
 For example, if we want to display multiple statements, using `print`:
-```perl
+```python
 print('first line');
 print('second line');
 ```
@@ -31,7 +31,7 @@ first linesecond line
 ```
 
 To correct this, we will add a new line at the end of the first `print` call.
-```perl
+```python
 print('first line\n');
 print('second line');
 ```

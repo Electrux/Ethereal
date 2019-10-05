@@ -24,7 +24,7 @@ to this method. The biggest pro being that writing code is quicker, while the bi
 at a glance.
 
 For example, if we write something like:
-```perl
+```python
 s = 'hi';
 i = 5;
 ```
@@ -46,4 +46,46 @@ There are some important things to understand about these data types, so let's d
 
 ### Integers
 
-Integers
+Integers represent all the negative and positive numbers in Ethereal - all the numbers without decimal that is.
+Theoretically, it can contain any number in the range: `(-∞,∞)`.
+
+Note that unlike many (especially compiled) languages, numbers are not limited to 32, 64, or even 128 bit.
+So yes, you can have as big a number as you like, so long as it fits your system's memory.
+
+For example,
+```python
+num = 13721736912389172367234538762354786253478652374587235648923749872394623864;
+negative = -12378126387512836512678358761253871625365412578631263816287357125387123123768162;
+```
+are both valid integer variables.
+
+### Floats
+
+Floating point numbers are the decimal numbers - any number which is an imperfect fraction.
+These are useful when precise mathematical calculations are required, as integers won't provide decimal precision.
+As with integers, floating point values can also be arbitrarily long with a very high precision.
+For example,
+```python
+flt = 13721736912389172367234538.762354786253478652374587235648923749872394623864;
+negative = -123781263875128365.12678358761253871625365412578631263816287357125387123123768162;
+```
+
+Do note that to classify a number as floating point, the use of decimal point (.) to signify decimal is a **must**,
+even if the number does not actually have anything after the decimal point (.), in which case,
+we can simply have a `zero (0)` after that.
+For example,
+```python
+flt = 12.0;
+```
+
+### Bools
+
+Booleans are the `true` and `false` values in Ethereal. These are used when you want to know something in a yes or no fashion.
+The `true` and `false` are special (constant) variables in Ethereal which signify their respective boolean values.
+These variables cannot ever be modified and are always available globally throughout the program's life.
+
+For example,
+```rust
+t = true;
+f = false;
+```

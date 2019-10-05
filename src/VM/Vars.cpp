@@ -32,7 +32,7 @@ var_base_t * vars_t::get( const std::string & var_name ) const
 	return nullptr;
 }
 
-bool vars_t::exists( const std::string & var_name, const bool all_layers ) const
+bool vars_t::exists( const std::string & var_name ) const
 {
 	int layer_iter = m_layer;
 	while( layer_iter >= 0 ) {
@@ -40,7 +40,6 @@ bool vars_t::exists( const std::string & var_name, const bool all_layers ) const
 		const std::unordered_map< std::string, var_base_t * > & layer = m_vars.at( layer_iter );
 		if( layer.find( var_name ) != layer.end() ) return true;
 		--layer_iter;
-		if( !all_layers ) break;
 	}
 	return false;
 }

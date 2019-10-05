@@ -1,0 +1,21 @@
+#!./buildfiles/et
+
+import std.vec;
+
+v = [ 3, 2, 4, 1 ];
+
+for i = 0; i < 4; i += 1 {
+	for j = 1; j < 4 - i; j += 1 {
+		if v[ j - 1 ] > v[ j ] {
+			tmp = v[ j ];
+			v[ j ] = v[ j - 1 ];
+			v[ j - 1 ] = tmp;
+		}
+	}
+}
+
+if args.len() > 1 {
+	assert( v == [ 1, 2, 3, 4 ], 'Vector should have been: [ 1, 2, 3, 4 ], but is: ', v );
+} else {
+	println( "Vector: ", v );
+}

@@ -5,7 +5,8 @@ A simple **hello world** program in Ethereal can be written as:
 println('hello world');
 ```
 
-Save the code in a file named, say `hello.et`, and run it using the `et` binary which we built in the [installation](./00-install.md) document. Assuming that no `PREFIX` was set, the binary would be created in the `bin/` directory of the cloned repostory. Hence, the command would be:
+Save the code in a file named, say `hello.et`, and run it using the `et` binary which we built in the [installation](./01-install.md) document.
+Assuming that no `PREFIX` was set, the binary would be created in the `bin/` directory of the cloned repostory. Hence, the command would be:
 ```bash
 ./bin/et hello.et
 ```

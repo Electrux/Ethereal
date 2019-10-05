@@ -17,7 +17,9 @@ bool stmt_func_struct_subscr_call_t::bytecode( src_t & src ) const
 
 	if( m_ctype == CT_SUBSCR ) {
 		bool bcodeasconst = src.bcode_as_const;
+		bool found_assn = src.found_assn;
 		src.bcode_as_const = false;
+		src.found_assn = false;
 		if( m_name ) {
 			if( m_post_dot ) src.bcode_as_const = true;
 			m_name->bytecode( src );
@@ -35,6 +37,7 @@ bool stmt_func_struct_subscr_call_t::bytecode( src_t & src ) const
 					       IC_MFN_CALL, { OP_INT, "1" } } );
 		}
 		src.bcode_as_const = bcodeasconst;
+		src.found_assn = found_assn;
 		return true;
 	}
 

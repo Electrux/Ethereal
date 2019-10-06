@@ -1,0 +1,18 @@
+#!./buildfiles/et
+
+import std.str;
+
+str = "string";
+len = str.len();
+
+for i = 0; i < len; i += 1 {
+	for j = 0; j < len - i - 1; j += 1 {
+		if str[ j ] > str[ j + 1 ] {
+			tmp = str[ j ];
+			str.set_at( j, str[ j + 1 ] );
+			str.set_at( j + 1, tmp );
+		}
+	}
+}
+
+println( str );

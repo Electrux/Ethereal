@@ -99,6 +99,12 @@ The reason being that even though having same names, both of the declared variab
 The first one, having data `20`, no longer exists after the scope, therefore, the second one, having data `hi`,
 is a new variable declaration rather than reassignment.
 
+## Variable Naming
+One last important thing about variables is their naming. Ethereal defines specific rules based on which you can name variables,
+quite similar to most other languages. These rules are that variable names:
+1. Must begin with an alphabet (irrelevant of the case) or underscore
+2. Can contain numbers anywhere except the first character
+3. Cannot contain any symbol other than alphabets, numbers, and underscores.
 
 Well, that is basically how variables, their reassignment, and their scopes, work. Not much to learn or understand and pretty easy - which is the goal!
 

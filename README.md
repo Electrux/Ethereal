@@ -22,7 +22,7 @@ println( 'The data you entered is: ', dat );
 ```
 
 ## Iterative Factorial of a number:
-```go
+```python
 import std.str; # for to_int()
 
 num = scan( "Enter factorial of: " ).to_int();

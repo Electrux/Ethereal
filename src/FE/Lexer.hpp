@@ -95,6 +95,9 @@ enum TokType
 	TOK_QUEST,
 	TOK_COL,  // :
 
+	// Varargs
+	TOK_TDOT,
+
 	// Separators
 	TOK_DOT,
 	TOK_COMMA,

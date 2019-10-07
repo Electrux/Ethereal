@@ -92,6 +92,9 @@ const char * TokStrs[ _TOK_LAST ] = {
 	"?",
 	":",
 
+	// Varargs
+	"...",
+
 	// Separators
 	".",
 	",",
@@ -538,6 +541,17 @@ static int get_operator( const std::string & src, const std::string & line, cons
 	case '\n':
 		SET_OP_TYPE_BRK( TOK_NEWL );
 	case '.':
+		if( i < line_len - 1 ) {
+			if( NEXT( line ) == '.' ) {
+				++i;
+				if( i < line_len - 1 ) {
+					if( NEXT( line ) == '.' ) {
+						++i;
+						SET_OP_TYPE_BRK( TOK_TDOT );
+					}
+				}
+			}
+		}
 		SET_OP_TYPE_BRK( TOK_DOT );
 	case ',':
 		SET_OP_TYPE_BRK( TOK_COMMA );

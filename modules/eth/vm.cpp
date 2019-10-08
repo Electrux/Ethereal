@@ -213,7 +213,7 @@ var_base_t * vm_exec_code( vm_state_t & vm, func_call_data_t & fcd )
 
 REGISTER_MODULE( vm )
 {
-	functions_t & vmfns = vm.typefuncs[ "_evm" ];
+	functions_t & vmfns = vm.typefuncs[ "_evm_t" ];
 	vmfns.add( { "new", 0, 0, {}, FnType::MODULE, { .modfn = vm_create }, true } );
 
 	functions_t & evmfns = vm.typefuncs[ "evm_t" ];

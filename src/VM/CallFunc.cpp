@@ -11,7 +11,7 @@
 #include "CallFunc.hpp"
 
 static std::string args_types_to_string( const std::vector< var_base_t * > & args, bool is_mem );
-static void disp_possible_funcs( vm_state_t & vm, const std::string & fn );
+static void disp_possible_funcs( vm_state_t & vm, const std::string & fn, const std::string & mem_of );
 static void disp_fn_vec( const std::vector< function_t * > & fns );
 
 int CallFunc( vm_state_t & vm, func_call_data_t & fcd, const int ins_ctr )
@@ -63,7 +63,7 @@ int CallFunc( vm_state_t & vm, func_call_data_t & fcd, const int ins_ctr )
 			 ins.opcode == IC_MFN_CALL ? "member " : "",fcd.fn_name.c_str(),
 			 ins.opcode == IC_MFN_CALL ? ( "for type '" + member->type_str() + "' " ).c_str() : "",
 			 fcd.args_count, args_types_to_string( fcd.args, member ).c_str() );
-		disp_possible_funcs( vm, fcd.fn_name );
+		disp_possible_funcs( vm, fcd.fn_name, ins.opcode == IC_MFN_CALL ? member->type_str() : "" );
 		goto fail;
 	}
 	if( fn->type == FnType::MODULE ) mfnptr = fn->func.modfn;
@@ -132,7 +132,7 @@ static std::string args_types_to_string( const std::vector< var_base_t * > & arg
 	return res;
 }
 
-static void disp_possible_funcs( vm_state_t & vm, const std::string & fn )
+static void disp_possible_funcs( vm_state_t & vm, const std::string & fn, const std::string & mem_of )
 {
 	std::vector< function_t * > fns = vm.funcs.get_all_by_name( fn );
 	if( fns.size() > 0 ) {
@@ -140,11 +140,20 @@ static void disp_possible_funcs( vm_state_t & vm, const std::string & fn )
 		disp_fn_vec( fns );
 	}
 
-	for( auto & type : vm.typefuncs ) {
-		std::vector< function_t * > mfns = type.second.get_all_by_name( fn );
+	if( mem_of == "" ) {
+		for( auto & type : vm.typefuncs ) {
+			std::vector< function_t * > mfns = type.second.get_all_by_name( fn );
+			if( mfns.size() > 0 ) {
+				fprintf( stderr, "Possible member functions for type '%s' with same name are:\n",
+					 type.first.c_str() );
+				disp_fn_vec( mfns );
+			}
+		}
+	} else {
+		std::vector< function_t * > mfns = vm.typefuncs[ mem_of ].get_all_by_name( fn );
 		if( mfns.size() > 0 ) {
 			fprintf( stderr, "Possible member functions for type '%s' with same name are:\n",
-				 type.first.c_str() );
+				 mem_of.c_str() );
 			disp_fn_vec( mfns );
 		}
 	}

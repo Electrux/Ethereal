@@ -145,7 +145,7 @@ REGISTER_MODULE( map )
 	mapfns.add( { "get", 1, 1, { "str" }, FnType::MODULE, { .modfn = get }, false } );
 	mapfns.add( { "len", 0, 0, {}, FnType::MODULE, { .modfn = len }, true } );
 	mapfns.add( { "clear", 0, 0, {}, FnType::MODULE, { .modfn = clear }, false } );
-	mapfns.add( { "find", 1, 1, { "str" }, FnType::MODULE, { .modfn = find }, false } );
+	mapfns.add( { "_find", 1, 1, { "str" }, FnType::MODULE, { .modfn = find }, false } );
 	mapfns.add( { "iter", 0, 0, {}, FnType::MODULE, { .modfn = iter }, true } );
 
 	functions_t & mapiterfns = vm.typefuncs[ "map_iter_t" ];

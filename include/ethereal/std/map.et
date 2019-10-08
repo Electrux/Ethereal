@@ -15,3 +15,8 @@ mfn< map > '[]'( key ) {
 	assert( var_mfn_exists( key, 'hash' ), 'type \'', key.type(), '\' does not implement a hash member function' );
 	return self.get( key.hash() );
 }
+
+mfn< map > find( key ) {
+	assert( var_mfn_exists( key, 'hash' ), 'type \'', key.type(), '\' does not implement a hash member function' );
+	return self._find( key.hash() );
+}

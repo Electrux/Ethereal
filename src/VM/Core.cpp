@@ -11,6 +11,12 @@
 
 #include "Core.hpp"
 
+#ifdef __APPLE__
+const char * LIB_EXT = ".dylib";
+#else
+const char * LIB_EXT = ".so";
+#endif
+
 vm_state_t::vm_state_t() : flags( 0 ), exit_called( false ), exit_status( 0 ),
 	none( new var_none_t( 0 ) ), nil( new var_nil_t( 0 ) ),
 	vars( new vars_t ), dlib( new dyn_lib_t() ),
@@ -34,9 +40,9 @@ bool set_init_mods( vm_state_t & vm )
 	std::vector< std::string > mods = { "core" };
 
 	for( auto & m : mods ) {
-		std::string module_name = m + ".so";
+		std::string module_name = m + LIB_EXT;
 		if( m.front() != '~' && m.front() != '/' && m.front() != '.' ) {
-			module_name = STRINGIFY( BUILD_PREFIX_DIR ) "/lib/ethereal/pre/lib" + m + ".so";
+			module_name = STRINGIFY( BUILD_PREFIX_DIR ) "/lib/ethereal/pre/lib" + module_name;
 		}
 		if( !fexists( module_name ) ) {
 			fprintf( stderr, "failed to find the prelude module library: %s\n", module_name.c_str() );

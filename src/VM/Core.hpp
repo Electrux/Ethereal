@@ -15,6 +15,8 @@
 #include "Consts.hpp"
 #include "VMStack.hpp"
 
+extern const char * LIB_EXT;
+
 typedef std::vector< src_t * > src_stack_t;
 
 typedef std::unordered_map< std::string, functions_t > type_funcs_t;

@@ -14,7 +14,7 @@
 #include "Env.hpp"
 #include "FS.hpp"
 
-#define MAX_PATH 1024
+#define MAX_PATH 2048
 
 std::string GetEnv( const std::string & key )
 {

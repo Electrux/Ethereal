@@ -190,7 +190,7 @@ int exec_internal( vm_state_t & vm, long begin, long end, var_base_t * ret )
 			break;
 		}
 		case IC_LDMOD: {
-			std::string module_name = ins.oper.val + ".so";
+			std::string module_name = ins.oper.val + LIB_EXT;
 			std::string init_fn_str = ins.oper.val.substr( ins.oper.val.find_last_of( '/' ) + 4 );
 			if( !fexists( module_name ) ) {
 				VM_FAIL( "could not find module file '%s' for loading", module_name.c_str() );

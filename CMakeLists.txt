@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.6)
+cmake_minimum_required(VERSION 2.8)
 
 project(Ethereal CXX)
 
@@ -65,11 +65,11 @@ file(COPY "${CMAKE_SOURCE_DIR}/include" DESTINATION "${CMAKE_INSTALL_PREFIX}/")
 
 # Ethereal Core
 file(GLOB_RECURSE SRCS RELATIVE "${PROJECT_SOURCE_DIR}" "src/*.cpp")
-list(FILTER SRCS EXCLUDE REGEX ".*Main.cpp$")
+list(REMOVE_ITEM SRCS "src/FE/Main.cpp" "src/VM/Main.cpp")
 
 add_library(et-lib SHARED ${SRCS})
 target_link_libraries(et-lib ${CMAKE_DL_LIBS})
-target_link_libraries(et-lib gmp)
+target_link_libraries(et-lib gmp gmpxx)
 set_target_properties(et-lib
     PROPERTIES
     OUTPUT_NAME et

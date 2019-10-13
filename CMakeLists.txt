@@ -3,7 +3,7 @@ cmake_minimum_required(VERSION 2.8)
 project(Ethereal CXX)
 
 set(CMAKE_CXX_STANDARD 11)
-if (CMAKE_VERSION VERSION_LESS "3.1")
+if(CMAKE_VERSION VERSION_LESS "3.1")
 	add_compile_options(-std=c++11)
 endif()
 
@@ -66,13 +66,23 @@ message("-- Using PREFIX = ${CMAKE_INSTALL_PREFIX}")
 # Finally! The sources!!!!!
 
 # Includes
+
+# For libGMP on macOS
+if(APPLE)
+	if(CMAKE_VERSION VERSION_LESS "2.9")
+		include_directories(/usr/local/include)
+	else()
+		target_include_directories(et-lib PUBLIC /usr/local/include)
+	endif()
+endif()
 file(COPY "${CMAKE_SOURCE_DIR}/include" DESTINATION "${CMAKE_INSTALL_PREFIX}/")
 
 # Ethereal Core
+file(GLOB_RECURSE INCS RELATIVE "${PROJECT_SOURCE_DIR}" "include/*.hpp")
 file(GLOB_RECURSE SRCS RELATIVE "${PROJECT_SOURCE_DIR}" "src/*.cpp")
 list(REMOVE_ITEM SRCS "src/FE/Main.cpp" "src/VM/Main.cpp")
 
-add_library(et-lib SHARED ${SRCS})
+add_library(et-lib SHARED ${SRCS} ${INCS})
 target_link_libraries(et-lib ${CMAKE_DL_LIBS})
 target_link_libraries(et-lib gmp gmpxx)
 set_target_properties(et-lib

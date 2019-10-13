@@ -16,6 +16,12 @@ include(CheckCXXCompilerFlag)
 find_library(gmp REQUIRED)
 find_library(gmpxx REQUIRED)
 
+# For libGMP on macOS
+if(APPLE)
+	include_directories(/usr/local/include)
+	link_directories(/usr/local/lib)
+endif()
+
 set(VERSION_MAJOR 0)
 set(VERSION_MINOR 0)
 set(VERSION_PATCH 3)
@@ -75,11 +81,6 @@ file(GLOB_RECURSE SRCS RELATIVE "${PROJECT_SOURCE_DIR}" "src/*.cpp")
 list(REMOVE_ITEM SRCS "src/FE/Main.cpp" "src/VM/Main.cpp")
 
 add_library(et-lib SHARED ${SRCS} ${INCS})
-# For libGMP on macOS
-if(APPLE)
-	include_directories(/usr/local/include)
-	link_directories(/usr/local/lib)
-endif()
 target_link_libraries(et-lib ${CMAKE_DL_LIBS})
 target_link_libraries(et-lib gmp gmpxx)
 set_target_properties(et-lib

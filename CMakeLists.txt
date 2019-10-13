@@ -16,8 +16,8 @@ include(CheckCXXCompilerFlag)
 find_library(gmp REQUIRED)
 find_library(gmpxx REQUIRED)
 
-# For libGMP on macOS
-if(APPLE)
+# For libGMP on macOS and BSD
+if(APPLE OR ${CMAKE_SYSTEM_NAME} MATCHES ".*BSD.*")
 	include_directories(/usr/local/include)
 	link_directories(/usr/local/lib)
 endif()

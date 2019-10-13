@@ -1,4 +1,4 @@
-#!./build/bin/et
+#!@BINARY_LOC@
 
 import std.str;
 import std.vec;

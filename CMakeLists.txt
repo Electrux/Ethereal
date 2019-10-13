@@ -130,3 +130,8 @@ foreach(m ${mods})
 		  COMPONENT Libraries
 	)
 endforeach()
+
+# Playground
+set(BINARY_LOC "${CMAKE_INSTALL_PREFIX}/bin/et")
+configure_file("${PROJECT_SOURCE_DIR}/playground.et" "${CMAKE_BINARY_DIR}/artifacts/et-repl" @ONLY)
+install(PROGRAMS "${CMAKE_BINARY_DIR}/artifacts/et-repl" DESTINATION "${CMAKE_INSTALL_PREFIX}/bin/")

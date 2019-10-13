@@ -9,10 +9,12 @@ endif()
 
 set(CMAKE_BUILD_WITH_INSTALL_RPATH FALSE)
 set(CMAKE_INSTALL_RPATH_USE_LINK_PATH TRUE)
+set(CMAKE_MACOSX_RPATH TRUE)
 
 include(CheckCXXCompilerFlag)
 
 find_library(gmp REQUIRED)
+find_library(gmpxx REQUIRED)
 
 set(VERSION_MAJOR 0)
 set(VERSION_MINOR 0)
@@ -59,7 +61,6 @@ else()
 endif()
 add_definitions(-DBUILD_PREFIX_DIR=${CMAKE_INSTALL_PREFIX})
 set(CMAKE_INSTALL_RPATH "${CMAKE_INSTALL_PREFIX}/lib/ethereal")
-set(MACOSX_RPATH "${CMAKE_INSTALL_PREFIX}/lib/ethereal")
 message("-- Using PREFIX = ${CMAKE_INSTALL_PREFIX}")
 
 # Finally! The sources!!!!!

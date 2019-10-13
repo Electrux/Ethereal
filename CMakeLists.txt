@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 2.8)
+cmake_minimum_required(VERSION 3.6)
 
 project(Ethereal CXX)
 
@@ -55,6 +55,7 @@ else()
 endif()
 add_definitions(-DBUILD_PREFIX_DIR=${CMAKE_INSTALL_PREFIX})
 set(CMAKE_INSTALL_RPATH "${CMAKE_INSTALL_PREFIX}/lib/ethereal")
+set(MACOSX_RPATH "${CMAKE_INSTALL_PREFIX}/lib/ethereal")
 message("-- Using PREFIX = ${CMAKE_INSTALL_PREFIX}")
 
 # Finally! The sources!!!!!

@@ -1,4 +1,4 @@
-#!./buildfiles/et
+#!./build/bin/et
 
 import std.regex;
 

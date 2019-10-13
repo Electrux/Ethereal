@@ -1,3 +1,3 @@
-#!./buildfiles/et
+#!./build/bin/et
 
 println( 'hi' );

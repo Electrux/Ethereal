@@ -4,8 +4,8 @@ task:
   name: Ubuntu 14.04 gcc 4.8.4
   container:
     image: ubuntu:14.04
-  install_script: apt-get update && apt-get install -y libgmp-dev g++
-  compile_script: ./bootstrap.sh
+  install_script: apt-get update && apt-get install -y libgmp-dev g++ cmake make
+  compile_script: mkdir build && cd build && cmake .. && make
   tests_script: ./perform_tests.et
 
 task:
@@ -14,9 +14,9 @@ task:
     image: teeks99/clang-ubuntu:3.4
   env:
     CXX: clang++-3.4
-    USE_LTO: false
-  install_script: apt update && apt install -y libgmp-dev
-  compile_script: ./bootstrap.sh
+    SKIP_LTO: true
+  install_script: apt update && apt install -y libgmp-dev cmake make
+  compile_script: mkdir build && cd build && cmake .. && make
   tests_script: ./perform_tests.et
 
 task:
@@ -25,8 +25,8 @@ task:
     image: gcc:6
   env:
     CXX: g++
-  install_script: apt update && apt install -y libgmp-dev
-  compile_script: ./bootstrap.sh
+  install_script: apt update && apt install -y libgmp-dev cmake make
+  compile_script: mkdir build && cd build && cmake .. && make
   tests_script: ./perform_tests.et
 
 task:
@@ -34,15 +34,15 @@ task:
   freebsd_instance:
     image: freebsd-10-4-release-amd64
   env:
-    USE_LTO: false
-  install_script: pkg install -y gmp
-  compile_script: ./bootstrap.sh
+    SKIP_LTO: true
+  install_script: pkg install -y gmp cmake make
+  compile_script: mkdir build && cd build && cmake .. && make
   tests_script: ./perform_tests.et
 
 task:
   name: macOS Mojave apple llvm 10.0.1
   osx_instance:
     image: mojave-base
-  install_script: brew install gmp
-  compile_script: ./bootstrap.sh
+  install_script: brew install gmp cmake make
+  compile_script: mkdir build && cd build && cmake .. && make
   tests_script: ./perform_tests.et

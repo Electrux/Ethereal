@@ -32,7 +32,7 @@ fi
 if [[ -z "${DEBUG}" ]]; then
 	opti="-O2"
 	# do not use LTO if explicitly disabled
-	if [[ "${USE_LTO}" != "no" && "${USE_LTO}" != "false" ]]; then
+	if [[ "${USE_LTO}" != "no" && "${USE_LTO}" != "false" ]]; then
 		opti="${opti} -flto"
 	fi
 	DEBUG=false

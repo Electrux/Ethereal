@@ -1,4 +1,4 @@
-#!./buildfiles/et
+#!./build/bin/et
 
 {
 	a = 1 + 2;

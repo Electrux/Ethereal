@@ -57,24 +57,24 @@ Documentation is under development and will take some time to build, but till th
     *  Android 9 - Pie (Termux - clang 8.0.0, GMP 6.1.2 manually compiled - see the note below)
 *  GMP library with CXX support (will be almost always built with support for CXX in your official distribution package)
 
-Note that GMP on Termux for android does not come with CXX support, hence it will have to be manually compiled from source with the `--enable-cxx` configure option. You may also need to specify the `PREFIX` directory using `--prefix` configure option which, for me, is `/data/data/com.termux/files/usr`
+Note that GMP on Termux for android does not come with CXX support, hence it will have to be manually compiled from source with the `--enable-cxx` configure option. You may also need to specify the `PREFIX_DIR` directory using `--prefix` configure option which, for me, is `/data/data/com.termux/files/usr`
 
 The entire command sequence for installing GMP on android (for me) is: `./configure --prefix /data/data/com.termux/files/usr --enable-cxx && make -j8 && make install`
 
-Also, compiling with Link Time Optimization won't work on clang < 3.9, so disable LTO by setting `USE_LTO=false` before executing the `bootstrap.sh` script
+Also, compiling with Link Time Optimization won't work on clang < 3.9, so disable LTO by setting `SKIP_LTO=true` before executing the `bootstrap.sh` script
 
 # Installation
 
-Once the prerequisites are met, just execute the `bootstrap.sh` script. It will build the language interpreter along with the stdlib modules, and install them to your `PREFIX` directory if it is set, or to the repository directory itself.
+Once the prerequisites are met, just execute the cmake script by doing `mkdir build && cd build && cmake ..` script. It will build the language interpreter along with the stdlib modules. Installation should done **ONLY** if the `PREFIX_DIR` variable is set to a directory other than the cmake `build/` directory.
 
-Note that if you use PREFIX, you may need root access depending on the directory you choose.
+Note that if you use `PREFIX_DIR`, you may need root access depending on the directory you choose.
 
 The following items will be installed:
 
-*  buildfiles/et -> $PREFIX/bin/
-*  buildfiles/lib*.so $PREFIX/lib/ethereal/
-*  include/ethereal/*  $PREFIX/include/ethereal/
+*  buildfiles/et -> $PREFIX_DIR/bin/
+*  buildfiles/lib\*.so $PREFIX_DIR/lib/ethereal/
+*  include/ethereal/\*  $PREFIX_DIR/include/ethereal/
 
-Also, the interpreter code internally uses `PREFIX` to locate the `lib` and `include` directories, so you will have to rebuild the codebase if you change `PREFIX` and then install.
+Also, the interpreter code internally uses `PREFIX_DIR` to locate the `lib` and `include` directories, so you will have to rebuild the codebase if you change `PREFIX_DIR`.
 
 Contributions are definitely accepted and greatly appreciated. ❤️

@@ -67,14 +67,6 @@ message("-- Using PREFIX = ${CMAKE_INSTALL_PREFIX}")
 
 # Includes
 
-# For libGMP on macOS
-if(APPLE)
-	if(CMAKE_VERSION VERSION_LESS "2.9")
-		include_directories(/usr/local/include)
-	else()
-		target_include_directories(et-lib PUBLIC /usr/local/include)
-	endif()
-endif()
 file(COPY "${CMAKE_SOURCE_DIR}/include" DESTINATION "${CMAKE_INSTALL_PREFIX}/")
 
 # Ethereal Core
@@ -83,6 +75,14 @@ file(GLOB_RECURSE SRCS RELATIVE "${PROJECT_SOURCE_DIR}" "src/*.cpp")
 list(REMOVE_ITEM SRCS "src/FE/Main.cpp" "src/VM/Main.cpp")
 
 add_library(et-lib SHARED ${SRCS} ${INCS})
+# For libGMP on macOS
+if(APPLE)
+	if(CMAKE_VERSION VERSION_LESS "2.9")
+		include_directories(/usr/local/include)
+	else()
+		target_include_directories(et-lib PUBLIC /usr/local/include)
+	endif()
+endif()
 target_link_libraries(et-lib ${CMAKE_DL_LIBS})
 target_link_libraries(et-lib gmp gmpxx)
 set_target_properties(et-lib

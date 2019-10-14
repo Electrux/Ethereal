@@ -8,6 +8,8 @@ s2 = ' str2 ';
 
 assert( s1 + s2 == 'str1 str2 ', "'str1' + ' str2 ' should have been 'str1 str2 '" );
 assert( ( s1 += s2 ) == 'str1 str2 ', "'str1' += ' str2 ' should have been 'str1 str2 '" );
+assert( '5' * 5 == '55555', "'5' * 5 should have been '55555'" );
+assert( 5 * '5' == '55555', "5 * '5' should have been '55555'" );
 
 assert( 'str1' == 'str1', "'str1' should have been equal to 'str1'" );
 assert( 'str1' != 'str2', "'str1' should not have been equal to 'str2'" );

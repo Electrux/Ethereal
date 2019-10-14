@@ -189,10 +189,36 @@ DECL_FUNC_BOOL__STR( le, <= )
 DECL_FUNC_BOOL__STR( gt, > )
 DECL_FUNC_BOOL__STR( ge, >= )
 
+var_base_t * mult_lhs( vm_state_t & vm, func_call_data_t & fcd )
+{
+	std::string & dat = AS_STR( fcd.args[ 1 ] )->get();
+	mpz_class & count = AS_INT( fcd.args[ 0 ] )->get();
+
+	std::string res;
+	for( mpz_class i = 0; i < count; ++i ) {
+		res += dat;
+	}
+	return new var_str_t( res );
+}
+
+var_base_t * mult_rhs( vm_state_t & vm, func_call_data_t & fcd )
+{
+	std::string & dat = AS_STR( fcd.args[ 0 ] )->get();
+	mpz_class & count = AS_INT( fcd.args[ 1 ] )->get();
+
+	std::string res;
+	for( mpz_class i = 0; i < count; ++i ) {
+		res += dat;
+	}
+	return new var_str_t( res );
+}
+
 REGISTER_MODULE( str )
 {
 	vm.funcs.add( { "+", 2, 2, { "str", "str" }, FnType::MODULE, { .modfn = add }, true } );
 	vm.funcs.add( { "+=", 2, 2, { "str", "str" }, FnType::MODULE, { .modfn = add_assn }, false } );
+	vm.funcs.add( { "*", 2, 2, { "int", "str" }, FnType::MODULE, { .modfn = mult_lhs }, true } );
+	vm.funcs.add( { "*", 2, 2, { "str", "int" }, FnType::MODULE, { .modfn = mult_rhs }, true } );
 
 	// comparisons
 	vm.funcs.add( { "==", 2, 2, { "str", "str" }, FnType::MODULE, { .modfn = eq }, false } );

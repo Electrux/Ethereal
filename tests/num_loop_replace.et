@@ -1,0 +1,12 @@
+#!./build/bin/et
+
+import std.str;
+import std.vec;
+
+dest = args.len() > 1 ? 5 : 1000000;
+for i = 0; i < dest; i +=1 {
+	len = i.to_str().len();
+	print( i );
+	print( '\b' * len );
+}
+println();

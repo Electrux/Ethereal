@@ -31,13 +31,15 @@ static std::unordered_map< std::string, const char * > COL = {
 	{ "bw", "\033[1;37m" },
 };
 
-void apply_colors( std::string & str )
+int apply_colors( std::string & str )
 {
+	int chars = 0;
 	for( size_t i = 0; i < str.size(); ) {
 		if( str[ i ] == '{' && ( i == 0 || ( str[ i - 1 ] != '$' && str[ i - 1 ] != '%' && str[ i - 1 ] != '#' && str[ i - 1 ] != '\\' ) ) ) {
 			str.erase( str.begin() + i );
 			if( i < str.size() && str[ i ] == '{' ) {
 				++i;
+				++chars;
 				continue;
 			}
 
@@ -60,8 +62,10 @@ void apply_colors( std::string & str )
 		}
 		else {
 			++i;
+			++chars;
 		}
 	}
+	return chars;
 }
 
 var_base_t * colorize( vm_state_t & vm, func_call_data_t & fcd )
@@ -73,23 +77,26 @@ var_base_t * colorize( vm_state_t & vm, func_call_data_t & fcd )
 
 var_base_t * col_print( vm_state_t & vm, func_call_data_t & fcd )
 {
+	int chars = 0;
 	for( auto & v : fcd.args ) {
 		std::string data = v->to_str();
-		apply_colors( data );
+		chars += apply_colors( data );
 		fprintf( stdout, "%s", data.c_str() );
 	}
-	return nullptr;
+	return new var_int_t( chars );
 }
 
 var_base_t * col_println( vm_state_t & vm, func_call_data_t & fcd )
 {
+	int chars = 0;
 	for( auto & v : fcd.args ) {
 		std::string data = v->to_str();
-		apply_colors( data );
+		chars += apply_colors( data );
 		fprintf( stdout, "%s", data.c_str() );
 	}
 	fprintf( stdout, "\n" );
-	return nullptr;
+	// + 1 for newline
+	return new var_int_t( chars + 1 );
 }
 
 var_base_t * term_size( vm_state_t & vm, func_call_data_t & fcd )
@@ -119,8 +126,8 @@ var_base_t * term_size( vm_state_t & vm, func_call_data_t & fcd )
 REGISTER_MODULE( term )
 {
 	vm.funcs.add( { "colorize", 1,  1, { "str" }, FnType::MODULE, { .modfn = colorize }, true } );
-	vm.funcs.add( { "cprint",   1, -1, { "_whatever_" }, FnType::MODULE, { .modfn = col_print }, false } );
-	vm.funcs.add( { "cprintln", 0, -1, { "_whatever_" }, FnType::MODULE, { .modfn = col_println }, false } );
+	vm.funcs.add( { "cprint",   1, -1, { "_whatever_" }, FnType::MODULE, { .modfn = col_print }, true } );
+	vm.funcs.add( { "cprintln", 0, -1, { "_whatever_" }, FnType::MODULE, { .modfn = col_println }, true } );
 
 	functions_t & termfns = vm.typefuncs[ "_term_t" ];
 	termfns.add( { "size", 0,  0, {}, FnType::MODULE, { .modfn = term_size }, true } );

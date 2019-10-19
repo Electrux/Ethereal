@@ -68,6 +68,10 @@ func( a ) {
 	println( x );
 }
 ```
+2. All the Ethereal test scripts (in `tests/` directory) have a shebang at the top with the following contents.
+```bash
+#!./build/bin/et
+```
 
 # Issues
 

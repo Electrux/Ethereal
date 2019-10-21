@@ -6,7 +6,7 @@
 	Please read that file and understand the license terms
 	before using or altering the project.
 
-suganthan
+
 */
 
 #include <cstdio>

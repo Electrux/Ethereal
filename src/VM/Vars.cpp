@@ -24,6 +24,10 @@ var_base_t * vars_t::get( const std::string & var_name ) const
 {
 	int layer_iter = m_layer;
 	while( layer_iter >= 0 ) {
+		if( layer_iter != 0 && m_frozen_till.size() > 0 && layer_iter <= m_frozen_till.back() ) {
+			--layer_iter;
+			continue;
+		}
 		if( m_vars.find( layer_iter ) == m_vars.end() ) { --layer_iter; continue; }
 		const std::unordered_map< std::string, var_base_t * > & layer = m_vars.at( layer_iter );
 		if( layer.find( var_name ) != layer.end() ) return layer.at( var_name );
@@ -36,6 +40,10 @@ bool vars_t::exists( const std::string & var_name ) const
 {
 	int layer_iter = m_layer;
 	while( layer_iter >= 0 ) {
+		if( layer_iter != 0 && m_frozen_till.size() > 0 && layer_iter <= m_frozen_till.back() ) {
+			--layer_iter;
+			continue;
+		}
 		if( m_vars.find( layer_iter ) == m_vars.end() ) { --layer_iter; continue; }
 		const std::unordered_map< std::string, var_base_t * > & layer = m_vars.at( layer_iter );
 		if( layer.find( var_name ) != layer.end() ) return true;
@@ -53,6 +61,10 @@ bool vars_t::del( const std::string & var_name, var_base_t ** loc )
 {
 	int layer_iter = m_layer;
 	while( layer_iter >= 0 ) {
+		if( layer_iter != 0 && m_frozen_till.size() > 0 && layer_iter <= m_frozen_till.back() ) {
+			--layer_iter;
+			continue;
+		}
 		if( m_vars.find( layer_iter ) == m_vars.end() ) { --layer_iter; continue; }
 		std::unordered_map< std::string, var_base_t * > & layer = m_vars[ layer_iter ];
 		if( layer.find( var_name ) != layer.end() ) {
@@ -83,5 +95,8 @@ void vars_t::pop_scope( std::vector< void * > * locs, const int count )
 		--m_layer;
 	}
 }
+
+void vars_t::freeze_till( const int till ) { m_frozen_till.push_back( till ); }
+void vars_t::unfreeze() { m_frozen_till.pop_back(); }
 
 size_t vars_t::layer_size() const { return m_layer; }

@@ -73,6 +73,7 @@ int CallFunc( vm_state_t & vm, func_call_data_t & fcd, const int ins_ctr )
 		goto fail;
 	}
 
+	vm.vars->freeze_till( vm.vars->layer_size() );
 	vm.vars->add_scope();
 
 	// execute the function
@@ -109,12 +110,14 @@ int CallFunc( vm_state_t & vm, func_call_data_t & fcd, const int ins_ctr )
 	}
 
 	vm.vars->pop_scope( & fcd.rem_locs );
+	vm.vars->unfreeze();
 	for( auto & rll : fcd.rem_locs ) VAR_DREF( rll );
 	fcd.args.clear();
 	return E_OK;
 fail:
 	// for lang function, args are moved to vars' new layer which is popped at the end
 	vm.vars->pop_scope( & fcd.rem_locs );
+	vm.vars->unfreeze();
 	for( auto & arg : fcd.args ) VAR_DREF( arg );
 	fcd.args.clear();
 	for( auto & rll : fcd.rem_locs ) VAR_DREF( rll );

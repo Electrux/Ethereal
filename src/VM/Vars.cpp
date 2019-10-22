@@ -96,7 +96,4 @@ void vars_t::pop_scope( std::vector< void * > * locs, const int count )
 	}
 }
 
-void vars_t::freeze_till( const int till ) { m_frozen_till.push_back( till ); }
-void vars_t::unfreeze() { m_frozen_till.pop_back(); }
-
 size_t vars_t::layer_size() const { return m_layer; }

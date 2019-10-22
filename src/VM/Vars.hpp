@@ -35,8 +35,8 @@ public:
 
 	void add_scope( const int count = 1 );
 	void pop_scope( std::vector< void * > * locs, const int count = 1 );
-	void freeze_till( const int till );
-	void unfreeze();
+	inline void freeze_till( const int till ) { m_frozen_till.push_back( till ); }
+	inline void unfreeze() { m_frozen_till.pop_back(); }
 
 	size_t layer_size() const;
 };

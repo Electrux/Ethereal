@@ -1,0 +1,24 @@
+#!./build/bin/et
+
+import std.str;
+import std.vec;
+import std.tuple;
+
+fn fib( n ) {
+	if n == 1 { return make_tuple( 0, 1 ); }
+	m = n / 2;
+	h = fib( m );
+	prev = h.0 ** 2 + h.1 ** 2;
+	curr = h.1 * ( 2 * h.0 + h.1 );
+	next = prev + curr;
+	if n % 2 == 0 { return make_tuple( prev, curr ); }
+	return make_tuple( curr, next );
+}
+
+if args.len() > 1 {
+	n = 5;
+	assert( fib( n ) == make_tuple( 3, 5 ), 'fib( 5 ) should have been \'( 3, 5 )\'' );
+} else {
+	n = scan( 'Enter a number: ' ).to_int();
+	println( 'Fib is: ', fib( n ) );
+}

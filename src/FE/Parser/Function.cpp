@@ -40,7 +40,7 @@ stmt_func_t * parse_func( src_t & src, parse_helper_t * ph )
 	int err;
 	stmt_block_t * block = nullptr;
 
-	NEXT_VALID2( TOK_RPAREN, TOK_IDEN );
+	NEXT_VALID3( TOK_RPAREN, TOK_IDEN, TOK_TDOT );
 
 	if( ph->peak()->type == TOK_RPAREN ) goto end_args;
 	err = find_next_of( ph, arg_expr_end, { TOK_RPAREN }, TOK_LPAREN );

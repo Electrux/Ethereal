@@ -272,7 +272,11 @@ static int tokenize_line( const std::string & src, const std::string & dir, cons
 			err = E_LEX_FAIL;
 			break;
 		}
-		toks.emplace_back( line_num, tmp_i, op_type, "" );
+		if( op_type == TOK_TDOT ) {
+			toks.emplace_back( line_num, tmp_i, op_type, TokStrs[ op_type ] );
+		} else {
+			toks.emplace_back( line_num, tmp_i, op_type, "" );
+		}
 	}
 
 	return err;

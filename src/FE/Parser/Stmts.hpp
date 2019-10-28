@@ -118,6 +118,7 @@ class stmt_expr_t : public stmt_base_t
 	const stmt_simple_t * m_oper;
 public:
 	bool m_is_top_expr;
+	bool m_triple_dot;
 	stmt_expr_t( const stmt_base_t * lhs, const stmt_simple_t * oper,
 		     const stmt_base_t * rhs, const int tok_ctr );
 	~stmt_expr_t();

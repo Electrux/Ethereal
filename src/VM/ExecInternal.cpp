@@ -428,24 +428,30 @@ int exec_internal( vm_state_t & vm, long begin, long end, var_base_t * ret )
 				}
 			}
 			std::string name = ins.oper.val;
-			int args_count = args.size();
+			int args_min = args.size();
+			int args_max = args.size();
+			if( args.size() > 0 && args.back() == "..." ) {
+				--args_min;
+				args_max = -1;
+				args.pop_back();
+			}
 			for( auto & member_of : member_ofs ) {
-				const function_t * fn = vm.typefuncs[ member_of ].get( name, args_count, {} );
+				const function_t * fn = vm.typefuncs[ member_of ].get( name, args_min, {} );
 				if( fn != nullptr ) {
 					VM_FAIL( "function '%s::%s' already exists", member_of.c_str(), name.c_str() );
 					goto fail;
 				}
-				vm.typefuncs[ member_of ].add( function_t{ name, args_count, args_count, args, FnType::LANG,
+				vm.typefuncs[ member_of ].add( function_t{ name, args_min, args_max, args, FnType::LANG,
 								           { .langfn = { src.id.c_str(), blk.beg, blk.end } },
 									   false } );
 			}
 			if( member_ofs.size() == 0 ) {
-				const function_t * fn = vm.funcs.get( name, args_count, {} );
+				const function_t * fn = vm.funcs.get( name, args_min, {} );
 				if( fn != nullptr ) {
 					VM_FAIL( "function '%s' already exists", name.c_str() );
 					goto fail;
 				}
-				vm.funcs.add( function_t{ name, args_count, args_count, args, FnType::LANG,
+				vm.funcs.add( function_t{ name, args_min, args_max, args, FnType::LANG,
 					                  { .langfn = { src.id.c_str(), blk.beg, blk.end } },
 							  false } );
 			}

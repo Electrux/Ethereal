@@ -18,6 +18,7 @@ expr_res_t parse_expr( const src_t & src, parse_helper_t * ph, const int end, co
 	std::vector< stmt_simple_t * > stack;
 	stmt_expr_t * res = nullptr;
 
+	int triple_dot_ctr = 0;
 	int start = ph->tok_ctr();
 
 	while( end == -1 || ( ph->peak()->type != TOK_INVALID && ph->tok_ctr() < end ) ) {
@@ -150,6 +151,12 @@ expr_res_t parse_expr( const src_t & src, parse_helper_t * ph, const int end, co
 			data.push_back( collect_call );
 		} else {
 			if( token_is_data( ph->peak() ) ) {
+				if( triple_dot_ctr > 0 ) {
+					PARSE_FAIL( "no data can come after the '...' argument" );
+					goto fail;
+				}
+				if( ph->peak()->type == TOK_TDOT ) ++triple_dot_ctr;
+
 				stmt_simple_t * sim = new stmt_simple_t(
 					ph->peak()->data == TokStrs[ ph->peak()->type ] &&
 					ph->peak()->type != TOK_IDEN &&
@@ -259,6 +266,10 @@ expr_res_t parse_expr( const src_t & src, parse_helper_t * ph, const int end, co
 
 	if( is_top ) {
 		res->m_is_top_expr = true;
+	}
+
+	if( triple_dot_ctr > 0 ) {
+		res->m_triple_dot = true;
 	}
 
 	return { 0, res };

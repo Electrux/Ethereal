@@ -130,7 +130,8 @@ void stmt_import_t::disp( const bool has_next ) const
 stmt_expr_t::stmt_expr_t( const stmt_base_t * lhs, const stmt_simple_t * oper,
 			  const stmt_base_t * rhs, const int tok_ctr )
 	: stmt_base_t( GRAM_EXPR, tok_ctr ), m_lhs( lhs ),
-	  m_rhs( rhs ), m_oper( oper ), m_is_top_expr( false ) {}
+	  m_rhs( rhs ), m_oper( oper ), m_is_top_expr( false ),
+	  m_triple_dot( false ) {}
 stmt_expr_t::~stmt_expr_t()
 {
 	if( m_lhs ) delete m_lhs;
@@ -141,8 +142,8 @@ stmt_expr_t::~stmt_expr_t()
 void stmt_expr_t::disp( const bool has_next ) const
 {
 	IO::tab_add( has_next );
-	IO::print( has_next, "Expression (top: %s) at: %x\n",
-		   m_is_top_expr ? "yes" : "no", this );
+	IO::print( has_next, "Expression (top: %s) (contains triple dots: %s) at: %x\n",
+		   m_is_top_expr ? "yes" : "no", m_triple_dot ? "yes" : "no", this );
 
 	IO::tab_add( m_lhs != nullptr || m_rhs != nullptr );
 	IO::print( m_lhs != nullptr || m_rhs != nullptr,

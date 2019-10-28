@@ -1,0 +1,22 @@
+#!./build/bin/et
+
+import std.vec;
+
+fn var_args0( ... ) {
+	assert( __va__.len() == 5, 'var_args0() should have __va__.len() == 5, but is: ', __va__.len() );
+	println( __va__ );
+}
+
+fn var_args1( a, ... ) {
+	assert( __va__.len() == 4, 'var_args1() should have __va__.len() == 4, but is: ', __va__.len() );
+	println( __va__ );
+}
+
+fn var_args2( a, b, ... ) {
+	assert( __va__.len() == 3, 'var_args2() should have __va__.len() == 3, but is: ', __va__.len() );
+	println( __va__ );
+}
+
+var_args0( 'str', 1, 2, 3, 4 );
+var_args1( 'str', 1, 2, 3, 4 );
+var_args2( 'str', 1, 2, 3, 4 );

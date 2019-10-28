@@ -89,8 +89,15 @@ int CallFunc( vm_state_t & vm, func_call_data_t & fcd, const int ins_ctr )
 			fcd.args.erase( fcd.args.begin() );
 			vm.vars->add( "self", member );
 		}
-		for( size_t i = 0; i < fn->arg_types.size(); ++i ) {
+		for( size_t i = 0; i < fn->arg_count_min; ++i ) {
 			vm.vars->add( fn->arg_types[ i ], fcd.args[ i ] );
+		}
+		if( fn->arg_count_max == -1 ) {
+			std::vector< var_base_t * > va;
+			for( size_t i = fn->arg_count_min; i < fcd.args.size(); ++i ) {
+				va.push_back( fcd.args[ i ] );
+			}
+			vm.vars->add( "__va__", new var_vec_t( va, fcd.parse_ctr ) );
 		}
 		fcd.args.clear();
 		res.code = exec_internal( vm, lfnptr->beg, lfnptr->end, res.data );
@@ -165,7 +172,7 @@ static void disp_possible_funcs( vm_state_t & vm, const std::string & fn, const 
 static void disp_fn_vec( const std::vector< function_t * > & fns )
 {
 	for( auto & fn : fns ) {
-		fprintf( stderr, "-> %s with arg count: [%d,%d] ", fn->name.c_str(), fn->arg_count_min, fn->arg_count_max );
+		fprintf( stderr, "-> %s with arg count: [%d, %d] ", fn->name.c_str(), fn->arg_count_min, fn->arg_count_max );
 		if( fn->arg_count_min > 0 && fn->arg_types.size() < 1 ) {
 			fprintf( stderr, "(...)\n" );
 		} else {

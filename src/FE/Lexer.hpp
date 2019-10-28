@@ -169,7 +169,7 @@ inline bool token_type_is_data( const int type )
 	return type == TOK_INT || type == TOK_FLT ||
 	       type == TOK_STR || type == TOK_IDEN ||
 	       type == TOK_TRUE || type == TOK_FALSE ||
-	       type == TOK_NIL;
+	       type == TOK_NIL || type == TOK_TDOT;
 }
 
 /**

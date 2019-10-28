@@ -29,6 +29,9 @@ struct vm_state_t
 	bool exit_called;
 	int exit_status;
 
+	std::vector< std::string > inc_dirs;
+	std::vector< std::string > lib_dirs;
+
 	var_none_t * none;
 	var_nil_t * nil;
 

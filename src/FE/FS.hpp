@@ -17,8 +17,6 @@
 
 int read_file( src_t & src );
 
-int get_internal_file_path( std::string & file, const std::string & type );
-
 bool fexists( const std::string & file );
 
 #endif // FS_HPP

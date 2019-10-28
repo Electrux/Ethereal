@@ -44,19 +44,6 @@ int read_file( src_t & src )
 	return E_OK;
 }
 
-int get_internal_file_path( std::string & file, const std::string & type )
-{
-	if( file.front() != '~' && file.front() != '/' && file.front() != '.' ) {
-		file = STRINGIFY( BUILD_PREFIX_DIR ) "/" + type + "/ethereal/" + file;
-	} else if( file.front() == '~' ) {
-		file.erase( file.begin() );
-		std::string home = GetEnv( "HOME" );
-		file.insert( file.begin(), home.begin(), home.end() );
-	}
-	file += ".et";
-	return ( int )!fexists( file );
-}
-
 bool fexists( const std::string & file )
 {
 	return access( file.c_str(), F_OK ) != -1;

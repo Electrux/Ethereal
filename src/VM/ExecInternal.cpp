@@ -10,6 +10,7 @@
 #include <cstdlib>
 
 #include "../FE/FS.hpp"
+#include "../FE/Env.hpp"
 
 #include "ExecInternal.hpp"
 #include "CallFunc.hpp"
@@ -192,8 +193,12 @@ int exec_internal( vm_state_t & vm, long begin, long end, var_base_t * ret )
 		case IC_LDMOD: {
 			std::string module_name = ins.oper.val + LIB_EXT;
 			std::string init_fn_str = ins.oper.val.substr( ins.oper.val.find_last_of( '/' ) + 4 );
-			if( !fexists( module_name ) ) {
-				VM_FAIL( "could not find module file '%s' for loading", module_name.c_str() );
+			if( !mod_exists( module_name, vm.lib_dirs ) ) {
+				VM_FAIL( "could not find module '%s' for loading", ins.oper.val.c_str() );
+				fprintf( stderr, "checked the following paths:\n" );
+				for( auto & loc : vm.lib_dirs ) {
+					fprintf( stderr, "-> %s\n", ( loc + "/" + module_name ).c_str() );
+				}
 				goto fail;
 			}
 			if( vm.dlib->load( module_name ) == nullptr ) goto fail;
@@ -213,11 +218,16 @@ int exec_internal( vm_state_t & vm, long begin, long end, var_base_t * ret )
 				alias = vm.stack->back()->to_str();
 				vm.stack->pop_back();
 			}
-			const std::string file = vm.stack->back()->to_str();
+			std::string name = vm.stack->back()->to_str();
 			vm.stack->pop_back();
 
-			if( !fexists( file ) ) {
-				VM_FAIL( "could not find file '%s' for importing", file.c_str() );
+			std::string file = name + ".et";
+			if( !mod_exists( file, vm.inc_dirs ) ) {
+				VM_FAIL( "could not find file '%s' for importing", name.c_str() );
+				fprintf( stderr, "checked the following paths:\n" );
+				for( auto & loc : vm.inc_dirs ) {
+					fprintf( stderr, "-> %s\n", ( loc + "/" + file ).c_str() );
+				}
 				goto fail;
 			}
 			int ret = load_src( vm, file, alias, ins );

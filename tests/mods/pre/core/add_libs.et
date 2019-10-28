@@ -1,0 +1,8 @@
+#!./build/bin/et
+
+import std.os;
+import std.str;
+
+_add_libs_( os.get_env( 'PWD' ) + '/build/lib/ethereal' );
+
+import eth.vm;

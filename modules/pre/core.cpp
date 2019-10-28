@@ -7,6 +7,7 @@
 	before using or altering the project.
 */
 
+#include "../../src/FE/Env.hpp"
 #include "../../src/VM/Core.hpp"
 
 #include "Core/Int.hpp"
@@ -123,6 +124,26 @@ var_base_t * var_ref_count( vm_state_t & vm, func_call_data_t & fcd )
 	return new var_int_t( vm.vars->get( fcd.args[ 0 ]->to_str() )->ref() );
 }
 
+var_base_t * add_inc_dirs( vm_state_t & vm, func_call_data_t & fcd )
+{
+	for( auto & _dir : fcd.args ) {
+		std::string dir = _dir->to_str();
+		DirFormat( dir );
+		vm.inc_dirs.insert( vm.inc_dirs.begin(), dir );
+	}
+	return nullptr;
+}
+
+var_base_t * add_lib_dirs( vm_state_t & vm, func_call_data_t & fcd )
+{
+	for( auto & _dir : fcd.args ) {
+		std::string dir = _dir->to_str();
+		DirFormat( dir );
+		vm.lib_dirs.insert( vm.lib_dirs.begin(), dir );
+	}
+	return nullptr;
+}
+
 var_base_t * nil_eq( vm_state_t & vm, func_call_data_t & fcd )
 {
 	return TRUE_FALSE( fcd.args[ 1 ]->type() == fcd.args[ 0 ]->type() );
@@ -140,16 +161,18 @@ REGISTER_MODULE( core )
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	vm.funcs.add( { "flush_out",     0,  0, {}, FnType::MODULE, { .modfn = flush_out }, false } );
 	vm.funcs.add( { "flush_err",     0,  0, {}, FnType::MODULE, { .modfn = flush_err }, false } );
-	vm.funcs.add( { "print",         1, -1, { "_whatever_" }, FnType::MODULE, { .modfn = print }, false } );
+	vm.funcs.add( { "print",         1, -1, { "_any_", "_whatever_" }, FnType::MODULE, { .modfn = print }, false } );
 	vm.funcs.add( { "println",       0, -1, { "_whatever_" }, FnType::MODULE, { .modfn = println }, false } );
-	vm.funcs.add( { "dprint",        1, -1, { "_whatever_" }, FnType::MODULE, { .modfn = dprint }, false } );
+	vm.funcs.add( { "dprint",        1, -1, { "_any_", "_whatever_" }, FnType::MODULE, { .modfn = dprint }, false } );
 	vm.funcs.add( { "dprintln",      0, -1, { "_whatever_" }, FnType::MODULE, { .modfn = dprintln }, false } );
 	vm.funcs.add( { "scan",          0,  1, { "_whatever_" }, FnType::MODULE, { .modfn = scan }, true } );
 	vm.funcs.add( { "exit",          0,  1, { "_any_" }, FnType::MODULE, { .modfn = exit_eth }, false } );
-	vm.funcs.add( { "assert",        2, -1, { "_any_", "_whatever_" }, FnType::MODULE, { .modfn = assert_eth }, false } );
+	vm.funcs.add( { "assert",        2, -1, { "_any_", "_any_", "_whatever_" }, FnType::MODULE, { .modfn = assert_eth }, false } );
 	vm.funcs.add( { "var_exists",    1,  1, { "str" }, FnType::MODULE, { .modfn = var_exists }, false } );
 	vm.funcs.add( { "var_mfn_exists",2,  2, { "_any_", "str" }, FnType::MODULE, { .modfn = var_mfn_exists }, false } );
 	vm.funcs.add( { "var_ref_count", 1,  1, { "_any_" }, FnType::MODULE, { .modfn = var_ref_count }, true } );
+	vm.funcs.add( { "_add_incs_",	 1,  -1, { "_any_", "_whatever_" }, FnType::MODULE, { .modfn = add_inc_dirs }, false } );
+	vm.funcs.add( { "_add_libs_",	 1,  -1, { "_any_", "_whatever_" }, FnType::MODULE, { .modfn = add_lib_dirs }, false } );
 
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////// INT ////////////////////////////////////////////////////////////////

@@ -39,7 +39,6 @@ repeat:
 bool stmt_ldmod_t::bytecode( src_t & src ) const
 {
 	std::string file = m_full_name;
-	format_file_str( file, FormatFileType::LIB );
 	src.bcode.push_back( { m_tok_ctr, m_what->line, m_what->col, IC_LDMOD, { OP_CONST, file } } );
 	return true;
 }

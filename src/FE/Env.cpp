@@ -52,17 +52,23 @@ void DirFormat( std::string & dir )
 	return;
 }
 
-void format_file_str( std::string & file, const FormatFileType ftype )
+bool mod_exists( std::string & file, const std::vector< std::string > & locs )
 {
 	if( file.front() != '~' && file.front() != '/' && file.front() != '.' ) {
-		std::string type;
-		if( ftype == FormatFileType::INC ) type = "include";
-		else if( ftype == FormatFileType::LIB ) type = "lib";
-		file = STRINGIFY( BUILD_PREFIX_DIR ) "/" + type + "/ethereal/" + file;
-	} else if( file.front() == '~' ) {
-		file.erase( file.begin() );
-		std::string home = GetEnv( "HOME" );
-		file.insert( file.begin(), home.begin(), home.end() );
+		for( auto & loc : locs ) {
+			if( fexists( loc + "/" + file ) ) {
+				file = loc + "/" + file;
+				return true;
+			}
+		}
+	} else {
+		if( file.front() == '~' ) {
+			file.erase( file.begin() );
+			std::string home = GetEnv( "HOME" );
+			file.insert( file.begin(), home.begin(), home.end() );
+		}
+
+		return fexists( file );
 	}
-	if( ftype == FormatFileType::INC ) file += ".et";
+	return false;
 }

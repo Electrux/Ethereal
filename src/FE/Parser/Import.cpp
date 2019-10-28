@@ -41,7 +41,6 @@ repeat:
 bool stmt_import_t::bytecode( src_t & src ) const
 {
 	std::string file = m_full_name;
-	format_file_str( file, FormatFileType::INC );
 	src.bcode.push_back( { m_tok_ctr, m_what->line, m_what->col, IC_PUSH, { OP_CONST, file } } );
 	if( m_as != nullptr ) {
 		src.bcode.push_back( { m_tok_ctr, m_as->line, m_as->col, IC_PUSH, { OP_CONST, m_as->data } } );

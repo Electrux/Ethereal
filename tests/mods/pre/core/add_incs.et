@@ -1,0 +1,8 @@
+#!./build/bin/et
+
+import std.os;
+import std.str;
+
+_add_incs_( os.get_env( 'PWD' ) + '/tests' );
+
+import 'import';

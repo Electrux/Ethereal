@@ -191,20 +191,20 @@ int exec_internal( vm_state_t & vm, long begin, long end, var_base_t * ret )
 			break;
 		}
 		case IC_LDMOD: {
-			std::string module_name = ins.oper.val + LIB_EXT;
+			std::string file = ins.oper.val + LIB_EXT;
 			std::string init_fn_str = ins.oper.val.substr( ins.oper.val.find_last_of( '/' ) + 4 );
-			if( !mod_exists( module_name, vm.lib_dirs ) ) {
+			if( !mod_exists( file, vm.lib_dirs ) ) {
 				VM_FAIL( "could not find module '%s' for loading", ins.oper.val.c_str() );
 				fprintf( stderr, "checked the following paths:\n" );
 				for( auto & loc : vm.lib_dirs ) {
-					fprintf( stderr, "-> %s\n", ( loc + "/" + module_name ).c_str() );
+					fprintf( stderr, "-> %s\n", ( loc + "/" + file ).c_str() );
 				}
 				goto fail;
 			}
-			if( vm.dlib->load( module_name ) == nullptr ) goto fail;
-			init_fnptr_t init_fn = ( init_fnptr_t ) vm.dlib->get( module_name, "init_" + init_fn_str );
+			if( vm.dlib->load( file ) == nullptr ) goto fail;
+			init_fnptr_t init_fn = ( init_fnptr_t ) vm.dlib->get( file, "init_" + init_fn_str );
 			if( init_fn == nullptr ) {
-				VM_FAIL( "failed to find init function '%s' in module '%s'", init_fn_str.c_str(), module_name.c_str() );
+				VM_FAIL( "failed to find init function '%s' in module '%s'", init_fn_str.c_str(), file.c_str() );
 				goto fail;
 			}
 			init_fn( vm );

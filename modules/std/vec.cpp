@@ -141,6 +141,17 @@ var_base_t * clear( vm_state_t & vm, func_call_data_t & fcd )
 	return nullptr;
 }
 
+var_base_t * erase( vm_state_t & vm, func_call_data_t & fcd )
+{
+	std::vector< var_base_t * > & v = AS_VEC( fcd.args[ 0 ] )->get();
+	mpz_class & loc = AS_INT( fcd.args[ 1 ] )->get();
+	if( loc < 0 || loc >= v.size() ) return vm.vars->get( "false" );
+	var_base_t * dat = v[ loc.get_ui() ];
+	VAR_DREF( dat );
+	v.erase( v.begin() + loc.get_ui() );
+	return vm.vars->get( "true" );
+}
+
 var_base_t * find( vm_state_t & vm, func_call_data_t & fcd )
 {
 	std::vector< var_base_t * > & v = AS_VEC( fcd.args[ 0 ] )->get();
@@ -244,6 +255,7 @@ REGISTER_MODULE( vec )
 	vecfns.add( { "back", 0, 0, {}, FnType::MODULE, { .modfn = back }, false } );
 	vecfns.add( { "len", 0, 0, {}, FnType::MODULE, { .modfn = len }, true } );
 	vecfns.add( { "clear", 0, 0, {}, FnType::MODULE, { .modfn = clear }, false } );
+	vecfns.add( { "erase", 1, 1, { "int" }, FnType::MODULE, { .modfn = erase }, false } );
 	vecfns.add( { "find", 1, 1, { "_any_" }, FnType::MODULE, { .modfn = find }, true } );
 	vecfns.add( { "iter", 0, 0, {}, FnType::MODULE, { .modfn = iter }, true } );
 

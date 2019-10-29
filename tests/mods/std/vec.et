@@ -41,3 +41,19 @@ assert( v == [ 1 ], 'push_front 1 in empty vector should have been [ 1 ]' );
 
 assert( v.find( 1 ) == 0, 'index of 1 in vector should have been 0' );
 assert( v.find( 2 ) == -1, 'index of 2 in vector should have been -1 (not found)' );
+
+v = [ 1, 2, 3, 4, 5, 6 ];
+
+assert( v.erase( 3 ) == true, 'erasing at index 3 should yield true' );
+assert( v.erase( 5 ) == false, 'erasing at index 5 should yield false' );
+assert( v.erase( -1 ) == false, 'erasing at index -1 should yield false' );
+
+assert( v.len() == 5, 'after erase, vector should be of length 5' );
+assert( v == [ 1, 2, 3, 5, 6 ], 'after erase, vector should be [ 1, 2, 3, 5, 6 ]' );
+
+for i = 0; i < v.len(); i += 1 {
+	v.erase( i );
+	i -= 1;
+}
+
+assert( v.len() == 0, 'after looped erase, vector should be of length 0' );

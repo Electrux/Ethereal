@@ -194,8 +194,9 @@ public:
 class var_vec_t : public var_base_t
 {
 	std::vector< var_base_t * > m_val;
+	bool m_is_var_arg;
 public:
-	var_vec_t( std::vector< var_base_t * > & val, const int parse_ctr = 0 );
+	var_vec_t( std::vector< var_base_t * > & val, const int parse_ctr = 0, const bool is_var_arg = false );
 	~var_vec_t();
 	std::string to_str() const;
 	mpz_class to_int() const;
@@ -204,6 +205,8 @@ public:
 	void clear();
 	std::vector< var_base_t * > & get();
 	void assn( var_base_t * b );
+	inline bool is_var_arg() const { return m_is_var_arg; }
+	inline void set_var_arg( const bool is_var_arg ) { m_is_var_arg = is_var_arg; }
 };
 #define AS_VEC( x ) static_cast< var_vec_t * >( x )
 

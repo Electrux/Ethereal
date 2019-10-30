@@ -5,6 +5,7 @@ import std.vec;
 fn var_args0( ... ) {
 	assert( __va__.len() == 5, 'var_args0() should have __va__.len() == 5, but is: ', __va__.len() );
 	println( __va__ );
+	var_args2( __va__ );
 }
 
 fn var_args1( a, ... ) {

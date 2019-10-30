@@ -9,8 +9,8 @@
 
 #include "Base.hpp"
 
-var_vec_t::var_vec_t( std::vector< var_base_t * > & val, const int parse_ctr )
-	: var_base_t( VT_VEC, true, parse_ctr ), m_val( val ) {}
+var_vec_t::var_vec_t( std::vector< var_base_t * > & val, const int parse_ctr, const bool is_var_arg )
+	: var_base_t( VT_VEC, true, parse_ctr ), m_val( val ), m_is_var_arg( is_var_arg ) {}
 var_vec_t::~var_vec_t()
 {
 	for( auto & v : m_val ) {
@@ -36,7 +36,7 @@ var_base_t * var_vec_t::copy( const int parse_ctr )
 	for( auto & v : m_val ) {
 		newvec.push_back( v->copy( parse_ctr ) );
 	}
-	return new var_vec_t( newvec, parse_ctr );
+	return new var_vec_t( newvec, parse_ctr, m_is_var_arg );
 }
 
 void var_vec_t::clear()

@@ -23,6 +23,7 @@ int CallFunc( vm_state_t & vm, func_call_data_t & fcd, const int ins_ctr )
 	fcd.arg_types.clear();
 	fcd.rem_locs.clear();
 	fcd.parse_ctr = ins.parse_ctr;
+	int var_args_count = 0;
 	var_base_t * member = nullptr;
 	const function_t * fn;
 	modfnptr_t mfnptr = nullptr;
@@ -41,10 +42,23 @@ int CallFunc( vm_state_t & vm, func_call_data_t & fcd, const int ins_ctr )
 	vm.stack->pop_back();
 	// fetch args
 	for( int i = 0; i < fcd.args_count; ++i ) {
-		fcd.arg_types.push_back( vm.stack->back()->type_str() );
-		fcd.args.push_back( vm.stack->back() );
+		var_base_t * back = vm.stack->back();
+		if( back->type() == VarType::VT_VEC && AS_VEC( back )->is_var_arg() ) {
+			std::vector< var_base_t * > & vec = AS_VEC( back )->get();
+			// minus 1 because vec replaces the argument, not appends to it
+			var_args_count += vec.size() - 1;
+			for( auto & e : vec ) {
+				VAR_IREF( e );
+				fcd.arg_types.push_back( e->type_str() );
+				fcd.args.push_back( e );
+			}
+		} else {
+			fcd.arg_types.push_back( back->type_str() );
+			fcd.args.push_back( back );
+		}
 		vm.stack->pop_back( false );
 	}
+	fcd.args_count += var_args_count;
 
 	if( ins.opcode == IC_MFN_CALL ) {
 		member = vm.stack->back();
@@ -97,7 +111,7 @@ int CallFunc( vm_state_t & vm, func_call_data_t & fcd, const int ins_ctr )
 			for( size_t i = fn->arg_count_min; i < fcd.args.size(); ++i ) {
 				va.push_back( fcd.args[ i ] );
 			}
-			vm.vars->add( "__va__", new var_vec_t( va, fcd.parse_ctr ) );
+			vm.vars->add( "__va__", new var_vec_t( va, fcd.parse_ctr, true ) );
 		}
 		fcd.args.clear();
 		res.code = exec_internal( vm, lfnptr->beg, lfnptr->end, res.data );

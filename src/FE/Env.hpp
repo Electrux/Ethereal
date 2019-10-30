@@ -10,6 +10,7 @@
 #ifndef ENV_HPP
 #define ENV_HPP
 
+#include <vector>
 #include <string>
 
 std::string GetEnv( const std::string & key );

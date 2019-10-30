@@ -52,11 +52,12 @@ int CallFunc( vm_state_t & vm, func_call_data_t & fcd, const int ins_ctr )
 				fcd.arg_types.push_back( e->type_str() );
 				fcd.args.push_back( e );
 			}
+			vm.stack->pop_back();
 		} else {
 			fcd.arg_types.push_back( back->type_str() );
 			fcd.args.push_back( back );
+			vm.stack->pop_back( false );
 		}
-		vm.stack->pop_back( false );
 	}
 	fcd.args_count += var_args_count;
 

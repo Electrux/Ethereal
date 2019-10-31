@@ -18,6 +18,15 @@ fn var_args2( a, b, ... ) {
 	println( __va__ );
 }
 
+fn va_forward( ... ) {
+	if __va__.len() < 1 { return; }
+	println( __va__.front() );
+	__va__.pop_front();
+	va_forward( __va__ );
+}
+
 var_args0( 'str', 1, 2, 3, 4 );
 var_args1( 'str', 1, 2, 3, 4 );
 var_args2( 'str', 1, 2, 3, 4 );
+
+va_forward( 1, 2, 3, 4 );

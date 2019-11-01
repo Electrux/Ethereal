@@ -18,7 +18,7 @@ tmp_start = start;
 for file in files.iter() {
 	cprint( '{c}test{0}: {y}', file, '{0} ... ' );
 	flush_out();
-	res = os.exec( __PROG__ + ' ' + file + ' test 1>/dev/null 2>&1' ) == 0;
+	res = os.exec( __PROG__ + ' ' + file + ' test' ) == 0;
 	tmp_diff = time.now() - tmp_start;
 	if res {
 		cprintln( '{g}', tmp_diff.msecs(), ' ms{0}' );

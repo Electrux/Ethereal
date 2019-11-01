@@ -9,6 +9,9 @@ assert( threads.nproc > 0, "threads.nproc should be greater than 0" );
 tpool = [];
 
 for i = 0; i < threads.nproc; i += 1 {
+	if __PROG__.front() != '/' {
+		__PROG__ = '../' + __PROG__;
+	}
 	tpool.push( threads.new_exec( __PROG__ + ' bst.et ', i ) );
 	println( 'Created thread #', i );
 }

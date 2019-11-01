@@ -1,0 +1,31 @@
+#!./build/bin/et
+
+import std.vec;
+import std.str;
+import std.threads;
+
+assert( threads.nproc > 0, "threads.nproc should be greater than 0" );
+
+tpool = [];
+
+for i = 0; i < threads.nproc; i += 1 {
+	tpool.push( threads.new_exec( __PROG__ + ' bst.et ', i ) );
+	println( 'Created thread #', i );
+}
+
+# some work
+
+done = 0;
+for ; tpool.len() > 0; {
+	for i = 0; i < tpool.len(); i += 1 {
+		if tpool[ i ].done() {
+			t = tpool[ i ];
+			println( 'Finished ', t.id(), ' with result: ', t.res() );
+			tpool.erase( i );
+			done += 1;
+			i -= 1;
+		}
+	}
+}
+
+exit( threads.nproc - done );

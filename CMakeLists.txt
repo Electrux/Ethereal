@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 2.8)
 
-project(Ethereal CXX)
+project(Ethereal C CXX)
 
 set(CMAKE_CXX_STANDARD 11)
 if(CMAKE_VERSION VERSION_LESS "3.1")
@@ -15,6 +15,10 @@ include(CheckCXXCompilerFlag)
 
 find_library(gmp REQUIRED)
 find_library(gmpxx REQUIRED)
+set(THREADS_PREFER_PTHREAD_FLAG ON)
+find_package(Threads REQUIRED)
+SET(CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} ${CMAKE_THREAD_LIBS_INIT}")
+SET(CMAKE_EXE_LINKER_FLAGS  "${CMAKE_EXE_LINKER_FLAGS} ${CMAKE_THREAD_LIBS_INIT}")
 
 # For libGMP on macOS and BSD
 if(APPLE OR ${CMAKE_SYSTEM_NAME} MATCHES ".*BSD.*")

@@ -1,0 +1,7 @@
+ldmod std.threads;
+
+struct _threads_t {
+	nproc = threads_get_nproc();
+}
+
+threads = _threads_t{};

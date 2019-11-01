@@ -11,6 +11,7 @@
 #include <future>
 #include <chrono>
 #include <sstream>
+#include <sys/wait.h>
 
 #include "../../src/VM/Core.hpp"
 

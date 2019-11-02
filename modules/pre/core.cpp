@@ -9,6 +9,7 @@
 
 #include "../../src/FE/Env.hpp"
 #include "../../src/VM/Core.hpp"
+#include "../../src/VM/LoadFile.hpp"
 
 #include "Core/Int.hpp"
 #include "Core/Flt.hpp"
@@ -144,6 +145,80 @@ var_base_t * add_lib_dirs( vm_state_t & vm, func_call_data_t & fcd )
 	return nullptr;
 }
 
+var_base_t * load_module( vm_state_t & vm, func_call_data_t & fcd )
+{
+	std::string name = fcd.args[ 0 ]->to_str();
+	auto last_slash = name.find_last_of( '/' );
+	name.insert( last_slash + 1, "lib" );
+
+	std::string file = name + LIB_EXT;
+	std::string init_fn_str = name.substr( name.find_last_of( '/' ) + 4 );
+
+	src_t & src = * vm.srcstack.back();
+	int line = src.bcode[ fcd.bcodectr ].line;
+	int col = src.bcode[ fcd.bcodectr ].col;
+
+	init_fnptr_t init_fn = nullptr;
+
+	if( !mod_exists( file, vm.lib_dirs ) ) {
+		src_fail( src.name, src.code[ line - 1 ], line, col,
+			  "could not find module '%s' for loading",
+			  name.c_str() );
+		fprintf( stderr, "checked the following paths:\n" );
+		for( auto & loc : vm.lib_dirs ) {
+			fprintf( stderr, "-> %s\n", ( loc + "/" + file ).c_str() );
+		}
+		goto fail;
+	}
+	if( vm.dlib->load( file ) == nullptr ) goto fail;
+	init_fn = ( init_fnptr_t ) vm.dlib->get( file, "init_" + init_fn_str );
+	if( init_fn == nullptr ) {
+		src_fail( src.name, src.code[ line - 1 ], line, col,
+			  "failed to find init function '%s' in module '%s'",
+			  init_fn_str.c_str(), file.c_str() );
+		goto fail;
+	}
+	init_fn( vm );
+	return new var_int_t( E_OK );
+fail:
+	return new var_int_t( E_FAIL );
+}
+
+var_base_t * import_module( vm_state_t & vm, func_call_data_t & fcd )
+{
+	std::string name = fcd.args[ 0 ]->to_str();
+	std::string file = name + ".et";
+
+	std::string alias = fcd.args.size() > 1 ? fcd.args[ 1 ]->to_str() : "";
+
+	src_t & src = * vm.srcstack.back();
+	int line = src.bcode[ fcd.bcodectr ].line;
+	int col = src.bcode[ fcd.bcodectr ].col;
+
+	int ret = E_OK;
+
+	if( !mod_exists( file, vm.inc_dirs ) ) {
+		src_fail( src.name, src.code[ line - 1 ], line, col, "could not find file '%s' for importing", name.c_str() );
+		fprintf( stderr, "checked the following paths:\n" );
+		for( auto & loc : vm.inc_dirs ) {
+			fprintf( stderr, "-> %s\n", ( loc + "/" + file ).c_str() );
+		}
+		ret = E_FAIL;
+		goto fail;
+	}
+
+	ret = load_src( vm, file, alias );
+	if( ret != E_OK ) {
+		src_fail( src.name, src.code[ line - 1 ], line, col,
+			  "could not import '%s', see the error above; aborting",
+			  file.c_str() );
+		goto fail;
+	}
+	return new var_int_t( E_OK );
+fail:
+	return new var_int_t( ret );
+}
+
 var_base_t * nil_eq( vm_state_t & vm, func_call_data_t & fcd )
 {
 	return TRUE_FALSE( fcd.args[ 1 ]->type() == fcd.args[ 0 ]->type() );
@@ -171,8 +246,10 @@ REGISTER_MODULE( core )
 	vm.funcs.add( { "var_exists",    1,  1, { "str" }, FnType::MODULE, { .modfn = var_exists }, false } );
 	vm.funcs.add( { "var_mfn_exists",2,  2, { "_any_", "str" }, FnType::MODULE, { .modfn = var_mfn_exists }, false } );
 	vm.funcs.add( { "var_ref_count", 1,  1, { "_any_" }, FnType::MODULE, { .modfn = var_ref_count }, true } );
-	vm.funcs.add( { "_add_incs_",	 1,  -1, { "_any_", "_whatever_" }, FnType::MODULE, { .modfn = add_inc_dirs }, false } );
-	vm.funcs.add( { "_add_libs_",	 1,  -1, { "_any_", "_whatever_" }, FnType::MODULE, { .modfn = add_lib_dirs }, false } );
+	vm.funcs.add( { "_add_incs_",	 1, -1, { "_any_", "_whatever_" }, FnType::MODULE, { .modfn = add_inc_dirs }, false } );
+	vm.funcs.add( { "_add_libs_",	 1, -1, { "_any_", "_whatever_" }, FnType::MODULE, { .modfn = add_lib_dirs }, false } );
+	vm.funcs.add( { "_ldmod_",	 1,  1, { "str" }, FnType::MODULE, { .modfn = load_module }, true } );
+	vm.funcs.add( { "_import_",	 1,  2, { "str", "str" }, FnType::MODULE, { .modfn = import_module }, true } );
 
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////// INT ////////////////////////////////////////////////////////////////

@@ -2,3 +2,6 @@
 
 import std.str;
 import 'std/str';
+
+assert( _import_( 'a' ) != 0, 'module \'a\' does not exist, it should not have been imported' );
+assert( _import_( 'std/vec' ) == 0, 'module \'std.vec\' exists, it should have been imported' );

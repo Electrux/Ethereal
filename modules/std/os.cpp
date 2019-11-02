@@ -142,7 +142,7 @@ REGISTER_MODULE( os )
 	vm.funcs.add( { "os_get_name", 0, 0, {}, FnType::MODULE, { .modfn = os_get_name }, true } );
 
 	os.add( { "mkdir", 1, -1, { "_whatever_" }, FnType::MODULE, { .modfn = os_mkdir }, true } );
-	os.add( { "rm", 1, -1, { "_whatever_" }, FnType::MODULE, { .modfn = os_mkdir }, true } );
+	os.add( { "rm", 1, -1, { "_whatever_" }, FnType::MODULE, { .modfn = os_rm }, true } );
 }
 
 int exec_internal( const std::string & cmd )

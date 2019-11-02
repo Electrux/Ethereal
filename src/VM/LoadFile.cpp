@@ -12,7 +12,7 @@
 
 #include "LoadFile.hpp"
 
-int load_src( vm_state_t & vm, const std::string & file, const std::string & alias, const instr_t & ins )
+int load_src( vm_state_t & vm, const std::string & file, const std::string & alias )
 {
 	src_t & src = * vm.srcstack.back();
 	auto last_slash_loc = file.find_last_of( '/' ) + 1;

@@ -230,7 +230,7 @@ int exec_internal( vm_state_t & vm, long begin, long end, var_base_t * ret )
 				}
 				goto fail;
 			}
-			int ret = load_src( vm, file, alias, ins );
+			int ret = load_src( vm, file, alias );
 
 			if( ret != E_OK ) {
 				VM_FAIL( "could not import '%s', see the error above; aborting",

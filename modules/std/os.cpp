@@ -98,6 +98,20 @@ var_base_t * os_get_name( vm_state_t & vm, func_call_data_t & fcd )
 	return new var_str_t( os_str, 0 );
 }
 
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////// Extra Functions ///////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+var_base_t * os_mkdir( vm_state_t & vm, func_call_data_t & fcd )
+{
+	std::string dest = AS_STR( fcd.args[ 1 ] )->get();
+
+	if( dest.empty() ) {
+		return new var_int_t( 0 );
+	}
+	return new var_int_t( exec_internal( "mkdir -p " + dest ) );
+}
+
 REGISTER_MODULE( os )
 {
 	functions_t & os = vm.typefuncs[ "_os_t" ];
@@ -109,6 +123,8 @@ REGISTER_MODULE( os )
 	os.add( { "install", 2, 2, { "str", "str" }, FnType::MODULE, { .modfn = install }, true } );
 
 	vm.funcs.add( { "os_get_name", 0, 0, {}, FnType::MODULE, { .modfn = os_get_name }, true } );
+
+	os.add( { "mkdir", 1, 1, { "str" }, FnType::MODULE, { .modfn = os_mkdir }, true } );
 }
 
 int exec_internal( const std::string & cmd )

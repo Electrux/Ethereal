@@ -76,9 +76,9 @@ bool stmt_func_t::bytecode( src_t & src ) const
 {
 	int block_till_loc = src.bcode.size();
 	src.bcode.push_back( { m_tok_ctr, m_name->m_val->line, m_name->m_val->col, IC_BLOCK_TILL, { OP_INT, "<func-block-placeholder>" } } );
-	ADD_SCOPE();
+	ADD_FUNC();
 	m_block->bytecode( src );
-	REM_SCOPE();
+	REM_FUNC();
 	// not used src.bcode.size() - 1 because the exec loop runs till < end and not <= end
 	src.bcode[ block_till_loc ].oper.val = std::to_string( src.bcode.size() );
 

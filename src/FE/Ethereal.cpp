@@ -11,7 +11,10 @@
 
 src_t::src_t( const bool _is_main_src )
 	: ptree( nullptr ), is_main_src( _is_main_src ),
-	  found_assn( false ), bcode_as_const( false ) {}
+	  found_assn( false ), bcode_as_const( false )
+{
+	block_depth.push_back( {} );
+}
 
 src_t::~src_t()
 {

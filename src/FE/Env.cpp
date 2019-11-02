@@ -38,10 +38,9 @@ void SetCWD( std::string dir )
 
 void DirFormat( std::string & dir )
 {
-	if( dir.empty() ) { dir = "."; return; }
-	if( dir.front() != '/' && dir.front() != '.' && dir.front() != '~') {
-		dir.insert( dir.begin(), '/' );
-		dir.insert( dir.begin(), '.' );
+	if( dir.empty() ) { dir = GetCWD(); return; }
+	if( dir.front() != '/' && dir.front() != '~' ) {
+		dir = GetCWD() + "/" + dir;
 	}
 	if( dir.front() == '~' ) {
 		dir.erase( dir.begin() );
@@ -49,7 +48,6 @@ void DirFormat( std::string & dir )
 		dir.insert( dir.begin(), home.begin(), home.end() );
 	}
 	if( dir.size() > 1 && dir.back() == '/' ) dir.pop_back();
-	return;
 }
 
 bool mod_exists( std::string & file, const std::vector< std::string > & locs )

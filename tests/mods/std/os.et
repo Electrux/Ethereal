@@ -12,3 +12,5 @@ assert( os.set_env( 'RANDOM_ENV_VAR', 'temp', false ) == 0, 'RANDOM_ENV_VAR shou
 assert( os.set_env( 'RANDOM_ENV_VAR', 'temp' ) == 0, 'RANDOM_ENV_VAR should be set because overwrite is enabled' );
 
 assert( !os.find_exec( 'ls' ).empty(), '\'ls\' command should have been available in PATH = ', os.get_env( 'PATH' ) );
+assert( os.mkdir( 'tmp_dir1', 'tmp_dir1' ) == 0, 'tmp_dir1 and tmp_dir2 directories should have been created' );
+assert( os.rm( 'tmp_dir1', 'tmp_dir1' ) == 0, 'tmp_dir1 and tmp_dir2 directories should have been removed' );

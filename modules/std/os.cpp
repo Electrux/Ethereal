@@ -104,12 +104,29 @@ var_base_t * os_get_name( vm_state_t & vm, func_call_data_t & fcd )
 
 var_base_t * os_mkdir( vm_state_t & vm, func_call_data_t & fcd )
 {
-	std::string dest = AS_STR( fcd.args[ 1 ] )->get();
+	std::string dest = fcd.args[ 1 ]->to_str();
 
+	for( size_t i = 2; i < fcd.args_count; ++i ) {
+		std::string tmpdest = fcd.args[ i ]->to_str();
+		if( tmpdest.empty() ) continue;
+		dest += " " + tmpdest;
+	}
+	return new var_int_t( exec_internal( "mkdir -p " + dest ) );
+}
+
+var_base_t * os_rm( vm_state_t & vm, func_call_data_t & fcd )
+{
+	std::string dest = fcd.args[ 1 ]->to_str();
+
+	for( size_t i = 2; i < fcd.args_count; ++i ) {
+		std::string tmpdest = fcd.args[ i ]->to_str();
+		if( tmpdest.empty() ) continue;
+		dest += " " + tmpdest;
+	}
 	if( dest.empty() ) {
 		return new var_int_t( 0 );
 	}
-	return new var_int_t( exec_internal( "mkdir -p " + dest ) );
+	return new var_int_t( exec_internal( "rm -r " + dest ) );
 }
 
 REGISTER_MODULE( os )
@@ -124,7 +141,8 @@ REGISTER_MODULE( os )
 
 	vm.funcs.add( { "os_get_name", 0, 0, {}, FnType::MODULE, { .modfn = os_get_name }, true } );
 
-	os.add( { "mkdir", 1, 1, { "str" }, FnType::MODULE, { .modfn = os_mkdir }, true } );
+	os.add( { "mkdir", 1, -1, { "_whatever_" }, FnType::MODULE, { .modfn = os_mkdir }, true } );
+	os.add( { "rm", 1, -1, { "_whatever_" }, FnType::MODULE, { .modfn = os_mkdir }, true } );
 }
 
 int exec_internal( const std::string & cmd )

@@ -19,8 +19,9 @@
 class vars_t
 {
 	std::unordered_map< int, std::unordered_map< std::string, var_base_t * > > m_vars;
-	size_t m_layer;
+	int m_layer;
 	std::vector< int > m_frozen_till;
+	std::vector< int > m_zeroes;
 public:
 	vars_t();
 	~vars_t();
@@ -29,7 +30,14 @@ public:
 
 	bool exists( const std::string & var_name ) const;
 
-	void add( const std::string & var_name, var_base_t * const val );
+	inline void add( const std::string & var_name, var_base_t * const val )
+	{
+		m_vars[ m_layer ][ var_name ] = val;
+	}
+	inline void add_with_layer( const std::string & var_name, var_base_t * const val, const int layer )
+	{
+		m_vars[ layer ][ var_name ] = val;
+	}
 
 	bool del( const std::string & var_name, var_base_t ** loc );
 
@@ -37,8 +45,10 @@ public:
 	void pop_scope( std::vector< void * > * locs, const int count = 1 );
 	inline void freeze_till( const int till ) { m_frozen_till.push_back( till ); }
 	inline void unfreeze() { m_frozen_till.pop_back(); }
+	inline void add_zero( const int zero_at ) { m_zeroes.push_back( zero_at ); }
+	inline void pop_zero() { m_zeroes.pop_back(); }
 
-	size_t layer_size() const;
+	int layer_size() const;
 };
 
 #endif // VM_VARS_HPP

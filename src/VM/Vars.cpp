@@ -10,7 +10,7 @@
 #include "Vars.hpp"
 
 vars_t::vars_t()
-	: m_layer( 0 ) {}
+	: m_layer( 0 ), m_zeroes( { 0 } ) {}
 vars_t::~vars_t()
 {
 	for( auto & l : m_vars ) {
@@ -24,7 +24,7 @@ var_base_t * vars_t::get( const std::string & var_name ) const
 {
 	int layer_iter = m_layer;
 	while( layer_iter >= 0 ) {
-		if( layer_iter != 0 && m_frozen_till.size() > 0 && layer_iter <= m_frozen_till.back() ) {
+		if( layer_iter != m_zeroes.back() && m_frozen_till.size() > 0 && layer_iter <= m_frozen_till.back() ) {
 			--layer_iter;
 			continue;
 		}
@@ -40,7 +40,7 @@ bool vars_t::exists( const std::string & var_name ) const
 {
 	int layer_iter = m_layer;
 	while( layer_iter >= 0 ) {
-		if( layer_iter != 0 && m_frozen_till.size() > 0 && layer_iter <= m_frozen_till.back() ) {
+		if( layer_iter != m_zeroes.back() && m_frozen_till.size() > 0 && layer_iter <= m_frozen_till.back() ) {
 			--layer_iter;
 			continue;
 		}
@@ -52,16 +52,11 @@ bool vars_t::exists( const std::string & var_name ) const
 	return false;
 }
 
-void vars_t::add( const std::string & var_name, var_base_t * const val )
-{
-	m_vars[ m_layer ][ var_name ] = val;
-}
-
 bool vars_t::del( const std::string & var_name, var_base_t ** loc )
 {
 	int layer_iter = m_layer;
 	while( layer_iter >= 0 ) {
-		if( layer_iter != 0 && m_frozen_till.size() > 0 && layer_iter <= m_frozen_till.back() ) {
+		if( layer_iter != m_zeroes.back() && m_frozen_till.size() > 0 && layer_iter <= m_frozen_till.back() ) {
 			--layer_iter;
 			continue;
 		}
@@ -96,4 +91,4 @@ void vars_t::pop_scope( std::vector< void * > * locs, const int count )
 	}
 }
 
-size_t vars_t::layer_size() const { return m_layer; }
+int vars_t::layer_size() const { return m_layer; }

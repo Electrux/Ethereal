@@ -89,7 +89,6 @@ int CallFunc( vm_state_t & vm, func_call_data_t & fcd, const int ins_ctr )
 	}
 
 	vm.vars->freeze_till( vm.vars->layer_size() );
-	vm.vars->add_scope();
 
 	// execute the function
 	res.code = E_OK;
@@ -99,20 +98,21 @@ int CallFunc( vm_state_t & vm, func_call_data_t & fcd, const int ins_ctr )
 		// member is also added to args and hence erased
 		for( auto & arg : fcd.args ) VAR_DREF( arg );
 	} else {
+		int use_layer = vm.vars->layer_size() + 1;
 		vm.srcstack.push_back( vm.srcs[ lfnptr->src ] );
 		if( member ) {
 			fcd.args.erase( fcd.args.begin() );
-			vm.vars->add( "self", member );
+			vm.vars->add_with_layer( "self", member, use_layer );
 		}
 		for( size_t i = 0; i < fn->arg_count_min; ++i ) {
-			vm.vars->add( fn->arg_types[ i ], fcd.args[ i ] );
+			vm.vars->add_with_layer( fn->arg_types[ i ], fcd.args[ i ], use_layer );
 		}
 		if( fn->arg_count_max == -1 ) {
 			std::vector< var_base_t * > va;
 			for( size_t i = fn->arg_count_min; i < fcd.args.size(); ++i ) {
 				va.push_back( fcd.args[ i ] );
 			}
-			vm.vars->add( "__va__", new var_vec_t( va, fcd.parse_ctr, true ) );
+			vm.vars->add_with_layer( "__va__", new var_vec_t( va, fcd.parse_ctr, true ), use_layer );
 		}
 		fcd.args.clear();
 		res.code = exec_internal( vm, lfnptr->beg, lfnptr->end, res.data );
@@ -131,14 +131,11 @@ int CallFunc( vm_state_t & vm, func_call_data_t & fcd, const int ins_ctr )
 		}
 	}
 
-	vm.vars->pop_scope( & fcd.rem_locs );
 	vm.vars->unfreeze();
 	for( auto & rll : fcd.rem_locs ) VAR_DREF( rll );
 	fcd.args.clear();
 	return E_OK;
 fail:
-	// for lang function, args are moved to vars' new layer which is popped at the end
-	vm.vars->pop_scope( & fcd.rem_locs );
 	vm.vars->unfreeze();
 	for( auto & arg : fcd.args ) VAR_DREF( arg );
 	fcd.args.clear();

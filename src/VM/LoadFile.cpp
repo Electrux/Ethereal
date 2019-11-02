@@ -82,7 +82,9 @@ int load_src( vm_state_t & vm, const std::string & file, const std::string & ali
 	if( !( vm.flags & OPT_C ) && !( vm.flags & OPT_D ) ) {
 		vm.srcstack.push_back( new_src );
 		vm.srcs[ new_src->id ] = new_src;
+		vm.vars->add_zero( vm.vars->layer_size() );
 		err = vm_exec( vm );
+		vm.vars->pop_zero();
 		vm.srcstack.pop_back();
 		if( err != E_OK ) vm.srcs.erase( new_src->id );
 	}

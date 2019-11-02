@@ -8,7 +8,7 @@ assert( threads.nproc > 0, "threads.nproc should be greater than 0" );
 
 tpool = [];
 
-if __PROG__.front() != '/' {
+if __PROG__.front() == '.' {
 	__PROG__ = '../' + __PROG__;
 }
 

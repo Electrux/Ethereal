@@ -1,0 +1,15 @@
+import std.fs;
+import std.os;
+import std.str;
+import std.term;
+
+import epm.base;
+
+fn update() {
+	cprintln( '{w}=> {y}updating package index {0}... ' );
+	if fs.exists( EPI_DIR ) {
+		os.exec( GIT_CMD + ' -C ' + EPI_DIR + ' pull' );
+	} else {
+		os.exec( GIT_CMD + ' clone ' + EPI_URL + ' ' + EPI_DIR );
+	}
+}

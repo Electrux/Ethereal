@@ -1,0 +1,36 @@
+import std.fs;
+import std.os;
+import std.str;
+
+# Ethereal Package Manager
+EPM_DIR = os.get_env( 'HOME' ) + '/.epm';
+# Ethereal Package Index
+EPI_DIR = EPM_DIR + '/pkgs';
+EPI_URL = 'https://github.com/Electrux/Ethereal-Pkgs.git';
+GIT_CMD = os.find_exec( 'git' );
+
+if GIT_CMD.empty() {
+	cprintln( '{w}=> {r}git is probably not installed on the system{0}, {r}please install it first{0}' );
+	exit( 1 );
+}
+
+# create the Ethereal Package Manager directory
+if !fs.exists( EPM_DIR ) {
+	cprintln( '{w}=> {y}creating EPM home directory {0}({c}', EPM_DIR, '{0}) ...' );
+	epm_dir_created = os.mkdir( EPM_DIR );
+	if epm_dir_created != 0 {
+		cprintln( '{w}=> {y}failed to create EPM_DIR {0}= {r}', EPM_DIR, '{0}' );
+		exit( epm_dir_created );
+	}
+}
+
+if !fs.exists( EPI_DIR ) {
+	cprintln( '{w}=> {y}package index repository does not exist locally{0}, {y}cloning it {0}...' );
+	res = os.exec( GIT_CMD + ' clone ' + EPI_URL + ' ' + EPI_DIR );
+	if res != 0 {
+		cprintln( '{w}=> {r}failed to clone package index repository{0}' );
+		exit( res );
+	}
+}
+
+_add_incs_( EPI_DIR );

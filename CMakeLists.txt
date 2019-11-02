@@ -147,3 +147,8 @@ endforeach()
 set(BINARY_LOC "${CMAKE_INSTALL_PREFIX}/bin/et")
 configure_file("${PROJECT_SOURCE_DIR}/playground.et" "${CMAKE_BINARY_DIR}/artifacts/et-repl" @ONLY)
 install(PROGRAMS "${CMAKE_BINARY_DIR}/artifacts/et-repl" DESTINATION "${CMAKE_INSTALL_PREFIX}/bin/")
+
+# EPM
+configure_file("${PROJECT_SOURCE_DIR}/tools/epm/epm.et" "${CMAKE_BINARY_DIR}/artifacts/epm" @ONLY)
+install(PROGRAMS "${CMAKE_BINARY_DIR}/artifacts/epm" DESTINATION "${CMAKE_INSTALL_PREFIX}/bin/")
+install(DIRECTORY "${CMAKE_SOURCE_DIR}/tools/epm/include/" DESTINATION "${CMAKE_INSTALL_PREFIX}/include/ethereal/epm")

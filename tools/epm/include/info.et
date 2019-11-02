@@ -1,0 +1,18 @@
+import std.fs;
+import std.os;
+import std.str;
+import std.term;
+
+import epm.base;
+
+fn info( of ) {
+	if !fs.exists( EPI_DIR + '/' + of + '.pkg.et' ) {
+		cprintln( '{w}=> {y}package {r}' + of + ' {y}does not exist{0}' );
+		exit( 1 );
+	}
+	_import_( of + '.pkg' );
+	cprintln( '{w}=> {y}Version{0}: {c}', version, '{0}' );
+	cprintln( '{w}=> {y}URL{0}: {c}', url, '{0}' );
+	cprintln( '{w}=> {y}Source file{0}: {c}', src, '{0}' );
+	cprintln( '{w}=> {y}Installation files{0}: {c}', files, '{0}' );
+}

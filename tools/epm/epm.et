@@ -24,7 +24,7 @@ if args[ 1 ] == 'update' {
 
 if args[ 1 ] == 'info' {
 	if args.len() < 3 {
-		cprintln( '{w}=> {y}must specify a {r}name {y}for which the information is to be retrieved{0}' );
+		cprintln( '{w}=> {y}must specify a {r}package name {y}for which information is to be retrieved{0}' );
 		exit( 1 );
 	}
 	info( args[ 2 ] );

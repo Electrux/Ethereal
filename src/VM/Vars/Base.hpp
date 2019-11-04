@@ -196,7 +196,7 @@ class var_vec_t : public var_base_t
 	std::vector< var_base_t * > m_val;
 	bool m_is_var_arg;
 public:
-	var_vec_t( std::vector< var_base_t * > & val, const int parse_ctr = 0, const bool is_var_arg = false );
+	var_vec_t( const std::vector< var_base_t * > & val, const int parse_ctr = 0, const bool is_var_arg = false );
 	~var_vec_t();
 	std::string to_str() const;
 	mpz_class to_int() const;

@@ -1,0 +1,6 @@
+#!./build/bin/et
+
+import std.vec;
+
+assert( _inc_dirs_.len() == 1, 'length of _inc_dirs_ should have been 1' );
+assert( _lib_dirs_.len() == 1, 'length of _lib_dirs_ should have been 1' );

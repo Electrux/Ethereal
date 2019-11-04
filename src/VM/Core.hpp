@@ -29,8 +29,8 @@ struct vm_state_t
 	bool exit_called;
 	int exit_status;
 
-	std::vector< std::string > inc_dirs;
-	std::vector< std::string > lib_dirs;
+	var_vec_t * inc_dirs;
+	var_vec_t * lib_dirs;
 
 	var_none_t * none;
 	var_nil_t * nil;
@@ -76,6 +76,8 @@ bool set_init_mods( vm_state_t & vm );
 size_t mpz_to_size_t( const mpz_class & n );
 
 std::vector< std::string > str_delimit( const std::string & str, const char ch, const bool first_only = false );
+
+bool mod_exists( std::string & file, var_vec_t * locs );
 
 #define TRUE_FALSE( condition ) ( condition ) ? vm.vars->get( "true" ) : vm.vars->get( "false" )
 

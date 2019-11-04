@@ -9,7 +9,7 @@
 
 #include "Base.hpp"
 
-var_vec_t::var_vec_t( std::vector< var_base_t * > & val, const int parse_ctr, const bool is_var_arg )
+var_vec_t::var_vec_t( const std::vector< var_base_t * > & val, const int parse_ctr, const bool is_var_arg )
 	: var_base_t( VT_VEC, true, parse_ctr ), m_val( val ), m_is_var_arg( is_var_arg ) {}
 var_vec_t::~var_vec_t()
 {

@@ -7,6 +7,7 @@
 	before using or altering the project.
 */
 
+#include "../FE/Env.hpp"
 #include "../FE/FS.hpp"
 
 #include "Core.hpp"
@@ -18,14 +19,17 @@ const char * LIB_EXT = ".so";
 #endif
 
 vm_state_t::vm_state_t() : flags( 0 ), exit_called( false ), exit_status( 0 ),
+	inc_dirs( new var_vec_t( {}, 0 ) ), lib_dirs( new var_vec_t( {}, 0 ) ),
 	none( new var_none_t( 0 ) ), nil( new var_nil_t( 0 ) ),
 	vars( new vars_t ), dlib( new dyn_lib_t() ),
 	consts( new consts_t() ), stack( new vm_stack_t() )
 {
 #ifdef BUILD_PREFIX_DIR
-	inc_dirs.push_back( STRINGIFY( BUILD_PREFIX_DIR ) "/include/ethereal" );
-	lib_dirs.push_back( STRINGIFY( BUILD_PREFIX_DIR ) "/lib/ethereal" );
+	AS_VEC( inc_dirs )->get().push_back( new var_str_t( STRINGIFY( BUILD_PREFIX_DIR ) "/include/ethereal", 0 ) );
+	AS_VEC( lib_dirs )->get().push_back( new var_str_t( STRINGIFY( BUILD_PREFIX_DIR ) "/lib/ethereal", 0 ) );
 #endif
+	vars->add( "_inc_dirs_", inc_dirs );
+	vars->add( "_lib_dirs_", lib_dirs );
 }
 
 vm_state_t::~vm_state_t()
@@ -33,7 +37,6 @@ vm_state_t::~vm_state_t()
 	delete stack;
 	delete consts;
 	delete vars;
-	VAR_DREF( nil );
 	VAR_DREF( none );
 	for( auto & struct_ : structs ) delete struct_.second;
 	delete dlib;
@@ -91,4 +94,26 @@ std::vector< std::string > str_delimit( const std::string & str, const char ch, 
 
 	if( !temp.empty() ) vec.push_back( temp );
 	return vec;
+}
+
+bool mod_exists( std::string & file, var_vec_t * locs )
+{
+	if( file.front() != '~' && file.front() != '/' && file.front() != '.' ) {
+		for( auto & _loc : AS_VEC( locs )->get() ) {
+			std::string loc = _loc->to_str();
+			if( fexists( loc + "/" + file ) ) {
+				file = loc + "/" + file;
+				return true;
+			}
+		}
+	} else {
+		if( file.front() == '~' ) {
+			file.erase( file.begin() );
+			std::string home = GetEnv( "HOME" );
+			file.insert( file.begin(), home.begin(), home.end() );
+		}
+
+		return fexists( file );
+	}
+	return false;
 }

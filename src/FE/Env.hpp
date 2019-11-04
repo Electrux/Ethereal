@@ -20,6 +20,4 @@ void SetCWD( std::string dir );
 
 void DirFormat( std::string & dir );
 
-bool mod_exists( std::string & file, const std::vector< std::string > & locs );
-
 #endif // ENV_HPP

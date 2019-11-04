@@ -130,7 +130,10 @@ var_base_t * add_inc_dirs( vm_state_t & vm, func_call_data_t & fcd )
 	for( auto & _dir : fcd.args ) {
 		std::string dir = _dir->to_str();
 		DirFormat( dir );
-		vm.inc_dirs.insert( vm.inc_dirs.begin(), dir );
+		AS_VEC( vm.inc_dirs )->get().insert(
+			AS_VEC( vm.inc_dirs )->get().begin(),
+			new var_str_t( dir, fcd.parse_ctr )
+		);
 	}
 	return nullptr;
 }
@@ -140,7 +143,10 @@ var_base_t * add_lib_dirs( vm_state_t & vm, func_call_data_t & fcd )
 	for( auto & _dir : fcd.args ) {
 		std::string dir = _dir->to_str();
 		DirFormat( dir );
-		vm.lib_dirs.insert( vm.lib_dirs.begin(), dir );
+		AS_VEC( vm.lib_dirs )->get().insert(
+			AS_VEC( vm.lib_dirs )->get().begin(),
+			new var_str_t( dir, fcd.parse_ctr )
+		);
 	}
 	return nullptr;
 }
@@ -165,8 +171,8 @@ var_base_t * load_module( vm_state_t & vm, func_call_data_t & fcd )
 			  "could not find module '%s' for loading",
 			  name.c_str() );
 		fprintf( stderr, "checked the following paths:\n" );
-		for( auto & loc : vm.lib_dirs ) {
-			fprintf( stderr, "-> %s\n", ( loc + "/" + file ).c_str() );
+		for( auto & loc : AS_VEC( vm.lib_dirs )->get() ) {
+			fprintf( stderr, "-> %s\n", ( loc->to_str() + "/" + file ).c_str() );
 		}
 		goto fail;
 	}
@@ -200,8 +206,8 @@ var_base_t * import_module( vm_state_t & vm, func_call_data_t & fcd )
 	if( !mod_exists( file, vm.inc_dirs ) ) {
 		src_fail( src.name, src.code[ line - 1 ], line, col, "could not find file '%s' for importing", name.c_str() );
 		fprintf( stderr, "checked the following paths:\n" );
-		for( auto & loc : vm.inc_dirs ) {
-			fprintf( stderr, "-> %s\n", ( loc + "/" + file ).c_str() );
+		for( auto & loc : AS_VEC( vm.inc_dirs )->get() ) {
+			fprintf( stderr, "-> %s\n", ( loc->to_str() + "/" + file ).c_str() );
 		}
 		ret = E_FAIL;
 		goto fail;

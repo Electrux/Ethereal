@@ -49,24 +49,3 @@ void DirFormat( std::string & dir )
 	}
 	if( dir.size() > 1 && dir.back() == '/' ) dir.pop_back();
 }
-
-bool mod_exists( std::string & file, const std::vector< std::string > & locs )
-{
-	if( file.front() != '~' && file.front() != '/' && file.front() != '.' ) {
-		for( auto & loc : locs ) {
-			if( fexists( loc + "/" + file ) ) {
-				file = loc + "/" + file;
-				return true;
-			}
-		}
-	} else {
-		if( file.front() == '~' ) {
-			file.erase( file.begin() );
-			std::string home = GetEnv( "HOME" );
-			file.insert( file.begin(), home.begin(), home.end() );
-		}
-
-		return fexists( file );
-	}
-	return false;
-}

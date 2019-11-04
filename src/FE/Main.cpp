@@ -112,7 +112,6 @@ int main( int argc, char ** argv )
 		vm.vars->add( "args", new var_vec_t( arg_vec, 0 ) );
 		vm.vars->add( "true", new var_bool_t( true, 0 ) );
 		vm.vars->add( "false", new var_bool_t( false, 0 ) );
-		VAR_IREF( vm.nil );
 		vm.vars->add( "nil", vm.nil );
 		err = vm_exec( vm );
 		vm.srcstack.pop_back();

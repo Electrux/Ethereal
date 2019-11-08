@@ -65,7 +65,7 @@ Also, compiling with Link Time Optimization won't work on clang < 3.9, so disabl
 
 # Installation
 
-Once the prerequisites are met, just execute the cmake script by doing `mkdir build && cd build && cmake ..` script. It will build the language interpreter along with the stdlib modules. Installation should done **ONLY** if the `PREFIX_DIR` variable is set to a directory other than the cmake `build/` directory.
+Once the prerequisites are met, just execute the cmake script by doing `mkdir build && cd build && cmake .. && make -j<cpu core count>` commands. They will build the language interpreter along with the stdlib modules. Installation (using `make install`) should be done **ONLY** if the `PREFIX_DIR` variable is set to a directory other than the cmake `build/` directory.
 
 Note that if you use `PREFIX_DIR`, you may need root access depending on the directory you choose.
 

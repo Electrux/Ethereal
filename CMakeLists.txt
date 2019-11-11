@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 2.8)
 
-project(Ethereal CXX)
+project(Ethereal C CXX)
 
 set(CMAKE_CXX_STANDARD 11)
 if(CMAKE_VERSION VERSION_LESS "3.1")

@@ -235,7 +235,7 @@ static int tokenize_line( const std::string & src, const std::string & dir, cons
 			// check if string is a keyword
 			int kw_or_iden = classify_str( str );
 			// some magic
-			if( str == "__DIR__" ) { str = dir; kw_or_iden = TOK_STR; }
+			if( str == "__SRC_DIR__" ) { str = dir; kw_or_iden = TOK_STR; }
 			toks.emplace_back( line_num, tmp_i, kw_or_iden, str );
 			continue;
 		}

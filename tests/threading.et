@@ -12,7 +12,7 @@ max_procs = threads.nproc;
 if max_procs > 8 { max_procs = 8; }
 
 for i = 0; i < max_procs; i += 1 {
-	tpool.push( threads.new_exec( __PROG__ + ' bst.et ', i ) );
+	tpool.push( threads.new_exec( __PROG__ + ' ' + __SRC_DIR__ + '/bst.et ', i ) );
 	println( 'Created thread #', i );
 }
 

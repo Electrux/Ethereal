@@ -2,5 +2,5 @@
 
 import ini;
 
-ini = ini_read( 'data/test1_ini_parser.ini' );
+ini = ini_read( __SRC_DIR__ + '/data/test1_ini_parser.ini' );
 assert( ini[ 'owner' ][ 'name' ] == 'John Doe', 'in tag \'owner\', in pair key \'name\', the value should have been \'John Doe\'' );

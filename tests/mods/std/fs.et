@@ -4,8 +4,8 @@ import std.str;
 import std.vec;
 import std.fs;
 
-assert( fs.exists( '../pre' ), '../pre should exist (directory)' );
-assert( fs.exists( 'vec.et' ), 'vec.et should exist (file)' );
+assert( fs.exists( __SRC_DIR__ + '/../pre' ), __SRC_DIR__ + '/../pre should exist (directory)' );
+assert( fs.exists( __SRC_DIR__ + '/vec.et' ), __SRC_DIR__ + '/vec.et should exist (file)' );
 
 # read non existing file
 {

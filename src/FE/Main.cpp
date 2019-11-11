@@ -37,23 +37,20 @@ int main( int argc, char ** argv )
 	}
 
 	// fetch the absolute ethereal binary path which was executed to set __PROG__ var.
-	std::string eth_bin = GetEtherealBinaryAbsoluteLoc( argv[ 0 ] );
+	std::string eth_bin_loc = GetEtherealBinaryAbsoluteLoc( argv[ 0 ] );
 
 	// source script dir
-	auto last_slash_loc = args[ 0 ].find_last_of( '/' ) + 1;
-	// change current dir to that of file
-	std::string curr_dir = GetCWD();
-	std::string src_dir = args[ 0 ].substr( 0, last_slash_loc );
+	auto last_slash_loc = args[ 0 ].find_last_of( '/' );
+	std::string src_dir = last_slash_loc == std::string::npos ? "." : args[ 0 ].substr( 0, last_slash_loc );
 	DirFormat( src_dir );
-	SetCWD( src_dir );
 
 	int err = E_OK;
-	const std::string main_src_str = args[ 0 ].substr( last_slash_loc );
+	const std::string main_src_str = args[ 0 ].substr( last_slash_loc + 1 );
 
 	src_t * main_src = new src_t( true );
 	main_src->name = main_src_str;
 	main_src->id = "main_src_" + main_src->name;
-	main_src->dir = GetCWD();
+	main_src->dir = src_dir;
 	err = tokenize( * main_src );
 	if( err != E_OK ) goto cleanup;
 
@@ -107,7 +104,7 @@ int main( int argc, char ** argv )
 		for( auto & v : args ) {
 			arg_vec.push_back( new var_str_t( v, 0 ) );
 		}
-		vm.vars->add( "__PROG__", new var_str_t( eth_bin, 0 ) );
+		vm.vars->add( "__PROG__", new var_str_t( eth_bin_loc, 0 ) );
 		vm.vars->add( "__VERSION_MAJOR__", new var_int_t( ETHEREAL_VERSION_MAJOR, 0 ) );
 		vm.vars->add( "__VERSION_MINOR__", new var_int_t( ETHEREAL_VERSION_MINOR, 0 ) );
 		vm.vars->add( "__VERSION_PATCH__", new var_int_t( ETHEREAL_VERSION_PATCH, 0 ) );
@@ -122,7 +119,5 @@ int main( int argc, char ** argv )
 cleanup:
 	delete main_src;
 end:
-	// reset working dir
-	SetCWD( curr_dir );
 	return err;
 }

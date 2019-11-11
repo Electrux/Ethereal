@@ -7,10 +7,10 @@ mfn< _cxx_proj_t, _cxx_build_t > add_lib_dirs( dirs ) {
 mfn< _cxx_proj_t, _cxx_build_t > use_lib( lib ) {
 	cprint( '{y}checking support for library {c}', lib, ' {0}... ' );
 	flush_out();
-	file = __DIR__ + '/tests/' + lib + '.cfg';
+	file = __SRC_DIR__ + '/tests/' + lib + '.cfg';
 
 	if !fs.exists( file ) {
-		file = __DIR__ + '/tests/' + lib + '_cpp.cfg';
+		file = __SRC_DIR__ + '/tests/' + lib + '_cpp.cfg';
 		if !fs.exists( file ) {
 			cprintln( '{r}no (library does not exist){0}' );
 			println( file );
@@ -30,7 +30,7 @@ mfn< _cxx_proj_t, _cxx_build_t > use_lib( lib ) {
 		exit( 1 );
 	}
 
-	src = __DIR__ + '/tests/' + map[ 'file' ];
+	src = __SRC_DIR__ + '/tests/' + map[ 'file' ];
 	inc_dirs = "";
 	lib_dirs = "";
 	lib_flags = "";

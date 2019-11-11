@@ -3,7 +3,7 @@ import std.vec;
 import std.fs;
 import std.os;
 
-import './cxxbuild';
+import cxxproj.cxxbuild;
 
 struct _cxx_proj_t {
 	flags = [];
@@ -34,5 +34,5 @@ mfn< _cxx_proj_t > build() {
 
 }
 
-import './flags';
-import './libs';
+import cxxproj.flags;
+import cxxproj.libs;

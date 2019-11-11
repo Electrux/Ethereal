@@ -3,9 +3,9 @@
 import std.str;
 import std.fs;
 
-r = fopen( 'data/test1_json_flat.json', 'r' );
+r = fopen( __SRC_DIR__ + '/data/test1_json_flat.json', 'r' );
 if !r.is_open() {
-	println( 'failed to open file \'data/test1_json_flat.json\'' );
+	println( 'failed to open file \'' + __SRC_DIR__ +'/data/test1_json_flat.json\'' );
 	exit( 1 );
 }
 w = fopen( 'op.json', 'w' );
@@ -34,9 +34,9 @@ for ; r.read( line ); {
 }
 
 expected = '';
-r.reopen( 'data/expected1_json_flat.json', 'r' );
+r.reopen( __SRC_DIR__ + '/data/expected1_json_flat.json', 'r' );
 if !r.is_open() {
-	println( 'failed to open file \'data/expected1_json_flat.json\'' );
+	println( 'failed to open file \'' + __SRC_DIR__ + '/data/expected1_json_flat.json\'' );
 	exit( 1 );
 }
 for ; r.read( line ); {

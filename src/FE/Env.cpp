@@ -40,25 +40,17 @@ std::string GetEtherealBinaryAbsoluteLoc( const std::string & arg0 )
 {
 	auto last_slash_loc = arg0.find_last_of( '/' );
 	if( last_slash_loc == std::string::npos ) return arg0;
-	std::string curr_dir = GetCWD();
 	std::string bin_dir = arg0.substr( 0, last_slash_loc );
 	std::string bin_name = arg0.substr( last_slash_loc + 1 );
-	SetCWD( bin_dir );
-	std::string res = GetCWD();
-	SetCWD( curr_dir );
-	return res + "/" + bin_name;
+	DirFormat( bin_dir );
+	return bin_dir + "/" + bin_name;
 }
 
 void DirFormat( std::string & dir )
 {
-	if( dir.empty() ) { dir = GetCWD(); return; }
-	if( dir.front() != '/' && dir.front() != '~' ) {
-		dir = GetCWD() + "/" + dir;
-	}
-	if( dir.front() == '~' ) {
-		dir.erase( dir.begin() );
-		std::string home = GetEnv( "HOME" );
-		dir.insert( dir.begin(), home.begin(), home.end() );
-	}
-	if( dir.size() > 1 && dir.back() == '/' ) dir.pop_back();
+	std::string cwd = GetCWD();
+	SetCWD( dir );
+	std::string res = GetCWD();
+	SetCWD( cwd );
+	dir = res;
 }

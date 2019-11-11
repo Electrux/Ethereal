@@ -22,14 +22,15 @@ flag_cache
 book/book/
 src/Config.hpp
 
-# Build file on BSD #
-#####################
-*.core
-
 # Extra data #
 #######################
 tmp.et
+*.json
 tests/*.json
+
+# Build file on BSD #
+#####################
+*.core
 
 # Compiled source #
 ###################

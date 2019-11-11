@@ -15,27 +15,25 @@
 int load_src( vm_state_t & vm, const std::string & file, const std::string & alias )
 {
 	src_t & src = * vm.srcstack.back();
-	auto last_slash_loc = file.find_last_of( '/' ) + 1;
+	auto last_slash_loc = file.find_last_of( '/' );
 	auto last_dot_loc = file.find_last_of( '.' );
-	std::string mod_name = alias == "" ? file.substr( last_slash_loc, last_dot_loc - last_slash_loc ) : alias;
+	std::string mod_name = alias == "" ? file.substr( last_slash_loc + 1, last_dot_loc - last_slash_loc + 1 ) : alias;
 
-	const std::string new_src_str = file.substr( last_slash_loc );
+	const std::string new_src_file = file.substr( last_slash_loc + 1 );
 
-	if( vm.srcs.find( new_src_str ) != vm.srcs.end() ) {
+	if( vm.srcs.find( new_src_file ) != vm.srcs.end() ) {
 		return E_OK;
 	}
 
-	std::string curr_dir = GetCWD();
 	std::string src_dir = file.substr( 0, last_slash_loc );
 	DirFormat( src_dir );
-	SetCWD( src_dir );
 	int err = E_OK;
 
 	parse_tree_t * ptree = nullptr;
 	src_t * new_src = new src_t( false );
-	new_src->name = new_src_str;
-	new_src->id = new_src_str;
-	new_src->dir = GetCWD();
+	new_src->name = new_src_file;
+	new_src->id = new_src_file;
+	new_src->dir = src_dir;
 	err = tokenize( * new_src );
 	if( err != E_OK ) goto cleanup;
 
@@ -90,7 +88,6 @@ int load_src( vm_state_t & vm, const std::string & file, const std::string & ali
 	}
 
 cleanup:
-	SetCWD( curr_dir );
 	if( err != E_OK ) delete new_src;
 	return err;
 }

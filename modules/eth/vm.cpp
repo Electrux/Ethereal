@@ -95,7 +95,6 @@ var_base_t * vm_create( vm_state_t & vm, func_call_data_t & fcd )
 	v->flags = vm.flags;
 	v->srcstack.push_back( src );
 	v->srcs[ src->id ] = src;
-	VAR_IREF( v->nil );
 	v->vars->add( "nil", v->nil );
 
 	var_base_t * prog = vm.vars->get( "__PROG__" );
@@ -118,8 +117,8 @@ var_base_t * vm_create( vm_state_t & vm, func_call_data_t & fcd )
 
 	v->vars->add( "__PROG__", prog );
 	v->vars->add( "__VERSION_MAJOR__", ver_major );
-	v->vars->add( "__VERSION_MAJOR__", ver_minor );
-	v->vars->add( "__VERSION_MAJOR__", ver_patch );
+	v->vars->add( "__VERSION_MINOR__", ver_minor );
+	v->vars->add( "__VERSION_PATCH__", ver_patch );
 	v->vars->add( "args", args );
 	v->vars->add( "true", tru );
 	v->vars->add( "false", fal );

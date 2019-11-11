@@ -4,6 +4,6 @@ import std.os;
 import std.str;
 
 __add_libs__( os.get_env( 'PWD' ) + '/build/lib/ethereal' );
-assert( _lib_dirs_.len() == 2, 'length of _lib_dirs_ should have been 2' );
+assert( __LIB_DIRS__.len() == 2, 'length of __LIB_DIRS__ should have been 2' );
 
 import eth.vm;

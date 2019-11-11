@@ -255,7 +255,7 @@ REGISTER_MODULE( core )
 	vm.funcs.add( { "__add_incs__",	 1, -1, { "_any_", "_whatever_" }, FnType::MODULE, { .modfn = add_inc_dirs }, false } );
 	vm.funcs.add( { "__add_libs__",	 1, -1, { "_any_", "_whatever_" }, FnType::MODULE, { .modfn = add_lib_dirs }, false } );
 	vm.funcs.add( { "_ldmod_",	 1,  1, { "str" }, FnType::MODULE, { .modfn = load_module }, true } );
-	vm.funcs.add( { "_import_",	 1,  2, { "str", "str" }, FnType::MODULE, { .modfn = import_module }, true } );
+	vm.funcs.add( { "__import__",	 1,  2, { "str", "str" }, FnType::MODULE, { .modfn = import_module }, true } );
 
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////// INT ////////////////////////////////////////////////////////////////

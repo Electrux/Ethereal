@@ -4,6 +4,6 @@ import std.os;
 import std.str;
 
 __add_incs__( os.get_env( 'PWD' ) + '/tests' );
-assert( _inc_dirs_.len() == 2, 'length of _inc_dirs_ should have been 2' );
+assert( __INC_DIRS__.len() == 2, 'length of __INC_DIRS__ should have been 2' );
 
 import 'import';

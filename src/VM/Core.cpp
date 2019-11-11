@@ -28,8 +28,8 @@ vm_state_t::vm_state_t() : flags( 0 ), exit_called( false ), exit_status( 0 ),
 	AS_VEC( inc_dirs )->get().push_back( new var_str_t( STRINGIFY( BUILD_PREFIX_DIR ) "/include/ethereal", 0 ) );
 	AS_VEC( lib_dirs )->get().push_back( new var_str_t( STRINGIFY( BUILD_PREFIX_DIR ) "/lib/ethereal", 0 ) );
 #endif
-	vars->add( "_inc_dirs_", inc_dirs );
-	vars->add( "_lib_dirs_", lib_dirs );
+	vars->add( "__INC_DIRS__", inc_dirs );
+	vars->add( "__LIB_DIRS__", lib_dirs );
 }
 
 vm_state_t::~vm_state_t()

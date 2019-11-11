@@ -1,0 +1,19 @@
+/*
+	Copyright (c) 2019, Electrux
+	All rights reserved.
+	Using the BSD 3-Clause license for the project,
+	main LICENSE file resides in project's root directory.
+	Please read that file and understand the license terms
+	before using or altering the project.
+*/
+
+#ifndef CONFIG_HPP
+#define CONFIG_HPP
+
+#define ETHEREAL_VERSION_MAJOR @ETHEREAL_VERSION_MAJOR@
+#define ETHEREAL_VERSION_MINOR @ETHEREAL_VERSION_MINOR@
+#define ETHEREAL_VERSION_PATCH @ETHEREAL_VERSION_PATCH@
+
+#define BUILD_CXX_COMPILER "@CMAKE_CXX_COMPILER_ID@ @CMAKE_CXX_COMPILER_VERSION@"
+
+#endif // CONFIG_HPP

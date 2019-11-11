@@ -1,4 +1,4 @@
-#!./build/bin/et
+#!/usr/bin/env et
 
 v = 5;
 assert( var_ref_count( 'v' ) == 1, 'ref count for v should be 1, but is: ', var_ref_count( 'v' ) );

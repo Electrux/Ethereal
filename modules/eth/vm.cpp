@@ -95,8 +95,13 @@ var_base_t * vm_create( vm_state_t & vm, func_call_data_t & fcd )
 	v->flags = vm.flags;
 	v->srcstack.push_back( src );
 	v->srcs[ src->id ] = src;
+	VAR_IREF( v->nil );
+	v->vars->add( "nil", v->nil );
 
 	var_base_t * prog = vm.vars->get( "__PROG__" );
+	var_base_t * ver_major = vm.vars->get( "__VERSION_MAJOR__" );
+	var_base_t * ver_minor = vm.vars->get( "__VERSION_MINOR__" );
+	var_base_t * ver_patch = vm.vars->get( "__VERSION_PATCH__" );
 	var_base_t * args = vm.vars->get( "args" );
 	var_base_t * tru = vm.vars->get( "true" );
 	var_base_t * fal = vm.vars->get( "false" );
@@ -104,17 +109,20 @@ var_base_t * vm_create( vm_state_t & vm, func_call_data_t & fcd )
 	if( !set_init_mods( * v ) ) { err = E_VM_FAIL; goto fail; }
 
 	VAR_IREF( prog );
+	VAR_IREF( ver_major );
+	VAR_IREF( ver_minor );
+	VAR_IREF( ver_patch );
 	VAR_IREF( args );
 	VAR_IREF( tru );
 	VAR_IREF( fal );
 
 	v->vars->add( "__PROG__", prog );
+	v->vars->add( "__VERSION_MAJOR__", ver_major );
+	v->vars->add( "__VERSION_MAJOR__", ver_minor );
+	v->vars->add( "__VERSION_MAJOR__", ver_patch );
 	v->vars->add( "args", args );
 	v->vars->add( "true", tru );
 	v->vars->add( "false", fal );
-
-	VAR_IREF( v->nil );
-	v->vars->add( "nil", v->nil );
 
 	return new var_evm_t( v );
 fail:

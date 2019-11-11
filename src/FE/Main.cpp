@@ -11,21 +11,14 @@
 #include <vector>
 #include <string>
 
+#include "../Config.hpp"
+
 #include "CmdArgs.hpp"
 #include "Env.hpp"
 #include "FS.hpp"
 #include "Parser.hpp"
-#include "../VM/VM.hpp"
 
-#ifndef VERSION_MAIN
-#error "VERSION_MAIN is not defined"
-#endif
-#ifndef VERSION_SUB
-#error "VERSION_SUB is not defined"
-#endif
-#ifndef VERSION_PATCH
-#error "VERSION_PATCH is not defined"
-#endif
+#include "../VM/VM.hpp"
 
 int main( int argc, char ** argv )
 {
@@ -33,7 +26,8 @@ int main( int argc, char ** argv )
 	size_t flags = cmd_get_args( argc, ( const char ** )argv, args );
 
 	if( flags & OPT_V ) {
-		fprintf( stdout, "Ethereal: %d.%d.%d\n", VERSION_MAIN, VERSION_SUB, VERSION_PATCH );
+		fprintf( stdout, "Ethereal version: %d.%d.%d\nCompiler version: %s\n", ETHEREAL_VERSION_MAJOR,
+			 ETHEREAL_VERSION_MINOR, ETHEREAL_VERSION_PATCH, BUILD_CXX_COMPILER );
 		return E_OK;
 	}
 
@@ -42,6 +36,10 @@ int main( int argc, char ** argv )
 		return E_FAIL;
 	}
 
+	// fetch the absolute ethereal binary path which was executed to set __PROG__ var.
+	std::string eth_bin = GetEtherealBinaryAbsoluteLoc( argv[ 0 ] );
+
+	// source script dir
 	auto last_slash_loc = args[ 0 ].find_last_of( '/' ) + 1;
 	// change current dir to that of file
 	std::string curr_dir = GetCWD();
@@ -91,7 +89,8 @@ int main( int argc, char ** argv )
 		for( size_t i = 0; i < main_src->bcode.size(); ++i ) {
 			auto & ins = main_src->bcode[ i ];
 			fprintf( stdout, "%-*zu %-*s%-*s[%s]\n",
-				 5, i, 20, InstrCodeStrs[ ins.opcode ], 7, OperTypeStrs[ ins.oper.type ], ins.oper.val.c_str() );
+				 5, i, 20, InstrCodeStrs[ ins.opcode ], 7,
+				 OperTypeStrs[ ins.oper.type ], ins.oper.val.c_str() );
 		}
 	}
 
@@ -108,7 +107,10 @@ int main( int argc, char ** argv )
 		for( auto & v : args ) {
 			arg_vec.push_back( new var_str_t( v, 0 ) );
 		}
-		vm.vars->add( "__PROG__", new var_str_t( argv[ 0 ], 0 ) );
+		vm.vars->add( "__PROG__", new var_str_t( eth_bin, 0 ) );
+		vm.vars->add( "__VERSION_MAJOR__", new var_int_t( ETHEREAL_VERSION_MAJOR, 0 ) );
+		vm.vars->add( "__VERSION_MINOR__", new var_int_t( ETHEREAL_VERSION_MINOR, 0 ) );
+		vm.vars->add( "__VERSION_PATCH__", new var_int_t( ETHEREAL_VERSION_PATCH, 0 ) );
 		vm.vars->add( "args", new var_vec_t( arg_vec, 0 ) );
 		vm.vars->add( "true", new var_bool_t( true, 0 ) );
 		vm.vars->add( "false", new var_bool_t( false, 0 ) );

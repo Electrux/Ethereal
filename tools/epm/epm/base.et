@@ -33,4 +33,4 @@ if !fs.exists( EPI_DIR ) {
 	}
 }
 
-_add_incs_( EPI_DIR );
+__add_incs__( EPI_DIR );

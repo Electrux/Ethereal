@@ -1,4 +1,4 @@
-#!./build/bin/et
+#!/usr/bin/env et
 
 import std.time;
 

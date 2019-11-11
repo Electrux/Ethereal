@@ -20,6 +20,7 @@ CMakeFiles/
 doxygen/
 flag_cache
 book/book/
+src/Config.hpp
 
 # Build file on BSD #
 #####################

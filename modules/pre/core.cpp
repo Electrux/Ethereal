@@ -252,8 +252,8 @@ REGISTER_MODULE( core )
 	vm.funcs.add( { "var_exists",    1,  1, { "str" }, FnType::MODULE, { .modfn = var_exists }, false } );
 	vm.funcs.add( { "var_mfn_exists",2,  2, { "_any_", "str" }, FnType::MODULE, { .modfn = var_mfn_exists }, false } );
 	vm.funcs.add( { "var_ref_count", 1,  1, { "_any_" }, FnType::MODULE, { .modfn = var_ref_count }, true } );
-	vm.funcs.add( { "_add_incs_",	 1, -1, { "_any_", "_whatever_" }, FnType::MODULE, { .modfn = add_inc_dirs }, false } );
-	vm.funcs.add( { "_add_libs_",	 1, -1, { "_any_", "_whatever_" }, FnType::MODULE, { .modfn = add_lib_dirs }, false } );
+	vm.funcs.add( { "__add_incs__",	 1, -1, { "_any_", "_whatever_" }, FnType::MODULE, { .modfn = add_inc_dirs }, false } );
+	vm.funcs.add( { "__add_libs__",	 1, -1, { "_any_", "_whatever_" }, FnType::MODULE, { .modfn = add_lib_dirs }, false } );
 	vm.funcs.add( { "_ldmod_",	 1,  1, { "str" }, FnType::MODULE, { .modfn = load_module }, true } );
 	vm.funcs.add( { "_import_",	 1,  2, { "str", "str" }, FnType::MODULE, { .modfn = import_module }, true } );
 

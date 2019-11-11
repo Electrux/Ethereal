@@ -1,4 +1,4 @@
-#!./build/bin/et
+#!/usr/bin/env et
 
 import std.vec;
 import std.str;
@@ -7,10 +7,6 @@ import std.threads;
 assert( threads.nproc > 0, "threads.nproc should be greater than 0" );
 
 tpool = [];
-
-if __PROG__.front() == '.' {
-	__PROG__ = '../' + __PROG__;
-}
 
 max_procs = threads.nproc;
 if max_procs > 8 { max_procs = 8; }

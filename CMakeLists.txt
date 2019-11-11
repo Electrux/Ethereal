@@ -1,11 +1,15 @@
 cmake_minimum_required(VERSION 2.8)
 
-project(Ethereal C CXX)
+project(Ethereal CXX)
 
 set(CMAKE_CXX_STANDARD 11)
 if(CMAKE_VERSION VERSION_LESS "3.1")
 	add_compile_options(-std=c++11)
 endif()
+
+set(ETHEREAL_VERSION_MAJOR 0)
+set(ETHEREAL_VERSION_MINOR 1)
+set(ETHEREAL_VERSION_PATCH 0)
 
 set(CMAKE_BUILD_WITH_INSTALL_RPATH FALSE)
 set(CMAKE_INSTALL_RPATH_USE_LINK_PATH TRUE)
@@ -33,16 +37,6 @@ if(APPLE OR ${CMAKE_SYSTEM_NAME} MATCHES ".*BSD.*")
 	include_directories(/usr/local/include)
 	link_directories(/usr/local/lib)
 endif()
-
-set(VERSION_MAJOR 0)
-set(VERSION_MINOR 0)
-set(VERSION_PATCH 3)
-
-add_definitions(
-	-DVERSION_MAIN=${VERSION_MAJOR}
-	-DVERSION_SUB=${VERSION_MINOR}
-	-DVERSION_PATCH=${VERSION_PATCH}
-)
 
 if(WIN32)
 	error("Project not supported on Windows yet")
@@ -83,8 +77,10 @@ message("-- Using PREFIX = ${CMAKE_INSTALL_PREFIX}")
 
 # Finally! The sources!!!!!
 
-# Includes
+# Set Config.hpp.in template
+configure_file("${PROJECT_SOURCE_DIR}/src/Config.hpp.in" "${PROJECT_SOURCE_DIR}/src/Config.hpp" @ONLY)
 
+# Includes
 file(COPY "${CMAKE_SOURCE_DIR}/include" DESTINATION "${CMAKE_INSTALL_PREFIX}/")
 
 # Ethereal Core

@@ -17,6 +17,7 @@ std::string GetEnv( const std::string & key );
 
 std::string GetCWD();
 void SetCWD( std::string dir );
+std::string GetEtherealBinaryAbsoluteLoc( const std::string & arg0 );
 
 void DirFormat( std::string & dir );
 

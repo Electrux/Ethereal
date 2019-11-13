@@ -94,6 +94,8 @@ public:
 	const function_t * get( const std::string & name, const int arg_count,
 				const std::vector< std::string > & arg_types );
 	const std::vector< function_t * > get_all_by_name( const std::string & name );
+
+	inline size_t count() const { return m_funcs.size(); }
 };
 
 #endif // VM_FUNCTIONS_HPP

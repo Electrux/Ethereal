@@ -44,7 +44,7 @@ if 1 == 1 {
 
 7.  Loops (For)
 ```go
-num = num( scan( 'Enter factorial of: ' ) );
+num = int( scan( 'Enter factorial of: ' ) );
 fact = 1;
 
 for x = num; x >= 2; --x {

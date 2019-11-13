@@ -303,7 +303,7 @@ REGISTER_MODULE( core )
 	vm.funcs.add( { "u-",  1, 1, { "int" }, FnType::MODULE, { .modfn = unary_sub }, true } );
 
 	// other types to int
-	vm.funcs.add( { "num", 1, 1, { "_any_" }, FnType::MODULE, { .modfn = num }, true } );
+	vm.funcs.add( { "int", 1, 1, { "_any_" }, FnType::MODULE, { .modfn = _int }, true } );
 
 	// hashing
 	vm.typefuncs[ "int" ].add( { "hash", 0, 0, {}, FnType::MODULE, { .modfn = hash_int }, true } );

@@ -14,7 +14,7 @@ import std.vec;
 
 count = 5;
 if args.len() < 2 {
-	count = num( scan( "Enter star count: " ) );
+	count = int( scan( "Enter star count: " ) );
 }
 
 for i = 0; i < count; i += 1 {

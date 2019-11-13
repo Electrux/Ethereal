@@ -201,6 +201,7 @@ int exec_internal( vm_state_t & vm, long begin, long end, var_base_t * ret )
 				}
 				goto fail;
 			}
+			if( vm.dlib->fexists( file ) ) break;
 			if( vm.dlib->load( file ) == nullptr ) goto fail;
 			init_fnptr_t init_fn = ( init_fnptr_t ) vm.dlib->get( file, "init_" + init_fn_str );
 			if( init_fn == nullptr ) {

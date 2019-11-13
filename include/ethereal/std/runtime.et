@@ -1,0 +1,5 @@
+ldmod std.runtime;
+
+struct _runtime_t {}
+
+runtime = _runtime_t{};

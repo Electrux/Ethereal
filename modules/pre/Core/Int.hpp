@@ -175,7 +175,7 @@ var_base_t * not_oper_bitwise( vm_state_t & vm, func_call_data_t & fcd )
 /*
  * converts a string to integer
  */
-var_base_t * num( vm_state_t & vm, func_call_data_t & fcd )
+var_base_t * _int( vm_state_t & vm, func_call_data_t & fcd )
 {
 	return new var_int_t( fcd.args[ 0 ]->to_int() );
 }

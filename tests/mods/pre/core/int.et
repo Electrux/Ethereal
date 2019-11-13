@@ -37,4 +37,4 @@ assert( 5 ** 4 == 625, '5 ** 4 should be 625' );
 
 assert( -6 == -6, '-6 should be -6' );
 
-assert( num( '1252' ) == 1252, 'num( \'1252\' ) should be 1252' );
+assert( int( '1252' ) == 1252, 'int( \'1252\' ) should be 1252' );

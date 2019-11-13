@@ -7,6 +7,9 @@
 	before using or altering the project.
 */
 
+#include <iomanip>
+#include <sstream>
+
 #include "Base.hpp"
 
 var_flt_t::var_flt_t( const float val, const int parse_ctr )
@@ -22,13 +25,10 @@ var_flt_t::var_flt_t( const mpf_class & val, const int parse_ctr )
 
 std::string var_flt_t::to_str() const
 {
-	std::string res;
-	mp_exp_t expo;
-	res += m_val.get_str( expo );
-	if( res.empty() ) res += "0";
-	//if( expo - ( int )res.size() == 0 ) return res;
-	res += " e^" + std::to_string( expo - ( int )res.size() );
-	return res;
+	if( m_val == 0.0 ) return "0.000000";
+	std::ostringstream oss;
+	oss << std::setprecision( 20 ) << m_val;
+	return oss.str();
 }
 mpz_class var_flt_t::to_int() const { return mpz_class( m_val ); }
 bool var_flt_t::to_bool() const { return m_val != 0.0; }

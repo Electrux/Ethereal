@@ -15,15 +15,14 @@ assert( math.abs( 131.25 ) == 131.25, 'math.abs( 131.25 ) should be 131.25' );
 
 assert( math.sqrt( 25 ) == 5.0, 'math.sqrt( 25 ) should be 5.0' );
 assert( math.sqrt( -25 ) == 0.0, 'math.sqrt( -25 ) should be 0.0' );
-# TODO: the following case does not work (possibly because of precision)
-#assert( math.sqrt( 5 ) == 2.23606797749978969636, 'math.sqrt( 5 ) should be ', 2.23606797749978969636, ', but is: ', math.sqrt( 5 ) );
+assert( math.sqrt( 5 ) - 2.23606797749978969636 < 0.00001, 'math.sqrt( 5 ) should be approximately 2.23606797749978969636' );
 
 assert( math.log( 1 ) == 0.0, 'math.log( 1 ) should be 0.0' );
 assert( math.log( 1, 1 ) == 0.0, 'math.log( 1, 1 ) should be 0.0' );
 assert( math.log( 0, 2 ) == 0.0, 'math.log( 0, 2 ) should be 0.0' );
 assert( math.log( 1, 2 ) == 0.0, 'math.log( 1, 2 ) should be 0.0' );
 assert( math.log( 10, 10 ) == 1.0, 'math.log( 10, 10 ) should be 1.0' );
-assert( 3.0 - math.log( 1000, 10 ) < 0.00001, 'math.log( 1000, 10 ) should be 3.0' );
+assert( 3.0 - math.log( 1000, 10 ) < 0.00001, 'math.log( 1000, 10 ) should be approximately 3.0' );
 assert( math.log( -1 ) == 0.0, 'math.log( -1 ) should be 0.0' );
 assert( math.log( 10, -1 ) == 0.0, 'math.log( 10, -1 ) should be 0.0' );
 
@@ -31,7 +30,7 @@ assert( math.ceil( 0.0 ) == 0, 'math.ceil( 0.0 ) should be 0' );
 assert( math.ceil( 1.0 ) == 1, 'math.ceil( 1.0 ) should be 1' );
 assert( math.ceil( 1.01 ) == 2, 'math.ceil( 1.01 ) should be 2' );
 assert( math.ceil( 1.5 ) == 2, 'math.ceil( 1.5 ) should be 2' );
-assert( math.ceil( -1.5 ) == -1, 'math.ceil( -1.5 ) should be -1, ', math.ceil( -1.5 ) );
+assert( math.ceil( -1.5 ) == -1, 'math.ceil( -1.5 ) should be -1' );
 
 assert( math.floor( 0.0 ) == 0, 'math.floor( 0.0 ) should be 0' );
 assert( math.floor( 1.0 ) == 1, 'math.floor( 1.0 ) should be 1' );

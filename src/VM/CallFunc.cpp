@@ -30,6 +30,12 @@ int CallFunc( vm_state_t & vm, func_call_data_t & fcd, const int ins_ctr )
 	const langfn_t * lfnptr = nullptr;
 	res_t< var_base_t * > res = { 0, nullptr };
 
+	// this is so early on in the function because if the execution goes to 'fail',
+	// it will call unfreeze() which will pop the last element unconditionally
+	// which will cause segfault if there is nothing in the m_frozen_till vector in
+	// the first place
+	vm.vars->freeze_till( vm.vars->layer_size() );
+
 	fcd.args_count = std::stoi( ins.oper.val );
 	// + 1 for function name
 	VERIFY_STACK_MIN( ( size_t )fcd.args_count + 1 );
@@ -87,8 +93,6 @@ int CallFunc( vm_state_t & vm, func_call_data_t & fcd, const int ins_ctr )
 		VM_FAIL( "function with name '%s' is null", fcd.fn_name.c_str() );
 		goto fail;
 	}
-
-	vm.vars->freeze_till( vm.vars->layer_size() );
 
 	// execute the function
 	res.code = E_OK;

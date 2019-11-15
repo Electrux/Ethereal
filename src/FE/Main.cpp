@@ -26,8 +26,8 @@ int main( int argc, char ** argv )
 	size_t flags = cmd_get_args( argc, ( const char ** )argv, args );
 
 	if( flags & OPT_V ) {
-		fprintf( stdout, "Ethereal version: %d.%d.%d\nCompiler version: %s\n", ETHEREAL_VERSION_MAJOR,
-			 ETHEREAL_VERSION_MINOR, ETHEREAL_VERSION_PATCH, BUILD_CXX_COMPILER );
+		fprintf( stdout, "Ethereal %d.%d.%d\nBuilt with %s\nOn %s\n", ETHEREAL_VERSION_MAJOR,
+			 ETHEREAL_VERSION_MINOR, ETHEREAL_VERSION_PATCH, BUILD_CXX_COMPILER, BUILD_DATE );
 		return E_OK;
 	}
 

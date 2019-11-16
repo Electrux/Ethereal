@@ -1,43 +1,43 @@
 fn read_flag_file( file, v ) {
-	f = fopen( file, 'r' );
-	if f.is_open() {
-		f.read_all( v );
+	__f__ = fopen( file, 'r' );
+	if __f__.is_open() {
+		__f__.read_all( v );
 	}
 }
 
 fn append_flag_file( file, v ) {
-	f = fopen( file, 'a' );
-	if f.is_open() {
-		for e in v.iter() {
-			f.write( e + '\n' );
+	__f__ = fopen( file, 'a' );
+	if __f__.is_open() {
+		for __e__ in v.iter() {
+			__f__.write( __e__ + '\n' );
 		}
 	}
 }
 
 fn check_compiler_flag( flag ) {
 	if flag.len() > 1 && flag[ 1 ] == 'D' { return true; }
-	cmd = "g++ -fsyntax-only " + flag + " -xc++ /dev/null 2>/dev/null";
-	res = os.exec( cmd ) == 0;
-	return res;
+	__cmd__ = "g++ -fsyntax-only " + flag + " -xc++ /dev/null 2>/dev/null";
+	__res__ = os.exec( __cmd__ ) == 0;
+	return __res__;
 }
 
 mfn< _cxx_proj_t, _cxx_build_t > add_flags( flags ) {
-	avail_flags = [];
-	not_avail_flags = [];
-	read_flag_file( 'flag_cache', avail_flags );
-	for flag in flags.iter() {
-		cprint( '{y}checking if compiler supports {c}', flag, ' {0}... ' );
+	__avail_flags__ = [];
+	__not_avail_flags__ = [];
+	read_flag_file( 'flag_cache', __avail_flags__ );
+	for __flag__ in flags.iter() {
+		cprint( '{y}checking if compiler supports {c}', __flag__, ' {0}... ' );
 		flush_out();
-		if avail_flags.find( flag ) >= 0 {
-			self.flags.push( flag );
+		if __avail_flags__.find( __flag__ ) >= 0 {
+			self.flags.push( __flag__ );
 			cprintln( '{g}yes (cached){0}' );
-		} elif check_compiler_flag( flag ) {
-			self.flags.push( flag );
-			not_avail_flags.push( flag );
+		} elif check_compiler_flag( __flag__ ) {
+			self.flags.push( __flag__ );
+			__not_avail_flags__.push( __flag__ );
 			cprintln( '{g}yes{0}' );
 		} else {
 			cprintln( '{r}no{0}' );
 		}
 	}
-	append_flag_file( 'flag_cache', not_avail_flags );
+	append_flag_file( 'flag_cache', __not_avail_flags__ );
 }

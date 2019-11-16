@@ -7,18 +7,18 @@ re = _regex_t{};
 
 mfn< regex_t > match_in_vec( vec ) {
 	if self.empty() { return vec; }
-	res = [];
-	for e in vec.iter() {
-		if self.match( e ) { res.push( e ); }
+	__res__ = [];
+	for __e__ in vec.iter() {
+		if self.match( __e__ ) { __res__.push( __e__ ); }
 	}
-	return res;
+	return __res__;
 }
 
 mfn< regex_t > inv_match_in_vec( vec ) {
 	if self.empty() { return vec; }
-	res = [];
-	for e in vec.iter() {
-		if !self.match( e ) { res.push( e ); }
+	__res__ = [];
+	for __e__ in vec.iter() {
+		if !self.match( __e__ ) { __res__.push( __e__ ); }
 	}
-	return res;
+	return __res__;
 }

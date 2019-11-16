@@ -1,70 +1,70 @@
-import std.map;
+import std.__map__;
 
 mfn< _cxx_proj_t, _cxx_build_t > add_lib_dirs( dirs ) {
-	self.lib_dirs += dirs;
+	self.__lib_dirs__ += dirs;
 }
 
 mfn< _cxx_proj_t, _cxx_build_t > use_lib( lib ) {
 	cprint( '{y}checking support for library {c}', lib, ' {0}... ' );
 	flush_out();
-	file = __SRC_DIR__ + '/tests/' + lib + '.cfg';
+	__file__ = __SRC_DIR__ + '/tests/' + lib + '.cfg';
 
-	if !fs.exists( file ) {
-		file = __SRC_DIR__ + '/tests/' + lib + '_cpp.cfg';
-		if !fs.exists( file ) {
+	if !fs.exists( __file__ ) {
+		__file__ = __SRC_DIR__ + '/tests/' + lib + '_cpp.cfg';
+		if !fs.exists( __file__ ) {
 			cprintln( '{r}no (library does not exist){0}' );
-			println( file );
+			println( __file__ );
 			return false;
 		}
 	}
 
-	f = fopen( file, 'r' );
-	line = "";
-	map = {};
-	for ; f.read( line ); {
-		splt = line.split( '=' );
-		map.insert( splt[ 0 ].trim(), splt[ 1 ].trim() );
+	__f__ = fopen( __file__, 'r' );
+	__line__ = "";
+	__map__ = {};
+	for ; __f__.read( __line__ ); {
+		__splt__ = __line__.split( '=' );
+		__map__.insert( __splt__[ 0 ].trim(), __splt__[ 1 ].trim() );
 	}
-	if !map.find( 'file' ) {
-		println( 'could not find \'file\' declaration in library config: ', file );
+	if !__map__.find( 'file' ) {
+		println( 'could not find \'file\' declaration in library config: ', __file__ );
 		exit( 1 );
 	}
 
-	src = __SRC_DIR__ + '/tests/' + map[ 'file' ];
-	inc_dirs = "";
-	lib_dirs = "";
-	lib_flags = "";
+	__src__ = __SRC_DIR__ + '/tests/' + __map__[ 'file' ];
+	__inc_dirs__ = "";
+	__lib_dirs__ = "";
+	__lib_flags__ = "";
 
-	comp_str = os.get_env( 'CC' ) + ' ';
-	if map.find( 'lang' ) {
-		lang = map[ 'lang' ];
-		if lang == 'c' {
+	__comp_str__ = os.get_env( 'CC' ) + ' ';
+	if __map__.find( '__lang__' ) {
+		__lang__ = __map__[ '__lang__' ];
+		if __lang__ == 'c' {
 			if os.get_env( 'CC' ) == 'clang++' {
-				comp_str = 'clang ';
+				__comp_str__ = 'clang ';
 			} else {
-				comp_str = 'gcc ';
+				__comp_str__ = 'gcc ';
 			}
 		}
 	}
 
-	if map.find( 'inc_dirs' ) {
-		inc_dirs = map[ 'inc_dirs' ];
+	if __map__.find( '__inc_dirs__' ) {
+		__inc_dirs__ = __map__[ 'inc_dirs' ];
 	}
-	if map.find( 'lib_dirs' ) {
-		lib_dirs = map[ 'lib_dirs' ];
+	if __map__.find( '__lib_dirs__' ) {
+		__lib_dirs__ = __map__[ 'lib_dirs' ];
 	}
-	if map.find( 'lib_flags' ) {
-		lib_flags = map[ 'lib_flags' ];
+	if __map__.find( '__lib_flags__' ) {
+		__lib_flags__ = __map__[ 'lib_flags' ];
 	}
-	comp_str += src + ' ' + inc_dirs + ' ' + lib_dirs + ' ' + lib_flags + ' -o /dev/null 2>/dev/null';
+	__comp_str__ += __src__ + ' ' + __inc_dirs__ + ' ' + __lib_dirs__ + ' ' + __lib_flags__ + ' -o /dev/null 2>/dev/null';
 
-	if os.exec( comp_str ) != 0 {
+	if os.exec( __comp_str__ ) != 0 {
 		cprintln( '{r}no{0}' );
 		return false;
 	}
-	if !inc_dirs.empty() { self.inc_dirs.push( inc_dirs ); }
-	if !lib_dirs.empty() { self.lib_dirs.push( lib_dirs ); }
-	if !lib_flags.empty() { self.lib_flags.push( lib_flags ); }
+	if !__inc_dirs__.empty() { self.__inc_dirs__.push( __inc_dirs__ ); }
+	if !__lib_dirs__.empty() { self.__lib_dirs__.push( __lib_dirs__ ); }
+	if !__lib_flags__.empty() { self.__lib_flags__.push( __lib_flags__ ); }
 	cprintln( '{g}yes{0}' );
 	return true;
 }

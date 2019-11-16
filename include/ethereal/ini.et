@@ -1,44 +1,44 @@
-# TODO: add helper functions for working with ini, implement ini_write
+# TODO: add helper functions for working with __ini__, implement ini_write
 import std.str;
 import std.vec;
 import std.map;
 import std.fs;
 
 fn ini_read( fname ) {
-	f = fopen( fname, 'r' );
-	if !f.is_open() { return INIRet.FNOP; }
-	ini = {};
-	curr_blk = '';
-	ini.insert( '', {} );
-	line = '';
-	for ; f.read( line ); {
-		line.trim();
-		if line.empty() { continue; }
+	__f__ = fopen( fname, 'r' );
+	if !__f__.is_open() { return INIRet.FNOP; }
+	__ini__ = {};
+	__curr_blk__ = '';
+	__ini__.insert( '', {} );
+	__line__ = '';
+	for ; __f__.read( __line__ ); {
+		__line__.trim();
+		if __line__.empty() { continue; }
 		# comments
-		if line.front() == ';' { continue; }
+		if __line__.front() == ';' { continue; }
 		# make block
-		if line.front() == '[' && line.back() == ']' {
-			#line.erase_at( 0 );
-			#line.erase_at( line.len() - 1 );
-			line.pop_front();
-			line.pop_back();
-			curr_blk = line;
-			ini.insert( curr_blk, {} );
+		if __line__.front() == '[' && __line__.back() == ']' {
+			#__line__.erase_at( 0 );
+			#__line__.erase_at( __line__.len() - 1 );
+			__line__.pop_front();
+			__line__.pop_back();
+			__curr_blk__ = __line__;
+			__ini__.insert( __curr_blk__, {} );
 			continue;
 		}
-		if !line.find( '=' ) { continue; }
+		if !__line__.find( '=' ) { continue; }
 		# make key value pairs
-		kvp = line.split_first( '=' );
-		kvp[ 0 ].trim();
-		key = kvp[ 0 ];
+		__kvp__ = __line__.split_first( '=' );
+		__kvp__[ 0 ].trim();
+		key = __kvp__[ 0 ];
 		val = '';
-		if kvp.len() > 1 {
-			val = kvp[ 1 ].trim();
+		if __kvp__.len() > 1 {
+			val = __kvp__[ 1 ].trim();
 		}
-		ini[ curr_blk ].insert( key, val );
+		__ini__[ __curr_blk__ ].insert( key, val );
 	}
-	if ini[ '' ].len() == 0 {
-		ini.delete( '' );
+	if __ini__[ '' ].len() == 0 {
+		__ini__.delete( '' );
 	}
-	return ini;
+	return __ini__;
 }

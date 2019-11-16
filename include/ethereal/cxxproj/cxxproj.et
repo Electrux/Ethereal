@@ -25,8 +25,8 @@ fn cxx_new_proj() {
 }
 
 mfn< _cxx_proj_t > add_build( name, type ) {
-	b = _cxx_build_t{ name, type };
-	self.builds.push( b );
+	__b__ = _cxx_build_t{ name, type };
+	self.builds.push( __b__ );
 	return self.builds[ self.builds.len() - 1 ];
 }
 

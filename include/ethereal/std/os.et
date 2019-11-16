@@ -9,9 +9,9 @@ struct _os_t {
 }
 
 mfn< _os_t > find_exec( loc ) {
-	for p in os.get_env( 'PATH' ).split( ':' ).iter() {
-		if fs.exists( p + '/' + loc ) {
-			return p + '/' + loc;
+	for __path__ in os.get_env( 'PATH' ).split( ':' ).iter() {
+		if fs.exists( __path__ + '/' + loc ) {
+			return __path__ + '/' + loc;
 		}
 	}
 	return '';

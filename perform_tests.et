@@ -3,34 +3,90 @@
 import std.fs;
 import std.os;
 import std.str;
+import std.vec;
 import std.term;
 import std.time;
-import std.vec;
+import std.threads;
+
+fn wait_procs( tpool, max_procs, with_valgrind, p, f ) {
+	for ; tpool.len() >= max_procs; {
+		for i = 0; i < tpool.len(); i += 1 {
+			if tpool[ i ].done() {
+				t = tpool[ i ];
+				if t.res() != 0 {
+					f += 1;
+					cprintln( '{r}failed {y}', files[ t.id() ], with_valgrind ? '{c} with valgrind' : '',
+						  '{0}, {y}error code{0}: {r}', t.res(),'{0}' );
+					flush_out();
+				} else {
+					p += 1;
+				}
+				tpool.erase( i );
+				i -= 1;
+			}
+		}
+	}
+}
 
 files = fs.dir_entries( 'tests', fs.ent.RECURSE, '(.*)\\.et' );
 
+tpool = [];
+max_procs = threads.nproc;
+
+threadid = 0;
 p = 0;
 f = 0;
-
 start = time.now();
-tmp_start = start;
 
 for file in files.iter() {
-	cprint( '{c}test{0}: {y}', file, '{0} ... ' );
+	wait_procs( tpool, max_procs, false, p, f );
+	cprintln( '{c}test{0}: {y}', file, '{0} ...' );
 	flush_out();
-	res = os.exec( __PROG__ + ' ' + file + ' test 1>/dev/null 2>&1' ) == 0;
-	tmp_diff = time.now() - tmp_start;
-	if res {
-		cprintln( '{g}', tmp_diff.msecs(), ' ms{0}' );
-		p += 1;
-	} else {
-		cprintln( '{r}', tmp_diff.msecs(), ' ms{0}' );
-		f += 1;
-	}
-	tmp_start = time.now();
+	tpool.push( threads.new_exec( __PROG__ + ' ' + file + ' test 1>/dev/null 2>&1', threadid ) );
+	threadid += 1;
 }
+wait_procs( tpool, 1, false, p, f );
 
 diff = time.now() - start;
 
-cprintln( '{y}OS{0}: {m}', os.name, '{0}, {y}Passed{0}: {g}', p, '{0}, {y}Failed{0}: {r}', f, '{0}, {y}Total Time{0}: {b}', diff.msecs(), ' ms{0}' );
+if f > 0 || args.find( '--with-valgrind' ) == -1 {
+	cprintln( '=> {y}Passed{0}: {g}', p,
+		  '\n{0}=> {y}Failed{0}: {r}', f,
+		  '\n{0}=> {y}Total Time{0}: {b}', diff.msecs(), ' ms{0}' );
+	exit( f );
+}
+
+############################################## Test with Valgrind ###############################################
+
+valgrind = os.find_exec( 'valgrind' );
+if valgrind.empty() {
+	cprintln( '{y}valgrind binary is {r}not {y}available in the {m}PATH {y}variable' );
+	exit( f );
+}
+
+threadid = 0;
+vp = 0;
+vf = 0;
+start = time.now();
+
+for file in files.iter() {
+	wait_procs( tpool, max_procs, true, vp, vf );
+	cprintln( '{c}test {0}({c}valgrind{0}): {y}', file, '{0} ...' );
+	flush_out();
+	tpool.push( threads.new_exec( valgrind + ' ' + __PROG__ + ' ' + file + ' test 1>/dev/null 2>&1', threadid ) );
+	threadid += 1;
+}
+wait_procs( tpool, 1, true, vp, vf );
+
+vdiff = time.now() - start;
+cprintln( '{y}OS{0}: {m}', os.name,
+	  '\n{w}Basic{0}:',
+	  '\n{0}=> {y}Passed{0}: {g}', p,
+	  '\n{0}=> {y}Failed{0}: {r}', f,
+	  '\n{0}=> {y}Total Time{0}: {b}', diff.msecs(), ' ms{0}',
+	  '\n{w}Valgrind{0}:',
+	  '\n{0}=> {y}Passed{0}: {g}', vp,
+	  '\n{0}=> {y}Failed{0}: {r}', vf,
+	  '\n{0}=> {y}Total Time{0}: {b}', vdiff.msecs(), ' ms{0}' );
+
 exit( f );

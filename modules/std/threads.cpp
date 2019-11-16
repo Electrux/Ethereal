@@ -103,13 +103,15 @@ var_base_t * thread_get_id( vm_state_t & vm, func_call_data_t & fcd )
 var_base_t * thread_is_done( vm_state_t & vm, func_call_data_t & fcd )
 {
 	std::shared_future< int > & fut = AS_THREAD( fcd.args[ 0 ] )->get_future();
-	return TRUE_FALSE( fut.valid() && fut.wait_for( std::chrono::seconds( 0 ) ) == std::future_status::ready );
+	// TODO: properly fix fut.wait_for() function to avoid crashes
+	return TRUE_FALSE( fut.valid() && fut.wait_for( std::chrono::milliseconds( 10 ) ) == std::future_status::ready );
 }
 
 var_base_t * thread_get_res( vm_state_t & vm, func_call_data_t & fcd )
 {
 	std::shared_future< int > & fut = AS_THREAD( fcd.args[ 0 ] )->get_future();
-	if( !fut.valid() || fut.wait_for( std::chrono::seconds( 0 ) ) != std::future_status::ready ) return vm.nil;
+	// TODO: properly fix fut.wait_for() function to avoid crashes
+	if( !fut.valid() || fut.wait_for( std::chrono::milliseconds( 10 ) ) != std::future_status::ready ) return vm.nil;
 	return new var_int_t( fut.get() );
 }
 

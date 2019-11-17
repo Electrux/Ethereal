@@ -148,7 +148,7 @@ REGISTER_MODULE( os )
 int exec_internal( const std::string & cmd )
 {
 	FILE * pipe = popen( cmd.c_str(), "r" );
-	if( !pipe ) return false;
+	if( !pipe ) return 1;
 	char * line = NULL;
 	size_t len = 0;
 	ssize_t nread;

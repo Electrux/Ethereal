@@ -10,12 +10,13 @@
 #include <thread>
 #include <future>
 #include <chrono>
+#include <mutex>
 #include <sstream>
 #include <sys/wait.h>
 
 #include "../../src/VM/Core.hpp"
 
-int exec_command( const std::string & cmd );
+int exec_command( std::string cmd );
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////// Class ////////////////////////////////////////////////////////////////
@@ -89,7 +90,7 @@ var_base_t * threads_get_nproc( vm_state_t & vm, func_call_data_t & fcd )
 
 var_base_t * thread_new_exec( vm_state_t & vm, func_call_data_t & fcd )
 {
-	std::packaged_task< int( const std::string & ) > task( exec_command );
+	std::packaged_task< int( std::string ) > task( exec_command );
 	std::shared_future< int > fut( task.get_future() );
 	int id = fcd.args.size() > 2 ? fcd.args[ 2 ]->to_int().get_si() : -1;
 	return new var_thread_t( new std::thread( std::move( task ), fcd.args[ 1 ]->to_str() ), fut, id );
@@ -103,15 +104,13 @@ var_base_t * thread_get_id( vm_state_t & vm, func_call_data_t & fcd )
 var_base_t * thread_is_done( vm_state_t & vm, func_call_data_t & fcd )
 {
 	std::shared_future< int > & fut = AS_THREAD( fcd.args[ 0 ] )->get_future();
-	// TODO: properly fix fut.wait_for() function to avoid crashes
-	return TRUE_FALSE( fut.valid() && fut.wait_for( std::chrono::milliseconds( 10 ) ) == std::future_status::ready );
+	return TRUE_FALSE( fut.valid() && fut.wait_for( std::chrono::seconds( 0 ) ) == std::future_status::ready );
 }
 
 var_base_t * thread_get_res( vm_state_t & vm, func_call_data_t & fcd )
 {
 	std::shared_future< int > & fut = AS_THREAD( fcd.args[ 0 ] )->get_future();
-	// TODO: properly fix fut.wait_for() function to avoid crashes
-	if( !fut.valid() || fut.wait_for( std::chrono::milliseconds( 10 ) ) != std::future_status::ready ) return vm.nil;
+	if( !fut.valid() || fut.wait_for( std::chrono::seconds( 0 ) ) != std::future_status::ready ) return vm.nil;
 	return new var_int_t( fut.get() );
 }
 
@@ -128,10 +127,17 @@ REGISTER_MODULE( threads )
 	threadfns.add( { "res", 0, 0, {}, FnType::MODULE, { .modfn = thread_get_res }, true } );
 }
 
-int exec_command( const std::string & cmd )
+// Required because popen() and pclose() are not seemingly threadsafe
+static std::mutex pipe_mtx;
+
+int exec_command( std::string cmd )
 {
-	FILE * pipe = popen( cmd.c_str(), "r" );
-	if( !pipe ) return false;
+	FILE * pipe = NULL;
+	{
+		std::lock_guard< std::mutex > lock( pipe_mtx );
+		pipe = popen( cmd.c_str(), "r" );
+	}
+	if( !pipe ) return 1;
 	char * line = NULL;
 	size_t len = 0;
 	ssize_t nread;
@@ -141,6 +147,11 @@ int exec_command( const std::string & cmd )
 	}
 
 	free( line );
-	int res = pclose( pipe );
+	int res = 0;
+	{
+		std::lock_guard< std::mutex > lock( pipe_mtx );
+		res = pclose( pipe );
+	}
+	int exit_code = WEXITSTATUS( res );
 	return WEXITSTATUS( res );
 }

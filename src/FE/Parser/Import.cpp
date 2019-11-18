@@ -24,7 +24,6 @@ begin:
 	whats.back() = ph->peak();
 	full_names.back() += ph->peak()->data;
 	NEXT_VALID4( TOK_COMMA, TOK_DOT, TOK_COLS, TOK_RPAREN );
-	fprintf( stdout, "After begin: %s\n", TokStrs[ ph->peak()->type ] );
 comma:
 	if( ph->peak()->type == TOK_COMMA ) {
 		// add the previous identifer/str to whats as it is complete

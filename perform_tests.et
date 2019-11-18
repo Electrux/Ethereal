@@ -1,12 +1,6 @@
 #!/usr/bin/env et
 
-import std.fs;
-import std.os;
-import std.str;
-import std.vec;
-import std.term;
-import std.time;
-import std.threads;
+import std.( fs, os, str, vec, term, time, threads );
 
 fn wait_procs( tpool, max_procs, with_valgrind, p, f ) {
 	for ; tpool.len() >= max_procs; {

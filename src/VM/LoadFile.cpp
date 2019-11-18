@@ -12,12 +12,11 @@
 
 #include "LoadFile.hpp"
 
-int load_src( vm_state_t & vm, const std::string & file, const std::string & alias )
+int load_src( vm_state_t & vm, const std::string & file )
 {
 	src_t & src = * vm.srcstack.back();
 	auto last_slash_loc = file.find_last_of( '/' );
 	auto last_dot_loc = file.find_last_of( '.' );
-	std::string mod_name = alias == "" ? file.substr( last_slash_loc + 1, last_dot_loc - last_slash_loc + 1 ) : alias;
 
 	const std::string new_src_file = file.substr( last_slash_loc + 1 );
 

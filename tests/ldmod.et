@@ -1,6 +1,7 @@
 #!/usr/bin/env et
 
 ldmod std.fs;
+ldmod std.( str, fs, vec );
 
 import std.fs;
 

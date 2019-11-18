@@ -87,18 +87,22 @@ void stmt_enum_t::disp( const bool has_next ) const
 /////////////////////////////////////////// ldmod /////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 
-stmt_ldmod_t::stmt_ldmod_t( const tok_t * what, const std::string & full_name, const int tok_ctr )
-	: stmt_base_t( GRAM_LDMOD, tok_ctr ), m_what( what ),
-	  m_full_name( full_name ) {}
+stmt_ldmod_t::stmt_ldmod_t( const std::vector< tok_t * > & whats,
+			    const std::vector< std::string > & full_names,
+			    const int tok_ctr )
+	: stmt_base_t( GRAM_LDMOD, tok_ctr ), m_whats( whats ),
+	  m_full_names( full_names ) {}
 stmt_ldmod_t::~stmt_ldmod_t() {}
 
 void stmt_ldmod_t::disp( const bool has_next ) const
 {
 	IO::tab_add( has_next );
-	IO::print( has_next, "Load Module at: %x\n", this );
+	IO::print( has_next, "Load Module(s) at: %x\n", this );
 
 	IO::tab_add( false );
-	IO::print( false, "Name: %s\n", m_full_name.c_str() );
+	for( auto it = m_full_names.begin(); it != m_full_names.end(); ++it ) {
+		IO::print( it != m_full_names.end() - 1, "Name: %s\n", it->c_str() );
+	}
 	IO::tab_rem( 2 );
 }
 
@@ -106,20 +110,22 @@ void stmt_ldmod_t::disp( const bool has_next ) const
 ////////////////////////////////////////// import /////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 
-stmt_import_t::stmt_import_t( const tok_t * what, const tok_t * as,
-			      const std::string & full_name, const int tok_ctr )
-	: stmt_base_t( GRAM_IMPORT, tok_ctr ), m_what( what ),
-	  m_as( as ), m_full_name( full_name ) {}
+stmt_import_t::stmt_import_t( const std::vector< tok_t * > & whats,
+			      const std::vector< std::string > & full_names,
+			      const int tok_ctr )
+	: stmt_base_t( GRAM_IMPORT, tok_ctr ), m_whats( whats ),
+	  m_full_names( full_names ) {}
 stmt_import_t::~stmt_import_t() {}
 
 void stmt_import_t::disp( const bool has_next ) const
 {
 	IO::tab_add( has_next );
-	IO::print( has_next, "Import at: %x\n", this );
+	IO::print( has_next, "Import(s) at: %x\n", this );
 
 	IO::tab_add( false );
-	IO::print( true, "Name: %s\n", m_full_name.c_str() );
-	IO::print( false, "As: %s\n", m_as == nullptr ? "(none)" : m_as->data.c_str() );
+	for( auto it = m_full_names.begin(); it != m_full_names.end(); ++it ) {
+		IO::print( it != m_full_names.end() - 1, "Name: %s\n", it->c_str() );
+	}
 	IO::tab_rem( 2 );
 }
 

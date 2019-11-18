@@ -212,17 +212,9 @@ int exec_internal( vm_state_t & vm, long begin, long end, var_base_t * ret )
 			break;
 		}
 		case IC_IMPORT: {
-			const int args = std::stoi( ins.oper.val );
-			VERIFY_STACK_MIN( ( size_t )args );
-			std::string alias = "";
-			if( args > 1 ) {
-				alias = vm.stack->back()->to_str();
-				vm.stack->pop_back();
-			}
-			std::string name = vm.stack->back()->to_str();
-			vm.stack->pop_back();
-
+			std::string name = ins.oper.val;
 			std::string file = name + ".et";
+
 			if( !mod_exists( file, vm.inc_dirs ) ) {
 				VM_FAIL( "could not find file '%s' for importing", name.c_str() );
 				fprintf( stderr, "checked the following paths:\n" );
@@ -231,8 +223,8 @@ int exec_internal( vm_state_t & vm, long begin, long end, var_base_t * ret )
 				}
 				goto fail;
 			}
-			int ret = load_src( vm, file, alias );
 
+			int ret = load_src( vm, file );
 			if( ret != E_OK ) {
 				VM_FAIL( "could not import '%s', see the error above; aborting",
 					 file.c_str() );

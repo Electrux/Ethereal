@@ -2,6 +2,7 @@
 
 import std.str;
 import 'std/str';
+import std.( 'str', vec, fs );
 
 assert( __import__( 'a' ) != 0, 'since module \'a\' does not exist, it should not have been imported' );
 assert( __import__( 'std/os' ) == 0, 'module \'std.os\' exists, it should have been imported' );

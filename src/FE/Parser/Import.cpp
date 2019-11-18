@@ -15,36 +15,58 @@ stmt_import_t * parse_import( const src_t & src, parse_helper_t * ph )
 {
 	int tok_ctr = ph->tok_ctr();
 
-	std::string full_name;
-	tok_t * what = nullptr;
-	tok_t * as = nullptr;
+	std::vector< std::string > parents = { "" };
+	std::vector< std::string > full_names = { "" };
+	std::vector< tok_t * > whats = { nullptr };
 
-repeat:
+begin:
 	NEXT_VALID2( TOK_IDEN, TOK_STR );
-	if( what == nullptr ) what = ph->peak();
-	full_name += ph->peak()->data;
-
-	if( ph->peak( 1 )->type == TOK_AS ) {
-		ph->next();
-		NEXT_VALID2( TOK_IDEN, TOK_STR );
-		as = ph->peak();
-	} else if( ph->peak( 1 )->type == TOK_DOT ) {
-		full_name += '/';
-		ph->next();
-		goto repeat;
+	whats.back() = ph->peak();
+	full_names.back() += ph->peak()->data;
+	NEXT_VALID4( TOK_COMMA, TOK_DOT, TOK_COLS, TOK_RPAREN );
+	fprintf( stdout, "After begin: %s\n", TokStrs[ ph->peak()->type ] );
+comma:
+	if( ph->peak()->type == TOK_COMMA ) {
+		// add the previous identifer/str to whats as it is complete
+		whats.push_back( nullptr );
+		full_names.push_back( parents.back() );
+		goto begin;
 	}
 
-	NEXT_VALID( TOK_COLS );
-	return new stmt_import_t( what, as, full_name, tok_ctr );
+dot:
+	if( ph->peak()->type == TOK_DOT ) {
+		full_names.back() += '/';
+		if( ph->peak( 1 )->type != TOK_LPAREN ) goto begin;
+		ph->next();
+		// pass to lparen
+	}
+
+lparen:
+	if( ph->peak()->type == TOK_LPAREN ) {
+		parents.push_back( full_names.back() );
+		goto begin;
+	}
+
+rparen:
+	if( ph->peak()->type == TOK_RPAREN ) {
+		if( parents.size() <= 1 ) {
+			PARSE_FAIL( "no matching opening parentheses for this closing one" );
+			return nullptr;
+		}
+		parents.pop_back();
+		NEXT_VALID2( TOK_COMMA, TOK_COLS );
+		if( ph->peak()->type == TOK_COMMA ) goto comma;
+	}
+
+end:
+	return new stmt_import_t( whats, full_names, tok_ctr );
 }
 
 bool stmt_import_t::bytecode( src_t & src ) const
 {
-	std::string file = m_full_name;
-	src.bcode.push_back( { m_tok_ctr, m_what->line, m_what->col, IC_PUSH, { OP_CONST, file } } );
-	if( m_as != nullptr ) {
-		src.bcode.push_back( { m_tok_ctr, m_as->line, m_as->col, IC_PUSH, { OP_CONST, m_as->data } } );
+	for( size_t i = 0; i < m_full_names.size(); ++i ) {
+		src.bcode.push_back( { m_tok_ctr, m_whats[ i ]->line, m_whats[ i ]->col,
+				       IC_IMPORT, { OP_CONST, m_full_names[ i ] } } );
 	}
-	src.bcode.push_back( { m_tok_ctr, m_what->line, m_what->col, IC_IMPORT, { OP_INT, m_as == nullptr ? "1" : "2" } } );
 	return true;
 }

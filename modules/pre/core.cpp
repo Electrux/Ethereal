@@ -195,8 +195,6 @@ var_base_t * import_module( vm_state_t & vm, func_call_data_t & fcd )
 	std::string name = fcd.args[ 0 ]->to_str();
 	std::string file = name + ".et";
 
-	std::string alias = fcd.args.size() > 1 ? fcd.args[ 1 ]->to_str() : "";
-
 	src_t & src = * vm.srcstack.back();
 	int line = src.bcode[ fcd.bcodectr ].line;
 	int col = src.bcode[ fcd.bcodectr ].col;
@@ -213,7 +211,7 @@ var_base_t * import_module( vm_state_t & vm, func_call_data_t & fcd )
 		goto fail;
 	}
 
-	ret = load_src( vm, file, alias );
+	ret = load_src( vm, file );
 	if( ret != E_OK ) {
 		src_fail( src.name, src.code[ line - 1 ], line, col,
 			  "could not import '%s', see the error above; aborting",
@@ -255,7 +253,7 @@ REGISTER_MODULE( core )
 	vm.funcs.add( { "__add_incs__",	 1, -1, { "_any_", "_whatever_" }, FnType::MODULE, { .modfn = add_inc_dirs }, false } );
 	vm.funcs.add( { "__add_libs__",	 1, -1, { "_any_", "_whatever_" }, FnType::MODULE, { .modfn = add_lib_dirs }, false } );
 	vm.funcs.add( { "_ldmod_",	 1,  1, { "str" }, FnType::MODULE, { .modfn = load_module }, true } );
-	vm.funcs.add( { "__import__",	 1,  2, { "str", "str" }, FnType::MODULE, { .modfn = import_module }, true } );
+	vm.funcs.add( { "__import__",	 1,  1, { "str" }, FnType::MODULE, { .modfn = import_module }, true } );
 
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////// INT ////////////////////////////////////////////////////////////////

@@ -58,6 +58,25 @@ do {												\
 	}											\
 } while( 0 )
 
+#define NEXT_VALID4( tok1, tok2, tok3, tok4 )							\
+do {												\
+	if( ph->peak( 1 )->type == TOK_INVALID ) {						\
+		PARSE_FAIL( "expected token '%s' or '%s' or '%s' or '%s', but found <EOF>",	\
+			    TokStrs[ tok1 ], TokStrs[ tok2 ], TokStrs[ tok3 ],			\
+			    TokStrs[ tok4 ] );							\
+		return nullptr;									\
+	}											\
+	ph->next();										\
+	if( ph->peak()->type != tok1 && ph->peak()->type != tok2 &&				\
+	    ph->peak()->type != tok3 && ph->peak()->type != tok4 ) {				\
+		PARSE_FAIL( "expected token '%s' or '%s' or '%s', but found '%s'",		\
+			    TokStrs[ tok1 ], TokStrs[ tok2 ],					\
+			    TokStrs[ tok3 ], TokStrs[ tok4 ],					\
+			    TokStrs[ ph->peak()->type ] );					\
+		return nullptr;									\
+	}											\
+} while( 0 )
+
 #define NEXT_VALID_FAIL( tok )							\
 do {										\
 	if( ph->peak( 1 )->type == TOK_INVALID ) {				\
@@ -100,6 +119,25 @@ do {												\
 		PARSE_FAIL( "expected token '%s' or '%s' or '%s', but found '%s'",		\
 			    TokStrs[ tok1 ], TokStrs[ tok2 ],					\
 			    TokStrs[ tok3 ], TokStrs[ ph->peak()->type ] );			\
+		goto fail;									\
+	}											\
+} while( 0 )
+
+#define NEXT_VALID4_FAIL( tok1, tok2, tok3, tok4 )						\
+do {												\
+	if( ph->peak( 1 )->type == TOK_INVALID ) {						\
+		PARSE_FAIL( "expected token '%s' or '%s' or '%s' or '%s', but found <EOF>",	\
+			    TokStrs[ tok1 ], TokStrs[ tok2 ], TokStrs[ tok3 ],			\
+			    TokStrs[ tok4 ] );							\
+		goto fail;									\
+	}											\
+	ph->next();										\
+	if( ph->peak()->type != tok1 && ph->peak()->type != tok2 &&				\
+	    ph->peak()->type != tok3 && ph->peak()->type != tok4 ) {				\
+		PARSE_FAIL( "expected token '%s' or '%s' or '%s', but found '%s'",		\
+			    TokStrs[ tok1 ], TokStrs[ tok2 ],					\
+			    TokStrs[ tok3 ], TokStrs[ tok4 ],					\
+			    TokStrs[ ph->peak()->type ] );					\
 		goto fail;									\
 	}											\
 } while( 0 )

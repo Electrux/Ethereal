@@ -9,4 +9,4 @@
 
 #include "VM.hpp"
 
-int load_src( vm_state_t & vm, const std::string & file, const std::string & alias );
+int load_src( vm_state_t & vm, const std::string & file );

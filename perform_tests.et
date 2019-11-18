@@ -54,6 +54,9 @@ if f > 0 || args.find( '--with-valgrind' ) == -1 {
 
 valgrind = os.find_exec( 'valgrind' );
 if valgrind.empty() {
+	cprintln( '=> {y}Passed{0}: {g}', p,
+		  '\n{0}=> {y}Failed{0}: {r}', f,
+		  '\n{0}=> {y}Total Time{0}: {b}', diff.msecs(), ' ms{0}' );
 	cprintln( '{y}valgrind binary is {r}not {y}available in the {m}PATH {y}variable{0}' );
 	exit( f );
 }

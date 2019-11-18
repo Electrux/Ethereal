@@ -1,9 +1,6 @@
 #!@BINARY_LOC@
 
-import std.str;
-import std.vec;
-import std.term;
-import eth.vm;
+import std.( vm, str, vec, term );
 
 vm = evm.new();
 

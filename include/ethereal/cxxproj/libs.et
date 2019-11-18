@@ -1,7 +1,7 @@
-import std.__map__;
+import std.map;
 
 mfn< _cxx_proj_t, _cxx_build_t > add_lib_dirs( dirs ) {
-	self.__lib_dirs__ += dirs;
+	self.lib_dirs += dirs;
 }
 
 mfn< _cxx_proj_t, _cxx_build_t > use_lib( lib ) {
@@ -36,8 +36,8 @@ mfn< _cxx_proj_t, _cxx_build_t > use_lib( lib ) {
 	__lib_flags__ = "";
 
 	__comp_str__ = os.get_env( 'CC' ) + ' ';
-	if __map__.find( '__lang__' ) {
-		__lang__ = __map__[ '__lang__' ];
+	if __map__.find( 'lang' ) {
+		__lang__ = __map__[ 'lang' ];
 		if __lang__ == 'c' {
 			if os.get_env( 'CC' ) == 'clang++' {
 				__comp_str__ = 'clang ';
@@ -47,13 +47,13 @@ mfn< _cxx_proj_t, _cxx_build_t > use_lib( lib ) {
 		}
 	}
 
-	if __map__.find( '__inc_dirs__' ) {
+	if __map__.find( 'inc_dirs' ) {
 		__inc_dirs__ = __map__[ 'inc_dirs' ];
 	}
-	if __map__.find( '__lib_dirs__' ) {
+	if __map__.find( 'lib_dirs' ) {
 		__lib_dirs__ = __map__[ 'lib_dirs' ];
 	}
-	if __map__.find( '__lib_flags__' ) {
+	if __map__.find( 'lib_flags' ) {
 		__lib_flags__ = __map__[ 'lib_flags' ];
 	}
 	__comp_str__ += __src__ + ' ' + __inc_dirs__ + ' ' + __lib_dirs__ + ' ' + __lib_flags__ + ' -o /dev/null 2>/dev/null';
@@ -62,9 +62,9 @@ mfn< _cxx_proj_t, _cxx_build_t > use_lib( lib ) {
 		cprintln( '{r}no{0}' );
 		return false;
 	}
-	if !__inc_dirs__.empty() { self.__inc_dirs__.push( __inc_dirs__ ); }
-	if !__lib_dirs__.empty() { self.__lib_dirs__.push( __lib_dirs__ ); }
-	if !__lib_flags__.empty() { self.__lib_flags__.push( __lib_flags__ ); }
+	if !__inc_dirs__.empty() { self.inc_dirs.push( __inc_dirs__ ); }
+	if !__lib_dirs__.empty() { self.lib_dirs.push( __lib_dirs__ ); }
+	if !__lib_flags__.empty() { self.lib_flags.push( __lib_flags__ ); }
 	cprintln( '{g}yes{0}' );
 	return true;
 }

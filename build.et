@@ -1,9 +1,6 @@
 #!/usr/bin/env et
 
-import std.str;
-import std.os;
-import std.fs;
-import std.term;
+import std.( os, fs, str, term );
 import cxxproj.cxxproj;
 
 # will set CC variable accordingly

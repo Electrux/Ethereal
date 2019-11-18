@@ -116,7 +116,7 @@ int CallFunc( vm_state_t & vm, func_call_data_t & fcd, const int ins_ctr )
 			for( size_t i = fn->arg_count_min; i < fcd.args.size(); ++i ) {
 				va.push_back( fcd.args[ i ] );
 			}
-			vm.vars->add_with_layer( "__va__", new var_vec_t( va, fcd.parse_ctr, true ), use_layer );
+			vm.vars->add_with_layer( "__VA__", new var_vec_t( va, fcd.parse_ctr, true ), use_layer );
 		}
 		fcd.args.clear();
 		res.code = exec_internal( vm, lfnptr->beg, lfnptr->end, res.data );

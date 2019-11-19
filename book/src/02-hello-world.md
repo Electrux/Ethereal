@@ -6,9 +6,9 @@ println('hello, world');
 ```
 
 Save the code in a file named, say `hello.et`, and run it using the `et` binary which we built in the [installation](./01-install.md) document.
-Assuming that no `PREFIX` was set, the binary would be created in the `bin/` directory of the cloned repostory. Hence, the command would be:
+Assuming that no `PREFIX` was set, the binary would be created in the `build/bin/` directory of the cloned repostory. Hence, the command would be:
 ```bash
-./bin/et hello.et
+./build/bin/et hello.et
 ```
 
 This will output `hello world` on the display.

@@ -37,7 +37,7 @@ This variable will allow you to set a `PREFIX_DIR` directory for installation of
 
 **NOTE** that once the script is run with a `PREFIX_DIR`, manually moving the generated files to desired directories will not work since the Ethereal's codebase uses this `PREFIX_DIR` internally itself.
 
-Generally, the `/usr` or `/usr/local` directories are used for setting the `PREFIX_DIR`, however that is totally up to you. Default value for this is the directory `/usr/local` is located.
+Generally, the `/usr` or `/usr/local` directories are used for setting the `PREFIX_DIR`, however that is totally up to you. Default value for this is the directory `build/` inside the source code folder.
 
 The script will create these directories with respect to `PREFIX_DIR`:
 *  `buildfiles/et` -> `$PREFIX_DIR/bin/`
@@ -50,7 +50,7 @@ PREFIX_DIR=/usr/local cmake .. && make install
 ```
 
 ### $DEBUG
-This variable, if set, will disable all compiler optimizations and will cause the interpreter to start displaying its internal execution stack values while running any program. This will be helpful for debugging the language codebase, but otherwise, do **NOT** use it.
+This variable, if set, will disable all compiler optimizations and will cause the interpreter to start displaying its internal execution stack values while running any program. This will be helpful for debugging the language codebase, but otherwise, do **NOT** use it as it will greatly slow the execution proces down.
 
 It can be used as follows:
 ```bash

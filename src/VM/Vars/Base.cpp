@@ -33,10 +33,5 @@ var_base_t::var_base_t( const VarType type, const bool implements_assign, const 
 
 var_base_t::~var_base_t() {}
 
-VarType var_base_t::type() const { return m_type; }
-int var_base_t::ref() const { return m_ref_ctr; }
-void var_base_t::set_parse_ctr( const int parse_ctr ) { m_parse_ctr = parse_ctr; }
-int var_base_t::parse_ctr() const { return m_parse_ctr; }
-
 std::string var_base_t::type_str() const { return VarTypeStrs[ m_type ]; }
 void var_base_t::assn( var_base_t * b ) {}

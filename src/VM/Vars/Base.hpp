@@ -48,10 +48,10 @@ public:
 	var_base_t( const VarType type, const bool implements_assign, const int parse_ctr );
 	virtual ~var_base_t();
 
-	VarType type() const;
-	int ref() const;
-	void set_parse_ctr( const int parse_ctr );
-	int parse_ctr() const;
+	inline VarType type() const { return m_type; }
+	inline int ref() const { return m_ref_ctr; }
+	inline void set_parse_ctr( const int parse_ctr ) { m_parse_ctr = parse_ctr; }
+	inline int parse_ctr() const { return m_parse_ctr; }
 
 	inline void inc_ref() { ++m_ref_ctr; }
 	inline void dec_ref() { --m_ref_ctr; }

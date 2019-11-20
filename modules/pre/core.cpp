@@ -102,7 +102,7 @@ var_base_t * assert_eth( vm_state_t & vm, func_call_data_t & fcd )
 	for( int i = 1; i < sz; ++i ) {
 		op += fcd.args[ i ]->to_str();
 	}
-	src_fail( src.name, src.code[ line - 1 ], line, col, "assertion failed: %s", op.c_str() );
+	src_fail( src.file, src.code[ line - 1 ], line, col, "assertion failed: %s", op.c_str() );
 	vm.exit_called = true;
 	vm.exit_status = 1;
 	return nullptr;
@@ -167,7 +167,7 @@ var_base_t * load_module( vm_state_t & vm, func_call_data_t & fcd )
 	init_fnptr_t init_fn = nullptr;
 
 	if( !mod_exists( file, vm.lib_dirs ) ) {
-		src_fail( src.name, src.code[ line - 1 ], line, col,
+		src_fail( src.file, src.code[ line - 1 ], line, col,
 			  "could not find module '%s' for loading",
 			  name.c_str() );
 		fprintf( stderr, "checked the following paths:\n" );
@@ -179,7 +179,7 @@ var_base_t * load_module( vm_state_t & vm, func_call_data_t & fcd )
 	if( vm.dlib->load( file ) == nullptr ) goto fail;
 	init_fn = ( init_fnptr_t ) vm.dlib->get( file, "init_" + init_fn_str );
 	if( init_fn == nullptr ) {
-		src_fail( src.name, src.code[ line - 1 ], line, col,
+		src_fail( src.file, src.code[ line - 1 ], line, col,
 			  "failed to find init function '%s' in module '%s'",
 			  init_fn_str.c_str(), file.c_str() );
 		goto fail;
@@ -202,7 +202,7 @@ var_base_t * import_module( vm_state_t & vm, func_call_data_t & fcd )
 	int ret = E_OK;
 
 	if( !mod_exists( file, vm.inc_dirs ) ) {
-		src_fail( src.name, src.code[ line - 1 ], line, col, "could not find file '%s' for importing", name.c_str() );
+		src_fail( src.file, src.code[ line - 1 ], line, col, "could not find file '%s' for importing", name.c_str() );
 		fprintf( stderr, "checked the following paths:\n" );
 		for( auto & loc : AS_VEC( vm.inc_dirs )->get() ) {
 			fprintf( stderr, "-> %s\n", ( loc->to_str() + "/" + file ).c_str() );
@@ -213,7 +213,7 @@ var_base_t * import_module( vm_state_t & vm, func_call_data_t & fcd )
 
 	ret = load_src( vm, file );
 	if( ret != E_OK ) {
-		src_fail( src.name, src.code[ line - 1 ], line, col,
+		src_fail( src.file, src.code[ line - 1 ], line, col,
 			  "could not import '%s', see the error above; aborting",
 			  file.c_str() );
 		goto fail;

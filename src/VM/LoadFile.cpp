@@ -30,7 +30,7 @@ int load_src( vm_state_t & vm, const std::string & file )
 
 	parse_tree_t * ptree = nullptr;
 	src_t * new_src = new src_t( false );
-	new_src->name = new_src_file;
+	new_src->file = new_src_file;
 	new_src->id = new_src_file;
 	new_src->dir = src_dir;
 	err = tokenize( * new_src );

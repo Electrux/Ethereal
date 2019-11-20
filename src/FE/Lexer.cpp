@@ -140,7 +140,7 @@ int tokenize( src_t & src )
 		return res;
 	}
 	if( res == E_FILE_EMPTY ) {
-		fprintf( stderr, "error: invalid source (empty file): %s\n", src.name.c_str() );
+		fprintf( stderr, "error: invalid source (empty file): %s\n", src.file.c_str() );
 		return res;
 	}
 	const auto & lines = src.code;
@@ -151,7 +151,7 @@ int tokenize( src_t & src )
 	for( int i = 0; i < line_count; ++i ) {
 		auto & line = lines[ i ];
 		const int line_len = line.size();
-		int res = tokenize_line( src.name, src.dir, line, line_len, i + 1, toks, src.is_main_src );
+		int res = tokenize_line( src.file, src.dir, line, line_len, i + 1, toks, src.is_main_src );
 		if( res != E_OK ) return res;
 	}
 

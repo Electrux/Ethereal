@@ -23,9 +23,9 @@ int read_file( src_t & src )
 	size_t len = 0;
 	ssize_t read;
 
-	fp = fopen( ( src.dir + "/" + src.name ).c_str(), "r" );
+	fp = fopen( ( src.dir + "/" + src.file ).c_str(), "r" );
 	if( fp == NULL ) {
-		fprintf( stdout, "failed to open source file: %s\n", src.name.c_str() );
+		fprintf( stdout, "failed to open source file: %s\n", src.file.c_str() );
 		return E_FILE_IO_ERR;
 	}
 

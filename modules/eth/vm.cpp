@@ -53,7 +53,7 @@ std::string var_evm_t::type_str() const { return "evm_t"; }
 std::string var_evm_t::to_str() const
 {
 	std::string str = "evm_t{";
-	str += m_vm->srcstack.back()->name + "}";
+	str += m_vm->srcstack.back()->file + "}";
 	return str;
 }
 mpz_class var_evm_t::to_int() const { return m_vm->exit_status; }
@@ -87,8 +87,8 @@ var_base_t * vm_create( vm_state_t & vm, func_call_data_t & fcd )
 	src_t * src = new src_t( true );
 	src->ptree = new parse_tree_t;
 	src->dir = vm.srcstack.back()->dir;
-	src->name = fcd.args.size() > 1 ? fcd.args[ 0 ]->to_str() : "<repl>";
-	src->id = src->name;
+	src->file = fcd.args.size() > 1 ? fcd.args[ 0 ]->to_str() : "<repl>";
+	src->id = src->file;
 
 	vm_state_t * v = new vm_state_t();
 
@@ -142,8 +142,8 @@ var_base_t * vm_exec_code( vm_state_t & vm, func_call_data_t & fcd )
 	vm_state_t * v = AS_EVM( fcd.args[ 0 ] )->get();
 	src_t * s = v->srcstack.back();
 	src_t src( false );
-	src.name = s->name;
-	src.id = s->name;
+	src.file = s->file;
+	src.id = s->file;
 
 	size_t code_size = s->code.size();
 	size_t toks_size = s->toks.size();

@@ -278,7 +278,7 @@ struct stmt_break_t : public stmt_base_t
 	bool bytecode( src_t & src ) const;
 };
 
-#define PARSE_FAIL( ... ) src_fail( src.name, src.code[ ph->peak()->line - 1 ], \
+#define PARSE_FAIL( ... ) src_fail( src.file, src.code[ ph->peak()->line - 1 ], \
 				    ph->peak()->line, ph->peak()->col, __VA_ARGS__ )
 
 #endif // PARSER_COMMON_HPP

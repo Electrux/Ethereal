@@ -21,9 +21,9 @@
 struct src_t
 {
 	// id is unique and used as the srcs map's key
-	// name is the name of the source file
+	// file is the name (no dir part) of the source file
 	std::string id;
-	std::string name;
+	std::string file;
 	std::string dir;
 	std::vector< std::string > code;
 	toks_t toks;

@@ -48,8 +48,8 @@ int main( int argc, char ** argv )
 	const std::string main_src_str = args[ 0 ].substr( last_slash_loc + 1 );
 
 	src_t * main_src = new src_t( true );
-	main_src->name = main_src_str;
-	main_src->id = "main_src_" + main_src->name;
+	main_src->file = main_src_str;
+	main_src->id = "main_src_" + main_src->file;
 	main_src->dir = src_dir;
 	err = tokenize( * main_src );
 	if( err != E_OK ) goto cleanup;

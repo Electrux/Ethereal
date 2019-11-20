@@ -64,10 +64,10 @@ struct func_call_data_t
 	std::vector< void * > rem_locs;
 };
 
-#define VM_FAIL( ... ) src_fail( src.name, src.code[ ins.line - 1 ], \
+#define VM_FAIL( ... ) src_fail( src.file, src.code[ ins.line - 1 ], \
 				 ins.line, ins.col, __VA_ARGS__ )
 
-#define VM_FAIL_TOK_CTR( tok_ctr, ... ) src_fail( src.name, src.code[ src.toks[ tok_ctr ].line - 1 ],	\
+#define VM_FAIL_TOK_CTR( tok_ctr, ... ) src_fail( src.file, src.code[ src.toks[ tok_ctr ].line - 1 ],	\
 						  src.toks[ tok_ctr ].line, src.toks[ tok_ctr ].col,	\
 						  __VA_ARGS__ )
 

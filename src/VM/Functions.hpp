@@ -22,7 +22,7 @@ struct func_call_data_t;
 typedef var_base_t * ( * modfnptr_t )( vm_state_t & vm, func_call_data_t & fcd );
 struct langfn_t
 {
-	const char * src;
+	int src;
 	int beg, end;
 };
 

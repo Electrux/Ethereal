@@ -44,6 +44,7 @@ var_evm_t::var_evm_t( vm_state_t * vm, const int parse_ctr )
 var_evm_t::~var_evm_t()
 {
 	if( !m_copied ) {
+		m_vm->srclist.clear();
 		m_vm->srcstack.pop_back();
 		delete m_vm;
 	}
@@ -87,13 +88,14 @@ var_base_t * vm_create( vm_state_t & vm, func_call_data_t & fcd )
 	src_t * src = new src_t( true );
 	src->ptree = new parse_tree_t;
 	src->dir = vm.srcstack.back()->dir;
+	src->id = 0;
 	src->file = fcd.args.size() > 1 ? fcd.args[ 0 ]->to_str() : "<repl>";
-	src->id = src->file;
 
 	vm_state_t * v = new vm_state_t();
 
 	v->flags = vm.flags;
 	v->srcstack.push_back( src );
+	v->srclist.push_back( src->file );
 	v->srcs[ src->id ] = src;
 	v->vars->add( "nil", v->nil );
 
@@ -143,7 +145,7 @@ var_base_t * vm_exec_code( vm_state_t & vm, func_call_data_t & fcd )
 	src_t * s = v->srcstack.back();
 	src_t src( false );
 	src.file = s->file;
-	src.id = s->file;
+	src.id = s->id;
 
 	size_t code_size = s->code.size();
 	size_t toks_size = s->toks.size();

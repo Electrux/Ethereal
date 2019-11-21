@@ -445,7 +445,7 @@ int exec_internal( vm_state_t & vm, long begin, long end, var_base_t * ret )
 					goto fail;
 				}
 				vm.typefuncs[ member_of ].add( function_t{ name, args_min, args_max, args, FnType::LANG,
-								           { .langfn = { src.id.c_str(), blk.beg, blk.end } },
+								           { .langfn = { src.id, blk.beg, blk.end } },
 									   false } );
 			}
 			if( member_ofs.size() == 0 ) {
@@ -455,7 +455,7 @@ int exec_internal( vm_state_t & vm, long begin, long end, var_base_t * ret )
 					goto fail;
 				}
 				vm.funcs.add( function_t{ name, args_min, args_max, args, FnType::LANG,
-					                  { .langfn = { src.id.c_str(), blk.beg, blk.end } },
+					                  { .langfn = { src.id, blk.beg, blk.end } },
 							  false } );
 			}
 			break;

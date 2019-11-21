@@ -48,8 +48,8 @@ int main( int argc, char ** argv )
 	const std::string main_src_str = args[ 0 ].substr( last_slash_loc + 1 );
 
 	src_t * main_src = new src_t( true );
+	main_src->id = 0;
 	main_src->file = main_src_str;
-	main_src->id = "main_src_" + main_src->file;
 	main_src->dir = src_dir;
 	err = tokenize( * main_src );
 	if( err != E_OK ) goto cleanup;
@@ -98,6 +98,7 @@ int main( int argc, char ** argv )
 		vm_state_t vm;
 		vm.flags = flags;
 		vm.srcstack.push_back( main_src );
+		vm.srclist.push_back( main_src->file );
 		vm.srcs[ main_src->id ] = main_src;
 		if( !set_init_mods( vm ) ) { err = E_VM_FAIL; goto end; }
 		std::vector< var_base_t * > arg_vec;
@@ -113,6 +114,7 @@ int main( int argc, char ** argv )
 		vm.vars->add( "false", new var_bool_t( false, 0 ) );
 		vm.vars->add( "nil", vm.nil );
 		err = vm_exec( vm );
+		vm.srclist.clear();
 		vm.srcstack.pop_back();
 		goto end;
 	}

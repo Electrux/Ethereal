@@ -12,6 +12,8 @@
 
 #include "LoadFile.hpp"
 
+static bool src_exists( const srcs_t & srcs, const std::string & file );
+
 int load_src( vm_state_t & vm, const std::string & file )
 {
 	src_t & src = * vm.srcstack.back();
@@ -20,7 +22,7 @@ int load_src( vm_state_t & vm, const std::string & file )
 
 	const std::string new_src_file = file.substr( last_slash_loc + 1 );
 
-	if( vm.srcs.find( new_src_file ) != vm.srcs.end() ) {
+	if( src_exists( vm.srcs, new_src_file ) ) {
 		return E_OK;
 	}
 
@@ -30,8 +32,8 @@ int load_src( vm_state_t & vm, const std::string & file )
 
 	parse_tree_t * ptree = nullptr;
 	src_t * new_src = new src_t( false );
+	new_src->id = vm.srclist.size();
 	new_src->file = new_src_file;
-	new_src->id = new_src_file;
 	new_src->dir = src_dir;
 	err = tokenize( * new_src );
 	if( err != E_OK ) goto cleanup;
@@ -78,6 +80,7 @@ int load_src( vm_state_t & vm, const std::string & file )
 	// actual code execution
 	if( !( vm.flags & OPT_C ) && !( vm.flags & OPT_D ) ) {
 		vm.srcstack.push_back( new_src );
+		vm.srclist.push_back( new_src_file );
 		vm.srcs[ new_src->id ] = new_src;
 		vm.vars->add_zero( vm.vars->layer_size() );
 		err = vm_exec( vm );
@@ -89,4 +92,12 @@ int load_src( vm_state_t & vm, const std::string & file )
 cleanup:
 	if( err != E_OK ) delete new_src;
 	return err;
+}
+
+static bool src_exists( const srcs_t & srcs, const std::string & file )
+{
+	for( auto & item : srcs ) {
+		if( item.second->file == file && !item.second->is_main_src ) return true;
+	}
+	return false;
 }

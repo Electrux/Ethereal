@@ -20,9 +20,10 @@
 
 struct src_t
 {
-	// id is unique and used as the srcs map's key
-	// file is the name (no dir part) of the source file
-	std::string id;
+	// id is unique and used for mapping variables to sources
+	// file is the name (no dir part) of the source file and is used
+	// as key for srcs map.
+	int id;
 	std::string file;
 	std::string dir;
 	std::vector< std::string > code;
@@ -57,6 +58,6 @@ struct src_t
 	src.bcode.push_back( { m_tok_ctr, line, col, IC_REM_SCOPE, { OP_INT, "1" } } );	\
 	if( src.block_depth.back().size() > 0 ) --src.block_depth.back().back()
 
-typedef std::unordered_map< std::string, src_t * > srcs_t;
+typedef std::unordered_map< int, src_t * > srcs_t;
 
 #endif // ETHEREAL_HPP

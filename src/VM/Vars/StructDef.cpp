@@ -11,8 +11,8 @@
 
 var_struct_def_t::var_struct_def_t( const std::string & name, std::vector< std::string > & pos,
 				    std::unordered_map< std::string, var_base_t * > & val,
-				    const int parse_ctr )
-	: var_base_t( VT_STRUCT, false, parse_ctr ), m_name( name ), m_pos( pos ), m_val( val ) {}
+				    const int src_idx, const int parse_ctr )
+	: var_base_t( VT_STRUCT, false, src_idx, parse_ctr ), m_name( name ), m_pos( pos ), m_val( val ) {}
 var_struct_def_t::~var_struct_def_t()
 {
 	for( auto & v : m_val ) {
@@ -37,13 +37,13 @@ std::string var_struct_def_t::to_str() const
 mpz_class var_struct_def_t::to_int() const { return mpz_class( m_val.size() ); }
 bool var_struct_def_t::to_bool() const { return m_val.size() > 0; }
 
-var_base_t * var_struct_def_t::copy( const int parse_ctr )
+var_base_t * var_struct_def_t::copy( const int src_idx, const int parse_ctr )
 {
 	std::unordered_map< std::string, var_base_t * > newmap;
 	for( auto & v : m_val ) {
-		newmap[ v.first ] = v.second->copy( parse_ctr );
+		newmap[ v.first ] = v.second->copy( src_idx, parse_ctr );
 	}
-	return new var_struct_t( m_name, newmap, parse_ctr );
+	return new var_struct_t( m_name, newmap, src_idx, parse_ctr );
 }
 
 std::string & var_struct_def_t::get_name() { return m_name; }

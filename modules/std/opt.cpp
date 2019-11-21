@@ -17,22 +17,22 @@ class var_opt_t : public var_base_t
 {
 	var_base_t * m_val;
 public:
-	var_opt_t( var_base_t * val, const int parse_ctr = 0 );
+	var_opt_t( var_base_t * val, const int src_idx = 0, const int parse_ctr = 0 );
 	~var_opt_t();
 
 	std::string type_str() const;
 	std::string to_str() const;
 	mpz_class to_int() const;
 	bool to_bool() const;
-	var_base_t * copy( const int parse_ctr );
+	var_base_t * copy( const int src_idx, const int parse_ctr );
 	void clear();
 	void assn( var_base_t * b );
 	var_base_t * & get();
 };
 #define AS_OPT( x ) static_cast< var_opt_t * >( x )
 
-var_opt_t::var_opt_t( var_base_t * val, const int parse_ctr )
-	: var_base_t( VT_CUSTOM, true, parse_ctr ), m_val( val )
+var_opt_t::var_opt_t( var_base_t * val, const int src_idx, const int parse_ctr )
+	: var_base_t( VT_CUSTOM, true, src_idx, parse_ctr ), m_val( val )
 { if( m_val ) VAR_IREF( m_val ); }
 var_opt_t::~var_opt_t() { if( m_val ) VAR_DREF( m_val ); }
 
@@ -46,9 +46,9 @@ std::string var_opt_t::to_str() const
 }
 mpz_class var_opt_t::to_int() const { return m_val == nullptr ? 0 : 1; }
 bool var_opt_t::to_bool() const { return m_val != nullptr; }
-var_base_t * var_opt_t::copy( const int parse_ctr )
+var_base_t * var_opt_t::copy( const int src_idx, const int parse_ctr )
 {
-	return new var_opt_t( m_val, parse_ctr );
+	return new var_opt_t( m_val, src_idx, parse_ctr );
 }
 void var_opt_t::clear() { if( m_val ) { VAR_DREF( m_val ); m_val = nullptr; } }
 void var_opt_t::assn( var_base_t * b )
@@ -82,7 +82,7 @@ var_base_t * opt_clear( vm_state_t & vm, func_call_data_t & fcd )
 var_base_t * opt_set( vm_state_t & vm, func_call_data_t & fcd )
 {
 	AS_OPT( fcd.args[ 0 ] )->clear();
-	AS_OPT( fcd.args[ 0 ] )->get() = fcd.args[ 1 ]->copy( fcd.parse_ctr );
+	AS_OPT( fcd.args[ 0 ] )->get() = fcd.args[ 1 ]->copy( fcd.src_idx, fcd.parse_ctr );
 	return AS_OPT( fcd.args[ 0 ] )->get();
 }
 

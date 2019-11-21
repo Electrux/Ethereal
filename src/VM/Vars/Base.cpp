@@ -27,9 +27,11 @@ const char * VarTypeStrs[ _VT_LAST ] = {
 	"custom",
 };
 
-var_base_t::var_base_t( const VarType type, const bool implements_assign, const int parse_ctr )
-	: m_type( type ), m_ref_ctr( 1 ), m_parse_ctr( parse_ctr ),
-	  m_implements_assign( implements_assign ) {}
+var_info_t::var_info_t( const int rc, const int si ,const int pc, const bool ia ) :
+	ref_ctr( rc ), src_idx( si ), parse_ctr( pc ), implements_assign( ia ) {}
+
+var_base_t::var_base_t( const VarType type, const bool implements_assign, const int src_idx, const int parse_ctr )
+	: m_type( type ), m_info( 1, src_idx, parse_ctr, implements_assign ) {}
 
 var_base_t::~var_base_t() {}
 

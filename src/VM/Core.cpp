@@ -20,7 +20,7 @@ const char * LIB_EXT = ".so";
 
 vm_state_t::vm_state_t() : flags( 0 ), exit_called( false ), exit_status( 0 ),
 	inc_dirs( new var_vec_t( {}, 0 ) ), lib_dirs( new var_vec_t( {}, 0 ) ),
-	none( new var_none_t( 0 ) ), nil( new var_nil_t( 0 ) ),
+	none( new var_none_t( 0, 0 ) ), nil( new var_nil_t( 0, 0 ) ),
 	vars( new vars_t ), dlib( new dyn_lib_t() ),
 	consts( new consts_t() ), stack( new vm_stack_t() )
 {

@@ -20,22 +20,22 @@ class var_map_iter_t : public var_base_t
 	map_iter_t m_it;
 	var_map_t * m_map;
 public:
-	var_map_iter_t( var_map_t * map, map_iter_t it, bool inc_ref = true, const int parse_ctr = 0 );
+	var_map_iter_t( var_map_t * map, map_iter_t it, bool inc_ref = true, const int src_idx = 0, const int parse_ctr = 0 );
 	~var_map_iter_t();
 
 	std::string type_str() const;
 	std::string to_str() const;
 	mpz_class to_int() const;
 	bool to_bool() const;
-	var_base_t * copy( const int parse_ctr );
+	var_base_t * copy( const int src_idx, const int parse_ctr );
 	void assn( var_base_t * b );
 	var_map_t * & get();
 	map_iter_t & iter();
 };
 #define AS_MAP_ITER( x ) static_cast< var_map_iter_t * >( x )
 
-var_map_iter_t::var_map_iter_t( var_map_t * map, map_iter_t it, bool inc_ref, const int parse_ctr )
-	: var_base_t( VT_CUSTOM, true, parse_ctr ), m_it( it ), m_map( map )
+var_map_iter_t::var_map_iter_t( var_map_t * map, map_iter_t it, bool inc_ref, const int src_idx, const int parse_ctr )
+	: var_base_t( VT_CUSTOM, true, src_idx, parse_ctr ), m_it( it ), m_map( map )
 { if( inc_ref ) VAR_IREF( m_map ); it = map->get().begin(); }
 var_map_iter_t::~var_map_iter_t() { VAR_DREF( m_map ); }
 
@@ -46,9 +46,9 @@ std::string var_map_iter_t::to_str() const
 }
 mpz_class var_map_iter_t::to_int() const { return 1; }
 bool var_map_iter_t::to_bool() const { return m_it != m_map->get().end(); }
-var_base_t * var_map_iter_t::copy( const int parse_ctr )
+var_base_t * var_map_iter_t::copy( const int src_idx, const int parse_ctr )
 {
-	return new var_map_iter_t( m_map, m_it, true, parse_ctr );
+	return new var_map_iter_t( m_map, m_it, true, src_idx, parse_ctr );
 }
 void var_map_iter_t::assn( var_base_t * b )
 {
@@ -72,7 +72,7 @@ var_base_t * insert( vm_state_t & vm, func_call_data_t & fcd )
 	if( map.find( key ) != map.end() ) {
 		VAR_DREF( map[ key ] );
 	}
-	map[ key ] = fcd.args[ 2 ]->copy( fcd.parse_ctr );
+	map[ key ] = fcd.args[ 2 ]->copy( fcd.src_idx, fcd.parse_ctr );
 	return nullptr;
 }
 

@@ -99,7 +99,7 @@ int exec_internal( vm_state_t & vm, long begin, long end, var_base_t * ret )
 				    val->type_str() != newval->type_str() ) ) {
 					VM_FAIL( "variable '%s' already declared at previous location, but with different data type (original: %s, new: %s)",
 						 var.c_str(), val->type_str().c_str(), newval->type_str().c_str() );
-					VM_FAIL_TOK_CTR( val->parse_ctr(), "original declared here" );
+					VM_FAIL_FILE_TOK_CTR( val->src_idx(), val->parse_ctr(), "original declared here" );
 					goto fail;
 				}
 
@@ -118,7 +118,7 @@ int exec_internal( vm_state_t & vm, long begin, long end, var_base_t * ret )
 				VAR_IREF( newval );
 				vm.vars->add( var, newval );
 			} else {
-				vm.vars->add( var, newval->copy( ins.parse_ctr ) );
+				vm.vars->add( var, newval->copy( src.id, ins.parse_ctr ) );
 			}
 			vm.stack->pop_back();
 			if( ins.opcode == IC_STORE_LOAD || ins.opcode == IC_STORE_LOAD_NO_COPY ) {
@@ -290,7 +290,7 @@ int exec_internal( vm_state_t & vm, long begin, long end, var_base_t * ret )
 			if( vm.vars->exists( name ) ) {
 				var_base_t * val = vm.vars->get( name );
 				VM_FAIL( "variable '%s' already declared at another location" );
-				VM_FAIL_TOK_CTR( val->parse_ctr(), "original declared here" );
+				VM_FAIL_FILE_TOK_CTR( val->src_idx(), val->parse_ctr(), "original declared here" );
 				goto fail;
 			}
 			int count = std::stoi( ins.oper.val );
@@ -317,7 +317,7 @@ int exec_internal( vm_state_t & vm, long begin, long end, var_base_t * ret )
 			VERIFY_STACK_MIN( ( size_t )count );
 			std::vector< var_base_t * > vec;
 			while( count-- > 0 ) {
-				vec.push_back( vm.stack->back()->copy( ins.parse_ctr ) );
+				vec.push_back( vm.stack->back()->copy( src.id, ins.parse_ctr ) );
 				vm.stack->pop_back();
 			}
 			vm.stack->push_back( new var_vec_t( vec, ins.parse_ctr ), false );
@@ -330,7 +330,7 @@ int exec_internal( vm_state_t & vm, long begin, long end, var_base_t * ret )
 			while( count-- > 0 ) {
 				std::string key = vm.stack->back()->to_str();
 				vm.stack->pop_back();
-				map[ key ] = vm.stack->back()->copy( ins.parse_ctr );
+				map[ key ] = vm.stack->back()->copy( src.id, ins.parse_ctr );
 				vm.stack->pop_back();
 			}
 			vm.stack->push_back( new var_map_t( map, ins.parse_ctr ), false );
@@ -350,13 +350,14 @@ int exec_internal( vm_state_t & vm, long begin, long end, var_base_t * ret )
 			while( count-- > 0 ) {
 				std::string fname = vm.stack->back()->to_str();
 				if( map.find( fname ) != map.end() ) {
-					VM_FAIL_TOK_CTR( vm.stack->back()->parse_ctr(),
-							 "field name '%s' has already been used before",
-							 fname.c_str() );
+					VM_FAIL_FILE_TOK_CTR( vm.stack->back()->src_idx(),
+							      vm.stack->back()->parse_ctr(),
+							      "field name '%s' has already been used before",
+							      fname.c_str() );
 					goto fail;
 				}
 				vm.stack->pop_back();
-				var_base_t * fval = vm.stack->back()->copy( ins.parse_ctr );
+				var_base_t * fval = vm.stack->back()->copy( src.id, ins.parse_ctr );
 				vm.stack->pop_back();
 				map[ fname ] = fval;
 				pos.insert( pos.begin(), fname );
@@ -378,14 +379,16 @@ int exec_internal( vm_state_t & vm, long begin, long end, var_base_t * ret )
 					 name.c_str(), stdef->get_pos().size(), count );
 				goto fail;
 			}
-			var_struct_t * st = ( var_struct_t * )vm.structs[ name ]->copy( ins.parse_ctr );
+			var_struct_t * st = ( var_struct_t * )vm.structs[ name ]->copy( src.id, ins.parse_ctr );
 			std::unordered_map< std::string, var_base_t * > & map = st->get_val();
 			const std::vector< std::string > & pos = stdef->get_pos();
 			for( int j = 0; j < count; ++j ) {
 				if( map[ pos[ j ] ]->type() != vm.stack->back()->type() ) {
-					VM_FAIL_TOK_CTR( vm.stack->back()->parse_ctr(),
-							 "argument type mismatch: expected '%s', found '%s'",
-							 map[ pos[ j ] ]->type_str().c_str(), vm.stack->back()->type_str().c_str() );
+					VM_FAIL_FILE_TOK_CTR( vm.stack->back()->src_idx(),
+							      vm.stack->back()->parse_ctr(),
+							      "argument type mismatch: expected '%s', found '%s'",
+							      map[ pos[ j ] ]->type_str().c_str(),
+							      vm.stack->back()->type_str().c_str() );
 					goto fail;
 				}
 				if( !copy_data( map[ pos[ j ] ], vm.stack->back() ) ) {

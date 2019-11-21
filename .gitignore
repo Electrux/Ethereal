@@ -24,7 +24,7 @@ src/Config.hpp
 
 # Extra data #
 #######################
-tmp.et
+tmp*.et
 *.json
 tests/*.json
 

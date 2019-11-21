@@ -21,21 +21,21 @@ class var_time_point_t : public var_base_t
 {
 	time_point_t m_time;
 public:
-	var_time_point_t( const time_point_t & time, const int parse_ctr = 0 );
+	var_time_point_t( const time_point_t & time, const int src_idx = 0, const int parse_ctr = 0 );
 	~var_time_point_t();
 
 	std::string type_str() const;
 	std::string to_str() const;
 	mpz_class to_int() const;
 	bool to_bool() const;
-	var_base_t * copy( const int parse_ctr );
+	var_base_t * copy( const int src_idx, const int parse_ctr );
 	void assn( var_base_t * b );
 	time_point_t & get();
 };
 #define AS_TIME_POINT( x ) static_cast< var_time_point_t * >( x )
 
-var_time_point_t::var_time_point_t( const time_point_t & time, const int parse_ctr )
-	: var_base_t( VT_CUSTOM, true, parse_ctr ), m_time( time ) {}
+var_time_point_t::var_time_point_t( const time_point_t & time, const int src_idx, const int parse_ctr )
+	: var_base_t( VT_CUSTOM, true, src_idx, parse_ctr ), m_time( time ) {}
 var_time_point_t::~var_time_point_t() {}
 
 std::string var_time_point_t::type_str() const { return "time_point_t"; }
@@ -45,9 +45,9 @@ std::string var_time_point_t::to_str() const
 }
 mpz_class var_time_point_t::to_int() const { return ( size_t )std::chrono::duration_cast< std::chrono::seconds >( m_time.time_since_epoch() ).count(); }
 bool var_time_point_t::to_bool() const { return true; }
-var_base_t * var_time_point_t::copy( const int parse_ctr )
+var_base_t * var_time_point_t::copy( const int src_idx, const int parse_ctr )
 {
-	return new var_time_point_t( m_time, parse_ctr );
+	return new var_time_point_t( m_time, src_idx, parse_ctr );
 }
 void var_time_point_t::assn( var_base_t * b )
 {

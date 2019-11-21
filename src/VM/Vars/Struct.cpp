@@ -9,8 +9,8 @@
 
 #include "Base.hpp"
 
-var_struct_t::var_struct_t( const std::string & name, std::unordered_map< std::string, var_base_t * > & val, const int parse_ctr )
-	: var_base_t( VT_STRUCT, true, parse_ctr ), m_name( name ), m_val( val ) {}
+var_struct_t::var_struct_t( const std::string & name, std::unordered_map< std::string, var_base_t * > & val, const int src_idx, const int parse_ctr )
+	: var_base_t( VT_STRUCT, true, src_idx, parse_ctr ), m_name( name ), m_val( val ) {}
 var_struct_t::~var_struct_t()
 {
 	for( auto & v : m_val ) {
@@ -35,13 +35,13 @@ std::string var_struct_t::to_str() const
 mpz_class var_struct_t::to_int() const { return mpz_class( m_val.size() ); }
 bool var_struct_t::to_bool() const { return m_val.size() > 0; }
 
-var_base_t * var_struct_t::copy( const int parse_ctr )
+var_base_t * var_struct_t::copy( const int src_idx, const int parse_ctr )
 {
 	std::unordered_map< std::string, var_base_t * > newmap;
 	for( auto & v : m_val ) {
-		newmap[ v.first ] = v.second->copy( parse_ctr );
+		newmap[ v.first ] = v.second->copy( src_idx, parse_ctr );
 	}
-	return new var_struct_t( m_name, newmap, parse_ctr );
+	return new var_struct_t( m_name, newmap, src_idx, parse_ctr );
 }
 
 void var_struct_t::clear()
@@ -60,6 +60,6 @@ void var_struct_t::assn( var_base_t * b )
 	this->clear();
 	var_struct_t * bt = static_cast< var_struct_t * >( b );
 	for( auto & x : bt->m_val ) {
-		this->m_val[ x.first ] = x.second->copy( b->parse_ctr() );
+		this->m_val[ x.first ] = x.second->copy( b->src_idx(), b->parse_ctr() );
 	}
 }

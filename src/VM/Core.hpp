@@ -59,6 +59,7 @@ struct func_call_data_t
 {
 	std::string fn_name;
 	int args_count;
+	int src_idx;
 	int parse_ctr;
 	int bcodectr;
 	std::vector< std::string > arg_types;
@@ -69,9 +70,11 @@ struct func_call_data_t
 #define VM_FAIL( ... ) src_fail( src.file, src.code[ ins.line - 1 ], \
 				 ins.line, ins.col, __VA_ARGS__ )
 
-#define VM_FAIL_TOK_CTR( tok_ctr, ... ) src_fail( src.file, src.code[ src.toks[ tok_ctr ].line - 1 ],	\
-						  src.toks[ tok_ctr ].line, src.toks[ tok_ctr ].col,	\
-						  __VA_ARGS__ )
+#define VM_FAIL_FILE_TOK_CTR( src_idx, tok_ctr, ... )							\
+	src_fail( vm.srcs[ src_idx ]->file,								\
+		  vm.srcs[ src_idx ]->code[ vm.srcs[ src_idx ]->toks[ tok_ctr ].line - 1 ],		\
+		  vm.srcs[ src_idx ]->toks[ tok_ctr ].line, vm.srcs[ src_idx ]->toks[ tok_ctr ].col,	\
+		  __VA_ARGS__ )
 
 bool set_init_mods( vm_state_t & vm );
 

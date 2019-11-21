@@ -24,21 +24,21 @@ public:
 	// can't use pointer for m_pre_ph because it doesn't get freed correctly
 	// since it uses reference to m_vm->srcstack.back()
 	parse_helper_t m_pre_ph;
-	var_evm_t( vm_state_t * vm, const int parse_ctr = 0 );
+	var_evm_t( vm_state_t * vm, const int src_idx = 0, const int parse_ctr = 0 );
 	~var_evm_t();
 
 	std::string type_str() const;
 	std::string to_str() const;
 	mpz_class to_int() const;
 	bool to_bool() const;
-	var_base_t * copy( const int parse_ctr );
+	var_base_t * copy( const int src_idx, const int parse_ctr );
 	void assn( var_base_t * b );
 	vm_state_t * & get();
 };
 #define AS_EVM( x ) static_cast< var_evm_t * >( x )
 
-var_evm_t::var_evm_t( vm_state_t * vm, const int parse_ctr )
-	: var_base_t( VT_CUSTOM, true, parse_ctr ), m_vm( vm ),
+var_evm_t::var_evm_t( vm_state_t * vm, const int src_idx, const int parse_ctr )
+	: var_base_t( VT_CUSTOM, true, src_idx, parse_ctr ), m_vm( vm ),
 	  m_copied( false ), m_pre_ph( vm->srcstack.back()->toks )
 {}
 var_evm_t::~var_evm_t()
@@ -59,10 +59,10 @@ std::string var_evm_t::to_str() const
 }
 mpz_class var_evm_t::to_int() const { return m_vm->exit_status; }
 bool var_evm_t::to_bool() const { return m_vm->exit_called; }
-var_base_t * var_evm_t::copy( const int parse_ctr )
+var_base_t * var_evm_t::copy( const int src_idx, const int parse_ctr )
 {
 	m_copied = true;
-	return new var_evm_t( m_vm, parse_ctr );
+	return new var_evm_t( m_vm, src_idx, parse_ctr );
 }
 void var_evm_t::assn( var_base_t * b )
 {

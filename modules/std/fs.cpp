@@ -34,7 +34,7 @@ class var_file_t : public var_base_t
 	FILE * m_file;
 	bool m_copied;
 public:
-	var_file_t( FILE * file, const int parse_ctr = 0 );
+	var_file_t( FILE * file, const int src_idx = 0, const int parse_ctr = 0 );
 	~var_file_t();
 
 	std::string type_str() const;
@@ -42,13 +42,13 @@ public:
 	mpz_class to_int() const;
 	bool to_bool() const;
 	bool is_copied() const;
-	var_base_t * copy( const int parse_ctr );
+	var_base_t * copy( const int src_idx, const int parse_ctr );
 	FILE * & get();
 };
 #define AS_FILE( x ) static_cast< var_file_t * >( x )
 
-var_file_t::var_file_t( FILE * file, const int parse_ctr )
-	: var_base_t( VT_CUSTOM, false, parse_ctr ), m_file( file ),
+var_file_t::var_file_t( FILE * file, const int src_idx, const int parse_ctr )
+	: var_base_t( VT_CUSTOM, false, src_idx, parse_ctr ), m_file( file ),
 	  m_copied( false ) {}
 var_file_t::~var_file_t() { if( m_file != nullptr && !m_copied ) { fclose( m_file ); } }
 
@@ -56,10 +56,10 @@ std::string var_file_t::type_str() const { return "file_t"; }
 std::string var_file_t::to_str() const { return "file_t"; }
 mpz_class var_file_t::to_int() const { return m_file == nullptr ? 0 : 1; }
 bool var_file_t::to_bool() const { return m_file != nullptr; }
-var_base_t * var_file_t::copy( const int parse_ctr )
+var_base_t * var_file_t::copy( const int src_idx, const int parse_ctr )
 {
 	m_copied = true;
-	return new var_file_t( m_file, parse_ctr );
+	return new var_file_t( m_file, src_idx, parse_ctr );
 }
 
 FILE * & var_file_t::get() { return m_file; }
@@ -168,7 +168,8 @@ var_base_t * is_open( vm_state_t & vm, func_call_data_t & fcd )
 }
 
 void get_entries_internal( const std::string & dir_str, std::vector< var_base_t * > & v,
-			   const size_t & flags, const int parse_ctr, const std::regex & regex )
+			   const size_t & flags, const int src_idx, const int parse_ctr,
+			   const std::regex & regex )
 {
 	DIR * dir;
 	struct dirent * ent;
@@ -182,14 +183,14 @@ void get_entries_internal( const std::string & dir_str, std::vector< var_base_t 
 		}
 		if( ent->d_type == DT_DIR ) {
 			if( flags & FSEnt::RECURSE ) {
-				get_entries_internal( entry + "/", v, flags, parse_ctr, regex );
+				get_entries_internal( entry + "/", v, flags, src_idx, parse_ctr, regex );
 			} else if( flags & FSEnt::DIRS ) {
-				v.push_back( new var_str_t( entry, parse_ctr ) );
+				v.push_back( new var_str_t( entry, src_idx, parse_ctr ) );
 			}
 			continue;
 		}
 		if( flags & FSEnt::FILES || flags & FSEnt::RECURSE ) {
-			v.push_back( new var_str_t( entry, parse_ctr ) );
+			v.push_back( new var_str_t( entry, src_idx, parse_ctr ) );
 		}
 	}
 	closedir( dir );
@@ -203,7 +204,7 @@ var_base_t * get_entries( vm_state_t & vm, func_call_data_t & fcd )
 	std::string regex_str = fcd.args.size() <= 3 ? "(.*)" : fcd.args[ 3 ]->to_str();
 	std::regex regex( regex_str );
 	if( dir_str.size() > 0 && dir_str.back() != '/' ) dir_str += "/";
-	get_entries_internal( dir_str, v, flags, fcd.parse_ctr, regex );
+	get_entries_internal( dir_str, v, flags, fcd.src_idx, fcd.parse_ctr, regex );
 	return new var_vec_t( v );
 }
 

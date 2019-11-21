@@ -18,22 +18,22 @@ class var_vec_iter_t : public var_base_t
 	int m_idx;
 	var_vec_t * m_vec;
 public:
-	var_vec_iter_t( var_vec_t * vec, bool inc_ref = true, int idx = -1, const int parse_ctr = 0 );
+	var_vec_iter_t( var_vec_t * vec, bool inc_ref = true, int idx = -1, const int src_idx = 0, const int parse_ctr = 0 );
 	~var_vec_iter_t();
 
 	std::string type_str() const;
 	std::string to_str() const;
 	mpz_class to_int() const;
 	bool to_bool() const;
-	var_base_t * copy( const int parse_ctr );
+	var_base_t * copy( const int src_idx, const int parse_ctr );
 	void assn( var_base_t * b );
 	var_vec_t * & get();
 	int & pos();
 };
 #define AS_VEC_ITER( x ) static_cast< var_vec_iter_t * >( x )
 
-var_vec_iter_t::var_vec_iter_t( var_vec_t * vec, bool inc_ref, int idx, const int parse_ctr )
-	: var_base_t( VT_CUSTOM, true, parse_ctr ), m_idx( idx ), m_vec( vec )
+var_vec_iter_t::var_vec_iter_t( var_vec_t * vec, bool inc_ref, int idx, const int src_idx, const int parse_ctr )
+	: var_base_t( VT_CUSTOM, true, src_idx, parse_ctr ), m_idx( idx ), m_vec( vec )
 { if( inc_ref ) VAR_IREF( m_vec ); }
 var_vec_iter_t::~var_vec_iter_t() { VAR_DREF( m_vec ); }
 
@@ -44,9 +44,9 @@ std::string var_vec_iter_t::to_str() const
 }
 mpz_class var_vec_iter_t::to_int() const { return m_idx; }
 bool var_vec_iter_t::to_bool() const { return m_idx >= 0 && m_idx < m_vec->get().size(); }
-var_base_t * var_vec_iter_t::copy( const int parse_ctr )
+var_base_t * var_vec_iter_t::copy( const int src_idx, const int parse_ctr )
 {
-	return new var_vec_iter_t( m_vec, true, m_idx, parse_ctr );
+	return new var_vec_iter_t( m_vec, true, m_idx, src_idx, parse_ctr );
 }
 void var_vec_iter_t::assn( var_base_t * b )
 {
@@ -79,7 +79,7 @@ var_base_t * append( vm_state_t & vm, func_call_data_t & fcd )
 	std::vector< var_base_t * > & a = AS_VEC( fcd.args[ 0 ] )->get();
 	std::vector< var_base_t * > & b = AS_VEC( fcd.args[ 1 ] )->get();
 	for( auto & x : b ) {
-		a.push_back( x->copy( fcd.parse_ctr ) );
+		a.push_back( x->copy( fcd.src_idx, fcd.parse_ctr ) );
 	}
 	return nullptr;
 }
@@ -87,14 +87,14 @@ var_base_t * append( vm_state_t & vm, func_call_data_t & fcd )
 var_base_t * push( vm_state_t & vm, func_call_data_t & fcd )
 {
 	std::vector< var_base_t * > & v = AS_VEC( fcd.args[ 0 ] )->get();
-	v.push_back( fcd.args[ 1 ]->copy( fcd.parse_ctr ) );
+	v.push_back( fcd.args[ 1 ]->copy( fcd.src_idx, fcd.parse_ctr ) );
 	return nullptr;
 }
 
 var_base_t * push_front( vm_state_t & vm, func_call_data_t & fcd )
 {
 	std::vector< var_base_t * > & v = AS_VEC( fcd.args[ 0 ] )->get();
-	v.insert( v.begin(), fcd.args[ 1 ]->copy( fcd.parse_ctr ) );
+	v.insert( v.begin(), fcd.args[ 1 ]->copy( fcd.src_idx, fcd.parse_ctr ) );
 	return nullptr;
 }
 
@@ -177,10 +177,10 @@ var_base_t * add( vm_state_t & vm, func_call_data_t & fcd )
 	std::vector< var_base_t * > & a = AS_VEC( fcd.args[ 1 ] )->get();
 	std::vector< var_base_t * > & b = AS_VEC( fcd.args[ 0 ] )->get();
 	for( auto & x : a ) {
-		res.push_back( x->copy( fcd.parse_ctr ) );
+		res.push_back( x->copy( fcd.src_idx, fcd.parse_ctr ) );
 	}
 	for( auto & x : b ) {
-		res.push_back( x->copy( fcd.parse_ctr ) );
+		res.push_back( x->copy( fcd.src_idx, fcd.parse_ctr ) );
 	}
 	return new var_vec_t( res );
 }
@@ -190,7 +190,7 @@ var_base_t * add_assn( vm_state_t & vm, func_call_data_t & fcd )
 	std::vector< var_base_t * > & a = AS_VEC( fcd.args[ 0 ] )->get();
 	std::vector< var_base_t * > & b = AS_VEC( fcd.args[ 1 ] )->get();
 	for( auto & x : b ) {
-		a.push_back( x->copy( fcd.parse_ctr ) );
+		a.push_back( x->copy( fcd.src_idx, fcd.parse_ctr ) );
 	}
 	return fcd.args[ 0 ];
 }
@@ -235,7 +235,7 @@ var_base_t * range( vm_state_t & vm, func_call_data_t & fcd )
 
 	std::vector< var_base_t * > vec;
 	for( mpz_class i = a; i < b; i += step ) {
-		vec.push_back( new var_int_t( i, fcd.parse_ctr ) );
+		vec.push_back( new var_int_t( i, fcd.src_idx, fcd.parse_ctr ) );
 	}
 	return new var_vec_iter_t( new var_vec_t( vec ), false );
 }

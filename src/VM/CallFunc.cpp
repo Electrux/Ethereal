@@ -22,6 +22,7 @@ int CallFunc( vm_state_t & vm, func_call_data_t & fcd, const int ins_ctr )
 
 	fcd.arg_types.clear();
 	fcd.rem_locs.clear();
+	fcd.src_idx = src.id;
 	fcd.parse_ctr = ins.parse_ctr;
 	int var_args_count = 0;
 	var_base_t * member = nullptr;
@@ -130,7 +131,8 @@ int CallFunc( vm_state_t & vm, func_call_data_t & fcd, const int ins_ctr )
 		if( res.data == nullptr ) {
 			vm.stack->push_back( vm.none );
 		} else {
-			res.data->set_parse_ctr( ins.parse_ctr );
+			res.data->set_src_idx( fcd.src_idx );
+			res.data->set_parse_ctr( fcd.parse_ctr );
 			vm.stack->push_back( res.data, !fn->manual_res_free || res.data->type() == VT_NIL );
 		}
 	}

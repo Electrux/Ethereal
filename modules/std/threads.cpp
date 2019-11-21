@@ -29,7 +29,8 @@ class var_thread_t : public var_base_t
 	bool m_copied;
 	int m_id;
 public:
-	var_thread_t( std::thread * thread, std::shared_future< int > & res, const int id, const int parse_ctr = 0 );
+	var_thread_t( std::thread * thread, std::shared_future< int > & res, const int id,
+		      const int src_idx = 0, const int parse_ctr = 0 );
 	~var_thread_t();
 
 	std::string type_str() const;
@@ -37,7 +38,7 @@ public:
 	mpz_class to_int() const;
 	bool to_bool() const;
 	bool is_copied() const;
-	var_base_t * copy( const int parse_ctr );
+	var_base_t * copy( const int src_idx, const int parse_ctr );
 	void assn( var_base_t * b );
 	std::thread * & get_thread();
 	std::shared_future< int > & get_future();
@@ -47,8 +48,8 @@ public:
 #define AS_THREAD( x ) static_cast< var_thread_t * >( x )
 
 var_thread_t::var_thread_t( std::thread * thread, std::shared_future< int > & res, const int id,
-			    const int parse_ctr )
-	: var_base_t( VT_CUSTOM, true, parse_ctr ), m_thread( thread ), m_res( res ),
+			    const int src_idx, const int parse_ctr )
+	: var_base_t( VT_CUSTOM, true, src_idx, parse_ctr ), m_thread( thread ), m_res( res ),
 	  m_id( id ), m_copied( false ) {}
 var_thread_t::~var_thread_t() { if( m_thread != nullptr && !m_copied ) { m_thread->join(); delete m_thread; } }
 
@@ -62,10 +63,10 @@ std::string var_thread_t::to_str() const
 
 mpz_class var_thread_t::to_int() const { return m_res.valid() ? 1 : 0; }
 bool var_thread_t::to_bool() const { return m_res.valid(); }
-var_base_t * var_thread_t::copy( const int parse_ctr )
+var_base_t * var_thread_t::copy( const int src_idx, const int parse_ctr )
 {
 	m_copied = true;
-	return new var_thread_t( m_thread, m_res, m_id, parse_ctr );
+	return new var_thread_t( m_thread, m_res, m_id, src_idx, parse_ctr );
 }
 void var_thread_t::assn( var_base_t * b )
 {

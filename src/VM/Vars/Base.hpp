@@ -38,30 +38,41 @@ enum VarType
 
 extern const char * VarTypeStrs[ _VT_LAST ];
 
+struct var_info_t
+{
+	int ref_ctr;
+	int src_idx;
+	int parse_ctr;
+	bool implements_assign;
+	var_info_t( const int rc, const int si ,const int pc, const bool ia );
+};
+
 class var_base_t
 {
 	VarType m_type;
-	int m_ref_ctr;
-	int m_parse_ctr;
-	bool m_implements_assign;
+	var_info_t m_info;
 public:
-	var_base_t( const VarType type, const bool implements_assign, const int parse_ctr );
+	var_base_t( const VarType type, const bool implements_assign, const int src_idx, const int parse_ctr );
 	virtual ~var_base_t();
 
 	inline VarType type() const { return m_type; }
-	inline int ref() const { return m_ref_ctr; }
-	inline void set_parse_ctr( const int parse_ctr ) { m_parse_ctr = parse_ctr; }
-	inline int parse_ctr() const { return m_parse_ctr; }
+	inline int ref() const { return m_info.ref_ctr; }
 
-	inline void inc_ref() { ++m_ref_ctr; }
-	inline void dec_ref() { --m_ref_ctr; }
-	inline bool impls_assn() { return m_implements_assign; }
+	inline void set_parse_ctr( const int parse_ctr ) { m_info.parse_ctr = parse_ctr; }
+	inline int parse_ctr() const { return m_info.parse_ctr; }
+
+	inline void set_src_idx( const int src_idx ) { m_info.src_idx = src_idx; }
+	inline int src_idx() const { return m_info.src_idx; }
+
+	inline void inc_ref() { ++m_info.ref_ctr; }
+	inline void dec_ref() { --m_info.ref_ctr; }
+	inline bool impls_assn() { return m_info.implements_assign; }
 
 	virtual std::string type_str() const;
 	virtual std::string to_str() const = 0;
 	virtual mpz_class to_int() const = 0;
 	virtual bool to_bool() const = 0;
-	virtual var_base_t * copy( const int parse_ctr ) = 0;
+	virtual var_base_t * copy( const int src_idx, const int parse_ctr ) = 0;
 	virtual void assn( var_base_t * b );
 };
 
@@ -79,12 +90,12 @@ public:
 class var_none_t : public var_base_t
 {
 public:
-	var_none_t( const int parse_ctr );
+	var_none_t( const int src_idx, const int parse_ctr );
 
 	std::string to_str() const;
 	mpz_class to_int() const;
 	bool to_bool() const;
-	var_base_t * copy( const int parse_ctr );
+	var_base_t * copy( const int src_idx, const int parse_ctr );
 	void assn( var_base_t * b );
 };
 #define AS_NONE( x ) static_cast< var_none_t * >( x )
@@ -92,12 +103,12 @@ public:
 class var_nil_t : public var_base_t
 {
 public:
-	var_nil_t( const int parse_ctr );
+	var_nil_t( const int src_idx, const int parse_ctr );
 
 	std::string to_str() const;
 	mpz_class to_int() const;
 	bool to_bool() const;
-	var_base_t * copy( const int parse_ctr );
+	var_base_t * copy( const int src_idx, const int parse_ctr );
 	void assn( var_base_t * b );
 };
 #define AS_NIL( x ) static_cast< var_nil_t * >( x )
@@ -106,17 +117,17 @@ class var_int_t : public var_base_t
 {
 	mpz_class m_val;
 public:
-	var_int_t( const int val, const int parse_ctr = 0 );
-	var_int_t( const size_t val, const int parse_ctr = 0 );
-	var_int_t( const std::string & val, const int parse_ctr = 0 );
-	var_int_t( const bool val, const int parse_ctr = 0 );
-	var_int_t( const float val, const int parse_ctr = 0 );
-	var_int_t( const mpz_class & val, const int parse_ctr = 0 );
+	var_int_t( const int val, const int src_idx = 0, const int parse_ctr = 0 );
+	var_int_t( const size_t val, const int src_idx = 0, const int parse_ctr = 0 );
+	var_int_t( const std::string & val, const int src_idx = 0, const int parse_ctr = 0 );
+	var_int_t( const bool val, const int src_idx = 0, const int parse_ctr = 0 );
+	var_int_t( const float val, const int src_idx = 0, const int parse_ctr = 0 );
+	var_int_t( const mpz_class & val, const int src_idx = 0, const int parse_ctr = 0 );
 
 	std::string to_str() const;
 	mpz_class to_int() const;
 	bool to_bool() const;
-	var_base_t * copy( const int parse_ctr );
+	var_base_t * copy( const int src_idx, const int parse_ctr );
 	void assn( var_base_t * b );
 	mpz_class & get();
 };
@@ -126,12 +137,12 @@ class var_str_t : public var_base_t
 {
 	std::string m_val;
 public:
-	var_str_t( const std::string & val, const int parse_ctr = 0 );
+	var_str_t( const std::string & val, const int src_idx = 0, const int parse_ctr = 0 );
 
 	std::string to_str() const;
 	mpz_class to_int() const;
 	bool to_bool() const;
-	var_base_t * copy( const int parse_ctr );
+	var_base_t * copy( const int src_idx, const int parse_ctr );
 	void assn( var_base_t * b );
 	std::string & get();
 };
@@ -141,16 +152,16 @@ class var_flt_t : public var_base_t
 {
 	mpf_class m_val;
 public:
-	var_flt_t( const float val, const int parse_ctr = 0 );
-	var_flt_t( const int val, const int parse_ctr = 0 );
-	var_flt_t( const std::string & val, const int parse_ctr = 0 );
-	var_flt_t( const bool val, const int parse_ctr = 0 );
-	var_flt_t( const mpf_class & val, const int parse_ctr = 0 );
+	var_flt_t( const float val, const int src_idx = 0, const int parse_ctr = 0 );
+	var_flt_t( const int val, const int src_idx = 0, const int parse_ctr = 0 );
+	var_flt_t( const std::string & val, const int src_idx = 0, const int parse_ctr = 0 );
+	var_flt_t( const bool val, const int src_idx = 0, const int parse_ctr = 0 );
+	var_flt_t( const mpf_class & val, const int src_idx = 0, const int parse_ctr = 0 );
 
 	std::string to_str() const;
 	mpz_class to_int() const;
 	bool to_bool() const;
-	var_base_t * copy( const int parse_ctr );
+	var_base_t * copy( const int src_idx, const int parse_ctr );
 	void assn( var_base_t * b );
 	mpf_class & get();
 };
@@ -160,15 +171,15 @@ class var_bool_t : public var_base_t
 {
 	bool m_val;
 public:
-	var_bool_t( const int val, const int parse_ctr = 0 );
-	var_bool_t( const float val, const int parse_ctr = 0 );
-	var_bool_t( const std::string & val, const int parse_ctr = 0 );
-	var_bool_t( const bool val, const int parse_ctr = 0 );
+	var_bool_t( const int val, const int src_idx = 0, const int parse_ctr = 0 );
+	var_bool_t( const float val, const int src_idx = 0, const int parse_ctr = 0 );
+	var_bool_t( const std::string & val, const int src_idx = 0, const int parse_ctr = 0 );
+	var_bool_t( const bool val, const int src_idx = 0, const int parse_ctr = 0 );
 
 	std::string to_str() const;
 	mpz_class to_int() const;
 	bool to_bool() const;
-	var_base_t * copy( const int parse_ctr );
+	var_base_t * copy( const int src_idx, const int parse_ctr );
 	void assn( var_base_t * b );
 	bool & get();
 };
@@ -180,12 +191,12 @@ class var_enum_t : public var_base_t
 	std::unordered_map< std::string, var_int_t * > m_val;
 public:
 	var_enum_t( const std::string & name, std::unordered_map< std::string, var_int_t * > & val,
-		    const int parse_ctr = 0 );
+		    const int src_idx = 0, const int parse_ctr = 0 );
 	~var_enum_t();
 	std::string to_str() const;
 	mpz_class to_int() const;
 	bool to_bool() const;
-	var_base_t * copy( const int parse_ctr );
+	var_base_t * copy( const int src_idx, const int parse_ctr );
 	std::string get_name();
 	std::unordered_map< std::string, var_int_t * > & get_val();
 };
@@ -196,12 +207,13 @@ class var_vec_t : public var_base_t
 	std::vector< var_base_t * > m_val;
 	bool m_is_var_arg;
 public:
-	var_vec_t( const std::vector< var_base_t * > & val, const int parse_ctr = 0, const bool is_var_arg = false );
+	var_vec_t( const std::vector< var_base_t * > & val, const int src_idx = 0,
+		   const int parse_ctr = 0, const bool is_var_arg = false );
 	~var_vec_t();
 	std::string to_str() const;
 	mpz_class to_int() const;
 	bool to_bool() const;
-	var_base_t * copy( const int parse_ctr );
+	var_base_t * copy( const int src_idx, const int parse_ctr );
 	void clear();
 	std::vector< var_base_t * > & get();
 	void assn( var_base_t * b );
@@ -214,12 +226,13 @@ class var_map_t : public var_base_t
 {
 	std::unordered_map< std::string, var_base_t * > m_val;
 public:
-	var_map_t( std::unordered_map< std::string, var_base_t * > & val, const int parse_ctr = 0 );
+	var_map_t( std::unordered_map< std::string, var_base_t * > & val,
+		   const int src_idx = 0, const int parse_ctr = 0 );
 	~var_map_t();
 	std::string to_str() const;
 	mpz_class to_int() const;
 	bool to_bool() const;
-	var_base_t * copy( const int parse_ctr );
+	var_base_t * copy( const int src_idx, const int parse_ctr );
 	void clear();
 	std::unordered_map< std::string, var_base_t * > & get();
 	void assn( var_base_t * b );
@@ -230,12 +243,13 @@ class var_tuple_t : public var_base_t
 {
 	std::vector< var_base_t * > m_val;
 public:
-	var_tuple_t( const std::vector< var_base_t * > & val, const int parse_ctr = 0 );
+	var_tuple_t( const std::vector< var_base_t * > & val,
+		     const int src_idx = 0, const int parse_ctr = 0 );
 	~var_tuple_t();
 	std::string to_str() const;
 	mpz_class to_int() const;
 	bool to_bool() const;
-	var_base_t * copy( const int parse_ctr );
+	var_base_t * copy( const int src_idx, const int parse_ctr );
 	void clear();
 	std::vector< var_base_t * > & get();
 	void assn( var_base_t * b );
@@ -250,13 +264,13 @@ class var_struct_def_t : public var_base_t
 public:
 	var_struct_def_t( const std::string & name, std::vector< std::string > & pos,
 			  std::unordered_map< std::string, var_base_t * > & val,
-			  const int parse_ctr = 0 );
+			  const int src_idx = 0, const int parse_ctr = 0 );
 	~var_struct_def_t();
 	std::string type_str() const;
 	std::string to_str() const;
 	mpz_class to_int() const;
 	bool to_bool() const;
-	var_base_t * copy( const int parse_ctr );
+	var_base_t * copy( const int src_idx, const int parse_ctr );
 	std::string & get_name();
 	std::vector< std::string > & get_pos();
 	std::unordered_map< std::string, var_base_t * > & get_val();
@@ -268,13 +282,13 @@ class var_struct_t : public var_base_t
 	std::unordered_map< std::string, var_base_t * > m_val;
 public:
 	var_struct_t( const std::string & name, std::unordered_map< std::string, var_base_t * > & val,
-		      const int parse_ctr = 0 );
+		      const int src_idx = 0, const int parse_ctr = 0 );
 	~var_struct_t();
 	std::string type_str() const;
 	std::string to_str() const;
 	mpz_class to_int() const;
 	bool to_bool() const;
-	var_base_t * copy( const int parse_ctr );
+	var_base_t * copy( const int src_idx, const int parse_ctr );
 	void clear();
 	std::string & get_name();
 	std::unordered_map< std::string, var_base_t * > & get_val();

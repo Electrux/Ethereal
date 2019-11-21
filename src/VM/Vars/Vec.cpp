@@ -9,8 +9,8 @@
 
 #include "Base.hpp"
 
-var_vec_t::var_vec_t( const std::vector< var_base_t * > & val, const int parse_ctr, const bool is_var_arg )
-	: var_base_t( VT_VEC, true, parse_ctr ), m_val( val ), m_is_var_arg( is_var_arg ) {}
+var_vec_t::var_vec_t( const std::vector< var_base_t * > & val, const int src_idx, const int parse_ctr, const bool is_var_arg )
+	: var_base_t( VT_VEC, true, src_idx, parse_ctr ), m_val( val ), m_is_var_arg( is_var_arg ) {}
 var_vec_t::~var_vec_t()
 {
 	for( auto & v : m_val ) {
@@ -30,13 +30,13 @@ std::string var_vec_t::to_str() const
 mpz_class var_vec_t::to_int() const { return mpz_class( m_val.size() ); }
 bool var_vec_t::to_bool() const { return m_val.size() > 0; }
 
-var_base_t * var_vec_t::copy( const int parse_ctr )
+var_base_t * var_vec_t::copy( const int src_idx, const int parse_ctr )
 {
 	std::vector< var_base_t * > newvec;
 	for( auto & v : m_val ) {
-		newvec.push_back( v->copy( parse_ctr ) );
+		newvec.push_back( v->copy( src_idx, parse_ctr ) );
 	}
-	return new var_vec_t( newvec, parse_ctr, m_is_var_arg );
+	return new var_vec_t( newvec, src_idx, parse_ctr, m_is_var_arg );
 }
 
 void var_vec_t::clear()
@@ -54,6 +54,6 @@ void var_vec_t::assn( var_base_t * b )
 	this->clear();
 	var_vec_t * bt = static_cast< var_vec_t * >( b );
 	for( auto & x : bt->m_val ) {
-		this->m_val.push_back( x->copy( b->parse_ctr() ) );
+		this->m_val.push_back( x->copy( b->src_idx(), b->parse_ctr() ) );
 	}
 }

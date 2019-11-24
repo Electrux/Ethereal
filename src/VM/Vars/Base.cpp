@@ -27,11 +27,15 @@ const char * VarTypeStrs[ _VT_LAST ] = {
 	"custom",
 };
 
-int & float_precision()
+static int flt_precision = DEFAULT_FLOAT_PRECISION;
+
+void update_float_precision( const int precision )
 {
-	static int precision = DEFAULT_FLOAT_PRECISION;
-	return precision;
+	flt_precision = precision;
+	mpfr::mpreal::set_default_prec( flt_precision + 2 );
 }
+
+int get_float_precision() { return flt_precision; }
 
 var_info_t::var_info_t( const int rc, const int si ,const int pc, const bool ia ) :
 	ref_ctr( rc ), src_idx( si ), parse_ctr( pc ), implements_assign( ia ) {}

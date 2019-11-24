@@ -111,6 +111,8 @@ int main( int argc, char ** argv )
 		vm.vars->add( "args", new var_vec_t( arg_vec, 0 ) );
 		vm.vars->add( "true", new var_bool_t( true, 0 ) );
 		vm.vars->add( "false", new var_bool_t( false, 0 ) );
+		// call this to set base precision for mpfr
+		update_float_precision();
 		if( !set_init_mods( vm ) ) { err = E_VM_FAIL; goto end; }
 		err = vm_exec( vm );
 		vm.srclist.clear();

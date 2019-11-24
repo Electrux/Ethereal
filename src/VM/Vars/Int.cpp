@@ -21,6 +21,8 @@ var_int_t::var_int_t( const float val, const int src_idx, const int parse_ctr )
 	: var_base_t( VT_INT, true, src_idx, parse_ctr ), m_val( val ) {}
 var_int_t::var_int_t( const mpz_class & val, const int src_idx, const int parse_ctr )
 	: var_base_t( VT_INT, true, src_idx, parse_ctr ), m_val( val ) {}
+var_int_t::var_int_t( const mpfr::mpreal & val, const int src_idx, const int parse_ctr )
+	: var_base_t( VT_INT, true, src_idx, parse_ctr ), m_val( mpf_class( val.toString() ) ) {}
 
 std::string var_int_t::to_str() const { return m_val.get_str(); }
 mpz_class var_int_t::to_int() const { return m_val; }

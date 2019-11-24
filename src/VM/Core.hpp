@@ -11,6 +11,9 @@
 #define VM_CORE_HPP
 
 #include "../FE/Ethereal.hpp"
+
+#include "../../third_party/mpfrxx.hpp"
+
 #include "DynLib.hpp"
 #include "Consts.hpp"
 #include "VMStack.hpp"

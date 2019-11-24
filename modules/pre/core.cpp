@@ -238,18 +238,18 @@ fail:
 
 var_base_t * set_float_precision( vm_state_t & vm, func_call_data_t & fcd )
 {
-	float_precision() = fcd.args[ 0 ]->to_int().get_ui();
+	update_float_precision( fcd.args[ 0 ]->to_int().get_ui() );
 	return nullptr;
 }
 
 var_base_t * get_float_precision( vm_state_t & vm, func_call_data_t & fcd )
 {
-	return new var_int_t( float_precision() );
+	return new var_int_t( get_float_precision() );
 }
 
 var_base_t * get_float_precision_num( vm_state_t & vm, func_call_data_t & fcd )
 {
-	return new var_flt_t( "0." + std::string( float_precision() - 1, '0' ) + "1" );
+	return new var_flt_t( "0." + std::string( get_float_precision() - 1, '0' ) + "1" );
 }
 
 var_base_t * nil_eq( vm_state_t & vm, func_call_data_t & fcd )

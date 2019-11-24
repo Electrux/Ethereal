@@ -7,6 +7,9 @@ if(CMAKE_VERSION VERSION_LESS "3.1")
 	add_compile_options(-std=c++11)
 endif()
 
+# add cmake_modules path
+list(APPEND CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/third_party/cmake_modules")
+
 set(ETHEREAL_VERSION_MAJOR 0)
 set(ETHEREAL_VERSION_MINOR 1)
 set(ETHEREAL_VERSION_PATCH 1)
@@ -20,6 +23,10 @@ include(CheckCXXCompilerFlag)
 
 find_library(gmp REQUIRED)
 find_library(gmpxx REQUIRED)
+find_package(MPFR REQUIRED)
+if(NOT MPFR_FOUND)
+	error("MPFR library is required but missing")
+endif()
 set(CMAKE_THREAD_PREFER_PTHREAD TRUE)
 set(THREADS_PREFER_PTHREAD_FLAG ON)
 find_package(Threads REQUIRED)
@@ -91,7 +98,7 @@ list(REMOVE_ITEM SRCS "src/FE/Main.cpp" "src/VM/Main.cpp")
 
 add_library(et-lib SHARED ${SRCS} ${INCS})
 target_link_libraries(et-lib ${CMAKE_DL_LIBS})
-target_link_libraries(et-lib gmp gmpxx)
+target_link_libraries(et-lib mpfr gmp gmpxx)
 set_target_properties(et-lib
     PROPERTIES
     OUTPUT_NAME et

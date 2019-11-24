@@ -25,7 +25,7 @@
 	{								\
 		auto & lhs = AS_INT( fcd.args[ 1 ] )->get();		\
 		auto & rhs = AS_FLT( fcd.args[ 0 ] )->get();		\
-		return new ret_type( lhs oper rhs );			\
+		return new ret_type( lhs.get_mpz_t() oper rhs );	\
 	}
 
 #define DECL_FUNC_ALLOC__FLT_INT( name, oper, ret_type )		\
@@ -33,7 +33,7 @@
 	{								\
 		auto & lhs = AS_FLT( fcd.args[ 1 ] )->get();		\
 		auto & rhs = AS_INT( fcd.args[ 0 ] )->get();		\
-		return new ret_type( lhs oper rhs );			\
+		return new ret_type( lhs oper rhs.get_mpz_t() );	\
 	}
 
 #define DECL_FUNC_ASSN__FLT( name, oper )				\
@@ -94,11 +94,9 @@ DECL_FUNC_BOOL__FLT( gef, >= )
  */
 var_base_t * powerf( vm_state_t & vm, func_call_data_t & fcd )
 {
-	mpf_class & lhs = AS_FLT( fcd.args[ 1 ] )->get();
+	mpfr::mpreal & lhs = AS_FLT( fcd.args[ 1 ] )->get();
 	mpz_class & rhs = AS_INT( fcd.args[ 0 ] )->get();
-	var_flt_t * res = new var_flt_t( "0" );
-	mpf_pow_ui( res->get().get_mpf_t(), lhs.get_mpf_t(), rhs.get_ui() );
-	return res;
+	return new var_flt_t( mpfr::pow( lhs, rhs.get_mpz_t() ) );
 }
 
 /*
@@ -106,7 +104,7 @@ var_base_t * powerf( vm_state_t & vm, func_call_data_t & fcd )
  */
 var_base_t * unary_subf( vm_state_t & vm, func_call_data_t & fcd )
 {
-	mpf_class & num = AS_FLT( fcd.args[ 0 ] )->get();
+	mpfr::mpreal & num = AS_FLT( fcd.args[ 0 ] )->get();
 	return new var_flt_t( -num );
 }
 
@@ -117,7 +115,7 @@ var_base_t * unary_subf( vm_state_t & vm, func_call_data_t & fcd )
  */
 var_base_t * not_operf( vm_state_t & vm, func_call_data_t & fcd )
 {
-	mpf_class & num = AS_FLT( fcd.args[ 0 ] )->get();
+	mpfr::mpreal & num = AS_FLT( fcd.args[ 0 ] )->get();
 	return TRUE_FALSE( !num );
 }
 

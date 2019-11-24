@@ -13,6 +13,8 @@
 #include <string>
 #include <gmpxx.h>
 
+#include "../../../third_party/mpfrxx.hpp"
+
 #include "../Functions.hpp"
 
 enum VarType
@@ -40,7 +42,8 @@ extern const char * VarTypeStrs[ _VT_LAST ];
 
 #define DEFAULT_FLOAT_PRECISION 20
 
-int & float_precision();
+void update_float_precision( const int precision = DEFAULT_FLOAT_PRECISION );
+int get_float_precision();
 
 struct var_info_t
 {
@@ -127,6 +130,7 @@ public:
 	var_int_t( const bool val, const int src_idx = 0, const int parse_ctr = 0 );
 	var_int_t( const float val, const int src_idx = 0, const int parse_ctr = 0 );
 	var_int_t( const mpz_class & val, const int src_idx = 0, const int parse_ctr = 0 );
+	var_int_t( const mpfr::mpreal & val, const int src_idx = 0, const int parse_ctr = 0 );
 
 	std::string to_str() const;
 	mpz_class to_int() const;
@@ -154,20 +158,20 @@ public:
 
 class var_flt_t : public var_base_t
 {
-	mpf_class m_val;
+	mpfr::mpreal m_val;
 public:
 	var_flt_t( const float val, const int src_idx = 0, const int parse_ctr = 0 );
 	var_flt_t( const int val, const int src_idx = 0, const int parse_ctr = 0 );
 	var_flt_t( const std::string & val, const int src_idx = 0, const int parse_ctr = 0 );
 	var_flt_t( const bool val, const int src_idx = 0, const int parse_ctr = 0 );
-	var_flt_t( const mpf_class & val, const int src_idx = 0, const int parse_ctr = 0 );
+	var_flt_t( const mpfr::mpreal & val, const int src_idx = 0, const int parse_ctr = 0 );
 
 	std::string to_str() const;
 	mpz_class to_int() const;
 	bool to_bool() const;
 	var_base_t * copy( const int src_idx, const int parse_ctr );
 	void assn( var_base_t * b );
-	mpf_class & get();
+	mpfr::mpreal & get();
 };
 #define AS_FLT( x ) static_cast< var_flt_t * >( x )
 

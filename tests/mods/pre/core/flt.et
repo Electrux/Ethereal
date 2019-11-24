@@ -3,26 +3,26 @@
 a = 5.5;
 b = 10.5;
 
-assert( 1.1 == 1.1, '1.1 should be 1.1' );
-assert( 0.0 != 1.0, '0.0 should not be 1.0' );
-assert( 1.1 < 2.0, '1.1 should be < 2.0' );
-assert( 1.0 <= 1.0, '1.0 should be <= 1.0' );
-assert( 2.0 > 1.1, '2.0 should be > 1.1' );
-assert( 1.1 >= 1.1, '1.1 should be >= 1.1' );
-assert( !0.0, '!0.0 should be true' );
+assert_eq( 1.1, 1.1 );
+assert_ne( 0.0, 1.0 );
+assert_lt( 1.1, 2.0 );
+assert_le( 1.0, 1.0 );
+assert_gt( 2.0, 1.1 );
+assert_ge( 1.1, 1.1 );
+assert_nt( 0.0 );
 
-assert( 5.0 + 10.0 == 15.0, '5.0 + 10.0 should be: 15.0' );
-assert( 5.0 - 10.0 == -5.0, '5.0 - 10.0 should be: -5.0' );
-assert( 5.0 * 10.0 == 50.0, '5.0 * 10.0 should be: 50.0' );
-assert( 5.0 / 10.0 == 0.5, '5.0 / 10.0 should be: 0.5' );
+assert_eq( 5.0 + 10.0, 15.0 );
+assert_eq( 5.0 - 10.0, -5.0 );
+assert_eq( 5.0 * 10.0, 50.0 );
+assert_eq( 5.0 / 10.0,  0.5 );
 
-assert( ( a += 10.0 ) == 15.5, '5.5 += 10.0 should be: 15.5' );
-assert( ( a -= 10.0 ) == 5.5, '15.5 -= 10.0 should be: 5.5' );
-assert( ( a *= 10.0 ) == 55.0, '5.5 *= 10.0 should be: 55' );
-assert( ( a /= 10.0 ) == 5.5, '55.0 /= 10.0 should be: 5.5' );
+assert_eq( a += 10.0, 15.5 );
+assert_eq( a -= 10.0,  5.5 );
+assert_eq( a *= 10.0, 55.0 );
+assert_eq( a /= 10.0,  5.5 );
 
-assert( 2.5 ** 2 == 6.25, '2.5 ** 2 should be 6.25' );
+assert_eq( 2.5 ** 2, 6.25 );
 
-assert( -6.0 == -6.0, '-6.0 should be -6.0' );
+assert_eq( -6.0, -6.0 );
 
-assert( flt( '1252.25' ) == 1252.25, 'flt( \'1252.25\' ) should be 1252.25' );
+assert_eq( flt( '1252.25' ), 1252.25 );

@@ -1,4 +1,4 @@
 #!/usr/bin/env et
 
-assert( nil == nil, 'nil should be equal to nil' );
-assert( nil != 'str', 'nil should not be equal to str' );
+assert_eq( nil,   nil );
+assert_ne( nil, 'str' );

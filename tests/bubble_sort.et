@@ -15,7 +15,7 @@ for i = 0; i < 4; i += 1 {
 }
 
 if args.len() > 1 {
-	assert( v == [ 1, 2, 3, 4 ], 'Vector should have been: [ 1, 2, 3, 4 ], but is: ', v );
+	assert_eq( v, [ 1, 2, 3, 4 ] );
 } else {
-	println( "Vector: ", v );
+	println( 'Vector: ', v );
 }

@@ -16,7 +16,7 @@ for ; num > 0; {
 }
 
 if args.len() > 1 {
-	assert( bin == '1100', 'bin string should be 1100, but is: ', bin );
+	assert_eq( bin, '1100' );
 } else {
 	println( 'Binary is: ', bin );
 }
@@ -30,7 +30,7 @@ for i = 0; i < sz; i += 1 {
 }
 
 if args.len() > 1 {
-	assert( num == 12, 'num should be 12, but is: ', num );
+	assert_eq( num, 12 );
 } else {
 	println( 'Original number is: ', num );
 }

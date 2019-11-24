@@ -1,3 +1,0 @@
-#!/usr/bin/env et
-
-assert( var_exists( 'a' ) == false, 'var exists returned true when it shouldn\'t' );

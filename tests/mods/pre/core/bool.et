@@ -3,9 +3,9 @@
 a = true;
 b = false;
 
-assert( true && true, 'true && true should be true' );
-assert( true || false, 'true || false should be true' );
-assert( true == true, 'true == true should be true' );
-assert( true != false, 'true != false should be true' );
-assert( !false, '!false should be true' );
-assert( bool( '1' ), 'bool( \'1\' ) should be true' );
+assert_and( true, true );
+assert_or( true, false );
+assert_eq( true, true );
+assert_ne( true, false );
+assert_nt( false );
+assert_eq( bool( '1' ), true );

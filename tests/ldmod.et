@@ -9,5 +9,5 @@ if fs.exists( '../buildfiles' ) {
 	ldmod '../buildfiles/std/str';
 }
 
-assert( _ldmod_( 'a' ) != 0, 'library module \'a\' does not exist, it should not have been imported' );
-assert( _ldmod_( 'std/vec' ) == 0, 'library module \'std.vec\' exists, it should have been imported' );
+assert_ne( _ldmod_( 'a' ), 0 );
+assert_eq( _ldmod_( 'std/vec' ), 0 );

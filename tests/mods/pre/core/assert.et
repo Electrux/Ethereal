@@ -1,3 +1,9 @@
 #!/usr/bin/env et
 
-assert( true, 'you shouldn\'t be seeing this' );
+assert( true );
+assert_eq( true, true );
+assert_ne( true, false );
+assert_lt( 1, 2 );
+assert_le( 1, 1 );
+assert_gt( 2.06, 2.05 );
+assert_ge( 0, 0 );

@@ -5,26 +5,24 @@ import std.map;
 
 m = { 'k', 'v' };
 
-assert( m[ 'k' ] == 'v', 'key \'k\' in map \'m\' should have been \'v\'' );
-assert( m[ 'l' ] == nil, 'key \'l\' in map \'m\' should have been nil' );
+assert_eq( m[ 'k' ], 'v' );
+assert_eq( m[ 'l' ], nil );
 
-assert( m.delete( 'v' ) == false, 'shouldn\'t be able to delete key: v' );
-assert( m.delete( 'k' ), 'shouldn\'t be able to delete key: v' );
-assert( m.len() == 0, 'len should be 0, but is: ', m.len() );
+assert_nt( m.delete( 'v' ) );
+assert( m.delete( 'k' ) );
+assert_eq( m.len(), 0 );
 
 m.insert( 'k', 'v' ).insert( 'l', 'w' );
 m.clear();
-
-assert( m.len() == 0, 'len should be 0 post clear, but is: ', m.len() );
+assert_eq( m.len(), 0 );
 
 m.insert( 'k', 'v' );
-
-assert( m.find( 'k' ) == true, 'key k should have existed in map' );
+assert( m.find( 'k' ) );
 
 n = { 'l', 'm' };
 m = n;
 m[ 'l' ] = 'b';
-assert( n[ 'l' ] == 'm', 'key \'l\' in map \'n\' should have been \'m\'' );
+assert_eq( n[ 'l' ], 'm' );
 
 # nested map
 nm = {
@@ -34,7 +32,7 @@ nm = {
 	}
 };
 
-assert( nm[ 'solar system' ][ 'second' ] == 'venus', 'nm[ \'solar system\' ][ \'second\' ] should have been \'venus\'' );
+assert_eq( nm[ 'solar system' ][ 'second' ], 'venus' );
 
 for nm_n in nm.iter() {
 	for nm_m in nm_n.1.iter() {

@@ -1,22 +1,22 @@
 ldmod std.map;
 
 mfn< map > insert( key, val ) {
-	assert( var_mfn_exists( key, 'hash' ), 'type \'', key.type(), '\' does not implement a hash member function' );
+	assert_msg( var_mfn_exists( key, 'hash' ), 'type \'', key.type(), '\' does not implement a hash member function' );
 	self._insert( key.hash(), val );
 	return self;
 }
 
 mfn< map > delete( key ) {
-	assert( var_mfn_exists( key, 'hash' ), 'type \'', key.type(), '\' does not implement a hash member function' );
+	assert_msg( var_mfn_exists( key, 'hash' ), 'type \'', key.type(), '\' does not implement a hash member function' );
 	return self._delete( key.hash() );
 }
 
 mfn< map > '[]'( key ) {
-	assert( var_mfn_exists( key, 'hash' ), 'type \'', key.type(), '\' does not implement a hash member function' );
+	assert_msg( var_mfn_exists( key, 'hash' ), 'type \'', key.type(), '\' does not implement a hash member function' );
 	return self.get( key.hash() );
 }
 
 mfn< map > find( key ) {
-	assert( var_mfn_exists( key, 'hash' ), 'type \'', key.type(), '\' does not implement a hash member function' );
+	assert_msg( var_mfn_exists( key, 'hash' ), 'type \'', key.type(), '\' does not implement a hash member function' );
 	return self._find( key.hash() );
 }

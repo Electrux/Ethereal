@@ -4,10 +4,10 @@ import std.str;
 import 'std/str';
 import std.( 'str', vec, fs );
 
-assert( __import__( 'a' ) != 0, 'since module \'a\' does not exist, it should not have been imported' );
-assert( __import__( 'std/os' ) == 0, 'module \'std.os\' exists, it should have been imported' );
-assert( var_exists( 'os' ) == true, 'var \'os\' should exist since it is imported from \'std.os\'' );
+assert_ne( __import__( 'a' ), 0 );
+assert_eq( __import__( 'std/os' ), 0 );
+assert( var_exists( 'os' ) );
 if 1 {
-	assert( __import__( 'std/time' ) == 0, 'module \'std.time\' exists, it should have been imported' );
+	assert_eq( __import__( 'std/time' ), 0 );
 }
-assert( var_exists( 'time' ) == false, 'var \'time\' should not exist since it is out of scope of import \'std.time\'' );
+assert_nt( var_exists( 'time' ) );

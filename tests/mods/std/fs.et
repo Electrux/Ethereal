@@ -4,48 +4,48 @@ import std.str;
 import std.vec;
 import std.fs;
 
-assert( fs.exists( __SRC_DIR__ + '/../pre' ), __SRC_DIR__ + '/../pre should exist (directory)' );
-assert( fs.exists( __SRC_DIR__ + '/vec.et' ), __SRC_DIR__ + '/vec.et should exist (file)' );
+assert( fs.exists( __SRC_DIR__ + '/../pre' ) );
+assert( fs.exists( __SRC_DIR__ + '/vec.et' ) );
 
 # read non existing file
 {
 	f = fopen( 'some_file', 'r' );
-	assert( !f.is_open(), 'some_file should not exist, therefore can\'t be opened in read mode' );
+	assert( !f.is_open() );
 }
 
 # write file
 {
 	f = fopen( 'some_file', 'w' );
-	assert( f.is_open(), 'some_file should be created' );
+	assert( f.is_open() );
 	f.write( 'some data\n' );
 }
 
 # append file
 {
 	f = fopen( 'some_file', 'a' );
-	assert( f.is_open(), 'some_file should be opened for append' );
+	assert( f.is_open() );
 	f.write( 'some data 2\n' );
 }
 
 # read each line
 {
 	f = fopen( 'some_file', 'r' );
-	assert( f.is_open(), 'some_file should be opened for read' );
+	assert( f.is_open() );
 	s = "";
 	f.read( s );
-	assert( s == 'some data', 'first line in file should have been \'some data\'' );
+	assert_eq( s, 'some data' );
 	f.read( s );
-	assert( s == 'some data 2', 'first line in file should have been \'some data 2\'' );
+	assert_eq( s, 'some data 2' );
 }
 
 # read entire file in vector
 {
 	f = fopen( 'some_file', 'r' );
-	assert( f.is_open(), 'some_file should be opened for read' );
+	assert( f.is_open() );
 	v = [];
 	f.read_all( v );
-	assert( v == [ 'some data', 'some data 2' ], 'first line in file should have been [ \'some data\', \'some data 2\' ]' );
+	assert_eq( v, [ 'some data', 'some data 2' ] );
 }
 
-assert( fs.remove( 'some_file' ), 'some_file should have been deleted' );
-assert( !fs.exists( 'some_file' ), 'some_file should no longer exist' );
+assert( fs.remove( 'some_file' ) );
+assert( !fs.exists( 'some_file' ) );

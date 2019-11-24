@@ -100,7 +100,6 @@ int main( int argc, char ** argv )
 		vm.srcstack.push_back( main_src );
 		vm.srclist.push_back( main_src->file );
 		vm.srcs[ main_src->id ] = main_src;
-		if( !set_init_mods( vm ) ) { err = E_VM_FAIL; goto end; }
 		std::vector< var_base_t * > arg_vec;
 		for( auto & v : args ) {
 			arg_vec.push_back( new var_str_t( v, 0 ) );
@@ -112,7 +111,7 @@ int main( int argc, char ** argv )
 		vm.vars->add( "args", new var_vec_t( arg_vec, 0 ) );
 		vm.vars->add( "true", new var_bool_t( true, 0 ) );
 		vm.vars->add( "false", new var_bool_t( false, 0 ) );
-		vm.vars->add( "nil", vm.nil );
+		if( !set_init_mods( vm ) ) { err = E_VM_FAIL; goto end; }
 		err = vm_exec( vm );
 		vm.srclist.clear();
 		vm.srcstack.pop_back();

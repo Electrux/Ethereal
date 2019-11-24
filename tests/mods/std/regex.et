@@ -4,7 +4,7 @@ import std.regex;
 
 r1 = re.build( 'abc|xyz' );
 
-assert( !r1.empty(), 'regex 1 with value \'abc|xyz\' cannot be empty' );
-assert( r1.match( 'abc' ), 'regex 1 should match \'abc\'' );
-assert( r1.match( 'xyz' ), 'regex 1 should match \'xyz\'' );
-assert( !r1.match( 'bcd' ), 'regex 1 should not match \'bcd\'' );
+assert_nt( r1.empty() );
+assert( r1.match( 'abc' ) );
+assert( r1.match( 'xyz' ) );
+assert( !r1.match( 'bcd' ) );

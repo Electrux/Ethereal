@@ -5,13 +5,13 @@ import std.set;
 s = set_create();
 
 s.insert( 'hi' );
-assert( s.contains( 'hi' ), 'set should have contained \'hi\'' );
+assert( s.contains( 'hi' ) );
 
 s.insert( 'yo' );
-assert( s.len() == 2, 'set should have been of length 2' );
+assert_eq( s.len(), 2 );
 
 s.erase( 'hi' );
-assert( !s.contains( 'hi' ), 'set should not have contained \'hi\'' );
+assert_nt( s.contains( 'hi' ) );
 
 s.clear();
-assert( s.len() == 0, 'set should have been empty' );
+assert_eq( s.len(), 0 );

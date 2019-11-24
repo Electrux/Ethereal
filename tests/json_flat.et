@@ -53,4 +53,4 @@ for ; w.read( line ); {
 	actual += line;
 }
 
-assert( expected == actual, 'json data does not match the expected:\nExpected:\n', expected, '\nActual:\n', actual );
+assert_eq( expected, actual );

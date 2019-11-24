@@ -4,10 +4,10 @@ import eth.vm;
 
 vm = evm.new();
 
-assert( vm.is_running() == true, 'vm should be running right now' );
+assert_eq( vm.is_running(), true );
 
 exit_code = 0;
 vm.exec_code( [ 'exit( 1 );' ], exit_code );
 
-assert( vm.is_running() == false, 'vm should not be running anymore' );
-assert( exit_code == 1, 'vm exit code should be 1' );
+assert_eq( vm.is_running(), false );
+assert_eq( exit_code, 1 );

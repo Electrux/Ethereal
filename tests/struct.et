@@ -15,6 +15,6 @@ a.t = 'true';
 if args.len() < 2 {
 	println( a.t );
 } else {
-	assert( a.t == 'true', 'a.t should have been a string: \'true\'' );
-	assert( b.t == 'hi', 'b.t should have been a string: \'hi\'' );
+	assert_eq( a.t, 'true' );
+	assert_eq( b.t,   'hi' );
 }

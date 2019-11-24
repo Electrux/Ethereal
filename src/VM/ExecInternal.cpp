@@ -235,6 +235,14 @@ int exec_internal( vm_state_t & vm, long begin, long end, var_base_t * ret )
 		case IC_FN_CALL: // fallthrough
 		case IC_MFN_CALL: {
 			int res = CallFunc( vm, func_call_data, i );
+			if( vm.exit_status == E_ASSERT_LVL1 ) {
+				VM_FAIL( vm.fail_msg.c_str() );
+				vm.fail_msg.clear();
+				vm.exit_status = 1;
+			}
+			if( vm.exit_status == E_ASSERT_LVL2 ) {
+				vm.exit_status = E_ASSERT_LVL1;
+			}
 			if( res != E_OK ) goto fail;
 			if( vm.exit_called ) return E_OK;
 			break;
@@ -423,7 +431,7 @@ int exec_internal( vm_state_t & vm, long begin, long end, var_base_t * ret )
 			fn_blks.pop_back();
 			std::vector< std::string > args = fn_args.back();
 			fn_args.pop_back();
-			std::vector< std::string > member_ofs; 
+			std::vector< std::string > member_ofs;
 			if( ins.opcode == IC_BUILD_MFN ) {
 				VERIFY_STACK_MIN( 2 );
 				int count = vm.stack->back()->to_int().get_si();

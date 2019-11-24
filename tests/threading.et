@@ -4,7 +4,7 @@ import std.vec;
 import std.str;
 import std.threads;
 
-assert( threads.nproc > 0, "threads.nproc should be greater than 0" );
+assert_gt( threads.nproc, 0 );
 
 tpool = [];
 

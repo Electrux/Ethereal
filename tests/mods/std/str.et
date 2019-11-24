@@ -6,59 +6,59 @@ import std.str;
 s1 = 'str1';
 s2 = ' str2 ';
 
-assert( s1 + s2 == 'str1 str2 ', "'str1' + ' str2 ' should have been 'str1 str2 '" );
-assert( ( s1 += s2 ) == 'str1 str2 ', "'str1' += ' str2 ' should have been 'str1 str2 '" );
-assert( '5' * 5 == '55555', "'5' * 5 should have been '55555'" );
-assert( 5 * '5' == '55555', "5 * '5' should have been '55555'" );
+assert_eq( s1 + s2,  'str1 str2 ' );
+assert_eq( s1 += s2, 'str1 str2 ' );
+assert_eq( '5' * 5, '55555' );
+assert_eq( 5 * '5', '55555' );
 
-assert( 'str1' == 'str1', "'str1' should have been equal to 'str1'" );
-assert( 'str1' != 'str2', "'str1' should not have been equal to 'str2'" );
-assert( 'str'  <  'str1', "'str' should have been less than 'str1'" );
-assert( 'str1' <= 'str1', "'str1' should have been less or equal to 'str1'" );
-assert( 'str1' >  'str',  "'str1' should have been greater than 'str'" );
-assert( 'str1' >= 'str1', "'str1' should have been greater or equal to 'str1'" );
+assert_eq( 'str1', 'str1' );
+assert_ne( 'str1', 'str2' );
+assert_lt( 'str',  'str1' );
+assert_le( 'str1', 'str1' );
+assert_gt( 'str1',  'str' );
+assert_ge( 'str1', 'str1' );
 
 s1 = 'str1';
 
-assert( s1.at( 1 ) == 't', 's1.at( 1 ) when s1 = \'str1\' should be \'t\' but is: ', s1.at( 1 ) );
-assert( s1[ 5 ] == nil, 's1[ 5 ] when s1 = \'str1\' should be nil but is: ', s1[ 5 ] );
-assert( s1.hash() == s1, 'hash of \'str1\' should be \'str1\' but is: ', s1.hash() );
+assert_eq( s1.at( 1 ), 't' );
+assert_eq( s1[ 5 ],    nil );
+assert_eq( s1.hash(),   s1 );
 
-assert( s1.len() == 4, 'length of \'str1\' should be 4 but is: ', s1.len() );
+assert_eq( s1.len(), 4 );
 
-assert( !s1.empty(), '\'str1\' should empty' );
+assert_nt( s1.empty() );
 s1.clear();
-assert( s1.empty(), 's1 should have been empty but is: ', s1 );
+assert( s1.empty() );
 
 s1 = '52';
 
-assert( s1.is_int(), '\'52\' should be have been considered an int' );
-assert( s1.to_int() == 52, '\'52\' should have been converted to 52' );
-assert( s1.set_at( 1, '5' ) == '55', '52 should have been 55 now' );
+assert( s1.is_int() );
+assert_eq( s1.to_int(), 52 );
+assert_eq( s1.set_at( 1, '5' ), '55' );
 
-assert( ''.erase_at( 1 ) == '', 'erasing from \'\' at position 1 should have been \'\'' );
-assert( 'NASA'.erase_at( 1 ) == 'NSA', 'erasing from \'NASA\' at position 1 should have been \'NSA\'' );
-assert( 'NASA'.erase_at( 4 ) == 'NASA', 'erasing from \'NASA\' at position 4 should have been \'NASA\'' );
+assert_eq( ''.erase_at( 1 ), '' );
+assert_eq( 'NASA'.erase_at( 1 ),  'NSA' );
+assert_eq( 'NASA'.erase_at( 4 ), 'NASA' );
 
-assert( ''.find( 'a' ) == false, 'find \'a\' in \'\' should have been false' );
-assert( 'abc'.find( 'a' ) == true, 'find \'a\' in \'abc\' should have been true' );
-assert( 'abc'.find( '' ) == false, 'find \'\' in \'abc\' should have been false' );
+assert_nt( ''.find( 'a' ) );
+assert( 'abc'.find( 'a' ) );
+assert_nt( 'abc'.find( '' ) );
 
-assert( ''.front() == '', 'empty string\'s front() should have been \'\'' );
-assert( 'ab'.front() == 'a', 'front of \'ab\' should have been \'a\'' );
-assert( ''.back() == '', 'empty string\'s back() should have been \'\'' );
-assert( 'ab'.back() == 'b', 'back of \'ab\' should have been \'b\'' );
+assert_eq( ''.front(), '' );
+assert_eq( 'ab'.front(), 'a' );
+assert_eq( ''.back(),  '' );
+assert_eq( 'ab'.back(),  'b' );
 
-assert( ''.pop_front() == '', 'pop_front on empty string should have returned empty string' );
-assert( 'ab'.pop_front() == 'b', 'pop_front on \'ab\' should have returned \'b\'' );
-assert( ''.pop_back() == '', 'pop_back on empty string should have returned empty string' );
-assert( 'ab'.pop_back() == 'a', 'pop_back on \'ab\' should have returned \'a\', but returned ', 'ab' );
+assert_eq( ''.pop_front(), '' );
+assert_eq( 'ab'.pop_front(), 'b' );
+assert_eq( ''.pop_back(),  '' );
+assert_eq( 'ab'.pop_back(),  'a' );
 
-assert( ''.substr( 0, 2 ) == '', 'substr of \'\' (0, 2) should have been \'\'' );
-assert( 'ab'.substr( 0, 1 ) == 'a', 'substr of \'ab\' (0, 1) should have been \'a\'' );
-assert( 'abc'.substr( 1, 2 ) == 'bc', 'substr of \'abc\' (1, 2) should have been \'bc\'' );
+assert_eq( ''.substr( 0, 2 ), '' );
+assert_eq( 'ab'.substr( 0, 1 ), 'a' );
+assert_eq( 'abc'.substr( 1, 2 ), 'bc' );
 
-assert( 'a,b'.split( ',' ) == [ 'a', 'b' ], '\'a,b\' should have been split to [ \'a\', \'b\']' );
-assert( 'a,b,c'.split_first( ',' ) == [ 'a', 'b,c' ], '\'a,b,c\' should have been split_first to [ \'a\', \'b,c\']' );
+assert_eq( 'a,b'.split( ',' ), [ 'a', 'b' ] );
+assert_eq( 'a,b,c'.split_first( ',' ), [ 'a', 'b,c' ] );
 
-assert( s2.trim() == 'str2', '\' str2 \' should have been trimmed to \'str2\'' );
+assert_eq( s2.trim(), 'str2' );

@@ -23,7 +23,11 @@ const char * ErrStr( Errors code )
 	case E_FILE_EMPTY:
 		return "empty file";
 	case E_VM_FAIL:
-		return "vm failed";
+		return "vm failed";;
+	case E_ASSERT_LVL1:
+		return "assertion failed level 1";;
+	case E_ASSERT_LVL2:
+		return "assertion failed level 2";
 	case E_FAIL: // fall through
 	default:
 		return "unknown error";

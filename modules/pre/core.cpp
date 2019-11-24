@@ -90,10 +90,12 @@ var_base_t * exit_eth( vm_state_t & vm, func_call_data_t & fcd )
 	vm.exit_status = fcd.args.size() == 0 ? 0 : fcd.args[ 0 ]->to_int().get_si();
 	return nullptr;
 }
-
 var_base_t * assert_eth( vm_state_t & vm, func_call_data_t & fcd )
 {
 	if( fcd.args[ 0 ]->to_bool() ) { return nullptr; }
+	vm.exit_called = true;
+	vm.exit_status = E_ASSERT_LVL2;
+	return nullptr;
 	src_t & src = * vm.srcstack.back();
 	int line = src.bcode[ fcd.bcodectr ].line;
 	int col = src.bcode[ fcd.bcodectr ].col;
@@ -105,6 +107,17 @@ var_base_t * assert_eth( vm_state_t & vm, func_call_data_t & fcd )
 	src_fail( src.file, src.code[ line - 1 ], line, col, "assertion failed: %s", op.c_str() );
 	vm.exit_called = true;
 	vm.exit_status = 1;
+	return nullptr;
+}
+var_base_t * assert_eth_fail( vm_state_t & vm, func_call_data_t & fcd )
+{
+	vm.exit_called = true;
+	vm.exit_status = E_ASSERT_LVL2;
+	int sz = fcd.args.size();
+	vm.fail_msg.clear();
+	for( int i = 0; i < sz; ++i ) {
+		vm.fail_msg += fcd.args[ i ]->to_str();
+	}
 	return nullptr;
 }
 
@@ -223,6 +236,22 @@ fail:
 	return new var_int_t( ret );
 }
 
+var_base_t * set_float_precision( vm_state_t & vm, func_call_data_t & fcd )
+{
+	float_precision() = fcd.args[ 0 ]->to_int().get_ui();
+	return nullptr;
+}
+
+var_base_t * get_float_precision( vm_state_t & vm, func_call_data_t & fcd )
+{
+	return new var_int_t( float_precision() );
+}
+
+var_base_t * get_float_precision_num( vm_state_t & vm, func_call_data_t & fcd )
+{
+	return new var_flt_t( "0." + std::string( float_precision() - 1, '0' ) + "1" );
+}
+
 var_base_t * nil_eq( vm_state_t & vm, func_call_data_t & fcd )
 {
 	return TRUE_FALSE( fcd.args[ 1 ]->type() == fcd.args[ 0 ]->type() );
@@ -238,22 +267,25 @@ REGISTER_MODULE( core )
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	///////////////////////////////////////////////////////////////// CORE ////////////////////////////////////////////////////////////////
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	vm.funcs.add( { "flush_out",     0,  0, {}, FnType::MODULE, { .modfn = flush_out }, false } );
-	vm.funcs.add( { "flush_err",     0,  0, {}, FnType::MODULE, { .modfn = flush_err }, false } );
-	vm.funcs.add( { "print",         1, -1, { "_any_", "_whatever_" }, FnType::MODULE, { .modfn = print }, false } );
-	vm.funcs.add( { "println",       0, -1, { "_whatever_" }, FnType::MODULE, { .modfn = println }, false } );
-	vm.funcs.add( { "dprint",        1, -1, { "_any_", "_whatever_" }, FnType::MODULE, { .modfn = dprint }, false } );
-	vm.funcs.add( { "dprintln",      0, -1, { "_whatever_" }, FnType::MODULE, { .modfn = dprintln }, false } );
-	vm.funcs.add( { "scan",          0,  1, { "_whatever_" }, FnType::MODULE, { .modfn = scan }, true } );
-	vm.funcs.add( { "exit",          0,  1, { "_any_" }, FnType::MODULE, { .modfn = exit_eth }, false } );
-	vm.funcs.add( { "assert",        2, -1, { "_any_", "_any_", "_whatever_" }, FnType::MODULE, { .modfn = assert_eth }, false } );
-	vm.funcs.add( { "var_exists",    1,  1, { "str" }, FnType::MODULE, { .modfn = var_exists }, false } );
-	vm.funcs.add( { "var_mfn_exists",2,  2, { "_any_", "str" }, FnType::MODULE, { .modfn = var_mfn_exists }, false } );
-	vm.funcs.add( { "var_ref_count", 1,  1, { "_any_" }, FnType::MODULE, { .modfn = var_ref_count }, true } );
-	vm.funcs.add( { "__add_incs__",	 1, -1, { "_any_", "_whatever_" }, FnType::MODULE, { .modfn = add_inc_dirs }, false } );
-	vm.funcs.add( { "__add_libs__",	 1, -1, { "_any_", "_whatever_" }, FnType::MODULE, { .modfn = add_lib_dirs }, false } );
-	vm.funcs.add( { "_ldmod_",	 1,  1, { "str" }, FnType::MODULE, { .modfn = load_module }, true } );
-	vm.funcs.add( { "__import__",	 1,  1, { "str" }, FnType::MODULE, { .modfn = import_module }, true } );
+	vm.funcs.add( { "flush_out",             0,  0, {}, FnType::MODULE, { .modfn = flush_out }, false } );
+	vm.funcs.add( { "flush_err",             0,  0, {}, FnType::MODULE, { .modfn = flush_err }, false } );
+	vm.funcs.add( { "print",                 1, -1, { "_any_", "_whatever_" }, FnType::MODULE, { .modfn = print }, false } );
+	vm.funcs.add( { "println",               0, -1, { "_whatever_" }, FnType::MODULE, { .modfn = println }, false } );
+	vm.funcs.add( { "dprint",                1, -1, { "_any_", "_whatever_" }, FnType::MODULE, { .modfn = dprint }, false } );
+	vm.funcs.add( { "dprintln",              0, -1, { "_whatever_" }, FnType::MODULE, { .modfn = dprintln }, false } );
+	vm.funcs.add( { "scan",                  0,  1, { "_whatever_" }, FnType::MODULE, { .modfn = scan }, true } );
+	vm.funcs.add( { "exit",                  0,  1, { "_any_" }, FnType::MODULE, { .modfn = exit_eth }, false } );
+	vm.funcs.add( { "assert_fail",           1, -1, { "_whatever_" }, FnType::MODULE, { .modfn = assert_eth_fail }, false } );
+	vm.funcs.add( { "var_exists",            1,  1, { "str" }, FnType::MODULE, { .modfn = var_exists }, false } );
+	vm.funcs.add( { "var_mfn_exists",        2,  2, { "_any_", "str" }, FnType::MODULE, { .modfn = var_mfn_exists }, false } );
+	vm.funcs.add( { "var_ref_count",         1,  1, { "_any_" }, FnType::MODULE, { .modfn = var_ref_count }, true } );
+	vm.funcs.add( { "__add_incs__",	         1, -1, { "_any_", "_whatever_" }, FnType::MODULE, { .modfn = add_inc_dirs }, false } );
+	vm.funcs.add( { "__add_libs__",	         1, -1, { "_any_", "_whatever_" }, FnType::MODULE, { .modfn = add_lib_dirs }, false } );
+	vm.funcs.add( { "_ldmod_",	         1,  1, { "str" }, FnType::MODULE, { .modfn = load_module }, true } );
+	vm.funcs.add( { "__import__",	         1,  1, { "str" }, FnType::MODULE, { .modfn = import_module }, true } );
+	vm.funcs.add( { "set_flt_precision",     1,  1, { "int" }, FnType::MODULE, { .modfn = set_float_precision }, false } );
+	vm.funcs.add( { "get_flt_precision",     0,  0, {}, FnType::MODULE, { .modfn = get_float_precision }, true } );
+	vm.funcs.add( { "get_flt_precision_num", 0,  0, {}, FnType::MODULE, { .modfn = get_float_precision_num }, true } );
 
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////// INT ////////////////////////////////////////////////////////////////
@@ -314,6 +346,16 @@ REGISTER_MODULE( core )
 	vm.funcs.add( { "-",   2, 2, { "flt", "flt" }, FnType::MODULE, { .modfn = subf }, true } );
 	vm.funcs.add( { "*",   2, 2, { "flt", "flt" }, FnType::MODULE, { .modfn = mulf }, true } );
 	vm.funcs.add( { "/",   2, 2, { "flt", "flt" }, FnType::MODULE, { .modfn = divf }, true } );
+	// LHS is int
+	vm.funcs.add( { "+",   2, 2, { "flt", "int" }, FnType::MODULE, { .modfn = addif }, true } );
+	vm.funcs.add( { "-",   2, 2, { "flt", "int" }, FnType::MODULE, { .modfn = subif }, true } );
+	vm.funcs.add( { "*",   2, 2, { "flt", "int" }, FnType::MODULE, { .modfn = mulif }, true } );
+	vm.funcs.add( { "/",   2, 2, { "flt", "int" }, FnType::MODULE, { .modfn = divif }, true } );
+	// RHS is int
+	vm.funcs.add( { "+",   2, 2, { "int", "flt" }, FnType::MODULE, { .modfn = addfi }, true } );
+	vm.funcs.add( { "-",   2, 2, { "int", "flt" }, FnType::MODULE, { .modfn = subfi }, true } );
+	vm.funcs.add( { "*",   2, 2, { "int", "flt" }, FnType::MODULE, { .modfn = mulfi }, true } );
+	vm.funcs.add( { "/",   2, 2, { "int", "flt" }, FnType::MODULE, { .modfn = divfi }, true } );
 
 	// arithmetic assignments
 	vm.funcs.add( { "+=",  2, 2, { "flt", "flt" }, FnType::MODULE, { .modfn = add_assnf }, false } );

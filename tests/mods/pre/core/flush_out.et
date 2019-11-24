@@ -1,5 +1,0 @@
-#!/usr/bin/env et
-
-print( 'hi ' );
-flush_out();
-println( 'there' );

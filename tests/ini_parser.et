@@ -1,6 +1,7 @@
 #!/usr/bin/env et
 
+import std.str;
 import ini;
 
 ini = ini_read( __SRC_DIR__ + '/data/test1_ini_parser.ini' );
-assert( ini[ 'owner' ][ 'name' ] == 'John Doe', 'in tag \'owner\', in pair key \'name\', the value should have been \'John Doe\'' );
+assert_eq( ini[ 'owner' ][ 'name' ], 'John Doe' );

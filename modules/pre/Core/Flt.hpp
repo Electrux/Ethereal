@@ -20,12 +20,20 @@
 		return new ret_type( lhs oper rhs );			\
 	}
 
-#define DECL_FUNC_BOOL__FLT( name, oper )				\
+#define DECL_FUNC_ALLOC__INT_FLT( name, oper, ret_type )		\
+	var_base_t * name( vm_state_t & vm, func_call_data_t & fcd )	\
+	{								\
+		auto & lhs = AS_INT( fcd.args[ 1 ] )->get();		\
+		auto & rhs = AS_FLT( fcd.args[ 0 ] )->get();		\
+		return new ret_type( lhs oper rhs );			\
+	}
+
+#define DECL_FUNC_ALLOC__FLT_INT( name, oper, ret_type )		\
 	var_base_t * name( vm_state_t & vm, func_call_data_t & fcd )	\
 	{								\
 		auto & lhs = AS_FLT( fcd.args[ 1 ] )->get();		\
-		auto & rhs = AS_FLT( fcd.args[ 0 ] )->get();		\
-		return TRUE_FALSE( lhs oper rhs );			\
+		auto & rhs = AS_INT( fcd.args[ 0 ] )->get();		\
+		return new ret_type( lhs oper rhs );			\
 	}
 
 #define DECL_FUNC_ASSN__FLT( name, oper )				\
@@ -37,6 +45,14 @@
 		return fcd.args[ 0 ];					\
 	}
 
+#define DECL_FUNC_BOOL__FLT( name, oper )				\
+	var_base_t * name( vm_state_t & vm, func_call_data_t & fcd )	\
+	{								\
+		auto & lhs = AS_FLT( fcd.args[ 1 ] )->get();		\
+		auto & rhs = AS_FLT( fcd.args[ 0 ] )->get();		\
+		return TRUE_FALSE( lhs oper rhs );			\
+	}
+
 /*
  * Basic arithmetic operators
  */
@@ -44,6 +60,16 @@ DECL_FUNC_ALLOC__FLT( addf, +, var_flt_t )
 DECL_FUNC_ALLOC__FLT( subf, -, var_flt_t )
 DECL_FUNC_ALLOC__FLT( mulf, *, var_flt_t )
 DECL_FUNC_ALLOC__FLT( divf, /, var_flt_t )
+
+DECL_FUNC_ALLOC__INT_FLT( addif, +, var_flt_t )
+DECL_FUNC_ALLOC__INT_FLT( subif, -, var_flt_t )
+DECL_FUNC_ALLOC__INT_FLT( mulif, *, var_flt_t )
+DECL_FUNC_ALLOC__INT_FLT( divif, /, var_flt_t )
+
+DECL_FUNC_ALLOC__FLT_INT( addfi, +, var_flt_t )
+DECL_FUNC_ALLOC__FLT_INT( subfi, -, var_flt_t )
+DECL_FUNC_ALLOC__FLT_INT( mulfi, *, var_flt_t )
+DECL_FUNC_ALLOC__FLT_INT( divfi, /, var_flt_t )
 
 /*
  * Basic arithmetic operators and assign to LHS

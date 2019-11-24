@@ -16,8 +16,7 @@ fn fib( n ) {
 }
 
 if args.len() > 1 {
-	n = 5;
-	assert( fib( n ) == make_tuple( 3, 5 ), 'fib( 5 ) should have been \'( 3, 5 )\'' );
+	assert_eq( fib( 12 ), make_tuple( 89, 144 ) );
 } else {
 	n = scan( 'Enter a number: ' ).to_int();
 	println( 'Fib is: ', fib( n ) );

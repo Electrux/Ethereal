@@ -11,4 +11,4 @@ ldmod std.fs;
 
 new_fn_count = runtime.fn_count();
 println( new_fn_count );
-assert( new_fn_count == old_fn_count, 'new function count should be equal to old one' );
+assert_eq( new_fn_count, old_fn_count );

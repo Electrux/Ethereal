@@ -25,9 +25,8 @@ var_flt_t::var_flt_t( const mpf_class & val, const int src_idx, const int parse_
 
 std::string var_flt_t::to_str() const
 {
-	if( m_val == 0.0 ) return "0.000000";
 	std::ostringstream oss;
-	oss << std::setprecision( 20 ) << m_val;
+	oss << std::setprecision( float_precision() + 1 ) << m_val;
 	return oss.str();
 }
 mpz_class var_flt_t::to_int() const { return mpz_class( m_val ); }

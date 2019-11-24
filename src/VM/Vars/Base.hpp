@@ -38,6 +38,10 @@ enum VarType
 
 extern const char * VarTypeStrs[ _VT_LAST ];
 
+#define DEFAULT_FLOAT_PRECISION 20
+
+int & float_precision();
+
 struct var_info_t
 {
 	int ref_ctr;

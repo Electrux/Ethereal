@@ -27,6 +27,12 @@ const char * VarTypeStrs[ _VT_LAST ] = {
 	"custom",
 };
 
+int & float_precision()
+{
+	static int precision = DEFAULT_FLOAT_PRECISION;
+	return precision;
+}
+
 var_info_t::var_info_t( const int rc, const int si ,const int pc, const bool ia ) :
 	ref_ctr( rc ), src_idx( si ), parse_ctr( pc ), implements_assign( ia ) {}
 

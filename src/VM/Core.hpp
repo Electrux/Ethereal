@@ -29,6 +29,8 @@ struct vm_state_t
 	size_t flags;
 	bool exit_called;
 	int exit_status;
+	// used for assertions
+	std::string fail_msg;
 
 	var_vec_t * inc_dirs;
 	var_vec_t * lib_dirs;

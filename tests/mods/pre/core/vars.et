@@ -1,0 +1,21 @@
+#!/usr/bin/env et
+
+import std.str;
+
+# type
+assert_eq( 'hello'.type(), 'str' );
+
+# exists
+assert_nt( var_exists( 'a' ) );
+
+# member functions
+struct s {}
+a = s{};
+
+assert_nt( var_mfn_exists( a, 'len' ) );
+import std.str;
+assert( var_mfn_exists( 'string', 'len' ) );
+
+# ref count
+v = 5;
+assert_eq( var_ref_count( 'v' ), 1 );

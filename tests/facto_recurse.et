@@ -10,7 +10,7 @@ fn facto( n ) {
 
 if args.len() > 1 {
 	fact = facto( 5 );
-	assert( fact == 120, 'factorial of 5 should be 120, found: ', fact );
+	assert_eq( fact, 120 );
 } else {
 	n = scan( 'Enter a number: ' ).to_int();
 	println( 'factorial of ', n, ' is: ', facto( n ) );

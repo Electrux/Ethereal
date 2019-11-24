@@ -1,5 +1,0 @@
-#!/usr/bin/env et
-
-dprint( 'hi ' );
-flush_err();
-dprintln( 'there' );

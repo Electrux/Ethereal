@@ -1,8 +1,25 @@
 ldmod std.math;
 
 struct _math_t {
-	e = 2.71828182845904523536028747135266249775724709369995;
+	# euler's number
+	e =  2.71828182845904523536028747135266249775724709369995;
 	pi = 3.14159265358979323846264338327950288419716939937510;
+	# max times to iterate for calculating a trigonometric function's result
+	# will affect the precision of those functions
+	# includes sin, cos, etc.
+	precision_iter_max = get_flt_precision() * 2;
+	# number of digits of decimal precision = 20 (1e^21)
+	precision = get_flt_precision_num();
 }
 
 math = _math_t{};
+
+mfn< _math_t > to_rad( x ) { return x * self.pi / 180.0; }
+mfn< _math_t > to_deg( x ) { return x * 180.0 / self.pi; }
+
+# sin and cos are implemented in C++ module
+mfn< _math_t > tan( x ) { return self.sin( x ) / self.cos( x ); }
+
+mfn< _math_t > csc( x ) { return 1 / self.sin( x ); }
+mfn< _math_t > sec( x ) { return 1 / self.cos( x ); }
+mfn< _math_t > cot( x ) { return 1 / self.tan( x ); }

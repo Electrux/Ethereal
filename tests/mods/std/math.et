@@ -2,38 +2,43 @@
 
 import std.math;
 
-assert( math.e == 2.71828182845904523536028747135266249775724709369995,
-	'constant math.e should be 2.71828182845904523536028747135266249775724709369995');
-assert( math.pi == 3.14159265358979323846264338327950288419716939937510,
-	'constant math.e should be 3.14159265358979323846264338327950288419716939937510');
+assert_eq( math.e,  2.71828182845904523536028747135266249775724709369995 );
+assert_eq( math.pi, 3.14159265358979323846264338327950288419716939937510 );
 
-assert( math.abs( -131 ) == 131, 'math.abs( -131 ) should be 131' );
-assert( math.abs( 131 ) == 131, 'math.abs( 131 ) should be 131' );
+assert_eq( math.abs( -131 ), 131 );
+assert_eq( math.abs(  131 ), 131 );
 
-assert( math.abs( -131.25 ) == 131.25, 'math.abs( -131.25 ) should be 131.25' );
-assert( math.abs( 131.25 ) == 131.25, 'math.abs( 131.25 ) should be 131.25' );
+assert_eq( math.abs( -131.25 ), 131.25 );
+assert_eq( math.abs(  131.25 ), 131.25 );
 
-assert( math.sqrt( 25 ) == 5.0, 'math.sqrt( 25 ) should be 5.0' );
-assert( math.sqrt( -25 ) == 0.0, 'math.sqrt( -25 ) should be 0.0' );
-assert( math.sqrt( 5 ) - 2.23606797749978969636 < 0.00001, 'math.sqrt( 5 ) should be approximately 2.23606797749978969636' );
+assert_eq( math.sqrt(  25 ), 5.0 );
+assert_eq( math.sqrt( -25 ), 0.0 );
+assert_lt( math.sqrt( 5 ) - 2.23606797749978969636, math.precision );
 
-assert( math.log( 1 ) == 0.0, 'math.log( 1 ) should be 0.0' );
-assert( math.log( 1, 1 ) == 0.0, 'math.log( 1, 1 ) should be 0.0' );
-assert( math.log( 0, 2 ) == 0.0, 'math.log( 0, 2 ) should be 0.0' );
-assert( math.log( 1, 2 ) == 0.0, 'math.log( 1, 2 ) should be 0.0' );
-assert( math.log( 10, 10 ) == 1.0, 'math.log( 10, 10 ) should be 1.0' );
-assert( 3.0 - math.log( 1000, 10 ) < 0.00001, 'math.log( 1000, 10 ) should be approximately 3.0' );
-assert( math.log( -1 ) == 0.0, 'math.log( -1 ) should be 0.0' );
-assert( math.log( 10, -1 ) == 0.0, 'math.log( 10, -1 ) should be 0.0' );
+assert_eq( math.log( 1 ), 0.0 );
+assert_eq( math.log( 1, 1 ), 0.0 );
+assert_eq( math.log( 0, 2 ), 0.0 );
+assert_eq( math.log( 1, 2 ), 0.0 );
+assert_eq( math.log( 10, 10 ), 1.0 );
+assert_lt( 3 - math.log( 1000, 10 ), 0.00000000000001 );
+assert_eq( math.log( -1 ), 0.0 );
+assert_eq( math.log( 10, -1 ), 0.0 );
 
-assert( math.ceil( 0.0 ) == 0, 'math.ceil( 0.0 ) should be 0' );
-assert( math.ceil( 1.0 ) == 1, 'math.ceil( 1.0 ) should be 1' );
-assert( math.ceil( 1.01 ) == 2, 'math.ceil( 1.01 ) should be 2' );
-assert( math.ceil( 1.5 ) == 2, 'math.ceil( 1.5 ) should be 2' );
-assert( math.ceil( -1.5 ) == -1, 'math.ceil( -1.5 ) should be -1' );
+assert_eq( math.ceil( 0.0 ), 0 );
+assert_eq( math.ceil( 1.0 ), 1 );
+assert_eq( math.ceil( 1.01 ), 2 );
+assert_eq( math.ceil( 1.5 ), 2 );
+assert_eq( math.ceil( -1.5 ), -1 );
 
-assert( math.floor( 0.0 ) == 0, 'math.floor( 0.0 ) should be 0' );
-assert( math.floor( 1.0 ) == 1, 'math.floor( 1.0 ) should be 1' );
-assert( math.floor( 1.01 ) == 1, 'math.floor( 1.01 ) should be 1' );
-assert( math.floor( 1.5 ) == 1, 'math.floor( 1.5 ) should be 1' );
-assert( math.floor( -1.5 ) == -2, 'math.floor( -1.5 ) should be -2' );
+assert_eq( math.floor( 0.0 ), 0 );
+assert_eq( math.floor( 1.0 ), 1 );
+assert_eq( math.floor( 1.01 ), 1 );
+assert_eq( math.floor( 1.5 ), 1 );
+assert_eq( math.floor( -1.5 ), -2 );
+
+assert_le( math.sin( 1.0 ) - 0.84147098480789650665, math.precision );
+assert_le( math.cos( 1.0 ) - 0.54030230586813971740, math.precision );
+assert_le( math.tan( 1.0 ) - 1.55740772465490223050, math.precision );
+assert_le( math.csc( 1.0 ) - 1.18839510577812121626, math.precision );
+assert_le( math.sec( 1.0 ) - 1.85081571768092561791, math.precision );
+assert_le( math.cot( 1.0 ) - 0.64209261593433070301, math.precision );

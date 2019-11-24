@@ -97,7 +97,6 @@ var_base_t * vm_create( vm_state_t & vm, func_call_data_t & fcd )
 	v->srcstack.push_back( src );
 	v->srclist.push_back( src->file );
 	v->srcs[ src->id ] = src;
-	v->vars->add( "nil", v->nil );
 
 	var_base_t * prog = vm.vars->get( "__PROG__" );
 	var_base_t * ver_major = vm.vars->get( "__VERSION_MAJOR__" );
@@ -106,8 +105,6 @@ var_base_t * vm_create( vm_state_t & vm, func_call_data_t & fcd )
 	var_base_t * args = vm.vars->get( "args" );
 	var_base_t * tru = vm.vars->get( "true" );
 	var_base_t * fal = vm.vars->get( "false" );
-
-	if( !set_init_mods( * v ) ) { err = E_VM_FAIL; goto fail; }
 
 	VAR_IREF( prog );
 	VAR_IREF( ver_major );
@@ -124,6 +121,8 @@ var_base_t * vm_create( vm_state_t & vm, func_call_data_t & fcd )
 	v->vars->add( "args", args );
 	v->vars->add( "true", tru );
 	v->vars->add( "false", fal );
+
+	if( !set_init_mods( * v ) ) { err = E_VM_FAIL; goto fail; }
 
 	return new var_evm_t( v );
 fail:

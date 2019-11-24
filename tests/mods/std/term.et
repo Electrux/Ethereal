@@ -5,10 +5,10 @@ import std.term;
 println( colorize( '{r}red{0}' ) );
 
 cprint( '{r}red{0}' );
-assert( cprint( '{r}red{0}' ) == 3, 'len of \'{r}red{0}\' being passed to \'cprint()\' should have been 3' );
+assert_eq( cprint( '{r}red{0}' ), 3 );
 
 cprintln( '{r}red{0}' );
-assert( cprintln( '{r}red{0}' ) == 4, 'len of \'{r}red{0}\' being passed to \'cprintln()\' should have been 4' );
+assert_eq( cprintln( '{r}red{0}' ), 4 );
 
 tsz = term.size();
 println( 'Rows: ', tsz.rows, '\tCols: ', tsz.cols );

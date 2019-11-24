@@ -10,6 +10,7 @@
 #include "../FE/Env.hpp"
 #include "../FE/FS.hpp"
 
+#include "LoadFile.hpp"
 #include "Core.hpp"
 
 #ifdef __APPLE__
@@ -30,6 +31,7 @@ vm_state_t::vm_state_t() : flags( 0 ), exit_called( false ), exit_status( 0 ),
 #endif
 	vars->add( "__INC_DIRS__", inc_dirs );
 	vars->add( "__LIB_DIRS__", lib_dirs );
+	vars->add( "nil", nil );
 }
 
 vm_state_t::~vm_state_t()
@@ -48,21 +50,24 @@ bool set_init_mods( vm_state_t & vm )
 	std::vector< std::string > mods = { "core" };
 
 	for( auto & m : mods ) {
-		std::string module_name = m + LIB_EXT;
-		if( m.front() != '~' && m.front() != '/' && m.front() != '.' ) {
-			module_name = STRINGIFY( BUILD_PREFIX_DIR ) "/lib/ethereal/pre/lib" + module_name;
-		}
-		if( !fexists( module_name ) ) {
-			fprintf( stderr, "failed to find the prelude module library: %s\n", module_name.c_str() );
+		std::string name = m;
+		std::string file = name + ".et";
+
+		if( !mod_exists( file, vm.inc_dirs ) ) {
+			fprintf( stderr, "could not find file '%s' for importing\n", name.c_str() );
+			fprintf( stderr, "checked the following paths:\n" );
+			for( auto & loc : AS_VEC( vm.inc_dirs )->get() ) {
+				fprintf( stderr, "-> %s\n", ( loc->to_str() + "/" + file ).c_str() );
+			}
 			return false;
 		}
-		if( vm.dlib->load( module_name ) == nullptr ) return false;
-		init_fnptr_t init_fn = ( init_fnptr_t ) vm.dlib->get( module_name, "init_" + m );
-		if( init_fn == nullptr ) {
-			fprintf( stderr, "failed to find init function in module library: %s\n", module_name.c_str() );
+
+		int ret = load_src( vm, file );
+		if( ret != E_OK ) {
+			fprintf( stderr, "could not import '%s', see the error above; aborting\n",
+				 file.c_str() );
 			return false;
 		}
-		init_fn( vm );
 	}
 	return true;
 }

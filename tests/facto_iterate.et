@@ -9,7 +9,7 @@ if args.len() > 1 {
 	for x = num; x >= 2; x -= 1 {
 		fact *= x;
 	}
-	assert( fact == 120, 'factorial of 5 should be 120, found: ', fact );
+	assert_eq( fact, 120 );
 } else {
 	num = scan( "Enter factorial of: " ).to_int();
 	fact = 1;

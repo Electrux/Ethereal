@@ -1,0 +1,67 @@
+ldmod pre.core;
+
+fn assert( a ) {
+	if !( a ) {
+		assert_fail( 'assertion failed for data: ', a );
+	}
+}
+
+fn assert_msg( a, ... ) {
+	if !( a ) {
+		assert_fail( __VA__ );
+	}
+}
+
+fn assert_eq( a, b ) {
+	if !( a == b ) {
+		assert_fail( 'assertion failed for ', a, ' == ', b );
+	}
+}
+
+fn assert_ne( a, b ) {
+	if !( a != b ) {
+		assert_fail( 'assertion failed for ', a, ' != ', b );
+	}
+}
+
+fn assert_lt( a, b ) {
+	if !( a < b ) {
+		assert_fail( 'assertion failed for ', a, ' < ', b );
+	}
+}
+
+fn assert_le( a, b ) {
+	if !( a <= b ) {
+		assert_fail( 'assertion failed for ', a, ' <= ', b );
+	}
+}
+
+fn assert_gt( a, b ) {
+	if !( a > b ) {
+		assert_fail( 'assertion failed for ', a, ' > ', b );
+	}
+}
+
+fn assert_ge( a, b ) {
+	if !( a >= b ) {
+		assert_fail( 'assertion failed for ', a, ' >= ', b );
+	}
+}
+
+fn assert_and( a, b ) {
+	if !( a && b ) {
+		assert_fail( 'assertion failed for ', a, ' && ', b );
+	}
+}
+
+fn assert_or( a, b ) {
+	if !( a || b ) {
+		assert_fail( 'assertion failed for ', a, ' || ', b );
+	}
+}
+
+fn assert_nt( a ) {
+	if !( !a ) {
+		assert_fail( 'assertion failed for !', a );
+	}
+}

@@ -215,6 +215,7 @@ var_base_t * mult_rhs( vm_state_t & vm, func_call_data_t & fcd )
 
 REGISTER_MODULE( str )
 {
+	// arithmetic
 	vm.funcs.add( { "+", 2, 2, { "str", "str" }, FnType::MODULE, { .modfn = add }, true } );
 	vm.funcs.add( { "+=", 2, 2, { "str", "str" }, FnType::MODULE, { .modfn = add_assn }, false } );
 	vm.funcs.add( { "*", 2, 2, { "int", "str" }, FnType::MODULE, { .modfn = mult_lhs }, true } );
@@ -227,6 +228,9 @@ REGISTER_MODULE( str )
 	vm.funcs.add( { "<=", 2, 2, { "str", "str" }, FnType::MODULE, { .modfn = le }, false } );
 	vm.funcs.add( { ">",  2, 2, { "str", "str" }, FnType::MODULE, { .modfn = gt }, false } );
 	vm.funcs.add( { ">=", 2, 2, { "str", "str" }, FnType::MODULE, { .modfn = ge }, false } );
+
+	// logical
+	vm.funcs.add( { "!", 1, 1, { "str" }, FnType::MODULE, { .modfn = empty }, false } );
 
 	functions_t & strfns = vm.typefuncs[ "str" ];
 

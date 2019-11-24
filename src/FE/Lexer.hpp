@@ -160,7 +160,7 @@ int tokenize( src_t & src );
  * \brief Check if the given type (int) is a variable data
  *
  * A 'variable data' consists of ints, floats, const strings, and identifiers
- * 
+ *
  * \param int type - from enum TokType
  * \return true if the type is one of variable data tokens, false if it isn't
  */

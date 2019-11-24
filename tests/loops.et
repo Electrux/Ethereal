@@ -10,10 +10,11 @@ for i = 1; i < 10; i += 1 {
 		if j == 5 { println( 'breaking on j = 5' ); break; }
 		println( 'i: ', i, ' j: ', j );
 	}
+	assert_nt( var_exists( 'j' ) );
 }
 
-assert( var_exists( 'i' ) == false, 'i should not exist here' );
-assert( var_exists( 'j' ) == false, 'j should not exist here' );
+assert_nt( var_exists( 'i' ) );
+assert_nt( var_exists( 'j' ) );
 
 for i in range( 1, 10 ) {
 	if i == 2 { println( 'continuing on i = 2' ); continue; }
@@ -23,9 +24,11 @@ for i in range( 1, 10 ) {
 		if j == 5 { println( 'breaking on j = 5' ); break; }
 		println( 'i: ', i, ' j: ', j );
 	}
+	assert_nt( var_exists( 'j' ) );
+	assert_nt( var_exists( '._j' ) );
 }
 
-assert( var_exists( 'i' ) == false, 'i should not exist here' );
-assert( var_exists( 'j' ) == false, 'j should not exist here' );
-assert( var_exists( '._i' ) == false, '._i should not exist here' );
-assert( var_exists( '._j' ) == false, '._j should not exist here' );
+assert_nt( var_exists(   'i' ) );
+assert_nt( var_exists(   'j' ) );
+assert_nt( var_exists( '._i' ) );
+assert_nt( var_exists( '._j' ) );

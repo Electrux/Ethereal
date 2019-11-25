@@ -7,6 +7,11 @@
 	before using or altering the project.
 */
 
+#ifndef LOAD_FILE_HPP
+#define LOAD_FILE_HPP
+
 #include "VM.hpp"
 
 int load_src( vm_state_t & vm, const std::string & file );
+
+#endif // LOAD_FILE_HPP

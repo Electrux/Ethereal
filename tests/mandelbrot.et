@@ -1,0 +1,20 @@
+#!/usr/bin/env et
+
+import std.vec;
+import std.math;
+import std.complex;
+
+precision = args.len() > 1 ? 10 : 50;
+
+for y = -1.0; y < 1.0; y += 0.05 {
+	for x = -2.05; x < 0.55; x += 0.03 {
+		xy = cplx.new( x, y );
+		z = cplx.new( 0 );
+		for i in range( 0, precision ) {
+			z = ( z ** 2 ) + xy;
+		}
+		print( z.abs() < 2.0 ? '█' : ' ' );
+	}
+	println();
+}
+

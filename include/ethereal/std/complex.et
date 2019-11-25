@@ -1,0 +1,5 @@
+ldmod std.complex;
+
+struct _cplx_t {}
+
+cplx = _cplx_t{};

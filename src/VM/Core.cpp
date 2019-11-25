@@ -41,6 +41,9 @@ vm_state_t::~vm_state_t()
 	delete vars;
 	VAR_DREF( none );
 	for( auto & struct_ : structs ) delete struct_.second;
+	// see: https://gforge.inria.fr/tracker/?func=detail&atid=619&aid=9783&group_id=136
+	// clears the log(), pow(), ... cache of mpfr library
+	mpfr_free_cache();
 	delete dlib;
 	for( auto & src : srcs ) delete src.second;
 }

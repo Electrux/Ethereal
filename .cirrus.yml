@@ -4,7 +4,7 @@ task:
   name: Ubuntu 14.04 gcc 4.8.4
   container:
     image: ubuntu:14.04
-  install_script: apt-get update && apt-get install -y libgmp-dev libmpfr-dev g++ cmake make
+  install_script: apt-get update && apt-get install -y libgmp-dev libmpfr-dev libmpc-dev g++ cmake make
   compile_script: mkdir build && cd build && cmake .. && make -j$(nproc)
   tests_script: build/bin/et ./perform_tests.et
 
@@ -15,7 +15,7 @@ task:
   env:
     CXX: clang++-3.4
     SKIP_LTO: true
-  install_script: apt update && apt install -y libgmp-dev libmpfr-dev cmake make
+  install_script: apt update && apt install -y libgmp-dev libmpfr-dev libmpc-dev cmake make
   compile_script: mkdir build && cd build && cmake .. && make -j$(nproc)
   tests_script: build/bin/et ./perform_tests.et
 
@@ -25,7 +25,7 @@ task:
     image: gcc:6
   env:
     CXX: g++
-  install_script: apt update && apt install -y libgmp-dev libmpfr-dev cmake make
+  install_script: apt update && apt install -y libgmp-dev libmpfr-dev libmpc-dev cmake make
   compile_script: mkdir build && cd build && cmake .. && make -j$(nproc)
   tests_script: build/bin/et ./perform_tests.et
 
@@ -35,7 +35,7 @@ task:
     image: freebsd-10-4-release-amd64
   env:
     SKIP_LTO: true
-  install_script: pkg install -y gmp mpfr cmake
+  install_script: pkg install -y gmp mpfr mpc cmake
   compile_script: mkdir build && cd build && cmake .. && make -j$(sysctl -n hw.ncpu)
   tests_script: build/bin/et ./perform_tests.et
 
@@ -43,6 +43,6 @@ task:
   name: macOS Mojave apple llvm 10.0.1
   osx_instance:
     image: mojave-base
-  install_script: brew install gmp mpfr cmake make
+  install_script: brew install gmp mpfr libmpc cmake make
   compile_script: mkdir build && cd build && cmake .. && make -j$(sysctl -n hw.ncpu)
   tests_script: build/bin/et ./perform_tests.et

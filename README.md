@@ -50,11 +50,12 @@ Documentation is under development and will take some time to build, but till th
 # Prerequisites
 
 *  GCC/Clang with full C++ 11 support, tested with:
-    *  Ubuntu >= 14.04 (GCC >= 4.8.4, GMP >= 5.1.3)
-    *  Arch Linux (GCC 9.1.0, GMP 6.1.2)
-    *  macOS 10.14.6 (Homebrew LLVM 8.0.1, Apple LLVM 10.0.1, Homebrew GMP 6.1.2)
-    *  FreeBSD 10.4 (clang 3.4.1, GMP 6.1.2)
-    *  Android 9 - Pie (Termux - clang 8.0.0, GMP 6.1.2 manually compiled - see the note below)
+    *  Ubuntu 14.04 (GCC 4.8.4, GMP 5.1.3, MPFR 3.1.2, MPC 1.0.1)
+    *  Arch Linux (GCC 9.1.0, GMP 6.1.2, MPFR 3.1.2, MPC 1.0.1)
+    *  macOS 10.13.6 (Homebrew LLVM 9.0.0, Homebrew GMP 6.1.2, MPFR 4.0.2, MPC 1.1.0)
+    *  macOS 10.14.6 (Homebrew LLVM 8.0.1, Apple LLVM 10.0.1, Homebrew GMP 6.1.2, MPFR 4.0.2, MPC 1.1.0)
+    *  FreeBSD 10.4 (clang 3.4.1, GMP 6.1.2, MPFR 3.1.2, MPC 1.0.1)
+    *  Android 9 - Pie (Termux - clang 8.0.0, GMP 6.1.2 manually compiled - see the note below, MPFR 3.1.2, MPC 1.0.1)
 *  GMP library with CXX support (will be almost always built with support for CXX in your official distribution package)
 
 Note that GMP on Termux for android does not come with CXX support, hence it will have to be manually compiled from source with the `--enable-cxx` configure option. You may also need to specify the `PREFIX_DIR` directory using `--prefix` configure option which, for me, is `/data/data/com.termux/files/usr`

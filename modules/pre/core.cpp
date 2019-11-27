@@ -15,6 +15,9 @@
 #include "Core/Flt.hpp"
 #include "Core/Bool.hpp"
 
+#include "Core/Range/Int.hpp"
+#include "Core/Range/Flt.hpp"
+
 const int MAX_C_STR_LEN = 1025;
 
 var_base_t * flush_out( vm_state_t & vm, func_call_data_t & fcd )
@@ -405,6 +408,18 @@ REGISTER_MODULE( core )
 	vm.funcs.add( { "==", 2, 2, { "_any_", "nil" }, FnType::MODULE, { .modfn = nil_eq }, false } );
 	vm.funcs.add( { "!=", 2, 2, { "nil", "_any_" }, FnType::MODULE, { .modfn = nil_ne }, false } );
 	vm.funcs.add( { "!=", 2, 2, { "_any_", "nil" }, FnType::MODULE, { .modfn = nil_ne }, false } );
+
+	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////// MISC ///////////////////////////////////////////////////////////////
+	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	// range (int)
+	functions_t & ritifns = vm.typefuncs[ "range_iter_int_t" ];
+	ritifns.add(  { "next",  0, 0, {}, FnType::MODULE, { .modfn = next_int }, true } );
+	vm.funcs.add( { "range", 2, 3, { "int", "int", "int" }, FnType::MODULE, { .modfn = range_int }, true } );
+	// range (flt)
+	functions_t & ritffns = vm.typefuncs[ "range_iter_flt_t" ];
+	ritffns.add(  { "next",  0, 0, {}, FnType::MODULE, { .modfn = next_flt }, true } );
+	vm.funcs.add( { "range", 2, 3, { "flt", "flt", "flt" }, FnType::MODULE, { .modfn = range_flt }, true } );
 
 	// global object functions
 	functions_t & anyfns = vm.typefuncs[ "_any_" ];

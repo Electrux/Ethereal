@@ -227,19 +227,6 @@ var_base_t * next( vm_state_t & vm, func_call_data_t & fcd )
 	return vec[ pos ];
 }
 
-var_base_t * range( vm_state_t & vm, func_call_data_t & fcd )
-{
-	mpz_class & a = AS_INT( fcd.args[ 0 ] )->get();
-	mpz_class & b = AS_INT( fcd.args[ 1 ] )->get();
-	mpz_class step = fcd.args.size() > 2 ? AS_INT( fcd.args[ 2 ] )->get() : 1;
-
-	std::vector< var_base_t * > vec;
-	for( mpz_class i = a; i < b; i += step ) {
-		vec.push_back( new var_int_t( i, fcd.src_idx, fcd.parse_ctr ) );
-	}
-	return new var_vec_iter_t( new var_vec_t( vec ), false );
-}
-
 REGISTER_MODULE( vec )
 {
 	functions_t & vecfns = vm.typefuncs[ "vec" ];
@@ -267,6 +254,4 @@ REGISTER_MODULE( vec )
 
 	functions_t & veciterfns = vm.typefuncs[ "vec_iter_t" ];
 	veciterfns.add( { "next", 0, 0, {}, FnType::MODULE, { .modfn = next }, false } );
-
-	vm.funcs.add( { "range", 2, 3, { "int", "int", "int" }, FnType::MODULE, { .modfn = range }, true } );
 }

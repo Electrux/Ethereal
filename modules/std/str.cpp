@@ -213,6 +213,18 @@ var_base_t * mult_rhs( vm_state_t & vm, func_call_data_t & fcd )
 	return new var_str_t( res );
 }
 
+var_base_t * char_int_cast( vm_state_t & vm, func_call_data_t & fcd )
+{
+	std::string & dat = AS_STR( fcd.args[ 0 ] )->get();
+	return new var_int_t( dat.size() > 0 ? dat[ 0 ] : 0 );
+}
+
+var_base_t * int_char_cast( vm_state_t & vm, func_call_data_t & fcd )
+{
+	mpz_class & dat = AS_INT( fcd.args[ 0 ] )->get();
+	return new var_str_t( std::string( 1, dat.get_si() ) );
+}
+
 REGISTER_MODULE( str )
 {
 	// arithmetic
@@ -253,4 +265,8 @@ REGISTER_MODULE( str )
 	strfns.add( { "split", 0, 1, { "str" }, FnType::MODULE, { .modfn = split }, true } );
 	strfns.add( { "split_first", 0, 1, { "str" }, FnType::MODULE, { .modfn = split_first }, true } );
 	strfns.add( { "trim", 0, 0, {}, FnType::MODULE, { .modfn = trim }, false } );
+	strfns.add( { "int_cast", 0, 0, {}, FnType::MODULE, { .modfn = char_int_cast }, true } );
+
+	functions_t & intfns = vm.typefuncs[ "int" ];
+	intfns.add( { "char_cast", 0, 0, {}, FnType::MODULE, { .modfn = int_char_cast }, true } );
 }

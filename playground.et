@@ -1,6 +1,7 @@
 #!@BINARY_LOC@
 
-import std.( vm, str, vec, term );
+import eth.vm;
+import std.( str, vec, term );
 
 vm = evm.new();
 
@@ -9,7 +10,7 @@ exit_code = 0;
 
 indent = 0;
 line_id = 0;
-input = "";
+input = '';
 lines = [];
 for ; vm.is_running(); {
 	if indent == 0 {

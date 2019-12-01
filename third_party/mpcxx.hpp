@@ -271,11 +271,12 @@ inline mpcplx & mpcplx::operator /=( const mpfr::mpreal & v )
 // logical comparison
 inline bool mpcplx::operator ==( const mpcplx & v ) const
 {
-	return mpc_cmp( m_val, v.m_val );
+	// NOT because ZERO => equal, ANY OTHER => not equal
+	return !mpc_cmp( m_val, v.m_val );
 }
 inline bool mpcplx::operator !=( const mpcplx & v ) const
 {
-	return !mpc_cmp( m_val, v.m_val );
+	return mpc_cmp( m_val, v.m_val );
 }
 
 // get real/imaginary

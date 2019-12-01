@@ -21,10 +21,3 @@ mfn< _math_t > update_prec( p ) {
 
 mfn< _math_t > to_rad( x ) { return x * self.pi / 180.0; }
 mfn< _math_t > to_deg( x ) { return x * 180.0 / self.pi; }
-
-# sin and cos are implemented in C++ module
-mfn< _math_t > tan( x ) { return self.sin( x ) / self.cos( x ); }
-
-mfn< _math_t > csc( x ) { return 1 / self.sin( x ); }
-mfn< _math_t > sec( x ) { return 1 / self.cos( x ); }
-mfn< _math_t > cot( x ) { return 1 / self.tan( x ); }

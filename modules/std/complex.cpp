@@ -7,7 +7,6 @@
 	before using or altering the project.
 */
 
-// TODO: write the test cases for this library
 #include "../../third_party/mpcxx.hpp"
 
 #include "../../src/VM/Core.hpp"

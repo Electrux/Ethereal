@@ -1,0 +1,51 @@
+#!/usr/bin/env et
+
+import std.math;
+import std.complex;
+
+a = cplx.new( 2, 3 );
+b = cplx.new( 1, 2 );
+
+sum = cplx.new(  3, 5 );
+sub = cplx.new(  1, 1 );
+mul = cplx.new( -4, 7 );
+div = cplx.new( 8.0 / 5, -1.0 / 5 );
+
+# arithmetic
+assert_eq( a + b, sum );
+assert_ne( a + b, sub );
+assert_eq( a - b, sub );
+assert_eq( a * b, mul );
+assert_eq( a / b, div );
+
+# arithmetic assign
+c = a;
+assert_eq( c += b, sum );
+assert_eq( c -= b,   a );
+assert_eq( c *= b, mul );
+assert_eq( c /= b,   a );
+
+# powers
+assert_eq( a ** -1, cplx.new( 1 ) / a );
+assert_eq( a **  0, cplx.new( 1 ) );
+assert_eq( a **  1, a );
+assert_eq( a **  2, cplx.new( -5, 12 ) );
+assert_eq( a **  cplx.new( 2 ), cplx.new( -5, 12 ) );
+
+# equality
+# used in all assertions so no need explicitly
+
+# unary minus
+assert_eq( -a, cplx.new( -2, -3 ) );
+
+# real/imaginary
+assert_eq( a.real(), 2.0 );
+assert_eq( a.imag(), 3.0 );
+
+# misc
+assert_eq( a.abs(), math.sqrt( 13.0 ) ); # abs(a) => distance(origin, a)
+assert_eq( a.norm(), 13.0 ); # square of abs()
+assert_eq( a.conj(), cplx.new( 2, -3 ) ); # same real part, opposite imaginary
+assert_eq( a.proj(), a ); # umm... ???
+# TODO: work on the rest of the functions
+

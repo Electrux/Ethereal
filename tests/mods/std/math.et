@@ -43,5 +43,13 @@ assert_le( math.csc( 1.0 ) - 1.18839510577812121626, math.precision );
 assert_le( math.sec( 1.0 ) - 1.85081571768092561791, math.precision );
 assert_le( math.cot( 1.0 ) - 0.64209261593433070301, math.precision );
 
+assert_le( math.asin( 1.0 ) - 1.57079632679489661923, math.precision );
+assert_le( math.acos( 1.0 ) - 0.00000000000000000000, math.precision );
+assert_le( math.acos( 0.0 ) - 1.57079632679489661923, math.precision );
+assert_le( math.atan( 1.0 ) - 0.78539816339744830961, math.precision );
+assert_eq( math.acsc( 1.0 ), math.asin( 1.0 ) ); # acsc(x) => asin(1/x)
+assert_le( math.asec( 1.0 ) - 0.63661977236758134307, math.precision ); # # asec(x) => 1/acos(x)
+assert_le( math.acot( 1.0 ) - 1.27323954473516268615, math.precision );
+
 math.update_prec( 350 );
 assert_eq( math.get_prec(), 350 );

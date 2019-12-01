@@ -74,6 +74,66 @@ var_base_t * _cos( vm_state_t & vm, func_call_data_t & fcd )
 	return new var_flt_t( mpfr::cos( num ) );
 }
 
+var_base_t * _tan( vm_state_t & vm, func_call_data_t & fcd )
+{
+	mpfr::mpreal & num = AS_FLT( fcd.args[ 1 ] )->get();
+	return new var_flt_t( mpfr::tan( num ) );
+}
+
+var_base_t * _csc( vm_state_t & vm, func_call_data_t & fcd )
+{
+	mpfr::mpreal & num = AS_FLT( fcd.args[ 1 ] )->get();
+	return new var_flt_t( mpfr::csc( num ) );
+}
+
+var_base_t * _sec( vm_state_t & vm, func_call_data_t & fcd )
+{
+	mpfr::mpreal & num = AS_FLT( fcd.args[ 1 ] )->get();
+	return new var_flt_t( mpfr::sec( num ) );
+}
+
+var_base_t * _cot( vm_state_t & vm, func_call_data_t & fcd )
+{
+	mpfr::mpreal & num = AS_FLT( fcd.args[ 1 ] )->get();
+	return new var_flt_t( mpfr::cot( num ) );
+}
+
+var_base_t * _asin( vm_state_t & vm, func_call_data_t & fcd )
+{
+	mpfr::mpreal & num = AS_FLT( fcd.args[ 1 ] )->get();
+	return new var_flt_t( mpfr::asin( num ) );
+}
+
+var_base_t * _acos( vm_state_t & vm, func_call_data_t & fcd )
+{
+	mpfr::mpreal & num = AS_FLT( fcd.args[ 1 ] )->get();
+	return new var_flt_t( mpfr::acos( num ) );
+}
+
+var_base_t * _atan( vm_state_t & vm, func_call_data_t & fcd )
+{
+	mpfr::mpreal & num = AS_FLT( fcd.args[ 1 ] )->get();
+	return new var_flt_t( mpfr::atan( num ) );
+}
+
+var_base_t * _acsc( vm_state_t & vm, func_call_data_t & fcd )
+{
+	mpfr::mpreal & num = AS_FLT( fcd.args[ 1 ] )->get();
+	return new var_flt_t( mpfr::acsc( num ) );
+}
+
+var_base_t * _asec( vm_state_t & vm, func_call_data_t & fcd )
+{
+	mpfr::mpreal & num = AS_FLT( fcd.args[ 1 ] )->get();
+	return new var_flt_t( mpfr::asec( num ) );
+}
+
+var_base_t * _acot( vm_state_t & vm, func_call_data_t & fcd )
+{
+	mpfr::mpreal & num = AS_FLT( fcd.args[ 1 ] )->get();
+	return new var_flt_t( mpfr::acot( num ) );
+}
+
 var_base_t * calc_e( vm_state_t & vm, func_call_data_t & fcd )
 {
 	mpfr::mpreal precision = "0." + std::string( get_float_precision() + 1, '0' ) + "1";
@@ -111,15 +171,24 @@ REGISTER_MODULE( math )
 	fltfns.add( { "is_nan", 0, 0, {}, FnType::MODULE, { .modfn = flt_is_nan }, false } );
 
 	functions_t & mathfns = vm.typefuncs[ "_math_t" ];
-	mathfns.add( { "abs",    1, 1, { "int" }, FnType::MODULE, { .modfn = _abs_int }, true } );
-	mathfns.add( { "abs",    1, 1, { "flt" }, FnType::MODULE, { .modfn = _abs_flt }, true } );
-	mathfns.add( { "ceil",   1, 1, { "flt" }, FnType::MODULE, { .modfn = _ceil }, true } );
-	mathfns.add( { "floor",  1, 1, { "flt" }, FnType::MODULE, { .modfn = _floor }, true } );
-	mathfns.add( { "sqrt",   1, 1, { "flt" }, FnType::MODULE, { .modfn = _sqrt }, true } );
-	mathfns.add( { "log",    1, 2, { "flt", "flt" }, FnType::MODULE, { .modfn = _log }, true } );
-	mathfns.add( { "sin",    1, 1, { "flt" }, FnType::MODULE, { .modfn = _sin }, true } );
-	mathfns.add( { "cos",    1, 1, { "flt" }, FnType::MODULE, { .modfn = _cos }, true } );
-
+	mathfns.add( { "abs",   1, 1, { "int" }, FnType::MODULE, { .modfn = _abs_int }, true } );
+	mathfns.add( { "abs",   1, 1, { "flt" }, FnType::MODULE, { .modfn = _abs_flt }, true } );
+	mathfns.add( { "ceil",  1, 1, { "flt" }, FnType::MODULE, { .modfn = _ceil }, true } );
+	mathfns.add( { "floor", 1, 1, { "flt" }, FnType::MODULE, { .modfn = _floor }, true } );
+	mathfns.add( { "sqrt",  1, 1, { "flt" }, FnType::MODULE, { .modfn = _sqrt }, true } );
+	mathfns.add( { "log",   1, 2, { "flt", "flt" }, FnType::MODULE, { .modfn = _log }, true } );
+	mathfns.add( { "sin",   1, 1, { "flt" }, FnType::MODULE, { .modfn =  _sin }, true } );
+	mathfns.add( { "cos",   1, 1, { "flt" }, FnType::MODULE, { .modfn =  _cos }, true } );
+	mathfns.add( { "tan",   1, 1, { "flt" }, FnType::MODULE, { .modfn =  _tan }, true } );
+	mathfns.add( { "csc",   1, 1, { "flt" }, FnType::MODULE, { .modfn =  _csc }, true } );
+	mathfns.add( { "sec",   1, 1, { "flt" }, FnType::MODULE, { .modfn =  _sec }, true } );
+	mathfns.add( { "cot",   1, 1, { "flt" }, FnType::MODULE, { .modfn =  _cot }, true } );
+	mathfns.add( { "asin",  1, 1, { "flt" }, FnType::MODULE, { .modfn = _asin }, true } );
+	mathfns.add( { "acos",  1, 1, { "flt" }, FnType::MODULE, { .modfn = _acos }, true } );
+	mathfns.add( { "atan",  1, 1, { "flt" }, FnType::MODULE, { .modfn = _atan }, true } );
+	mathfns.add( { "acsc",  1, 1, { "flt" }, FnType::MODULE, { .modfn = _acsc }, true } );
+	mathfns.add( { "asec",  1, 1, { "flt" }, FnType::MODULE, { .modfn = _asec }, true } );
+	mathfns.add( { "acot",  1, 1, { "flt" }, FnType::MODULE, { .modfn = _acot }, true } );
 }
 
 static mpz_class factorial( const mpz_class & of )

@@ -1,0 +1,22 @@
+#!/usr/bin/env et
+
+import std.vec;
+
+# TODO: optimize allocations
+fn ack( m, n ) {
+	if m == 0 { return n + 1; }
+	if n == 0 { return ack( m - 1, 1 ); }
+	return ack( m - 1, ack( m, n - 1 ) );
+}
+
+M = 4;
+N = 10;
+if args.len() > 1 {
+	M = 2;
+	N = 5;
+}
+for m = 0; m < M; m += 1 {
+	for n = 0; n < N; n += 1 {
+		println( 'A(', m, ', ', n, ') = ', ack( m, n ) );
+	}
+}

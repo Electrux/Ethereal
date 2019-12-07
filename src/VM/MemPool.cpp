@@ -80,10 +80,13 @@ static inline size_t nearest_mult8( size_t sz )
 }
 
 mem_mgr_t mem::_memory;
-
+//static size_t tot_alloc = 0;
+//static size_t tot_alloc_direct = 0;
+//static size_t tot_alloc_req = 0;
 void mem_mgr_t::alloc_pool()
 {
 	u8 * alloc = new u8[ POOL_SIZE ];
+	//tot_alloc += POOL_SIZE;
 	m_pools.push_back( { alloc, alloc } );
 }
 
@@ -102,15 +105,19 @@ mem_mgr_t::~mem_mgr_t()
 	for( auto & p : m_pools ) {
 		delete[] p.mem;
 	}
+	//fprintf( stdout, "Total allocated: %zu, directly: %zu, requests: %zu\n", tot_alloc, tot_alloc_direct, tot_alloc_req );
 }
 
 void * mem_mgr_t::alloc( size_t sz )
 {
 	if( sz == 0 ) return nullptr;
+	//tot_alloc_direct += sz;
+	//++tot_alloc_req;
 
 	sz = nearest_mult8( sz );
 
 	if( sz > POOL_SIZE ) {
+		//fprintf( stdout, "Allocating manually ... %zu\n", sz );
 		return new u8[ sz ];
 	}
 
@@ -120,6 +127,7 @@ void * mem_mgr_t::alloc( size_t sz )
 			if( free_space >= sz ) {
 				u8 * loc = p.head;
 				p.head += sz;
+				//fprintf( stdout, "Allocating from pool ... %zu\n", sz );
 				return loc;
 			}
 		}
@@ -127,16 +135,19 @@ void * mem_mgr_t::alloc( size_t sz )
 		auto & p = m_pools.back();
 		u8 * loc = p.head;
 		p.head += sz;
+		//fprintf( stdout, "Allocating from NEW pool ... %zu\n", sz );
 		return loc;
 	}
 
 	u8 * loc = m_free_chunks[ sz ].front();
 	m_free_chunks[ sz ].pop_front();
+	//fprintf( stdout, "Using previously allocated ... %zu\n", sz );
 	return loc;
 }
 
 void mem_mgr_t::free( void * ptr, size_t sz )
 {
 	if( ptr == nullptr || sz == 0 ) return;
+	//fprintf( stdout, "Giving back to pool ... %zu\n", sz );
 	m_free_chunks[ sz ].push_front( ( u8 * )ptr );
 }

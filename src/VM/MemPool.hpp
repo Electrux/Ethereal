@@ -22,8 +22,8 @@ struct __sys_align_t
 	size_t sz;
 };
 
-static constexpr size_t POOL_SIZE	 = 4 * 1024;
-static constexpr size_t ALIGNMENT	 = sizeof( __sys_align_t ) - sizeof( size_t );
+static constexpr size_t POOL_SIZE = 4 * 1024;
+static constexpr size_t ALIGNMENT = sizeof( __sys_align_t ) - sizeof( size_t );
 
 struct mem_pool_t
 {

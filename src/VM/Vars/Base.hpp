@@ -16,6 +16,7 @@
 #include "../../../third_party/mpfrxx.hpp"
 
 #include "../Functions.hpp"
+#include "../MemPool.hpp"
 
 enum VarType
 {
@@ -81,6 +82,9 @@ public:
 	virtual bool to_bool() const = 0;
 	virtual var_base_t * copy( const int src_idx, const int parse_ctr ) = 0;
 	virtual void assn( var_base_t * b );
+
+	static void * operator new( size_t sz );
+	static void operator delete( void * ptr, size_t sz );
 };
 
 #define VAR_IREF( var ) do { ( ( var_base_t * )var )->inc_ref(); } while( 0 )

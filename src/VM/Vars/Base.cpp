@@ -47,3 +47,12 @@ var_base_t::~var_base_t() {}
 
 std::string var_base_t::type_str() const { return VarTypeStrs[ m_type ]; }
 void var_base_t::assn( var_base_t * b ) {}
+
+void * var_base_t::operator new( size_t sz )
+{
+	return mem::alloc( sz );
+}
+void var_base_t::operator delete( void * ptr, size_t sz )
+{
+	mem::free( ptr, sz );
+}

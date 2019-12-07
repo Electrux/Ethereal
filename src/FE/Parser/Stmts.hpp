@@ -14,6 +14,7 @@
 #include "ParseHelper.hpp"
 
 #include "../../VM/Instructions.hpp"
+#include "../../VM/MemPool.hpp"
 
 enum GrammarTypes
 {
@@ -49,6 +50,9 @@ public:
 	virtual ~stmt_base_t();
 	virtual void disp( const bool has_next ) const = 0;
 	virtual bool bytecode( src_t & src ) const = 0;
+
+	static void * operator new( size_t sz );
+	static void operator delete( void * ptr, size_t sz );
 };
 
 enum SimpleType
